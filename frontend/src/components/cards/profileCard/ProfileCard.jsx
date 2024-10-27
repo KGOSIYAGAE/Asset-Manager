@@ -11,7 +11,7 @@ function ProfileCard() {
       </div>
       <div className="flex flex-col justify-center">
         <span>{userName}</span>
-        <span className="text-blue-500 underline">LOGOUT</span>
+        <span className="link-text underline">LOGOUT</span>
       </div>
     </div>
   );

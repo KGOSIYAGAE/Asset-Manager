@@ -18,4 +18,27 @@
     color: black;
     background-color: #ffffff;
   }
+
+  .link-text {
+    @apply text-blue-500 text-sm;
+  }
+
+  .heading-text {
+    @apply text-blue-900 font-bold text-lg;
+  }
+
+  .primary-btn {
+    @apply flex  items-center bg-blue-900 text-white p-2 gap-1 rounded-md hover:bg-blue-800;
+  }
+  .secondary-btn {
+    @apply flex  items-center bg-gray-100 text-black p-2 gap-1 rounded-md hover:bg-gray-100;
+  }
+
+  .reload-btn {
+    @apply flex  items-center bg-gray-100 text-blue-900 border border-gray-300 p-2 gap-1 rounded-md hover:bg-gray-200;
+  }
+
+  .search-input {
+    @apply flex items-center bg-zinc-100 p-1 border border-zinc-300 rounded-md;
+  }
 }

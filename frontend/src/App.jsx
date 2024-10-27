@@ -7,6 +7,7 @@ import Navbar from "./components/navbar/Navbar";
 import Menu from "./components/menu/Menu";
 
 function App() {
+  //App UI Layout
   const Layout = () => {
     return (
       <div className="w-screen h-svh border">
@@ -36,11 +37,11 @@ function App() {
         },
         {
           path: "/users/staff",
-          element: <Staff />,
+          element: <Staff path={"staff-list"} />,
         },
         {
           path: "/users/students",
-          element: <Students />,
+          element: <Students path={"student-list"} />,
         },
       ],
     },
