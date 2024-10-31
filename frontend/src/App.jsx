@@ -5,6 +5,8 @@ import Staff from "./pages/users/staff/Staff";
 import Students from "./pages/users/students/students";
 import Navbar from "./components/navbar/Navbar";
 import Menu from "./components/menu/Menu";
+import { StaffContextProvider } from "./context/StaffContext";
+import { SearchContextProvider } from "./context/SearchContext";
 
 function App() {
   //App UI Layout
@@ -47,7 +49,13 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <SearchContextProvider>
+      <StaffContextProvider>
+        <RouterProvider router={router} />
+      </StaffContextProvider>
+    </SearchContextProvider>
+  );
 }
 
 export default App;
