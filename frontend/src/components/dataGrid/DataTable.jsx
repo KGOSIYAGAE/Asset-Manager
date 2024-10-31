@@ -1,12 +1,36 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
+import { MdDeleteForever, MdEdit } from "react-icons/md";
 
-function DataTable({ rows, colHeaders }) {
-  const columns = [...colHeaders];
+function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewProfile }) {
+  const actionsColumn = [
+    {
+      field: "Actions",
+      renderCell: (cellValues) => {
+        return (
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <div className="w-[30px] flex items-center justify-center text-green-500 bg-green-100 p-1 rounded-md border border-green-500" onClick={() => handleEdit(cellValues)}>
+              <MdEdit size={20}></MdEdit>
+            </div>
+            <div className="w-[30px] flex items-center justify-center text-red-500 bg-red-100 p-1 rounded-md border border-red-500" onClick={() => handleDelete(cellValues)}>
+              <MdDeleteForever size={20}></MdDeleteForever>
+            </div>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const columns = [...colHeaders, ...actionsColumn];
 
   return (
     <DataGrid
+      sx={{
+        "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+          outline: "none !important",
+        },
+      }}
       rows={rows}
       columns={columns}
       initialState={{
@@ -18,7 +42,6 @@ function DataTable({ rows, colHeaders }) {
       }}
       pageSizeOptions={[5]}
       checkboxSelection
-      disableRowSelectionOnClick
     />
   );
 }

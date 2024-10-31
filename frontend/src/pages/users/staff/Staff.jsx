@@ -8,11 +8,16 @@ import { staffTableHeaders } from "../../../utils/TableHeaders";
 
 import { useStaffContext } from "../../../hooks/useStaffContext";
 import { useSearchContext } from "../../../hooks/useSearchContext";
+import { useNavigate } from "react-router-dom";
 
 function Staff({ path }) {
+  //Context
   const { staffState, staffDispatch } = useStaffContext();
   const { searchState } = useSearchContext();
 
+  const navigate = useNavigate();
+
+  //Dummy Data
   const data = [
     {
       id: 0,
@@ -73,6 +78,17 @@ function Staff({ path }) {
     },
   ];
 
+  //Handle delete
+  const handleDelete = () => {
+    console.log("delete");
+  };
+
+  //Handle Edit
+  const handleEdit = (cellValues) => {
+    localStorage.setItem("clickedUser", cellValues.row.staff_no);
+    navigate("/users/staff/Edit-staff");
+  };
+
   useEffect(() => {
     staffDispatch({ type: "SET_STAFF", payload: data });
   }, []);
@@ -91,7 +107,7 @@ function Staff({ path }) {
             <RefreshButton />
           </div>
         </div>
-        <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} />
+        <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
       </div>
     </div>
   );
