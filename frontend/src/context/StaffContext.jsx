@@ -10,7 +10,7 @@ export const staffReducer = (state, action) => {
       };
     case "CREATE_STAFF":
       return {
-        staffList: [action.payload, state.staffList],
+        staffList: [action.payload, ...state.staffList],
       };
     default:
       return state;

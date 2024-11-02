@@ -9,6 +9,7 @@ import AddEditStaff from "./components/forms/AddEditStaff";
 
 import { StaffContextProvider } from "./context/StaffContext";
 import { SearchContextProvider } from "./context/SearchContext";
+import { StudentsContextProvider } from "./context/StudentsContext";
 
 function App() {
   //App UI Layout
@@ -57,9 +58,11 @@ function App() {
 
   return (
     <SearchContextProvider>
-      <StaffContextProvider>
-        <RouterProvider router={router} />
-      </StaffContextProvider>
+      <StudentsContextProvider>
+        <StaffContextProvider>
+          <RouterProvider router={router} />
+        </StaffContextProvider>
+      </StudentsContextProvider>
     </SearchContextProvider>
   );
 }

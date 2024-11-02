@@ -10,3 +10,15 @@ export const staffTableHeaders = [
   { field: "assigned", headerName: "Devices", width: 100 },
   { field: "date_joned", headerName: "Date joined", width: 120 },
 ];
+
+//Students TableHeaders
+export const studentsTableHeaders = [
+  { field: "id", headerName: "ID", width: 20 },
+  { field: "student_no", headerName: "Student No", width: 110 },
+  { field: "name", headerName: "First name", width: 115 },
+  { field: "surname", headerName: "Last name", width: 115 },
+  { field: "faculty", headerName: "Faculty", width: 110 },
+  { field: "course_code", headerName: "Course Code", width: 120 },
+  { field: "course", headerName: "Course", width: 110 },
+  { field: "registration_date", headerName: "Registration Date", width: 130 },
+];
