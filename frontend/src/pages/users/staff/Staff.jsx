@@ -26,10 +26,11 @@ function Staff({ path }) {
       fullname: "",
       staff_no: "11310",
       phone_number: "0789384743",
+      email: "ccccc@gmail.com",
       department: "ICT",
       position: "Service Desk Operator",
       contract_type: "Permanent",
-      isActive: true,
+      isActive: "Active",
       laptop: [
         {
           make_model: "HP 455 G10",
@@ -45,10 +46,11 @@ function Staff({ path }) {
       fullname: "",
       staff_no: "11312",
       phone_number: "0789384743",
-      department: "ICT",
+      email: "ccccc@gmail.com",
+      department: "NAS",
       position: "Service Desk Operator",
       contract_type: "Permanent",
-      isActive: true,
+      isActive: "In Active",
       laptop: [
         {
           make_model: "HP 455 G10",
@@ -62,12 +64,13 @@ function Staff({ path }) {
       name: "kgosi",
       surname: "Segano",
       fullname: "",
-      staff_no: "11310",
+      staff_no: "11315",
       phone_number: "0789384743",
-      department: "ICT",
-      position: "Service Desk Operator",
-      contract_type: "Permanent",
-      isActive: true,
+      email: "ccccc@gmail.com",
+      department: "EDU",
+      position: "Lecture",
+      contract_type: "Contract",
+      isActive: "Active",
       laptop: [
         {
           make_model: "HP 455 G10",
@@ -89,6 +92,11 @@ function Staff({ path }) {
     navigate("/users/staff/Edit-staff");
   };
 
+  //Handle Add
+  const handleAdd = () => {
+    navigate("/users/staff/Edit-staff");
+  };
+
   useEffect(() => {
     staffDispatch({ type: "SET_STAFF", payload: data });
   }, []);
@@ -103,7 +111,7 @@ function Staff({ path }) {
           <span className="heading-text">Staff List</span>
           <div className="flex gap-2">
             <SearchInput searchData={staffState.staffList} />
-            <AddButton name={"Add New Staff"} />
+            <AddButton name={"Add New Staff"} handleAdd={handleAdd} />
             <RefreshButton />
           </div>
         </div>
