@@ -10,6 +10,7 @@ import AddEditStaff from "./components/forms/AddEditStaff";
 import { StaffContextProvider } from "./context/StaffContext";
 import { SearchContextProvider } from "./context/SearchContext";
 import { StudentsContextProvider } from "./context/StudentsContext";
+import AddEditStudent from "./components/forms/AddEditStudent";
 
 function App() {
   //App UI Layout
@@ -45,12 +46,24 @@ function App() {
           element: <Staff path={"staff-list"} />,
         },
         {
-          path: "/users/staff/Edit-staff",
-          element: <AddEditStaff path={"Edit-staff"} />,
+          path: "/users/staff/edit-staff/:id",
+          element: <AddEditStaff path={"edit-staff"} />,
+        },
+        {
+          path: "/users/staff/add-staff/",
+          element: <AddEditStaff path={"edit-staff"} />,
         },
         {
           path: "/users/students",
           element: <Students path={"student-list"} />,
+        },
+        {
+          path: "/users/students/edit-student/:id",
+          element: <AddEditStudent path={"edit-student"} />,
+        },
+        {
+          path: "/users/students/add-student",
+          element: <AddEditStudent path={"edit-student"} />,
         },
       ],
     },

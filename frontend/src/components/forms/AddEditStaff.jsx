@@ -2,6 +2,13 @@ import React, { useEffect, useState } from "react";
 import { departmentsList } from "../../utils/departmentList";
 import { employmentTypes } from "../../utils/employmentTypeList";
 import { useStaffContext } from "../../hooks/useStaffContext";
+import { useParams } from "react-router-dom";
+import TextInput from "../inputs/textInput/TextInput";
+import SelectInput from "../inputs/selectInput/SelectInput";
+import FormLaptopDetails from "../cards/formLaptopDetails/FormLaptopDetails";
+import FormUserStatus from "../cards/formUserStatus/FormUserStatus";
+import SubmitButton from "../buttons/SubmitButton";
+import CancelButton from "../buttons/CancelButton";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -15,7 +22,10 @@ function AddEditStaff({ path }) {
   const [position, setPosition] = useState("");
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
+  const [laptopDetails, setLaptopDetails] = useState(null);
   const [error, setError] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const params = useParams();
 
   //Form submit
   const handleSubmit = () => {
@@ -68,11 +78,11 @@ function AddEditStaff({ path }) {
 
   //Set form data
   const setFormData = () => {
-    let selecteUserStaff_no = localStorage.getItem("clickedUser");
+    const selectedId = params.id;
 
-    if (selecteUserStaff_no) {
+    if (selectedId) {
       for (let i = 0; i < staffState.staffList.length; i++) {
-        if (selecteUserStaff_no === staffState.staffList[i].staff_no) {
+        if (selectedId == staffState.staffList[i].id) {
           setName(staffState.staffList[i].name);
           setSurname(staffState.staffList[i].surname);
           setStaff_no(staffState.staffList[i].staff_no);
@@ -82,9 +92,10 @@ function AddEditStaff({ path }) {
           setDepartment(staffState.staffList[i].department);
           setContract_Type(staffState.staffList[i].contract_type);
           setIsActive(staffState.staffList[i].isActive);
+          setLaptopDetails(staffState.staffList[i].laptop);
         }
       }
-      localStorage.clear();
+
       return;
     }
   };
@@ -103,130 +114,50 @@ function AddEditStaff({ path }) {
           <span className="heading-text">Staff Details</span>
         </div>
         <div className="grid grid-cols-6 gap-8 pt-5">
-          <div className="text-input col-span-2">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">First Name</span>
-            <input
-              type="text"
-              className="outline-none"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-          </div>
-
-          <div className="text-input col-span-2">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">Last Name</span>
-            <input
-              type="text"
-              className="outline-none"
-              value={surname}
-              onChange={(e) => {
-                setSurname(e.target.value);
-              }}
-            />
-          </div>
-
-          <div className="text-input col-span-2">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">Staff Number</span>
-            <input
-              type="text"
-              className="outline-none"
-              value={staff_no}
-              onChange={(e) => {
-                setStaff_no(e.target.value);
-              }}
-            />
-          </div>
-
-          <div className="text-input col-span-3">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">Phone Number</span>
-            <input
-              type="text"
-              className="outline-none"
-              value={phone_number}
-              onChange={(e) => {
-                setPhone_Number(e.target.value);
-              }}
-            />
-          </div>
-
-          <div className="text-input col-span-3">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">Email Address</span>
-            <input
-              type="text"
-              className="outline-none"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
-          </div>
-
-          <div className="text-input col-span-2">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">Position</span>
-            <input
-              type="text"
-              className="outline-none"
-              value={position}
-              onChange={(e) => {
-                setPosition(e.target.value);
-              }}
-            />
-          </div>
-
-          <div className="text-input col-span-2">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">Department</span>
-            <select
-              className="outline-none"
-              value={department ? department : setDepartment("ICT")}
-              onChange={(e) => {
-                setDepartment(e.target.value);
-              }}
-            >
-              {departmentsList.map((departmet) => (
-                <option key={departmet.id}>{departmet.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="text-input col-span-2">
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">Contract Type</span>
-            <select type="text" className="outline-none text-zin-300" value={contract_type ? contract_type : setContract_Type("Permanent")} onChange={(e) => setContract_Type(e.target.value)}>
-              {employmentTypes.map((employment) => (
-                <option key={employment.id}>{employment.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col-span-4">
-            <span className="heading-text text-lg">Devices</span>
-            <div className="flex flex-col pl-3 gap-1">
-              <span className="text-sm text-zinc-600">HP Laptop</span>
-              <span className="text-sm text-zinc-600">HP Monitor</span>
-            </div>
+          <div className="col-span-2">
+            <TextInput label={"First Name"} value={name} isDisabled={isDisabled} setOnChange={setName} />
           </div>
 
           <div className="col-span-2">
-            <span className="w-fit text-zinc-500 bg-white">User Status</span>
-            <div className="flex gap-5 pl-2">
-              <div className="flex gap-2">
-                <input type="radio" name="AccountStatus" id="" value={"Active"} checked={isActive === "Active" ? true : false} onChange={(e) => setIsActive("Active")} />
-                <span className="text-sm text-zinc-600">Active</span>
-              </div>
-              <div className="flex gap-2">
-                <input type="radio" name="AccountStatus" id="" value={"In Active"} checked={isActive === "In Active" ? true : false} onChange={(e) => setIsActive("In Active")} />
-                <span className="text-sm text-zinc-600">In Active</span>
-              </div>
-            </div>
+            <TextInput label={"Last Name"} value={surname} isDisabled={isDisabled} setOnChange={setSurname} />
+          </div>
+
+          <div className="col-span-2">
+            <TextInput label={"Staff Number"} value={staff_no} isDisabled={isDisabled} setOnChange={setStaff_no} />
+          </div>
+
+          <div className="col-span-3">
+            <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} setOnChange={setPhone_Number} />
+          </div>
+
+          <div className="col-span-3">
+            <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} setOnChange={setEmail} />
+          </div>
+
+          <div className="col-span-2">
+            <TextInput label={"Position"} value={position} isDisabled={isDisabled} setOnChange={setPosition} />
+          </div>
+
+          <div className="col-span-2">
+            <SelectInput label={"Department"} value={department} options={departmentsList} optionName={"name"} isDisabled={isDisabled} setOnChange={setDepartment} />
+          </div>
+
+          <div className="col-span-2">
+            <SelectInput label={"Contract Type"} value={contract_type} options={employmentTypes} optionName={"name"} isDisabled={isDisabled} setOnChange={setContract_Type} />
+          </div>
+
+          <div className="col-span-4">
+            <FormLaptopDetails laptopDetails={laptopDetails} />
+          </div>
+
+          <div className="col-span-2">
+            <FormUserStatus isActive={isActive} />
           </div>
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
-            <button className="primary-btn" onClick={() => handleSubmit()}>
-              Submit
-            </button>
-            <button className="secondary-btn">Cancel</button>
+            <SubmitButton handleSubmit={handleSubmit} />
+            <CancelButton />
           </div>
         </div>
         {error ? <span className="text-sm text-red-500">{error}</span> : ""}

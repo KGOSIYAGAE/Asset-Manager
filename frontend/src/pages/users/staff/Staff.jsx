@@ -31,12 +31,11 @@ function Staff({ path }) {
       position: "Service Desk Operator",
       contract_type: "Permanent",
       isActive: "Active",
-      laptop: [
-        {
-          make_model: "HP 455 G10",
-          serial_no: "1H84DSD525",
-        },
-      ],
+      laptop_snr_no: {
+        make_model: "HP 455 G10",
+        serial_no: "1H84DSD525",
+      },
+
       date_joined: new Date().getDate(),
     },
     {
@@ -51,12 +50,11 @@ function Staff({ path }) {
       position: "Service Desk Operator",
       contract_type: "Permanent",
       isActive: "In Active",
-      laptop: [
-        {
-          make_model: "HP 455 G10",
-          serial_no: "1H84DSD525",
-        },
-      ],
+      laptop: {
+        make_model: "HP 455 G10",
+        serial_no: "1H84DSD525",
+      },
+
       date_joined: new Date().getDate(),
     },
     {
@@ -71,12 +69,8 @@ function Staff({ path }) {
       position: "Lecture",
       contract_type: "Contract",
       isActive: "Active",
-      laptop: [
-        {
-          make_model: "HP 455 G10",
-          serial_no: "1H84DSD525",
-        },
-      ],
+      laptop: null,
+
       date_joined: new Date().getDate(),
     },
   ];
@@ -88,13 +82,12 @@ function Staff({ path }) {
 
   //Handle Edit
   const handleEdit = (cellValues) => {
-    localStorage.setItem("clickedUser", cellValues.row.staff_no);
-    navigate("/users/staff/Edit-staff");
+    navigate(`/users/staff/edit-staff/${cellValues.row.id}`);
   };
 
   //Handle Add
   const handleAdd = () => {
-    navigate("/users/staff/Edit-staff");
+    navigate("/users/staff/add-staff");
   };
 
   useEffect(() => {

@@ -22,6 +22,8 @@ function SearchInput({ searchData }) {
         searchResults.push(searchData[i]);
       } else if (searchData[i].staff_no && searchData[i].staff_no.toLowerCase().includes(searchQuery.toLowerCase())) {
         searchResults.push(searchData[i]);
+      } else if (searchData[i].student_no && searchData[i].student_no.toLowerCase().includes(searchQuery.toLowerCase())) {
+        searchResults.push(searchData[i]);
       }
     }
 
