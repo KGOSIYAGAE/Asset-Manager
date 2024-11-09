@@ -16,15 +16,15 @@ function App() {
   //App UI Layout
   const Layout = () => {
     return (
-      <div className="w-screen h-svh border">
-        <div>
+      <div className="w-screen ">
+        {/*<div>
           <Navbar />
-        </div>
-        <div className="w-screen h-svh flex">
-          <div className="w-2/12 border">
+        </div>*/}
+        <div className="w-screen flex">
+          <div className="w-2/12 border ">
             <Menu />
           </div>
-          <div className="w-screen h-svh border">
+          <div className="w-10/12 ">
             <Outlet />
           </div>
         </div>

@@ -95,6 +95,7 @@ function AddEditStudent({ path }) {
           setCourse_Code(studentState.studentsList[i].course_code);
           setIsActive(studentState.studentsList[i].isActive);
           setLaptopDetails(studentState.studentsList[i].laptop);
+          setIsDisabled(true);
         }
       }
       return;
@@ -136,6 +137,11 @@ function AddEditStudent({ path }) {
         return setCourse_Code(courseList[i].course_code);
       }
     }
+  };
+
+  //Choose user status
+  const handleUserstatus = (results) => {
+    setIsActive(results);
   };
 
   useEffect(() => {
@@ -186,7 +192,7 @@ function AddEditStudent({ path }) {
           </div>
 
           <div className="col-span-2">
-            <FormUserStatus isActive={isActive} />
+            <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
         </div>
         <div className="flex justify-end">

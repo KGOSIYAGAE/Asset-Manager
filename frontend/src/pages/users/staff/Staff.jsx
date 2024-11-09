@@ -31,7 +31,7 @@ function Staff({ path }) {
       position: "Service Desk Operator",
       contract_type: "Permanent",
       isActive: "Active",
-      laptop_snr_no: {
+      laptop: {
         make_model: "HP 455 G10",
         serial_no: "1H84DSD525",
       },
@@ -99,7 +99,7 @@ function Staff({ path }) {
       <span className="text-sm">
         <b>Users / Staff /</b> {path}
       </span>
-      <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
+      <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md ">
         <div className="flex justify-between">
           <span className="heading-text">Staff List</span>
           <div className="flex gap-2">

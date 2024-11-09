@@ -10,6 +10,7 @@ function SelectInput({ label, value, options, optionName, isDisabled, setOnChang
       <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
       <select
         className="outline-none"
+        disabled={isDisabled}
         value={value}
         onChange={(e) => {
           setOnChange(e.target.value);

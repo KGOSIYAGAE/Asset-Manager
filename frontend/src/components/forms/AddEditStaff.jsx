@@ -93,11 +93,17 @@ function AddEditStaff({ path }) {
           setContract_Type(staffState.staffList[i].contract_type);
           setIsActive(staffState.staffList[i].isActive);
           setLaptopDetails(staffState.staffList[i].laptop);
+          setIsDisabled(true);
         }
       }
 
       return;
     }
+  };
+
+  //Choose user status
+  const handleUserstatus = (results) => {
+    setIsActive(results);
   };
 
   useEffect(() => {
@@ -151,7 +157,7 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <FormUserStatus isActive={isActive} />
+            <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
         </div>
         <div className="flex justify-end">

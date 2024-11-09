@@ -41,7 +41,6 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewProfi
         },
       }}
       pageSizeOptions={[5]}
-      checkboxSelection
     />
   );
 }

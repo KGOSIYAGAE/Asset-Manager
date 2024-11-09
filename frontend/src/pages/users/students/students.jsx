@@ -40,12 +40,13 @@ function students({ path }) {
       faculty: "NAS",
       course: "ICT App Dev",
       course_code: "ICT601",
+      registration_date: "05/02/2024",
       isActive: "Active",
       laptop: {
         make_model: "HP 455 G10",
         serial_no: "1H84DSD525",
       },
-      registration_date: new Date().getDate(),
+
       createdAt: "",
     },
     {
