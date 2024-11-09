@@ -13,7 +13,10 @@ function ProfileCard() {
       <div className="flex flex-col justify-center">
         <span>{`${userName}`}</span>
       </div>
-      <MdLogout size={40} className="text-zinc-500" />
+
+      <div className="menu-items bg-zinc-100 rounded-md p-2">
+        <MdLogout size={20} className="text-zinc-500" />
+      </div>
     </div>
   );
 }

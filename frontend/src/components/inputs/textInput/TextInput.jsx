@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-function TextInput({ label, value, isDisabled, setOnChange }) {
+function TextInput({ label, value, isDisabled, maxLength, setOnChange }) {
   useEffect((e) => {}, []);
   return (
     <div className="text-input">
@@ -8,12 +8,12 @@ function TextInput({ label, value, isDisabled, setOnChange }) {
       <input
         type="text"
         className="outline-none"
+        maxLength={maxLength}
         name="input-text"
         disabled={isDisabled}
         value={value}
         onChange={(e) => {
           setOnChange(e.target.value);
-          console.log(e.target.value);
         }}
       />
     </div>

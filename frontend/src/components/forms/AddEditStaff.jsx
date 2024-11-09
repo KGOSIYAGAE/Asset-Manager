@@ -9,6 +9,7 @@ import FormLaptopDetails from "../cards/formLaptopDetails/FormLaptopDetails";
 import FormUserStatus from "../cards/formUserStatus/FormUserStatus";
 import SubmitButton from "../buttons/SubmitButton";
 import CancelButton from "../buttons/CancelButton";
+import axiosInstance from "../../utils/axiosInstance";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -26,6 +27,23 @@ function AddEditStaff({ path }) {
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const params = useParams();
+
+  //Add staff API CALL
+  const addStaff = async (userData) => {
+    try {
+      const response = await axiosInstance.post("/users/staff/add-staff", userData);
+
+      if (response.data) {
+        return console.log(response.data.staffData);
+      }
+    } catch (error) {
+      if (error.response.data && error.response.data.error) {
+        return console.log(error.response.data.error);
+      } else {
+        return console.log("An unexpected error occured, please try again");
+      }
+    }
+  };
 
   //Form submit
   const handleSubmit = () => {
@@ -55,25 +73,20 @@ function AddEditStaff({ path }) {
 
     setError(null);
 
-    const userData = [
-      {
-        name,
-        surname,
-        staff_no,
-        phone_number,
-        email,
-        department,
-        position,
-        contract_type,
-        isActive,
-        laptop: {
-          make_model: "",
-          serial_no: "",
-        },
-      },
-    ];
+    const userData = {
+      name,
+      surname,
+      staff_no,
+      phone_number,
+      email,
+      department,
+      position,
+      contract_type,
+      isActive,
+    };
 
-    console.log(userData);
+    //api call
+    addStaff(userData);
   };
 
   //Set form data
@@ -121,27 +134,27 @@ function AddEditStaff({ path }) {
         </div>
         <div className="grid grid-cols-6 gap-8 pt-5">
           <div className="col-span-2">
-            <TextInput label={"First Name"} value={name} isDisabled={isDisabled} setOnChange={setName} />
+            <TextInput label={"First Name"} value={name} isDisabled={isDisabled} maxLength={50} setOnChange={setName} />
           </div>
 
           <div className="col-span-2">
-            <TextInput label={"Last Name"} value={surname} isDisabled={isDisabled} setOnChange={setSurname} />
+            <TextInput label={"Last Name"} value={surname} isDisabled={isDisabled} maxLength={50} setOnChange={setSurname} />
           </div>
 
           <div className="col-span-2">
-            <TextInput label={"Staff Number"} value={staff_no} isDisabled={isDisabled} setOnChange={setStaff_no} />
+            <TextInput label={"Staff Number"} value={staff_no} isDisabled={isDisabled} maxLength={6} setOnChange={setStaff_no} />
           </div>
 
           <div className="col-span-3">
-            <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} setOnChange={setPhone_Number} />
+            <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} maxLength={10} setOnChange={setPhone_Number} />
           </div>
 
           <div className="col-span-3">
-            <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} setOnChange={setEmail} />
+            <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} maxLength={50} setOnChange={setEmail} />
           </div>
 
           <div className="col-span-2">
-            <TextInput label={"Position"} value={position} isDisabled={isDisabled} setOnChange={setPosition} />
+            <TextInput label={"Position"} value={position} isDisabled={isDisabled} maxLength={50} setOnChange={setPosition} />
           </div>
 
           <div className="col-span-2">

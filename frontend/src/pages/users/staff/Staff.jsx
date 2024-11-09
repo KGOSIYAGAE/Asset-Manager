@@ -9,6 +9,7 @@ import { staffTableHeaders } from "../../../utils/TableHeaders";
 import { useStaffContext } from "../../../hooks/useStaffContext";
 import { useSearchContext } from "../../../hooks/useSearchContext";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../utils/axiosInstance";
 
 function Staff({ path }) {
   //Context
@@ -23,7 +24,6 @@ function Staff({ path }) {
       id: 0,
       name: "kgosi",
       surname: "Motabogi",
-      fullname: "",
       staff_no: "11310",
       phone_number: "0789384743",
       email: "ccccc@gmail.com",
@@ -42,7 +42,6 @@ function Staff({ path }) {
       id: 1,
       name: "Thabang",
       surname: "segapo",
-      fullname: "",
       staff_no: "11312",
       phone_number: "0789384743",
       email: "ccccc@gmail.com",
@@ -61,7 +60,6 @@ function Staff({ path }) {
       id: 3,
       name: "kgosi",
       surname: "Segano",
-      fullname: "",
       staff_no: "11315",
       phone_number: "0789384743",
       email: "ccccc@gmail.com",
@@ -74,6 +72,23 @@ function Staff({ path }) {
       date_joined: new Date().getDate(),
     },
   ];
+
+  //Handle getData API CALL
+  const getStaffData = async () => {
+    try {
+      const response = await axiosInstance.get("/users/staff/");
+
+      if (response.data && response.data.staffData) {
+        staffDispatch({ type: "SET_STAFF", payload: response.data.staffData });
+      }
+    } catch (error) {
+      if (error.response.data && error.response.data.error) {
+        console.log(error.response.data.message);
+      } else {
+        console.log("An unexpected error occured, please try again");
+      }
+    }
+  };
 
   //Handle delete
   const handleDelete = () => {
@@ -91,7 +106,7 @@ function Staff({ path }) {
   };
 
   useEffect(() => {
-    staffDispatch({ type: "SET_STAFF", payload: data });
+    getStaffData();
   }, []);
 
   return (
