@@ -10,6 +10,7 @@ import FormUserStatus from "../cards/formUserStatus/FormUserStatus";
 import SubmitButton from "../buttons/SubmitButton";
 import CancelButton from "../buttons/CancelButton";
 import axiosInstance from "../../utils/axiosInstance";
+import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -24,6 +25,8 @@ function AddEditStaff({ path }) {
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
   const [laptopDetails, setLaptopDetails] = useState(null);
+  const [dateJoined, setDateJoined] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const params = useParams();
@@ -34,13 +37,13 @@ function AddEditStaff({ path }) {
       const response = await axiosInstance.post("/users/staff/add-staff", userData);
 
       if (response.data) {
-        return console.log(response.data.staffData);
+        return console.log(response);
       }
     } catch (error) {
       if (error.response.data && error.response.data.error) {
-        return console.log(error.response.data.error);
+        return setError(error.response.data.message);
       } else {
-        return console.log("An unexpected error occured, please try again");
+        return setError("An unexpected error occured, please try again");
       }
     }
   };
@@ -71,6 +74,14 @@ function AddEditStaff({ path }) {
       return setError("Position must be provided");
     }
 
+    if (!isActive) {
+      return setError("User status must be provided");
+    }
+
+    if (!dateJoined) {
+      return setError("Start date must be provided");
+    }
+
     setError(null);
 
     const userData = {
@@ -83,6 +94,8 @@ function AddEditStaff({ path }) {
       position,
       contract_type,
       isActive,
+      dateJoined,
+      endDate,
     };
 
     //api call
@@ -107,6 +120,8 @@ function AddEditStaff({ path }) {
           setIsActive(staffState.staffList[i].isActive);
           setLaptopDetails(staffState.staffList[i].laptop);
           setIsDisabled(true);
+          setDateJoined(staffState.staffList[i].dateJoined);
+          setEndDate(staffState.staffList[i].endDate);
         }
       }
 
@@ -165,12 +180,24 @@ function AddEditStaff({ path }) {
             <SelectInput label={"Contract Type"} value={contract_type} options={employmentTypes} optionName={"name"} isDisabled={isDisabled} setOnChange={setContract_Type} />
           </div>
 
-          <div className="col-span-4">
-            <FormLaptopDetails laptopDetails={laptopDetails} />
+          <div className="col-span-2">
+            <DateTimePicker label={"Starting Date"} value={dateJoined} setOnChange={setDateJoined} />
           </div>
+
+          {contract_type !== "Permanent" ? (
+            <div className="col-span-2">
+              <DateTimePicker label={"End Date"} value={endDate} setOnChange={setEndDate} />
+            </div>
+          ) : (
+            ""
+          )}
 
           <div className="col-span-2">
             <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
+          </div>
+
+          <div className="col-span-5">
+            <FormLaptopDetails laptopDetails={laptopDetails} />
           </div>
         </div>
         <div className="flex justify-end">

@@ -83,16 +83,37 @@ function Staff({ path }) {
       }
     } catch (error) {
       if (error.response.data && error.response.data.error) {
-        console.log(error.response.data.message);
+        return console.log(error.response.data.message);
       } else {
-        console.log("An unexpected error occured, please try again");
+        return console.log("An unexpected error occured, please try again");
+      }
+    }
+  };
+
+  //Hanlde deleteStaff API
+  const deleteStaff = async (staff_no) => {
+    try {
+      if (!staff_no) {
+        return console.log("Staff number must be provided");
+      }
+      const response = await axiosInstance.delete("/users/staff/delete-staff/" + staff_no);
+
+      if (response.data && !response.error) {
+        return console.log(response.data.massage);
+      }
+    } catch (error) {
+      if (error.response.data & error.response.error) {
+        return console.log(error.response.message);
+      } else {
+        return console.log("An unexpected error occured, please try again");
       }
     }
   };
 
   //Handle delete
-  const handleDelete = () => {
-    console.log("delete");
+  const handleDelete = (cellValues) => {
+    deleteStaff(cellValues.row.staff_no);
+    getStaffData();
   };
 
   //Handle Edit

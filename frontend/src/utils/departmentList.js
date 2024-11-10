@@ -1,26 +1,29 @@
 export const departmentsList = [
   {
     id: 0,
+  },
+  {
+    id: 1,
     name: "ICT",
     description: "",
   },
   {
-    id: 1,
+    id: 2,
     name: "EDU",
     description: "",
   },
   {
-    id: 2,
+    id: 3,
     name: "NAS",
     description: "",
   },
   {
-    id: 3,
+    id: 4,
     name: "EMS",
     description: "",
   },
   {
-    id: 4,
+    id: 5,
     name: "HUM",
     description: "",
   },

@@ -1,22 +1,20 @@
 export const employmentTypes = [
   {
     id: 0,
+  },
+  {
+    id: 1,
     name: "Permanent",
     description: "",
   },
   {
-    id: 1,
+    id: 2,
     name: "Contract",
     description: "",
   },
   {
-    id: 2,
-    name: "Temp",
-    description: "",
-  },
-  {
     id: 3,
-    name: "Inter",
+    name: "Intern",
     description: "",
   },
 ];
