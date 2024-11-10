@@ -33,23 +33,23 @@ const createStaff = async (req, res) => {
   //Check if user does not exist already
   dbConnection.query(sqlQueryCheckUser, (error, results) => {
     if (error) {
-      return res.status(500).json({ message: "Error searching for user in staff table", error: true });
+      return res.status(400).json({ message: "Error searching for user in staff table", error: true });
     }
 
     if (results.length > 0) {
-      return res.status(400).json({ message: "User already exist !!", error: true });
+      res.status(400).json({ message: "User already exist !!", error: true });
+    } else {
+      //Create new user
+      dbConnection.query(createUserQuery, [values], (error, results) => {
+        if (error) {
+          return res.status(400).json({ errorMessage: error, message: "Error create new user in staff table", error: true });
+        }
+
+        return res.status(201).json({ staffData: results, message: "User created successfully", error: false });
+      });
+      //
     }
   });
-
-  //Create new user
-  dbConnection.query(createUserQuery, [values], (error, results) => {
-    if (error) {
-      return res.status(400).json({ errorMessage: error, message: "Error create new user in staff table", error: true });
-    }
-
-    return res.status(201).json({ staffData: results, message: "User created successfully", error: false });
-  });
-  //
 };
 
 //Delete staff
@@ -67,8 +67,35 @@ const deleteStaff = async (req, res) => {
       return res.status(400).json({ message: "Error deleting user", error: true });
     }
 
-    return res.status(200).json({ data: results, message: "User deleted", error: false });
+    return res.status(200).json({ message: "User deleted successfully", error: false });
   });
 };
 
-module.exports = { getAllStaff, createStaff, deleteStaff };
+//Update staff
+const updateStaff = async (req, res) => {
+  const { staff_no } = req.params;
+
+  if (!staff_no) {
+    return res.status(400).json({ message: "User staff number must be provided", error: true });
+  }
+
+  const { name, surname, phone_number, email, department, position, contract_type, isActive, dateJoined, endDate } = req.body;
+
+  if (!staff_no || !name || !surname || !phone_number || !email || !department || !position || !contract_type || !isActive) {
+    return res.status(400).json({ message: "All required information must be provided", error: true });
+  }
+
+  const values = [staff_no, name, surname, phone_number, email, department, position, contract_type, isActive, dateJoined, endDate];
+
+  const updateQuery =
+    "UPDATE staff SET `staff_no`=?,`name`=?,`surname`=?,`phone_number`=?,`email`=?,`department`=?,`position`=?,`contract_type`=?,`isActive`=?,`dateJoined`=?,`endDate`=? WHERE `staff_no`=?";
+
+  dbConnection.query(updateQuery, [...values, staff_no], (error, results) => {
+    if (error) {
+      return res.status(400).json({ message: "Error updating user on staff table", error: true });
+    }
+    res.status(200).json({ message: "User updated successfully", error: false });
+  });
+};
+
+module.exports = { getAllStaff, createStaff, deleteStaff, updateStaff };

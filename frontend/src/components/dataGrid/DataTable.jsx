@@ -10,10 +10,10 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewProfi
       renderCell: (cellValues) => {
         return (
           <div className="flex items-center justify-center gap-2 mt-3">
-            <div className="w-[30px] flex items-center justify-center text-green-500 bg-green-100 p-1 rounded-md border border-green-500" onClick={() => handleEdit(cellValues)}>
+            <div className="w-[30px] flex items-center justify-center text-green-500 bg-green-100 p-1 rounded-md border border-green-500 cursor-pointer" onClick={() => handleEdit(cellValues)}>
               <MdEdit size={20}></MdEdit>
             </div>
-            <div className="w-[30px] flex items-center justify-center text-red-500 bg-red-100 p-1 rounded-md border border-red-500" onClick={() => handleDelete(cellValues)}>
+            <div className="w-[30px] flex items-center justify-center text-red-500 bg-red-100 p-1 rounded-md border border-red-500 cursor-pointer" onClick={() => handleDelete(cellValues)}>
               <MdDeleteForever size={20}></MdDeleteForever>
             </div>
           </div>
@@ -36,11 +36,11 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewProfi
       initialState={{
         pagination: {
           paginationModel: {
-            pageSize: 5,
+            pageSize: 9,
           },
         },
       }}
-      pageSizeOptions={[5]}
+      pageSizeOptions={[9]}
     />
   );
 }

@@ -9,11 +9,17 @@ import FormLaptopDetails from "../cards/formLaptopDetails/FormLaptopDetails";
 import FormUserStatus from "../cards/formUserStatus/FormUserStatus";
 import SubmitButton from "../buttons/SubmitButton";
 import CancelButton from "../buttons/CancelButton";
-import axiosInstance from "../../utils/axiosInstance";
 import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
+import ToastMessage from "../toastMessage/ToastMessage";
+import { useToastContext } from "../../hooks/useToastContext";
+import { addStaff, updateStaff } from "../../services/api/staff/StaffApi";
+import { useNavigate } from "react-router-dom";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
+  const { toastState, toastDispatch } = useToastContext();
+  const params = useParams();
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -29,57 +35,49 @@ function AddEditStaff({ path }) {
   const [endDate, setEndDate] = useState("");
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
-  const params = useParams();
 
-  //Add staff API CALL
-  const addStaff = async (userData) => {
-    try {
-      const response = await axiosInstance.post("/users/staff/add-staff", userData);
+  const [formType, setFormType] = useState("add");
 
-      if (response.data) {
-        return console.log(response);
-      }
-    } catch (error) {
-      if (error.response.data && error.response.data.error) {
-        return setError(error.response.data.message);
-      } else {
-        return setError("An unexpected error occured, please try again");
-      }
-    }
+  //Toast close code
+  const handleToastClose = () => {
+    //setShowToast({ isShown: false, message: "" });
+    toastDispatch({ type: "CLOSE", payload: { isShown: false, type: "", message: "" } });
   };
+
+  const formAuthenticate = () => {};
 
   //Form submit
   const handleSubmit = () => {
     if (!name) {
-      return setError("First name must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "First name must be provided" } });
     }
 
     if (!surname) {
-      return setError("Last name must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Last name must be provided" } });
     }
 
     if (!staff_no) {
-      return setError("Staff number must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Staff number must be provided" } });
     }
 
     if (!phone_number) {
-      return setError("Phone number must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Phone number must be provided" } });
     }
 
     if (!email) {
-      return setError("Email must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Email must be provided" } });
     }
 
     if (!position) {
-      return setError("Position must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Position must be provided" } });
     }
 
     if (!isActive) {
-      return setError("User status must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "User status must be provided" } });
     }
 
     if (!dateJoined) {
-      return setError("Start date must be provided");
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Start date must be provided" } });
     }
 
     setError(null);
@@ -99,7 +97,9 @@ function AddEditStaff({ path }) {
     };
 
     //api call
-    addStaff(userData);
+    addStaff(userData, toastDispatch);
+    hanldeFormClear();
+    //navigate("/users/staff/");
   };
 
   //Set form data
@@ -107,6 +107,7 @@ function AddEditStaff({ path }) {
     const selectedId = params.id;
 
     if (selectedId) {
+      setFormType("edit");
       for (let i = 0; i < staffState.staffList.length; i++) {
         if (selectedId == staffState.staffList[i].id) {
           setName(staffState.staffList[i].name);
@@ -119,14 +120,80 @@ function AddEditStaff({ path }) {
           setContract_Type(staffState.staffList[i].contract_type);
           setIsActive(staffState.staffList[i].isActive);
           setLaptopDetails(staffState.staffList[i].laptop);
-          setIsDisabled(true);
           setDateJoined(staffState.staffList[i].dateJoined);
           setEndDate(staffState.staffList[i].endDate);
         }
       }
-
       return;
     }
+  };
+
+  //handleUpdate
+  const handleUpdate = () => {
+    if (!name) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "First name must be provided" } });
+    }
+
+    if (!surname) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Last name must be provided" } });
+    }
+
+    if (!staff_no) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Staff number must be provided" } });
+    }
+
+    if (!phone_number) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Phone number must be provided" } });
+    }
+
+    if (!email) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Email must be provided" } });
+    }
+
+    if (!position) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Position must be provided" } });
+    }
+
+    if (!isActive) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "User status must be provided" } });
+    }
+
+    if (!dateJoined) {
+      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Start date must be provided" } });
+    }
+
+    setError(null);
+
+    const userData = {
+      name,
+      surname,
+      staff_no,
+      phone_number,
+      email,
+      department,
+      position,
+      contract_type,
+      isActive,
+      dateJoined,
+      endDate,
+    };
+    updateStaff(staff_no, userData, toastDispatch);
+  };
+
+  //Form Clear
+  const hanldeFormClear = () => {
+    setName("");
+    setSurname("");
+    setStaff_no("");
+    setPhone_Number("");
+    setEmail("");
+    setPosition("");
+    setDepartment("");
+    setContract_Type("");
+    setIsActive("");
+    setLaptopDetails("");
+    setDateJoined("");
+    setEndDate("");
   };
 
   //Choose user status
@@ -180,12 +247,12 @@ function AddEditStaff({ path }) {
             <SelectInput label={"Contract Type"} value={contract_type} options={employmentTypes} optionName={"name"} isDisabled={isDisabled} setOnChange={setContract_Type} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-1">
             <DateTimePicker label={"Starting Date"} value={dateJoined} setOnChange={setDateJoined} />
           </div>
 
           {contract_type !== "Permanent" ? (
-            <div className="col-span-2">
+            <div className="col-span-1">
               <DateTimePicker label={"End Date"} value={endDate} setOnChange={setEndDate} />
             </div>
           ) : (
@@ -202,12 +269,14 @@ function AddEditStaff({ path }) {
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
-            <SubmitButton handleSubmit={handleSubmit} />
+            {formType === "add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleUpdate} />}
+
             <CancelButton />
           </div>
         </div>
         {error ? <span className="text-sm text-red-500">{error}</span> : ""}
       </div>
+      <ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />
     </div>
   );
 }

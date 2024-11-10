@@ -5,18 +5,25 @@ import AddButton from "../../../components/buttons/AddButton";
 import RefreshButton from "../../../components/buttons/RefreshButton";
 import DataTable from "../../../components/dataGrid/DataTable";
 import { staffTableHeaders } from "../../../utils/TableHeaders";
-
 import { useStaffContext } from "../../../hooks/useStaffContext";
 import { useSearchContext } from "../../../hooks/useSearchContext";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../utils/axiosInstance";
+import ToastMessage from "../../../components/toastMessage/ToastMessage";
+import { getStaffData, deleteStaff } from "../../../services/api/staff/StaffApi";
+import { useToastContext } from "../../../hooks/useToastContext";
 
 function Staff({ path }) {
   //Context
   const { staffState, staffDispatch } = useStaffContext();
   const { searchState } = useSearchContext();
+  const { toastState, toastDispatch } = useToastContext();
 
   const navigate = useNavigate();
+
+  // Toast Close
+  const handleToastClose = () => {
+    toastDispatch({ type: "CLOSE", payload: { isShown: false, type: "", message: null } });
+  };
 
   //Dummy Data
   const data = [
@@ -73,47 +80,10 @@ function Staff({ path }) {
     },
   ];
 
-  //Handle getData API CALL
-  const getStaffData = async () => {
-    try {
-      const response = await axiosInstance.get("/users/staff/");
-
-      if (response.data && response.data.staffData) {
-        staffDispatch({ type: "SET_STAFF", payload: response.data.staffData });
-      }
-    } catch (error) {
-      if (error.response.data && error.response.data.error) {
-        return console.log(error.response.data.message);
-      } else {
-        return console.log("An unexpected error occured, please try again");
-      }
-    }
-  };
-
-  //Hanlde deleteStaff API
-  const deleteStaff = async (staff_no) => {
-    try {
-      if (!staff_no) {
-        return console.log("Staff number must be provided");
-      }
-      const response = await axiosInstance.delete("/users/staff/delete-staff/" + staff_no);
-
-      if (response.data && !response.error) {
-        return console.log(response.data.massage);
-      }
-    } catch (error) {
-      if (error.response.data & error.response.error) {
-        return console.log(error.response.message);
-      } else {
-        return console.log("An unexpected error occured, please try again");
-      }
-    }
-  };
-
   //Handle delete
   const handleDelete = (cellValues) => {
-    deleteStaff(cellValues.row.staff_no);
-    getStaffData();
+    //API CALL
+    deleteStaff(cellValues.row.staff_no, toastDispatch);
   };
 
   //Handle Edit
@@ -127,7 +97,8 @@ function Staff({ path }) {
   };
 
   useEffect(() => {
-    getStaffData();
+    //API CALL ON RENDER
+    getStaffData(staffDispatch);
   }, []);
 
   return (
@@ -146,6 +117,7 @@ function Staff({ path }) {
         </div>
         <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
       </div>
+      <ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />
     </div>
   );
 }

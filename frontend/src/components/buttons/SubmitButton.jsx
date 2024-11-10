@@ -1,9 +1,9 @@
 import React from "react";
 
-function SubmitButton({ handleSubmit }) {
+function SubmitButton({ text, onClick }) {
   return (
-    <button className="primary-btn" onClick={() => handleSubmit()}>
-      Submit
+    <button className="primary-btn" onClick={() => onClick()}>
+      {text}
     </button>
   );
 }

@@ -11,6 +11,7 @@ import { StaffContextProvider } from "./context/StaffContext";
 import { SearchContextProvider } from "./context/SearchContext";
 import { StudentsContextProvider } from "./context/StudentsContext";
 import AddEditStudent from "./components/forms/AddEditStudent";
+import { ToastContextProvider } from "./context/ToastContext";
 
 function App() {
   //App UI Layout
@@ -71,11 +72,13 @@ function App() {
 
   return (
     <SearchContextProvider>
-      <StudentsContextProvider>
-        <StaffContextProvider>
-          <RouterProvider router={router} />
-        </StaffContextProvider>
-      </StudentsContextProvider>
+      <ToastContextProvider>
+        <StudentsContextProvider>
+          <StaffContextProvider>
+            <RouterProvider router={router} />
+          </StaffContextProvider>
+        </StudentsContextProvider>
+      </ToastContextProvider>
     </SearchContextProvider>
   );
 }
