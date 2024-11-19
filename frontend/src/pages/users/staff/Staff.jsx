@@ -11,12 +11,15 @@ import { useNavigate } from "react-router-dom";
 import ToastMessage from "../../../components/toastMessage/ToastMessage";
 import { getStaffData, deleteStaff } from "../../../services/api/staff/StaffApi";
 import { useToastContext } from "../../../hooks/useToastContext";
+import Modal from "react-modal";
+import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
 
 function Staff({ path }) {
   //Context
   const { staffState, staffDispatch } = useStaffContext();
   const { searchState } = useSearchContext();
   const { toastState, toastDispatch } = useToastContext();
+  const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", data: null });
 
   const navigate = useNavigate();
 
@@ -25,70 +28,16 @@ function Staff({ path }) {
     toastDispatch({ type: "CLOSE", payload: { isShown: false, type: "", message: null } });
   };
 
-  //Dummy Data
-  const data = [
-    {
-      id: 0,
-      name: "kgosi",
-      surname: "Motabogi",
-      staff_no: "11310",
-      phone_number: "0789384743",
-      email: "ccccc@gmail.com",
-      department: "ICT",
-      position: "Service Desk Operator",
-      contract_type: "Permanent",
-      isActive: "Active",
-      laptop: {
-        make_model: "HP 455 G10",
-        serial_no: "1H84DSD525",
-      },
-
-      date_joined: new Date().getDate(),
-    },
-    {
-      id: 1,
-      name: "Thabang",
-      surname: "segapo",
-      staff_no: "11312",
-      phone_number: "0789384743",
-      email: "ccccc@gmail.com",
-      department: "NAS",
-      position: "Service Desk Operator",
-      contract_type: "Permanent",
-      isActive: "In Active",
-      laptop: {
-        make_model: "HP 455 G10",
-        serial_no: "1H84DSD525",
-      },
-
-      date_joined: new Date().getDate(),
-    },
-    {
-      id: 3,
-      name: "kgosi",
-      surname: "Segano",
-      staff_no: "11315",
-      phone_number: "0789384743",
-      email: "ccccc@gmail.com",
-      department: "EDU",
-      position: "Lecture",
-      contract_type: "Contract",
-      isActive: "Active",
-      laptop: null,
-
-      date_joined: new Date().getDate(),
-    },
-  ];
-
   //Handle delete
   const handleDelete = (cellValues) => {
     //API CALL
-    deleteStaff(cellValues.row.staff_no, toastDispatch);
+    setOpenModal({ isShown: true, type: "delete", selectedUser: cellValues.row.staff_no, email: cellValues.row.email });
+    //deleteStaff(cellValues.row.staff_no, toastDispatch);
   };
 
   //Handle Edit
   const handleEdit = (cellValues) => {
-    navigate(`/users/staff/edit-staff/${cellValues.row.id}`);
+    navigate(`/users/staff/edit-staff/${cellValues.row.staff_no}`);
   };
 
   //Handle Add
@@ -117,6 +66,26 @@ function Staff({ path }) {
         </div>
         <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
       </div>
+      <Modal
+        isOpen={openModal.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2" },
+        }}
+        contentLabel=""
+        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
+      >
+        <DeleteConfirmation
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+          onDelete={() => {
+            deleteStaff(openModal.selectedUser, toastDispatch);
+            setOpenModal({ isShown: false });
+          }}
+          email={openModal.email}
+        />
+      </Modal>
       <ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />
     </div>
   );

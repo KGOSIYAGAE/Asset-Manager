@@ -8,6 +8,10 @@ export const staffReducer = (state, action) => {
       return {
         staffList: action.payload,
       };
+    case "SET_SELECTED_STAFF":
+      return {
+        staffList: action.payload,
+      };
     case "CREATE_STAFF":
       return {
         staffList: [action.payload, ...state.staffList],

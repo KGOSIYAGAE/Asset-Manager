@@ -1,8 +1,8 @@
 import React from "react";
 
-function CancelButton(handleCancel) {
+function CancelButton({ onClick }) {
   return (
-    <button className="secondary-btn" onClick={() => handleCancel()}>
+    <button className="secondary-btn" onClick={() => onClick()}>
       Cancel
     </button>
   );

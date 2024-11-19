@@ -12,7 +12,7 @@ import CancelButton from "../buttons/CancelButton";
 import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { useToastContext } from "../../hooks/useToastContext";
-import { addStaff, updateStaff } from "../../services/api/staff/StaffApi";
+import { addStaff, getUser, updateStaff } from "../../services/api/staff/StaffApi";
 import { useNavigate } from "react-router-dom";
 
 function AddEditStaff({ path }) {
@@ -30,11 +30,15 @@ function AddEditStaff({ path }) {
   const [position, setPosition] = useState("");
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
-  const [laptopDetails, setLaptopDetails] = useState(null);
   const [dateJoined, setDateJoined] = useState("");
   const [endDate, setEndDate] = useState("");
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [laptopDetails, setLaptopDetails] = useState({
+    make: null,
+    model: null,
+    serial_no: null,
+  });
 
   const [formType, setFormType] = useState("add");
 
@@ -103,29 +107,32 @@ function AddEditStaff({ path }) {
   };
 
   //Set form data
-  const setFormData = () => {
-    const selectedId = params.id;
-
-    if (selectedId) {
-      setFormType("edit");
-      for (let i = 0; i < staffState.staffList.length; i++) {
-        if (selectedId == staffState.staffList[i].id) {
-          setName(staffState.staffList[i].name);
-          setSurname(staffState.staffList[i].surname);
-          setStaff_no(staffState.staffList[i].staff_no);
-          setPhone_Number(staffState.staffList[i].phone_number);
-          setEmail(staffState.staffList[i].email);
-          setPosition(staffState.staffList[i].position);
-          setDepartment(staffState.staffList[i].department);
-          setContract_Type(staffState.staffList[i].contract_type);
-          setIsActive(staffState.staffList[i].isActive);
-          setLaptopDetails(staffState.staffList[i].laptop);
-          setDateJoined(staffState.staffList[i].dateJoined);
-          setEndDate(staffState.staffList[i].endDate);
-        }
-      }
-      return;
-    }
+  const setFormData = (userDetails) => {
+    //if (selectedId) {
+    setFormType("edit");
+    /*for (let i = 0; i < staffState.staffList.length; i++) {
+        if (selectedId == staffState.staffList[i].id) {*/
+    setName(userDetails.name);
+    setSurname(userDetails.surname);
+    setStaff_no(userDetails.staff_no);
+    setPhone_Number(userDetails.phone_number);
+    setEmail(userDetails.email);
+    setPosition(userDetails.position);
+    setDepartment(userDetails.department);
+    setContract_Type(userDetails.contract_type);
+    setIsActive(userDetails.isActive);
+    setLaptopDetails(userDetails.laptop);
+    setDateJoined(userDetails.dateJoined);
+    setEndDate(userDetails.endDate);
+    setLaptopDetails({
+      make: userDetails.make,
+      model: userDetails.model,
+      serial_no: userDetails.serial_no,
+    });
+    //}
+    //}
+    // return;
+    //}
   };
 
   //handleUpdate
@@ -201,8 +208,16 @@ function AddEditStaff({ path }) {
     setIsActive(results);
   };
 
+  //User details API call
+  const getUserDetails = () => {
+    const staff_no = params.staff_no;
+    if (staff_no) {
+      getUser(staff_no, setFormData);
+    }
+  };
+
   useEffect(() => {
-    setFormData();
+    getUserDetails();
   }, []);
 
   return (
@@ -271,7 +286,7 @@ function AddEditStaff({ path }) {
           <div className="flex gap-5">
             {formType === "add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleUpdate} />}
 
-            <CancelButton />
+            <CancelButton onClick={hanldeFormClear} />
           </div>
         </div>
         {error ? <span className="text-sm text-red-500">{error}</span> : ""}
