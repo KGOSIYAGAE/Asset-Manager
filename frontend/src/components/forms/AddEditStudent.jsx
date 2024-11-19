@@ -197,7 +197,7 @@ function AddEditStudent({ path }) {
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
-            <SubmitButton handleSubmit={handleSubmit} />
+            <SubmitButton text={"Submit"} handleSubmit={handleSubmit} />
             <CancelButton />
           </div>
         </div>

@@ -9,6 +9,7 @@ import { studentsTableHeaders } from "../../../utils/TableHeaders";
 
 import { useSearchContext } from "../../../hooks/useSearchContext";
 import { useStudentsContext } from "../../../hooks/useStudentsContext";
+import axiosInstance from "../../../utils/axiosInstance";
 
 function students({ path }) {
   const { searchState } = useSearchContext();
@@ -70,8 +71,25 @@ function students({ path }) {
     },
   ];
 
+  //get All Students
+  const getAllStudents = async () => {
+    try {
+      const response = await axiosInstance.get("/users/students");
+
+      if (response.data && response.data.studentsData) {
+        return studentDispatch({ type: "SET_STUDENTS", payload: response.data.studentsData });
+      }
+    } catch (error) {
+      if (error.response && error.response.error) {
+        return console.log(error.response.data.message);
+      } else {
+        return console.log("An unexpected error occured, please try again");
+      }
+    }
+  };
+
   useEffect(() => {
-    studentDispatch({ type: "SET_STUDENTS", payload: studentDummy });
+    getAllStudents();
   }, []);
 
   return (

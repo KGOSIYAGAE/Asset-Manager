@@ -12,6 +12,7 @@ import { SearchContextProvider } from "./context/SearchContext";
 import { StudentsContextProvider } from "./context/StudentsContext";
 import AddEditStudent from "./components/forms/AddEditStudent";
 import { ToastContextProvider } from "./context/ToastContext";
+import Devices from "./pages/devices/Devices";
 
 function App() {
   //App UI Layout
@@ -41,6 +42,10 @@ function App() {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/devices",
+          element: <Devices path={"Devices/"} />,
         },
         {
           path: "/users/staff",

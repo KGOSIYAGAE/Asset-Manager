@@ -14,6 +14,10 @@ app.use(express.json());
 const StaffRouter = require("./Routes/staff.routes");
 app.use("/users", StaffRouter);
 
+//Staff Router
+const StudentsRouter = require("./Routes/students.routes");
+app.use("/users", StudentsRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
 });

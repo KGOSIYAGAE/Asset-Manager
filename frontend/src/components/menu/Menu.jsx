@@ -13,7 +13,7 @@ function Menu() {
         <LogoCard />
         <span className="text-zinc-800 font-bold">Menu</span>
         <div className="flex flex-col gap-3 p-3">
-          <Link to={"/"}>
+          <Link to={"/devices"}>
             <div className="menu-items">
               <div className="bg-zinc-100 rounded-md p-2">
                 <MdDevices size={20} className="" />
