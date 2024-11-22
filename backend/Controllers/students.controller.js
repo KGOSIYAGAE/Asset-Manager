@@ -1,4 +1,3 @@
-const mysql = require("mysql");
 const { dbConnection } = require("../dbConnection");
 
 //get Students

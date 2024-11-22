@@ -117,8 +117,6 @@ function AddEditStudent({ path }) {
     const { student_no } = params;
     if (student_no) {
       getStudent(student_no, setFormData);
-    } else {
-      return showToast({ isShown: true, type: "error", message: "An unexpected error ocured, please try again" });
     }
   };
 

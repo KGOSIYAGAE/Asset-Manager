@@ -18,6 +18,10 @@ app.use("/users", StaffRouter);
 const StudentsRouter = require("./Routes/students.routes");
 app.use("/users", StudentsRouter);
 
+//Devices Router
+const StudentsRouter = require("./Routes/devices.routes");
+app.use("/devices", StudentsRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
 });
