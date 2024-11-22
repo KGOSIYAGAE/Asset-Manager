@@ -9,7 +9,7 @@ const getAllDevices = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "No devices found", error: true });
       }
-      return res.status(200).json({ devices: results, message: "Devices fetched successfully", error: false });
+      return res.status(200).json({ deviceList: results, message: "Devices fetched successfully", error: false });
     });
   } catch (error) {
     return res.status(400).json({ message: "Internal server error", error: true });

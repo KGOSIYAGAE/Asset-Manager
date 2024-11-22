@@ -12,6 +12,7 @@ import { SearchContextProvider } from "./context/SearchContext";
 import { StudentsContextProvider } from "./context/StudentsContext";
 import AddEditStudent from "./components/forms/AddEditStudent";
 import Devices from "./pages/devices/Devices";
+import { DevicesContextProvider } from "./context/DevicesContext";
 
 function App() {
   //App UI Layout
@@ -76,11 +77,13 @@ function App() {
 
   return (
     <SearchContextProvider>
-      <StudentsContextProvider>
-        <StaffContextProvider>
-          <RouterProvider router={router} />
-        </StaffContextProvider>
-      </StudentsContextProvider>
+      <DevicesContextProvider>
+        <StudentsContextProvider>
+          <StaffContextProvider>
+            <RouterProvider router={router} />
+          </StaffContextProvider>
+        </StudentsContextProvider>
+      </DevicesContextProvider>
     </SearchContextProvider>
   );
 }

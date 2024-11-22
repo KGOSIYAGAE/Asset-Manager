@@ -1,5 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const { getAllDevices } = require("../Controllers/devices.controller");
+const router = express.Router();
 
-router.get("/", getAllDevices());
+router.get("/", getAllDevices);
+
+module.exports = router;
