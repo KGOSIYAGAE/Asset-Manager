@@ -11,13 +11,11 @@ import SubmitButton from "../buttons/SubmitButton";
 import CancelButton from "../buttons/CancelButton";
 import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 import ToastMessage from "../toastMessage/ToastMessage";
-import { useToastContext } from "../../hooks/useToastContext";
-import { addStaff, getUser, updateStaff } from "../../services/api/staff/StaffApi";
+import { addStaff, getUser, updateStaff } from "../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
-  const { toastState, toastDispatch } = useToastContext();
   const params = useParams();
   const navigate = useNavigate();
 
@@ -41,11 +39,12 @@ function AddEditStaff({ path }) {
   });
 
   const [formType, setFormType] = useState("add");
+  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
 
   //Toast close code
   const handleToastClose = () => {
     //setShowToast({ isShown: false, message: "" });
-    toastDispatch({ type: "CLOSE", payload: { isShown: false, type: "", message: "" } });
+    setShowToast({ isShown: false, type: "", message: "" });
   };
 
   const formAuthenticate = () => {};
@@ -53,35 +52,35 @@ function AddEditStaff({ path }) {
   //Form submit
   const handleSubmit = () => {
     if (!name) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "First name must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "First name must be provided" });
     }
 
     if (!surname) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Last name must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Last name must be provided" });
     }
 
     if (!staff_no) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Staff number must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Staff number must be provided" });
     }
 
     if (!phone_number) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Phone number must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Phone number must be provided" });
     }
 
     if (!email) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Email must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
     }
 
     if (!position) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Position must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Position must be provided" });
     }
 
     if (!isActive) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "User status must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "User status must be provided" });
     }
 
     if (!dateJoined) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Start date must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Start date must be provided" });
     }
 
     setError(null);
@@ -110,6 +109,7 @@ function AddEditStaff({ path }) {
   const setFormData = (userDetails) => {
     //if (selectedId) {
     setFormType("edit");
+
     /*for (let i = 0; i < staffState.staffList.length; i++) {
         if (selectedId == staffState.staffList[i].id) {*/
     setName(userDetails.name);
@@ -129,6 +129,7 @@ function AddEditStaff({ path }) {
       model: userDetails.model,
       serial_no: userDetails.serial_no,
     });
+
     //}
     //}
     // return;
@@ -138,35 +139,35 @@ function AddEditStaff({ path }) {
   //handleUpdate
   const handleUpdate = () => {
     if (!name) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "First name must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "First name must be provided" });
     }
 
     if (!surname) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Last name must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Last name must be provided" });
     }
 
     if (!staff_no) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Staff number must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Staff number must be provided" });
     }
 
     if (!phone_number) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Phone number must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Phone number must be provided" });
     }
 
     if (!email) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Email must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
     }
 
     if (!position) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Position must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Position must be provided" });
     }
 
     if (!isActive) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "User status must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "User status must be provided" });
     }
 
     if (!dateJoined) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "Start date must be provided" } });
+      return setShowToast({ isShown: true, type: "", message: "Start date must be provided" });
     }
 
     setError(null);
@@ -184,7 +185,7 @@ function AddEditStaff({ path }) {
       dateJoined,
       endDate,
     };
-    updateStaff(staff_no, userData, toastDispatch);
+    updateStaff(staff_no, userData, setShowToast);
   };
 
   //Form Clear
@@ -204,13 +205,12 @@ function AddEditStaff({ path }) {
   };
 
   //Choose user status
-  const handleUserstatus = (results) => {
-    setIsActive(results);
-  };
+  const handleUserstatus = (results) => {};
 
   //User details API call
   const getUserDetails = () => {
     const staff_no = params.staff_no;
+
     if (staff_no) {
       getUser(staff_no, setFormData);
     }
@@ -239,7 +239,7 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <TextInput label={"Staff Number"} value={staff_no} isDisabled={isDisabled} maxLength={6} setOnChange={setStaff_no} />
+            <TextInput label={"Staff Number"} value={staff_no} isDisabled={isDisabled} maxLength={5} setOnChange={setStaff_no} />
           </div>
 
           <div className="col-span-3">
@@ -291,7 +291,7 @@ function AddEditStaff({ path }) {
         </div>
         {error ? <span className="text-sm text-red-500">{error}</span> : ""}
       </div>
-      <ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />
+      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={handleToastClose} />
     </div>
   );
 }

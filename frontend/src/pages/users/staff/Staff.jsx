@@ -9,8 +9,7 @@ import { useStaffContext } from "../../../hooks/useStaffContext";
 import { useSearchContext } from "../../../hooks/useSearchContext";
 import { useNavigate } from "react-router-dom";
 import ToastMessage from "../../../components/toastMessage/ToastMessage";
-import { getStaffData, deleteStaff } from "../../../services/api/staff/StaffApi";
-import { useToastContext } from "../../../hooks/useToastContext";
+import { getStaffData, deleteStaff } from "../../../services/api/staff/Staff.Api";
 import Modal from "react-modal";
 import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
 
@@ -18,14 +17,14 @@ function Staff({ path }) {
   //Context
   const { staffState, staffDispatch } = useStaffContext();
   const { searchState } = useSearchContext();
-  const { toastState, toastDispatch } = useToastContext();
+  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", data: null });
 
   const navigate = useNavigate();
 
   // Toast Close
   const handleToastClose = () => {
-    toastDispatch({ type: "CLOSE", payload: { isShown: false, type: "", message: null } });
+    setShowToast({ isShown: false, type: "", message: null });
   };
 
   //Handle delete
@@ -80,13 +79,13 @@ function Staff({ path }) {
             setOpenModal({ isShown: false });
           }}
           onDelete={() => {
-            deleteStaff(openModal.selectedUser, toastDispatch);
+            deleteStaff(openModal.selectedUser, setShowToast);
             setOpenModal({ isShown: false });
           }}
           email={openModal.email}
         />
       </Modal>
-      <ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />
+      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={handleToastClose} />
     </div>
   );
 }

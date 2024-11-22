@@ -1,6 +1,5 @@
 import { useState } from "react";
 import axiosInstance from "../../../utils/axiosInstance";
-import { useToastContext } from "../../../hooks/useToastContext";
 
 //Handle getData API CALL
 export const getStaffData = async (staffDispatch) => {
@@ -20,25 +19,24 @@ export const getStaffData = async (staffDispatch) => {
 };
 
 //Add staff API CALL
-export const addStaff = async (userData, toastDispatch) => {
+export const addStaff = async (userData, setShowToast) => {
   try {
     const response = await axiosInstance.post("/users/staff/add-staff", userData);
 
     if (response.data) {
-      return toastDispatch({ type: "ADD", payload: { isShown: true, type: "add", message: response.data.message } });
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
     }
   } catch (error) {
-    if (error.response.data && error.response.data.error) {
-      // handleShowToast("", error.response.data.message);
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: error.response.data.message } });
+    if (error.response.data & error.response.error) {
+      return setShowToast({ isShown: true, type: "", message: error.response.data.message });
     } else {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: "An unexpected error occured, please try again" } });
+      return setShowToast({ isShown: true, type: "", message: "An unexpected error occured, please try again" });
     }
   }
 };
 
 //update staff
-export const updateStaff = async (staff_no, userData, toastDispatch) => {
+export const updateStaff = async (staff_no, userData, setShowToast) => {
   try {
     if (!staff_no) {
       return console.log("Staff number must be provided");
@@ -47,19 +45,19 @@ export const updateStaff = async (staff_no, userData, toastDispatch) => {
     const response = await axiosInstance.put("/users/staff/update-staff/" + staff_no, userData);
 
     if (response.data && response.data.message) {
-      return toastDispatch({ type: "ADD", payload: { isShown: true, type: "add", message: response.data.message } });
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data & error.response.error) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: error.response.data.message } });
+      return setShowToast({ isShown: true, type: "", message: error.response.data.message });
     } else {
-      return setError("An unexpected error occured, please try again");
+      return setShowToast({ isShown: true, type: "", message: "An unexpected error occured, please try again" });
     }
   }
 };
 
 //Hanlde deleteStaff API
-export const deleteStaff = async (staff_no, toastDispatch) => {
+export const deleteStaff = async (staff_no, setShowToast) => {
   try {
     if (!staff_no) {
       return console.log("Staff number must be provided");
@@ -67,13 +65,13 @@ export const deleteStaff = async (staff_no, toastDispatch) => {
     const response = await axiosInstance.delete("/users/staff/delete-staff/" + staff_no);
 
     if (response.data && !response.error) {
-      return toastDispatch({ type: "ADD", payload: { isShown: true, type: "add", message: response.data.message } });
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
     }
   } catch (error) {
-    if (error.response.data & error.response.error) {
-      return toastDispatch({ type: "ERROR", payload: { isShown: true, type: "", message: error.response.data.message } });
+    if (error.response.data && error.response.error) {
+      return setShowToast({ isShown: true, type: "", message: error.response.data.message });
     } else {
-      return setError("An unexpected error occured, please try again");
+      return setShowToast({ isShown: true, type: "", message: "An unexpected error occured, please try again" });
     }
   }
 };

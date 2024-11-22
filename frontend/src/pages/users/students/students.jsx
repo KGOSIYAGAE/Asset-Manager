@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SearchInput from "../../../components/inputs/searchInput/SearchInput";
 import AddButton from "../../../components/buttons/AddButton";
 import RefreshButton from "../../../components/buttons/RefreshButton";
@@ -10,86 +10,40 @@ import { studentsTableHeaders } from "../../../utils/TableHeaders";
 import { useSearchContext } from "../../../hooks/useSearchContext";
 import { useStudentsContext } from "../../../hooks/useStudentsContext";
 import axiosInstance from "../../../utils/axiosInstance";
+import { deleteStudent, getAllStudents } from "../../../services/api/students/Students.Api";
+import ToastMessage from "../../../components/toastMessage/ToastMessage";
+import Modal from "react-modal";
+import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
 
 function students({ path }) {
   const { searchState } = useSearchContext();
   const { studentState, studentDispatch } = useStudentsContext();
+  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", selcetedUser: null, userEmail: null });
 
   const navigate = useNavigate();
 
+  //Close Toast
+  const onToastClose = () => {
+    setShowToast({ isShown: false });
+  };
   //Hanlde Edit
   const handleEdit = (cellValues) => {
-    navigate(`/users/students/edit-student/${cellValues.row.id}`);
+    navigate(`/users/students/edit-student/${cellValues.row.student_no}`);
   };
 
   //Hanlde delete
-  const handleDelete = () => {};
+  const handleDelete = (cellValues) => {
+    setOpenModal({ isShown: true, type: "delete", selcetedUser: cellValues.row.student_no, userEmail: cellValues.row.email });
+  };
 
   //Handle Add
   const handleAdd = () => {
     navigate("/users/students/add-student");
   };
 
-  const studentDummy = [
-    {
-      id: 0,
-      name: "Thabang",
-      surname: "Segwete",
-      student_no: "201800446",
-      phone_number: "0789384743",
-      email: "201800446@spu.ac.za",
-      faculty: "NAS",
-      course: "ICT App Dev",
-      course_code: "ICT601",
-      registration_date: "05/02/2024",
-      isActive: "Active",
-      laptop: {
-        make_model: "HP 455 G10",
-        serial_no: "1H84DSD525",
-      },
-
-      createdAt: "",
-    },
-    {
-      id: 1,
-      name: "Lebo",
-      surname: "Nothabe",
-      student_no: "201800447",
-      phone_number: "0789384743",
-      email: "201800446@spu.ac.za",
-      faculty: "EDU",
-      course: "Teaching",
-      course_code: "ICT601",
-      isActive: "In Active",
-      laptop: {
-        make_model: "HP 255 G9",
-        serial_no: "CND3360GHB",
-      },
-
-      registration_date: new Date().getDate(),
-      createdAt: "",
-    },
-  ];
-
-  //get All Students
-  const getAllStudents = async () => {
-    try {
-      const response = await axiosInstance.get("/users/students");
-
-      if (response.data && response.data.studentsData) {
-        return studentDispatch({ type: "SET_STUDENTS", payload: response.data.studentsData });
-      }
-    } catch (error) {
-      if (error.response && error.response.error) {
-        return console.log(error.response.data.message);
-      } else {
-        return console.log("An unexpected error occured, please try again");
-      }
-    }
-  };
-
   useEffect(() => {
-    getAllStudents();
+    getAllStudents(studentDispatch);
   }, []);
 
   return (
@@ -108,6 +62,28 @@ function students({ path }) {
         </div>
         <DataTable rows={searchState.searchResults ? searchState.searchResults : studentState.studentsList} colHeaders={studentsTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
       </div>
+      <Modal
+        isOpen={openModal.isShown}
+        onRequestClose={() => {}}
+        ariaHideApp={false}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2" },
+        }}
+        contentLabel=""
+        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
+      >
+        <DeleteConfirmation
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+          onDelete={() => {
+            deleteStudent(openModal.selcetedUser, setShowToast);
+            setOpenModal({ isShown: false });
+          }}
+          email={openModal.userEmail}
+        />
+      </Modal>
+      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={onToastClose} />
     </div>
   );
 }

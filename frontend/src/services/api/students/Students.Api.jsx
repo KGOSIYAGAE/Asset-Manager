@@ -1,0 +1,99 @@
+import axiosInstance from "../../../utils/axiosInstance";
+
+//get All Students
+export const getAllStudents = async (studentDispatch) => {
+  try {
+    const response = await axiosInstance.get("/users/students");
+
+    if (response.data && response.data.studentsData) {
+      return studentDispatch({ type: "SET_STUDENTS", payload: response.data.studentsData });
+    }
+  } catch (error) {
+    if (error.response && error.response.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
+//get Student
+export const getStudent = async (student_no, setFormData) => {
+  try {
+    const response = await axiosInstance.get("/users/students/get-student/" + student_no);
+    if (response.data && !response.data.error) {
+      return setFormData(response.data.studentData);
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
+//Add Student
+export const addStudent = async (studentData, setShowToast) => {
+  try {
+    if (!studentData) {
+      return setShowToast({ isShown: true, type: "add", message: "Student data must be provided" });
+    }
+
+    const response = await axiosInstance.post("/users/students/add-student", studentData);
+
+    if (response.data) {
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+    } else {
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, Please try again." });
+    }
+  }
+};
+
+//Update student
+export const updateStudent = async (student_no, studentData, setShowToast) => {
+  try {
+    if (!student_no) {
+      return setShowToast({ isShown: true, type: "error", message: "Student number must be provided" });
+    }
+
+    const response = await axiosInstance.put("/users/students/update-student/" + student_no, studentData);
+
+    if (response.data && !response.data.error) {
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.error) {
+      return setShowToast({ isShown: true, type: "error", message: error.response.message });
+    } else {
+      return setShowToast({ isShown: true, type: "error", message: "An unxpected error occured, Please try again." });
+    }
+  }
+};
+
+//Delete student
+export const deleteStudent = async (student_no, setShowToast) => {
+  if (!student_no) {
+    return setShowToast({ isShown: true, type: "error", message: "Student number must be provided." });
+  }
+
+  try {
+    const response = await axiosInstance.delete("users/students/delete-student/" + student_no);
+
+    if (response.data && !response.error) {
+      console.log(response.data);
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.error) {
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+    } else {
+      console.log(error.response);
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
+    }
+  }
+};

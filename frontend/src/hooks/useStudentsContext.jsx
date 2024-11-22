@@ -5,7 +5,7 @@ export const useStudentsContext = () => {
   const studentUsers = useContext(StudentsContext);
 
   if (!studentUsers) {
-    throw new Error("useStudentContext shoul be used inside StudentsContextProvider");
+    throw new Error("useStudentContext should be used inside StudentsContextProvider");
   }
 
   return studentUsers;

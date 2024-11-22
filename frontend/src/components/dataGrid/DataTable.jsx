@@ -2,6 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
+import { IoMdOpen } from "react-icons/io";
 
 function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewProfile }) {
   const actionsColumn = [
@@ -19,6 +20,7 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewProfi
           </div>
         );
       },
+      width: 150,
     },
   ];
 

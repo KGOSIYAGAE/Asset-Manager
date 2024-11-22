@@ -11,7 +11,6 @@ import { StaffContextProvider } from "./context/StaffContext";
 import { SearchContextProvider } from "./context/SearchContext";
 import { StudentsContextProvider } from "./context/StudentsContext";
 import AddEditStudent from "./components/forms/AddEditStudent";
-import { ToastContextProvider } from "./context/ToastContext";
 import Devices from "./pages/devices/Devices";
 
 function App() {
@@ -64,7 +63,7 @@ function App() {
           element: <Students path={"student-list"} />,
         },
         {
-          path: "/users/students/edit-student/:id",
+          path: "/users/students/edit-student/:student_no",
           element: <AddEditStudent path={"edit-student"} />,
         },
         {
@@ -77,13 +76,11 @@ function App() {
 
   return (
     <SearchContextProvider>
-      <ToastContextProvider>
-        <StudentsContextProvider>
-          <StaffContextProvider>
-            <RouterProvider router={router} />
-          </StaffContextProvider>
-        </StudentsContextProvider>
-      </ToastContextProvider>
+      <StudentsContextProvider>
+        <StaffContextProvider>
+          <RouterProvider router={router} />
+        </StaffContextProvider>
+      </StudentsContextProvider>
     </SearchContextProvider>
   );
 }

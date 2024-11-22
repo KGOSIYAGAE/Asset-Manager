@@ -11,6 +11,10 @@ import FormLaptopDetails from "../cards/formLaptopDetails/FormLaptopDetails";
 import FormUserStatus from "../cards/formUserStatus/FormUserStatus";
 import SubmitButton from "../buttons/SubmitButton";
 import CancelButton from "../buttons/CancelButton";
+import axiosInstance from "../../utils/axiosInstance";
+import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
+import ToastMessage from "../toastMessage/ToastMessage";
+import { addStudent, getStudent, updateStudent } from "../../services/api/students/Students.Api";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
@@ -20,85 +24,101 @@ function AddEditStudent({ path }) {
   const [student_no, setStudent_no] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
-  const [faculty, setFaculty] = useState("");
+  const [faculty, setFaculty] = useState("NAS");
   const [course_code, setCourse_Code] = useState("");
   const [course, setCourse] = useState("");
   const [isActive, setIsActive] = useState("");
   const [laptopDetails, setLaptopDetails] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [registration_date, setRegistration_Date] = useState("");
 
-  const [error, setError] = useState(null);
-
+  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [courseList, setCourseList] = useState([]);
+  const [formType, setFormType] = useState("add");
 
   const params = useParams();
+
+  //Form clear
+  const clearForm = () => {
+    setName("");
+    setSurname("");
+    setStudent_no("");
+    setPhone_Number("");
+    setEmail("");
+    setFaculty("");
+    setCourse("");
+    setCourse_Code("");
+    setIsActive("");
+    setRegistration_Date("");
+  };
 
   //Form submit
   const handleSubmit = () => {
     if (!name) {
-      return setError("First name must be provided");
+      return setShowToast({ isShown: true, type: "error", message: "First name must be provided" });
     }
 
     if (!surname) {
-      return setError("Last name must be provided");
+      return setShowToast({ isShown: true, type: "error", message: "Last name must be provided" });
     }
 
     if (!student_no) {
-      return setError("Student number must be provided");
+      return setShowToast({ isShown: true, type: "error", message: "Student number must be provided" });
     }
 
     if (!phone_number) {
-      return setError("Phone number must be provided");
+      return setShowToast({ isShown: true, type: "error", message: "Phone number must be provided" });
     }
 
     if (!email) {
-      return setError("Email must be provided");
+      return setShowToast({ isShown: true, type: "error", message: "Email must be provided" });
     }
 
-    setError(null);
+    const studentData = {
+      name,
+      surname,
+      student_no,
+      phone_number,
+      email,
+      faculty,
+      course,
+      course_code,
+      isActive,
+      registration_date,
+    };
 
-    const studentData = [
-      {
-        name,
-        surname,
-        student_no,
-        phone_number,
-        email,
-        faculty,
-        course,
-        course_code,
-        isActive,
-        laptop: {
-          make_model: "",
-          serial_no: "",
-        },
-      },
-    ];
-
-    console.log(studentData);
+    if (formType === "add") {
+      console.log("add");
+      addStudent(studentData, setShowToast);
+      clearForm();
+    } else {
+      console.log("update");
+      updateStudent(student_no, studentData, setShowToast);
+    }
   };
 
   //Set form data
-  const setFormData = () => {
-    const selectedId = params.id;
+  const setFormData = (studentData) => {
+    setName(studentData[0].name);
+    setSurname(studentData[0].surname);
+    setStudent_no(studentData[0].student_no);
+    setPhone_Number(studentData[0].phone_number);
+    setEmail(studentData[0].email);
+    setFaculty(studentData[0].faculty);
+    setCourse(studentData[0].course);
+    setCourse_Code(studentData[0].course_code);
+    setIsActive(studentData[0].isActive);
+    setLaptopDetails(studentData[0].laptop);
+    setRegistration_Date(studentData[0].registration_date);
+  };
 
-    if (selectedId) {
-      for (let i = 0; i < studentState.studentsList.length; i++) {
-        if (selectedId == studentState.studentsList[i].id) {
-          setName(studentState.studentsList[i].name);
-          setSurname(studentState.studentsList[i].surname);
-          setStudent_no(studentState.studentsList[i].student_no);
-          setPhone_Number(studentState.studentsList[i].phone_number);
-          setEmail(studentState.studentsList[i].email);
-          setFaculty(studentState.studentsList[i].faculty);
-          setCourse(studentState.studentsList[i].course);
-          setCourse_Code(studentState.studentsList[i].course_code);
-          setIsActive(studentState.studentsList[i].isActive);
-          setLaptopDetails(studentState.studentsList[i].laptop);
-          setIsDisabled(true);
-        }
-      }
-      return;
+  //Get User API Call
+  const getSelectedUser = () => {
+    const { student_no } = params;
+    if (student_no) {
+      getStudent(student_no, setFormData);
+    } else {
+      return showToast({ isShown: true, type: "error", message: "An unexpected error ocured, please try again" });
     }
   };
 
@@ -145,7 +165,7 @@ function AddEditStudent({ path }) {
   };
 
   useEffect(() => {
-    setFormData();
+    getSelectedUser();
     getCourseName("NAS");
   }, []);
 
@@ -160,23 +180,23 @@ function AddEditStudent({ path }) {
         </div>
         <div className="grid grid-cols-6 gap-8 pt-5">
           <div className=" col-span-2">
-            <TextInput label={"First Name"} value={name} isDisabled={isDisabled} setOnChange={setName} />
+            <TextInput label={"First Name"} value={name} isDisabled={isDisabled} maxLength={50} setOnChange={setName} />
           </div>
 
           <div className=" col-span-2">
-            <TextInput label={"Last Name"} value={surname} isDisabled={isDisabled} setOnChange={setSurname} />
+            <TextInput label={"Last Name"} value={surname} isDisabled={isDisabled} maxLength={50} setOnChange={setSurname} />
           </div>
 
           <div className=" col-span-2">
-            <TextInput label={"Student Number"} value={student_no} isDisabled={isDisabled} setOnChange={setStudent_no} />
+            <TextInput label={"Student Number"} value={student_no} isDisabled={isDisabled} maxLength={9} setOnChange={setStudent_no} />
           </div>
 
           <div className=" col-span-3">
-            <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} setOnChange={setPhone_Number} />
+            <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} maxLength={10} setOnChange={setPhone_Number} />
           </div>
 
           <div className=" col-span-3">
-            <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} setOnChange={setEmail} />
+            <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} maxLength={50} setOnChange={setEmail} />
           </div>
 
           <SelectInput label={"Faculty"} value={faculty} options={facultyCourse} optionName={"faculty_name"} isDisabled={isDisabled} setOnChange={setFaculty} onChoose={getCourseName} />
@@ -187,21 +207,33 @@ function AddEditStudent({ path }) {
             <TextInput label={"Course Code"} value={course_code} isDisabled={true} setOnChange={() => {}} />
           </div>
 
-          <div className="col-span-4">
-            <FormLaptopDetails laptopDetails={laptopDetails} />
+          <div className="col-span-1">
+            <DateTimePicker label={"Registration Date"} value={registration_date} setOnChange={setRegistration_Date} />
           </div>
 
           <div className="col-span-2">
             <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
+
+          <div className="col-span-4">
+            <FormLaptopDetails laptopDetails={laptopDetails} />
+          </div>
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
-            <SubmitButton text={"Submit"} handleSubmit={handleSubmit} />
+            {formType === "add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleSubmit} />}
             <CancelButton />
           </div>
         </div>
-        {error ? <span className="text-sm text-red-500">{error}</span> : ""}
+
+        <ToastMessage
+          isShown={showToast.isShown}
+          type={showToast.type}
+          message={showToast.message}
+          onClose={() => {
+            setShowToast({ isShown: false });
+          }}
+        />
       </div>
     </div>
   );

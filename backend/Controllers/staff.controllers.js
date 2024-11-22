@@ -25,7 +25,7 @@ const getStaff = async (req, res) => {
   /*const sqlGetUser =
     "SELECT staff.staff_no, staff.name, staff.surname, staff.phone_number, staff.email, staff.department, staff.position, staff.contract_type, staff.isActive, staff.dateJoined, devices.make, devices.model, devices.serial_no FROM devices, staff WHERE devices.assigned_to = staff.staff_no AND staff.staff_no = ?;";
 */
-  const sqlGetUser = "SELECT * FRom staff LEFT JOIN devices ON staff.staff_no = devices.assigned_to WHERE staff_no = ?";
+  const sqlGetUser = "SELECT * FROM staff LEFT JOIN devices ON staff.staff_no = devices.assigned_to WHERE staff_no = ?";
 
   dbConnection.query(sqlGetUser, staff_no, (error, results) => {
     if (error) {

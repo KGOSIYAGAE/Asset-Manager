@@ -2,7 +2,7 @@ import React from "react";
 import { IoMdPeople } from "react-icons/io";
 import { PiStudentFill } from "react-icons/pi";
 import { Link } from "react-router-dom";
-import { MdDevices } from "react-icons/md";
+import { MdDevices, MdDashboard } from "react-icons/md";
 import ProfileCard from "../cards/profileCard/ProfileCard";
 import LogoCard from "../cards/logoCard/LogoCard";
 
@@ -13,6 +13,15 @@ function Menu() {
         <LogoCard />
         <span className="text-zinc-800 font-bold">Menu</span>
         <div className="flex flex-col gap-3 p-3">
+          <Link to={"/"}>
+            <div className="menu-items">
+              <div className="bg-zinc-100 rounded-md p-2">
+                <MdDashboard size={20} className="" />
+              </div>
+              <span className="">Dashboard</span>
+            </div>
+          </Link>
+          {/**/}
           <Link to={"/devices"}>
             <div className="menu-items">
               <div className="bg-zinc-100 rounded-md p-2">
