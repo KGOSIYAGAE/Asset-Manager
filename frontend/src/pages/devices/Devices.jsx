@@ -9,39 +9,19 @@ import { useDeviceContext } from "../../hooks/useDevicesContext";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSearchContext } from "../../hooks/useSearchContext";
 import { useNavigate } from "react-router-dom";
-import { getAllDevices } from "../../services/api/devices/Device.Api";
+import { deleteDevice, getAllDevices } from "../../services/api/devices/Device.Api";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import Modal from "react-modal";
 import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
+import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 
 function Devices({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
-  const { searchState } = useSearchContext();
+  const { searchState, searchDispatch } = useSearchContext();
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
-
-  //delete device
-  const deleteDevice = async (id, setShowToast) => {
-    try {
-      if (!id) {
-        return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
-      }
-
-      const response = await axiosInstance.delete("/devices/delete-device/" + id);
-
-      if (response.data) {
-        return setShowToast({ isShown: true, type: "add", message: response.data.message });
-      }
-    } catch (error) {
-      if (error.response.data && error.response.data.error) {
-        return setShowToast({ isShown: true, type: "error", message: response.data.message });
-      } else {
-        return setShowToast({ isShown: true, type: "error", message: "An unexpected router occured, please try again." });
-      }
-    }
-  };
 
   //Handle dele
   const handleDelete = (cellValues) => {
@@ -50,14 +30,24 @@ function Devices({ path }) {
   };
   //Hanlde Edit
   const handleEdit = (cellValues) => {
-    navigate(`/devices/edit-device/${cellValues.row.serial_no}`);
+    navigate(`/devices/edit-device/${cellValues.row.id}`);
   };
   //Handle Add
   const handleAdd = () => {
     navigate("/devices/add-device");
   };
 
+  //Hanlde Edit
+  const handleViewDetails = (cellValues) => {
+    navigate(`/devices/device-details/${cellValues.row.id}`);
+  };
+
+  const openIssueModal = () => {
+    setOpenModal({ isShown: true, type: "issue", data: null });
+  };
+
   useEffect(() => {
+    searchDispatch({ type: "SET_SEARCH_NULL" });
     getAllDevices(devicesDispatch);
   }, []);
   return (
@@ -71,10 +61,16 @@ function Devices({ path }) {
           <div className="flex gap-2">
             <SearchInput searchData={devicesState.deviceList} dataType={"devices"} />
             <AddButton name={"Add New Device"} handleAdd={handleAdd} />
-            <RefreshButton />
+            <RefreshButton onClick={openIssueModal} />
           </div>
         </div>
-        <DataTable rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList} colHeaders={devicesTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
+        <DataTable
+          rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList}
+          colHeaders={devicesTableHeaders}
+          handleEdit={handleEdit}
+          handleViewDetails={handleViewDetails}
+          handleDelete={handleDelete}
+        />
       </div>
       <Modal
         isOpen={openModal.isShown}

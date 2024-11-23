@@ -153,18 +153,18 @@ function AddEditDevice({ path }) {
     if (formType === "Add") {
       addDevice(deviceDetails, setShowToast);
     } else {
-      const { serial_no } = params;
-      if (serial_no) {
-        updateDevice(serial_no, deviceDetails, setShowToast);
+      const { id } = params;
+      if (id) {
+        updateDevice(id, deviceDetails, setShowToast);
       }
     }
   };
 
   //API CALL
   const getDeviceDetails = () => {
-    const { serial_no } = params;
-    if (serial_no) {
-      getDevice(serial_no, setFormData);
+    const { id } = params;
+    if (id) {
+      getDevice(id, setFormData);
     }
   };
 

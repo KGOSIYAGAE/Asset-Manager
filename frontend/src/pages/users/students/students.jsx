@@ -16,7 +16,7 @@ import Modal from "react-modal";
 import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
 
 function students({ path }) {
-  const { searchState } = useSearchContext();
+  const { searchState, searchDispatch } = useSearchContext();
   const { studentState, studentDispatch } = useStudentsContext();
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", selcetedUser: null, userEmail: null });
@@ -43,6 +43,7 @@ function students({ path }) {
   };
 
   useEffect(() => {
+    searchDispatch({ type: "SET_SEARCH_NULL" });
     getAllStudents(studentDispatch);
   }, []);
 

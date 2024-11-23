@@ -18,16 +18,16 @@ const getAllDevices = async (req, res) => {
 
 //Get Device
 const getDevice = async (req, res) => {
-  const { serial_no } = req.params;
+  const { id } = req.params;
 
-  if (!serial_no) {
-    return res.status(400).json({ message: "Serial number not provided", error: true });
+  if (!id) {
+    return res.status(400).json({ message: "device id not provided", error: true });
   }
 
   try {
-    const getDeviceQuery = "SELECT * FROM devices WHERE serial_no = ?";
+    const getDeviceQuery = "SELECT * FROM devices WHERE id = ?";
 
-    dbConnection.query(getDeviceQuery, serial_no, (error, results) => {
+    dbConnection.query(getDeviceQuery, id, (error, results) => {
       if (error) {
         return res.status(400).json({ message: "Device not found", error: true });
       }
@@ -98,7 +98,7 @@ const addDevice = async (req, res) => {
 //Update device
 const updateDevice = async (req, res) => {
   try {
-    const param_serial_no = req.params.serial_no;
+    const { id } = req.params;
 
     const { assetTag, make, model, serial_no, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
       req.body;
@@ -142,9 +142,9 @@ const updateDevice = async (req, res) => {
     ];
 
     const updateDeviceQuery =
-      "UPDATE `devices` SET `assetTag`=?,`serial_no`=?,`make`=?,`model`=?,`category`=?,`device_condition`=?,`status`=?,`specification`=?,`warrantyExpiration`=?,`supplier`=?,`invoice_no`=?,`purchaseValue`=?,`purchaseDate`=?,`location`=?,`loanStartDate`=?,`loanEndDate`=? WHERE serial_no = ?";
+      "UPDATE `devices` SET `assetTag`=?,`serial_no`=?,`make`=?,`model`=?,`category`=?,`device_condition`=?,`status`=?,`specification`=?,`warrantyExpiration`=?,`supplier`=?,`invoice_no`=?,`purchaseValue`=?,`purchaseDate`=?,`location`=?,`loanStartDate`=?,`loanEndDate`=? WHERE id = ?";
 
-    dbConnection.query(updateDeviceQuery, [...values, param_serial_no], (error, results) => {
+    dbConnection.query(updateDeviceQuery, [...values, id], (error, results) => {
       if (error) {
         console.log(error);
         return res.status(400).json({ message: "An error occured when updating device", error: true });

@@ -14,6 +14,7 @@ import AddEditStudent from "./components/forms/AddEditStudent";
 import Devices from "./pages/devices/Devices";
 import { DevicesContextProvider } from "./context/DevicesContext";
 import AddEditDevice from "./components/forms/AddEditDevice";
+import DeviceDetails from "./pages/devices/DeviceDetails";
 
 function App() {
   //App UI Layout
@@ -50,11 +51,15 @@ function App() {
           element: <Devices path={"Devices/"} />,
         },
         {
+          path: "/devices/device-details/:id",
+          element: <DeviceDetails path={"Devices/"} />,
+        },
+        {
           path: "/devices/add-device",
           element: <AddEditDevice path={"add-device"} />,
         },
         {
-          path: "/devices/edit-device/:serial_no",
+          path: "/devices/edit-device/:id",
           element: <AddEditDevice path={"edit-device"} />,
         },
         //Staff

@@ -18,9 +18,9 @@ export const getAllDevices = async (devicesDispatch) => {
 };
 
 //Hanlde get device
-export const getDevice = async (serial_no, setFormData) => {
+export const getDevice = async (id, setFormData) => {
   try {
-    const response = await axiosInstance.get("devices/" + serial_no);
+    const response = await axiosInstance.get("devices/" + id);
 
     if (response.data) {
       return setFormData(response.data.deviceDetails);
@@ -51,13 +51,13 @@ export const addDevice = async (deviceData, setShowToast) => {
 };
 
 //Handle update device
-export const updateDevice = async (serial_no, deviceDetails, setShowToast) => {
+export const updateDevice = async (id, deviceDetails, setShowToast) => {
   try {
-    if (!serial_no) {
-      return setShowToast({ isShown: true, type: "error", message: "Serial number must be provided" });
+    if (!id) {
+      return setShowToast({ isShown: true, type: "error", message: "Device id must be provided" });
     }
 
-    const response = await axiosInstance.put("/devices/edit-device/" + serial_no, deviceDetails);
+    const response = await axiosInstance.put("/devices/edit-device/" + id, deviceDetails);
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "add", message: response.data.message });
@@ -67,6 +67,27 @@ export const updateDevice = async (serial_no, deviceDetails, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
       return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
+    }
+  }
+};
+
+//delete device
+export const deleteDevice = async (id, setShowToast) => {
+  try {
+    if (!id) {
+      return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
+    }
+
+    const response = await axiosInstance.delete("/devices/delete-device/" + id);
+
+    if (response.data) {
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return setShowToast({ isShown: true, type: "error", message: response.data.message });
+    } else {
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected router occured, please try again." });
     }
   }
 };

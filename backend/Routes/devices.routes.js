@@ -6,13 +6,13 @@ const router = express.Router();
 router.get("/", getAllDevices);
 
 //Get devices
-router.get("/:serial_no", getDevice);
+router.get("/:id", getDevice);
 
 //Add devices
 router.post("/add-device/", addDevice);
 
 //Update devices
-router.put("/edit-device/:serial_no", updateDevice);
+router.put("/edit-device/:id", updateDevice);
 
 //Update devices
 router.delete("/delete-device/:id", deleteDevice);

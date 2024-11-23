@@ -16,7 +16,7 @@ import DeleteConfirmation from "../../../components/cards/deleteConfirmation/Del
 function Staff({ path }) {
   //Context
   const { staffState, staffDispatch } = useStaffContext();
-  const { searchState } = useSearchContext();
+  const { searchState, searchDispatch } = useSearchContext();
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", data: null });
 
@@ -46,6 +46,7 @@ function Staff({ path }) {
 
   useEffect(() => {
     //API CALL ON RENDER
+    searchDispatch({ type: "SET_SEARCH_NULL" });
     getStaffData(staffDispatch);
   }, []);
 
