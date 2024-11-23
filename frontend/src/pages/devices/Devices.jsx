@@ -7,14 +7,23 @@ import { devicesTableHeaders } from "../../utils/TableHeaders";
 
 import { useDeviceContext } from "../../hooks/useDevicesContext";
 import axiosInstance from "../../utils/axiosInstance";
+import { useSearchContext } from "../../hooks/useSearchContext";
+import { useNavigate } from "react-router-dom";
 
 function Devices({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
+  const { searchState } = useSearchContext();
+
+  const navigate = useNavigate();
 
   //Handle dele
   const handleDelete = () => {};
   //Hanlde Edit
   const handleEdit = () => {};
+  //Handle Add
+  const handleAdd = () => {
+    navigate("/devices/add-device");
+  };
 
   //Get All devices
   const getAllDevices = async () => {
@@ -22,7 +31,6 @@ function Devices({ path }) {
       const response = await axiosInstance.get("/devices/");
 
       if (response.data.deviceList) {
-        console.log(response.data);
         devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
       }
     } catch (error) {
@@ -46,12 +54,12 @@ function Devices({ path }) {
         <div className="flex justify-between">
           <span className="heading-text">Device List</span>
           <div className="flex gap-2">
-            <SearchInput searchData={""} />
-            <AddButton name={"Add New Device"} handleAdd={""} />
+            <SearchInput searchData={devicesState.deviceList} dataType={"devices"} />
+            <AddButton name={"Add New Device"} handleAdd={handleAdd} />
             <RefreshButton />
           </div>
         </div>
-        <DataTable rows={/*searchState.searchResults ? searchState.searchResults : staffState.staffList*/ ""} colHeaders={devicesTableHeaders} handleEdit={""} handleDelete={""} />
+        <DataTable rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList} colHeaders={devicesTableHeaders} handleEdit={""} handleDelete={""} />
       </div>
 
       {/*<ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />*/}

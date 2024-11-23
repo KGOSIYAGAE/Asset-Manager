@@ -3,7 +3,7 @@ import { IoReloadOutline, IoSearchOutline, IoCloseCircleOutline } from "react-ic
 
 import { useSearchContext } from "../../../hooks/useSearchContext";
 
-function SearchInput({ searchData }) {
+function SearchInput({ searchData, dataType }) {
   const [searchQuery, setSearchQuery] = useState("");
   const { searchDispatch } = useSearchContext();
 
@@ -15,19 +15,29 @@ function SearchInput({ searchData }) {
       return handleClearSearch();
     }
 
-    for (let i = 0; i < searchData.length; i++) {
-      if (searchData[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(searchData[i]);
-      } else if (searchData[i].surname.toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(searchData[i]);
-      } else if (searchData[i].staff_no && searchData[i].staff_no.toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(searchData[i]);
-      } else if (searchData[i].student_no && searchData[i].student_no.toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(searchData[i]);
+    try {
+      for (let i = 0; i < searchData.length; i++) {
+        if (searchData[i].make && searchData[i].make.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].model && searchData[i].model.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].assigned_to && searchData[i].assigned_to.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].name && searchData[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].surname && searchData[i].surname.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].staff_no && searchData[i].staff_no.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].student_no && searchData[i].student_no.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        }
       }
-    }
 
-    return searchDispatch({ type: "SET_SEARCH_RESULTS", payload: searchResults });
+      return searchDispatch({ type: "SET_SEARCH_RESULTS", payload: searchResults });
+    } catch (error) {
+      console.log("Error searching");
+    }
   };
 
   //Clear search

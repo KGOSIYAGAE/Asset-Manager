@@ -13,6 +13,7 @@ import { StudentsContextProvider } from "./context/StudentsContext";
 import AddEditStudent from "./components/forms/AddEditStudent";
 import Devices from "./pages/devices/Devices";
 import { DevicesContextProvider } from "./context/DevicesContext";
+import AddEditDevice from "./components/forms/AddEditDevice";
 
 function App() {
   //App UI Layout
@@ -43,10 +44,16 @@ function App() {
           path: "/",
           element: <Home />,
         },
+        //Devices
         {
           path: "/devices",
           element: <Devices path={"Devices/"} />,
         },
+        {
+          path: "/devices/add-device",
+          element: <AddEditDevice path={"add-device"} />,
+        },
+        //Staff
         {
           path: "/users/staff",
           element: <Staff path={"staff-list"} />,
@@ -59,6 +66,7 @@ function App() {
           path: "/users/staff/add-staff/",
           element: <AddEditStaff path={"edit-staff"} />,
         },
+        //Students
         {
           path: "/users/students",
           element: <Students path={"student-list"} />,
