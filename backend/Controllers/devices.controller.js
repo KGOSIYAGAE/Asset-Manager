@@ -40,31 +40,29 @@ const getDevice = async (req, res) => {
 
 //Add device
 const addDevice = async (req, res) => {
-  const { assetTag, make, model, serial_no, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
-    req.body;
-
-  if (
-    !assetTag ||
-    !make ||
-    !model ||
-    !serial_no ||
-    !spec ||
-    !category ||
-    !device_condition ||
-    !status ||
-    !warrantyExpiration ||
-    !location ||
-    !supplier ||
-    !invoice_no ||
-    !purchaseValue ||
-    !purchaseDate ||
-    !loanStartDate ||
-    !loanEndDate
-  ) {
-    return res.status(400).json({ message: "All fields must be provided.", error: true });
-  }
-
   try {
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
+      req.body;
+
+    if (
+      !assetTag ||
+      !make ||
+      !model ||
+      !serial_no ||
+      !spec ||
+      !category ||
+      !device_condition ||
+      !status ||
+      !warrantyExpiration ||
+      !location ||
+      !supplier ||
+      !invoice_no ||
+      !purchaseValue ||
+      !purchaseDate
+    ) {
+      return res.status(400).json({ message: "All fields must be provided.", error: true });
+    }
+
     const values = [
       assetTag,
       serial_no,
@@ -97,4 +95,62 @@ const addDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, addDevice };
+//Update device
+const updateDevice = async (req, res) => {
+  try {
+    const { serial_no } = req.params;
+    const { assetTag, make, model, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } = req.body;
+
+    if (
+      !assetTag ||
+      !make ||
+      !model ||
+      !serial_no ||
+      !spec ||
+      !category ||
+      !device_condition ||
+      !status ||
+      !warrantyExpiration ||
+      !location ||
+      !supplier ||
+      !invoice_no ||
+      !purchaseValue ||
+      !purchaseDate
+    ) {
+      return res.status(400).json({ message: "All fields must be provided.", error: true });
+    }
+
+    const values = [
+      assetTag,
+      make,
+      model,
+      serial_no,
+      spec,
+      category,
+      device_condition,
+      status,
+      warrantyExpiration,
+      location,
+      supplier,
+      invoice_no,
+      purchaseValue,
+      purchaseDate,
+      loanStartDate,
+      loanEndDate,
+    ];
+
+    const updateDeviceQuery =
+      "UPDATE `devices` SET `assetTag`=?,`serial_no`=?,`make`=?,`model`=?,`category`=?,`device_condition`=?,`status`=?,`specification`=?,`warrantyExpiration`=?,`supplier`=?,`invoice_no`=?,`purchaseValue`=?,`purchaseDate`=?,`assignedTo`=?,`userId`=?,`location`=?,`loanStartDate`=?',`loanEndDate`=? WHERE `serial_no1 = ?";
+
+    dbConnection.query(updateDeviceQuery, [...values, serial_no], (error, results) => {
+      if (error) {
+        return res.status(400).json({ message: "An error occured when updating device", error: true });
+      }
+      return res.status(200).json({ message: "Device updated successfully", error: false });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error: true });
+  }
+};
+
+module.exports = { getAllDevices, getDevice, addDevice, updateDevice };
