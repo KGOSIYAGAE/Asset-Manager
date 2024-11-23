@@ -19,7 +19,9 @@ function Devices({ path }) {
   //Handle dele
   const handleDelete = () => {};
   //Hanlde Edit
-  const handleEdit = () => {};
+  const handleEdit = (cellValues) => {
+    navigate(`/devices/edit-device/${cellValues.row.serial_no}`);
+  };
   //Handle Add
   const handleAdd = () => {
     navigate("/devices/add-device");
@@ -59,7 +61,7 @@ function Devices({ path }) {
             <RefreshButton />
           </div>
         </div>
-        <DataTable rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList} colHeaders={devicesTableHeaders} handleEdit={""} handleDelete={""} />
+        <DataTable rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList} colHeaders={devicesTableHeaders} handleEdit={handleEdit} handleDelete={""} />
       </div>
 
       {/*<ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />*/}

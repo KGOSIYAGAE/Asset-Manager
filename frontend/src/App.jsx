@@ -53,6 +53,10 @@ function App() {
           path: "/devices/add-device",
           element: <AddEditDevice path={"add-device"} />,
         },
+        {
+          path: "/devices/edit-device/:serial_no",
+          element: <AddEditDevice path={"edit-device"} />,
+        },
         //Staff
         {
           path: "/users/staff",

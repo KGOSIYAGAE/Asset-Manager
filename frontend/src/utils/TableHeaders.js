@@ -27,12 +27,15 @@ export const studentsTableHeaders = [
 
 //Device TableHeaders
 export const devicesTableHeaders = [
-  { field: "make", headerName: "Make", width: 110 },
-  { field: "model", headerName: "Model", width: 115 },
-  { field: "serial_no", headerName: "Serial Number", width: 115 },
-  { field: "device_condition", headerName: "Condition", width: 115 },
-  { field: "status", headerName: "Status", width: 100 },
-  { field: "assigned_to", headerName: "Assigned To", width: 110 },
-  { field: "loan_start", headerName: "Loan Start Date", width: 120 },
-  { field: "Loan_end", headerName: "Loan End Date", width: 130 },
+  { field: "assetTag", headerName: "Asset Tag", width: 80 },
+  { field: "make", headerName: "Make", width: 80 },
+  { field: "model", headerName: "Model", width: 90 },
+  { field: "serial_no", headerName: "Serial Number", width: 120 },
+  { field: "deviceCondition", headerName: "Condition", width: 115 },
+  { field: "status", headerName: "Status", width: 110 },
+  { field: "category", headerName: "Category", width: 100 },
+  { field: "assigned_to", headerName: "Assigned To", width: 100 },
+  { field: "userId", headerName: "Staff / Student No", width: 130 },
+  { field: "loan_start", headerName: "Loan Start Date", width: 118 },
+  { field: "Loan_end", headerName: "Loan End Date", width: 115 },
 ];

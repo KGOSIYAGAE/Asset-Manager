@@ -16,4 +16,26 @@ const getAllDevices = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices };
+//Get Device
+const getDevice = async (req, res) => {
+  const { serial_no } = req.params;
+
+  if (!serial_no) {
+    return res.status(400).json({ message: "Serial number not provided", error: true });
+  }
+
+  try {
+    const getDeviceQuery = "SELECT * FROM devices WHERE serial_no = ?";
+
+    dbConnection.query(getDeviceQuery, serial_no, (error, results) => {
+      if (error) {
+        return res.status(400).json({ message: "Device not found", error: true });
+      }
+      return res.status(200).json({ deviceDetails: results, message: "Device found successfully", error: false });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error: true });
+  }
+};
+
+module.exports = { getAllDevices, getDevice };
