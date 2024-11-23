@@ -40,35 +40,51 @@ const getDevice = async (req, res) => {
 
 //Add device
 const addDevice = async (req, res) => {
+  const { assetTag, make, model, serial_no, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
+    req.body;
+
+  if (
+    !assetTag ||
+    !make ||
+    !model ||
+    !serial_no ||
+    !spec ||
+    !category ||
+    !device_condition ||
+    !status ||
+    !warrantyExpiration ||
+    !location ||
+    !supplier ||
+    !invoice_no ||
+    !purchaseValue ||
+    !purchaseDate ||
+    !loanStartDate ||
+    !loanEndDate
+  ) {
+    return res.status(400).json({ message: "All fields must be provided.", error: true });
+  }
+
   try {
-    const { assetTag, make, model, serial_no, spec, category, condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
-      req.body;
-
-    if (
-      !assetTag ||
-      !make ||
-      !model ||
-      !serial_no ||
-      !spec ||
-      !category ||
-      !condition ||
-      !status ||
-      !warrantyExpiration ||
-      !location ||
-      !supplier ||
-      !invoice_no ||
-      !purchaseValue ||
-      !purchaseDate ||
-      !loanStartDate ||
-      !loanEndDate
-    ) {
-      return res.status(400).json({ message: "All fields must be provided.", error: true });
-    }
-
-    const values = [assetTag, make, model, serial_no, spec, category, condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate];
-
+    const values = [
+      assetTag,
+      serial_no,
+      make,
+      model,
+      category,
+      device_condition,
+      status,
+      warrantyExpiration,
+      spec,
+      supplier,
+      invoice_no,
+      purchaseValue,
+      purchaseDate,
+      location,
+      loanStartDate,
+      loanEndDate,
+    ];
     const addDeviceQuery =
-      "INSERT INTO `devices`(`id`, `assetTag`, `serial_no`, `make`, `model`, `category`, `deviceCondition`, `status`, `specification`, `supplier`, `invoice_no`, `purchaseValue`, `purchaseDate`, `assignedTo`, `userId`, `location`, `loanStartDate`, `loanEndDate`, `createdAt`) VALUES (?)";
+      "INSERT INTO `devices`(`assetTag`, `serial_no`, `make`, `model`, `category`, `device_condition`,`status`, `warrantyExpiration` ,`specification`, `supplier`, `invoice_no`, `purchaseValue`, `purchaseDate`, `location`, `loanStartDate`, `loanEndDate`) VALUES (?)";
 
     dbConnection.query(addDeviceQuery, [values], (error, results) => {
       if (error) {

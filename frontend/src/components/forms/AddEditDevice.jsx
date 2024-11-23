@@ -18,7 +18,7 @@ function AddEditDevice({ path }) {
   const [assetTag, setAssetTag] = useState("");
   const [spec, setSpec] = useState("");
   const [category, setCategory] = useState(""); // Laptop, desktop, all in one, Monitor
-  const [condition, setCondition] = useState(""); //New, Used, Faulty/ Scrap
+  const [device_condition, setDevice_Condition] = useState(""); //New, Used, Faulty/ Scrap
   const [status, setStatus] = useState(""); //Available, Loaned, Assigned, Under Maintenance, Lost
   const [warrantyExpiration, setWarrantyExperation] = useState("");
   const [userId, setUserId] = useState("");
@@ -72,7 +72,7 @@ function AddEditDevice({ path }) {
     //setModel(deviceDetails[0].model);
     setSpec(deviceDetails[0].specification);
     setCategory(deviceDetails[0].category);
-    setCondition(deviceDetails[0].deviceCondition);
+    setDevice_Condition(deviceDetails[0].device_condition);
     setStatus(deviceDetails[0].status);
     setLocation(deviceDetails[0].location);
     setWarrantyExperation(deviceDetails[0].warrantyExpiration);
@@ -84,6 +84,22 @@ function AddEditDevice({ path }) {
     setLoanEndDate(deviceDetails[0].loanEndDate);
   };
 
+  //add device api
+  const addDevice = async (deviceData, setShowToast) => {
+    try {
+      const response = await axiosInstance.post("/devices/add-device/", deviceData);
+      if (response.data) {
+        return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      }
+    } catch (error) {
+      if (error.response.data && error.response.data.error) {
+        return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      } else {
+        return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      }
+    }
+  };
+
   //Handle add device
   const handleAddDevice = () => {
     const deviceDetails = {
@@ -93,7 +109,7 @@ function AddEditDevice({ path }) {
       serial_no,
       spec,
       category,
-      condition,
+      device_condition,
       status,
       warrantyExpiration,
       location,
@@ -106,7 +122,7 @@ function AddEditDevice({ path }) {
       assignedTo,
       userId,
     };
-    console.log(deviceDetails);
+    addDevice(deviceDetails, setShowToast);
   };
 
   //Handle Submit
@@ -123,7 +139,7 @@ function AddEditDevice({ path }) {
     if (!location) {
       return setShowToast({ isShown: true, type: "error", message: "Device location must be provided." });
     }
-    if (!condition) {
+    if (!device_condition) {
       return setShowToast({ isShown: true, type: "error", message: "Device condition must be provided." });
     }
     if (!category) {
@@ -217,7 +233,7 @@ function AddEditDevice({ path }) {
             <TextInput label={"Location"} value={location} isDisabled={false} maxLength={50} setOnChange={setLocation} />
           </div>
           <div className="col-span-2">
-            <SelectInput label={"Condition"} value={condition} options={deviceCondition} optionName={"name"} isDisabled={false} setOnChange={setCondition} onChoose={() => {}} />
+            <SelectInput label={"Condition"} value={device_condition} options={deviceCondition} optionName={"name"} isDisabled={false} setOnChange={setDevice_Condition} onChoose={() => {}} />
           </div>
 
           <div className="col-span-2">
