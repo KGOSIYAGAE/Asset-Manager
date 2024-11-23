@@ -68,7 +68,7 @@ function App() {
           element: <Staff path={"staff-list"} />,
         },
         {
-          path: "/users/staff/edit-staff/:staff_no",
+          path: "/users/staff/edit-staff/:id",
           element: <AddEditStaff path={"edit-staff"} />,
         },
         {

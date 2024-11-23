@@ -36,13 +36,13 @@ export const addStaff = async (userData, setShowToast) => {
 };
 
 //update staff
-export const updateStaff = async (staff_no, userData, setShowToast) => {
+export const updateStaff = async (id, userData, setShowToast) => {
   try {
-    if (!staff_no) {
+    if (!id) {
       return console.log("Staff number must be provided");
     }
 
-    const response = await axiosInstance.put("/users/staff/update-staff/" + staff_no, userData);
+    const response = await axiosInstance.put("/users/staff/update-staff/" + id, userData);
 
     if (response.data && response.data.message) {
       return setShowToast({ isShown: true, type: "add", message: response.data.message });
@@ -76,13 +76,13 @@ export const deleteStaff = async (staff_no, setShowToast) => {
   }
 };
 
-export const getUser = async (staff_no, setFormData) => {
-  if (!staff_no) {
+export const getUser = async (id, setFormData) => {
+  if (!id) {
     return console.log("Staff number must be provided");
   }
 
   try {
-    const response = await axiosInstance.get("/users/staff/" + staff_no);
+    const response = await axiosInstance.get("/users/staff/" + id);
 
     if (response.data && response.data.staffData) {
       return setFormData(response.data.staffData[0]);

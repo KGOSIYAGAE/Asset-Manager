@@ -7,7 +7,7 @@ const { getAllStaff, getStaff, createStaff, deleteStaff, updateStaff } = require
 router.get("/staff", getAllStaff);
 
 //Get Staff
-router.get("/staff/:staff_no", getStaff);
+router.get("/staff/:id", getStaff);
 
 //Create new Staff
 router.post("/staff/add-staff", createStaff);
@@ -16,6 +16,6 @@ router.post("/staff/add-staff", createStaff);
 router.delete("/staff/delete-staff/:staff_no", deleteStaff);
 
 //Update Staff
-router.put("/staff/update-staff/:staff_no", updateStaff);
+router.put("/staff/update-staff/:id", updateStaff);
 
 module.exports = router;

@@ -36,7 +36,7 @@ function Staff({ path }) {
 
   //Handle Edit
   const handleEdit = (cellValues) => {
-    navigate(`/users/staff/edit-staff/${cellValues.row.staff_no}`);
+    navigate(`/users/staff/edit-staff/${cellValues.row.id}`);
   };
 
   //Handle Add

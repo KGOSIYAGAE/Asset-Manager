@@ -118,9 +118,9 @@ function AddEditStaff({ path }) {
       addStaff(userData, toastDispatch);
       hanldeFormClear();
     } else {
-      const { staff_no } = params;
-      if (staff_no) {
-        updateStaff(staff_no, userData, setShowToast);
+      const { id } = params;
+      if (id) {
+        updateStaff(id, userData, setShowToast);
       }
     }
   };
@@ -148,10 +148,10 @@ function AddEditStaff({ path }) {
 
   //User details API call
   const getUserDetails = () => {
-    const staff_no = params.staff_no;
+    const { id } = params;
 
-    if (staff_no) {
-      getUser(staff_no, setFormData);
+    if (id) {
+      getUser(id, setFormData);
     }
   };
 

@@ -15,18 +15,18 @@ const getAllStaff = async (req, res) => {
 
 //get one staff
 const getStaff = async (req, res) => {
-  const { staff_no } = req.params;
+  const { id } = req.params;
 
-  if (!staff_no) {
-    return res.status(400).json({ message: "Staff number not provided", error: true });
+  if (!id) {
+    return res.status(400).json({ message: "Staff id not provided", error: true });
   }
   //const sqlGetUser = "SELECT * FROM staff WHERE `staff`.`staff_no` = ?";
   /*const sqlGetUser =
     "SELECT staff.staff_no, staff.name, staff.surname, staff.phone_number, staff.email, staff.department, staff.position, staff.contract_type, staff.isActive, staff.dateJoined, devices.make, devices.model, devices.serial_no FROM devices, staff WHERE devices.assigned_to = staff.staff_no AND staff.staff_no = ?;";
 */
-  const sqlGetUser = "SELECT * FROM staff WHERE staff_no = ?";
+  const sqlGetUser = "SELECT * FROM staff WHERE id = ?";
 
-  dbConnection.query(sqlGetUser, staff_no, (error, results) => {
+  dbConnection.query(sqlGetUser, id, (error, results) => {
     if (error) {
       return res.status(400).json({ message: "Error occured when searching for user." });
     }
@@ -95,10 +95,10 @@ const deleteStaff = async (req, res) => {
 
 //Update staff
 const updateStaff = async (req, res) => {
-  const params_staff_no = req.params.staff_no;
+  const { id } = req.params;
 
-  if (!params_staff_no) {
-    return res.status(400).json({ message: "User staff number must be provided", error: true });
+  if (!id) {
+    return res.status(400).json({ message: "User id must be provided", error: true });
   }
 
   const { staff_no, name, surname, phone_number, email, department, position, contract_type, isActive, dateJoined, endDate } = req.body;
@@ -110,9 +110,9 @@ const updateStaff = async (req, res) => {
   const values = [staff_no, name, surname, phone_number, email, department, position, contract_type, isActive, dateJoined, endDate];
 
   const updateQuery =
-    "UPDATE staff SET `staff_no`=?,`name`=?,`surname`=?,`phone_number`=?,`email`=?,`department`=?,`position`=?,`contract_type`=?,`isActive`=?,`dateJoined`=?,`endDate`=? WHERE `staff_no`=?";
+    "UPDATE staff SET `staff_no`=?,`name`=?,`surname`=?,`phone_number`=?,`email`=?,`department`=?,`position`=?,`contract_type`=?,`isActive`=?,`dateJoined`=?,`endDate`=? WHERE `id`=?";
 
-  dbConnection.query(updateQuery, [...values, params_staff_no], (error, results) => {
+  dbConnection.query(updateQuery, [...values, id], (error, results) => {
     if (error) {
       return res.status(400).json({ message: "Error updating user on staff table", error: true });
     }
