@@ -47,9 +47,24 @@ function AddEditStaff({ path }) {
     setShowToast({ isShown: false, type: "", message: "" });
   };
 
-  const formAuthenticate = () => {};
+  //Set form data
+  const setFormData = (userDetails) => {
+    setFormType("edit");
+    setName(userDetails.name);
+    setSurname(userDetails.surname);
+    setStaff_no(userDetails.staff_no);
+    setPhone_Number(userDetails.phone_number);
+    setEmail(userDetails.email);
+    setPosition(userDetails.position);
+    setDepartment(userDetails.department);
+    setContract_Type(userDetails.contract_type);
+    setIsActive(userDetails.isActive);
+    setLaptopDetails(userDetails.laptop);
+    setDateJoined(userDetails.dateJoined);
+    setEndDate(userDetails.endDate);
+  };
 
-  //Form submit
+  //Handle Submit / Update
   const handleSubmit = () => {
     if (!name) {
       return setShowToast({ isShown: true, type: "", message: "First name must be provided" });
@@ -99,93 +114,15 @@ function AddEditStaff({ path }) {
       endDate,
     };
 
-    //api call
-    addStaff(userData, toastDispatch);
-    hanldeFormClear();
-    //navigate("/users/staff/");
-  };
-
-  //Set form data
-  const setFormData = (userDetails) => {
-    //if (selectedId) {
-    setFormType("edit");
-
-    /*for (let i = 0; i < staffState.staffList.length; i++) {
-        if (selectedId == staffState.staffList[i].id) {*/
-    setName(userDetails.name);
-    setSurname(userDetails.surname);
-    setStaff_no(userDetails.staff_no);
-    setPhone_Number(userDetails.phone_number);
-    setEmail(userDetails.email);
-    setPosition(userDetails.position);
-    setDepartment(userDetails.department);
-    setContract_Type(userDetails.contract_type);
-    setIsActive(userDetails.isActive);
-    setLaptopDetails(userDetails.laptop);
-    setDateJoined(userDetails.dateJoined);
-    setEndDate(userDetails.endDate);
-    setLaptopDetails({
-      make: userDetails.make,
-      model: userDetails.model,
-      serial_no: userDetails.serial_no,
-    });
-
-    //}
-    //}
-    // return;
-    //}
-  };
-
-  //handleUpdate
-  const handleUpdate = () => {
-    if (!name) {
-      return setShowToast({ isShown: true, type: "", message: "First name must be provided" });
+    if (formType === "add") {
+      addStaff(userData, toastDispatch);
+      hanldeFormClear();
+    } else {
+      const { staff_no } = params;
+      if (staff_no) {
+        updateStaff(staff_no, userData, setShowToast);
+      }
     }
-
-    if (!surname) {
-      return setShowToast({ isShown: true, type: "", message: "Last name must be provided" });
-    }
-
-    if (!staff_no) {
-      return setShowToast({ isShown: true, type: "", message: "Staff number must be provided" });
-    }
-
-    if (!phone_number) {
-      return setShowToast({ isShown: true, type: "", message: "Phone number must be provided" });
-    }
-
-    if (!email) {
-      return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
-    }
-
-    if (!position) {
-      return setShowToast({ isShown: true, type: "", message: "Position must be provided" });
-    }
-
-    if (!isActive) {
-      return setShowToast({ isShown: true, type: "", message: "User status must be provided" });
-    }
-
-    if (!dateJoined) {
-      return setShowToast({ isShown: true, type: "", message: "Start date must be provided" });
-    }
-
-    setError(null);
-
-    const userData = {
-      name,
-      surname,
-      staff_no,
-      phone_number,
-      email,
-      department,
-      position,
-      contract_type,
-      isActive,
-      dateJoined,
-      endDate,
-    };
-    updateStaff(staff_no, userData, setShowToast);
   };
 
   //Form Clear
@@ -205,7 +142,9 @@ function AddEditStaff({ path }) {
   };
 
   //Choose user status
-  const handleUserstatus = (results) => {};
+  const handleUserstatus = (results) => {
+    setIsActive(results);
+  };
 
   //User details API call
   const getUserDetails = () => {
@@ -284,7 +223,7 @@ function AddEditStaff({ path }) {
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
-            {formType === "add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleUpdate} />}
+            {formType === "add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleSubmit} />}
 
             <CancelButton onClick={hanldeFormClear} />
           </div>

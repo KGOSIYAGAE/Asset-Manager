@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SearchInput from "../../components/inputs/searchInput/SearchInput";
 import AddButton from "../../components/buttons/AddButton";
 import RefreshButton from "../../components/buttons/RefreshButton";
@@ -9,15 +9,45 @@ import { useDeviceContext } from "../../hooks/useDevicesContext";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSearchContext } from "../../hooks/useSearchContext";
 import { useNavigate } from "react-router-dom";
+import { getAllDevices } from "../../services/api/devices/Device.Api";
+import ToastMessage from "../../components/toastMessage/ToastMessage";
+import Modal from "react-modal";
+import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 
 function Devices({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
   const { searchState } = useSearchContext();
+  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
 
+  //delete device
+  const deleteDevice = async (id, setShowToast) => {
+    try {
+      if (!id) {
+        return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
+      }
+
+      const response = await axiosInstance.delete("/devices/delete-device/" + id);
+
+      if (response.data) {
+        return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      }
+    } catch (error) {
+      if (error.response.data && error.response.data.error) {
+        return setShowToast({ isShown: true, type: "error", message: response.data.message });
+      } else {
+        return setShowToast({ isShown: true, type: "error", message: "An unexpected router occured, please try again." });
+      }
+    }
+  };
+
   //Handle dele
-  const handleDelete = () => {};
+  const handleDelete = (cellValues) => {
+    setOpenModal({ isShown: true, type: "delete", selectedDevice: cellValues.row.id, laptopSerialNo: cellValues.row.serial_no });
+    //deleteDevice(cellValues.row.id, setShowToast);
+  };
   //Hanlde Edit
   const handleEdit = (cellValues) => {
     navigate(`/devices/edit-device/${cellValues.row.serial_no}`);
@@ -27,25 +57,8 @@ function Devices({ path }) {
     navigate("/devices/add-device");
   };
 
-  //Get All devices
-  const getAllDevices = async () => {
-    try {
-      const response = await axiosInstance.get("/devices/");
-
-      if (response.data.deviceList) {
-        devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
-      }
-    } catch (error) {
-      if (error.response && error.response.data.error) {
-        return console.log(error.response.data.message);
-      } else {
-        return console.log("An unexpected error occured, please try again");
-      }
-    }
-  };
-
   useEffect(() => {
-    getAllDevices();
+    getAllDevices(devicesDispatch);
   }, []);
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -61,10 +74,31 @@ function Devices({ path }) {
             <RefreshButton />
           </div>
         </div>
-        <DataTable rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList} colHeaders={devicesTableHeaders} handleEdit={handleEdit} handleDelete={""} />
+        <DataTable rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList} colHeaders={devicesTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
       </div>
-
-      {/*<ToastMessage isShown={toastState.isShown} type={toastState.type} message={toastState.message} onClose={handleToastClose} />*/}
+      <Modal
+        isOpen={openModal.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2" },
+        }}
+        contentLabel=""
+        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
+      >
+        <DeleteConfirmation
+          text={"Are you sure you want to delete this device?"}
+          heading={"Delete Device"}
+          laptopSerialNo={openModal.laptopSerialNo}
+          onDelete={() => {
+            deleteDevice(openModal.selectedDevice, setShowToast);
+            setOpenModal({ isShown: false });
+          }}
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+        />
+      </Modal>
+      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
   );
 }

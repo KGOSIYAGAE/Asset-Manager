@@ -98,8 +98,10 @@ const addDevice = async (req, res) => {
 //Update device
 const updateDevice = async (req, res) => {
   try {
-    const { serial_no } = req.params;
-    const { assetTag, make, model, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } = req.body;
+    const param_serial_no = req.params.serial_no;
+
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
+      req.body;
 
     if (
       !assetTag ||
@@ -122,28 +124,29 @@ const updateDevice = async (req, res) => {
 
     const values = [
       assetTag,
+      serial_no,
       make,
       model,
-      serial_no,
-      spec,
       category,
       device_condition,
       status,
+      spec,
       warrantyExpiration,
-      location,
       supplier,
       invoice_no,
       purchaseValue,
       purchaseDate,
+      location,
       loanStartDate,
       loanEndDate,
     ];
 
     const updateDeviceQuery =
-      "UPDATE `devices` SET `assetTag`=?,`serial_no`=?,`make`=?,`model`=?,`category`=?,`device_condition`=?,`status`=?,`specification`=?,`warrantyExpiration`=?,`supplier`=?,`invoice_no`=?,`purchaseValue`=?,`purchaseDate`=?,`assignedTo`=?,`userId`=?,`location`=?,`loanStartDate`=?',`loanEndDate`=? WHERE `serial_no1 = ?";
+      "UPDATE `devices` SET `assetTag`=?,`serial_no`=?,`make`=?,`model`=?,`category`=?,`device_condition`=?,`status`=?,`specification`=?,`warrantyExpiration`=?,`supplier`=?,`invoice_no`=?,`purchaseValue`=?,`purchaseDate`=?,`location`=?,`loanStartDate`=?,`loanEndDate`=? WHERE serial_no = ?";
 
-    dbConnection.query(updateDeviceQuery, [...values, serial_no], (error, results) => {
+    dbConnection.query(updateDeviceQuery, [...values, param_serial_no], (error, results) => {
       if (error) {
+        console.log(error);
         return res.status(400).json({ message: "An error occured when updating device", error: true });
       }
       return res.status(200).json({ message: "Device updated successfully", error: false });
@@ -153,4 +156,24 @@ const updateDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, addDevice, updateDevice };
+//Delete device
+const deleteDevice = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.status(400).json({ message: "Device id must be provided.", error: true });
+    }
+
+    const deleteQuery = "DELETE FROM `devices` WHERE id = ?";
+    dbConnection.query(deleteQuery, id, (error, results) => {
+      if (error) {
+        return res.status(400).json({ message: "Device not found", error: true });
+      }
+      return res.status(200).json({ message: "Device deleted successfully.", error: false });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error.", error: true });
+  }
+};
+
+module.exports = { getAllDevices, getDevice, addDevice, updateDevice, deleteDevice };

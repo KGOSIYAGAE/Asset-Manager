@@ -93,12 +93,16 @@ function AddEditStudent({ path }) {
       clearForm();
     } else {
       console.log("update");
-      updateStudent(student_no, studentData, setShowToast);
+      const { student_no } = params;
+      if (student_no) {
+        updateStudent(student_no, studentData, setShowToast);
+      }
     }
   };
 
   //Set form data
   const setFormData = (studentData) => {
+    setFormType("edit");
     setName(studentData[0].name);
     setSurname(studentData[0].surname);
     setStudent_no(studentData[0].student_no);

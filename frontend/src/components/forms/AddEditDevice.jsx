@@ -10,6 +10,7 @@ import { deviceCategory, deviceManufacture } from "../../utils/deviceDetails";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
+import { addDevice, getDevice, updateDevice } from "../../services/api/devices/Device.Api";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
@@ -34,7 +35,7 @@ function AddEditDevice({ path }) {
 
   const [modelList, setModelList] = useState([]);
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
-  const [formType, setFormType] = useState("add");
+  const [formType, setFormType] = useState("Add");
 
   const params = useParams();
 
@@ -65,6 +66,7 @@ function AddEditDevice({ path }) {
 
   //handle set form data
   const setFormData = (deviceDetails) => {
+    setFormType("Edit");
     setSerial_no(deviceDetails[0].serial_no);
     setAssetTag(deviceDetails[0].assetTag);
     setMake(deviceDetails[0].make);
@@ -82,47 +84,6 @@ function AddEditDevice({ path }) {
     setPurchaseDate(deviceDetails[0].purchaseDate);
     setLoanStartDate(deviceDetails[0].loanStartDate);
     setLoanEndDate(deviceDetails[0].loanEndDate);
-  };
-
-  //add device api
-  const addDevice = async (deviceData, setShowToast) => {
-    try {
-      const response = await axiosInstance.post("/devices/add-device/", deviceData);
-      if (response.data) {
-        return setShowToast({ isShown: true, type: "add", message: response.data.message });
-      }
-    } catch (error) {
-      if (error.response.data && error.response.data.error) {
-        return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
-      } else {
-        return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
-      }
-    }
-  };
-
-  //Handle add device
-  const handleAddDevice = () => {
-    const deviceDetails = {
-      assetTag,
-      make,
-      model,
-      serial_no,
-      spec,
-      category,
-      device_condition,
-      status,
-      warrantyExpiration,
-      location,
-      supplier,
-      invoice_no,
-      purchaseValue,
-      purchaseDate,
-      loanStartDate,
-      loanEndDate,
-      assignedTo,
-      userId,
-    };
-    addDevice(deviceDetails, setShowToast);
   };
 
   //Handle Submit
@@ -168,27 +129,33 @@ function AddEditDevice({ path }) {
       return setShowToast({ isShown: true, type: "error", message: "Device specification must be provided." });
     }
 
+    const deviceDetails = {
+      assetTag,
+      make,
+      model,
+      serial_no,
+      spec,
+      category,
+      device_condition,
+      status,
+      warrantyExpiration,
+      location,
+      supplier,
+      invoice_no,
+      purchaseValue,
+      purchaseDate,
+      loanStartDate,
+      loanEndDate,
+      assignedTo,
+      userId,
+    };
+
     if (formType === "Add") {
-      console.log("Add");
-      handleAddDevice();
+      addDevice(deviceDetails, setShowToast);
     } else {
-      console.log("Edit");
-    }
-  };
-
-  //Hanlde get device
-  const getDevice = async (serial_no, setFormData) => {
-    try {
-      const response = await axiosInstance.get("devices/" + serial_no);
-
-      if (response.data) {
-        return setFormData(response.data.deviceDetails);
-      }
-    } catch (error) {
-      if (error.response && error.response.data.error) {
-        return console.log(error.response.data.message);
-      } else {
-        return console.log("An unexpected error occured, please try again");
+      const { serial_no } = params;
+      if (serial_no) {
+        updateDevice(serial_no, deviceDetails, setShowToast);
       }
     }
   };
@@ -197,11 +164,8 @@ function AddEditDevice({ path }) {
   const getDeviceDetails = () => {
     const { serial_no } = params;
     if (serial_no) {
-      setFormType("Edit");
-      return getDevice(serial_no, setFormData);
+      getDevice(serial_no, setFormData);
     }
-
-    return setFormType("Add");
   };
 
   useEffect(() => {
