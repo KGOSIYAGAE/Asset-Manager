@@ -9,6 +9,7 @@ import { deviceCondition, deviceStatus } from "../../utils/deviceStatus.Conditio
 import { deviceCategory, deviceManufacture } from "../../utils/deviceDetails";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { useParams } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
@@ -33,6 +34,7 @@ function AddEditDevice({ path }) {
 
   const [modelList, setModelList] = useState([]);
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  const [formType, setFormType] = useState("add");
 
   const params = useParams();
 
@@ -59,6 +61,27 @@ function AddEditDevice({ path }) {
       default:
         break;
     }
+  };
+
+  //handle set form data
+  const setFormData = (deviceDetails) => {
+    setSerial_no(deviceDetails[0].serial_no);
+    setAssetTag(deviceDetails[0].assetTag);
+    setMake(deviceDetails[0].make);
+    handleModel(deviceDetails[0].make);
+    //setModel(deviceDetails[0].model);
+    setSpec(deviceDetails[0].specification);
+    setCategory(deviceDetails[0].category);
+    setCondition(deviceDetails[0].deviceCondition);
+    setStatus(deviceDetails[0].status);
+    setLocation(deviceDetails[0].location);
+    setWarrantyExperation(deviceDetails[0].warrantyExpiration);
+    setSupplier(deviceDetails[0].supplier);
+    setInvoice_no(deviceDetails[0].invoice_no);
+    setPurchaseValue(deviceDetails[0].purchaseValue);
+    setPurchaseDate(deviceDetails[0].purchaseDate);
+    setLoanStartDate(deviceDetails[0].loanStartDate);
+    setLoanEndDate(deviceDetails[0].loanEndDate);
   };
 
   //Handle add device
@@ -129,10 +152,45 @@ function AddEditDevice({ path }) {
       return setShowToast({ isShown: true, type: "error", message: "Device specification must be provided." });
     }
 
-    handleAddDevice();
+    if (formType === "Add") {
+      console.log("Add");
+      handleAddDevice();
+    } else {
+      console.log("Edit");
+    }
   };
 
-  useEffect(() => {}, []);
+  //Hanlde get device
+  const getDevice = async (serial_no, setFormData) => {
+    try {
+      const response = await axiosInstance.get("devices/" + serial_no);
+
+      if (response.data) {
+        return setFormData(response.data.deviceDetails);
+      }
+    } catch (error) {
+      if (error.response && error.response.data.error) {
+        return console.log(error.response.data.message);
+      } else {
+        return console.log("An unexpected error occured, please try again");
+      }
+    }
+  };
+
+  //API CALL
+  const getDeviceDetails = () => {
+    const { serial_no } = params;
+    if (serial_no) {
+      setFormType("Edit");
+      return getDevice(serial_no, setFormData);
+    }
+
+    return setFormType("Add");
+  };
+
+  useEffect(() => {
+    getDeviceDetails();
+  }, []);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -204,7 +262,8 @@ function AddEditDevice({ path }) {
         </div>
         <div className="flex justify-end gap-5">
           <CancelButton text={"Cancel"} />
-          <SubmitButton text={"Submit"} onClick={handleSubmit} />
+
+          {formType === "Add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleSubmit} />}
         </div>
       </div>
       <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />

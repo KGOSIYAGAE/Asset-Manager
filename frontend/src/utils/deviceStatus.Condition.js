@@ -11,7 +11,7 @@ export const deviceStatus = [
   },
   {
     id: 3,
-    name: "Under Maintenance",
+    name: "Maintenance",
     description: "",
   },
   {
@@ -34,7 +34,7 @@ export const deviceCondition = [
   },
   {
     id: 3,
-    name: "Needs Repairs",
+    name: "Faulty",
     description: "",
   },
   {

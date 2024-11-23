@@ -38,4 +38,47 @@ const getDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice };
+//Add device
+const addDevice = async (req, res) => {
+  try {
+    const { assetTag, make, model, serial_no, spec, category, condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
+      req.body;
+
+    if (
+      !assetTag ||
+      !make ||
+      !model ||
+      !serial_no ||
+      !spec ||
+      !category ||
+      !condition ||
+      !status ||
+      !warrantyExpiration ||
+      !location ||
+      !supplier ||
+      !invoice_no ||
+      !purchaseValue ||
+      !purchaseDate ||
+      !loanStartDate ||
+      !loanEndDate
+    ) {
+      return res.status(400).json({ message: "All fields must be provided.", error: true });
+    }
+
+    const values = [assetTag, make, model, serial_no, spec, category, condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate];
+
+    const addDeviceQuery =
+      "INSERT INTO `devices`(`id`, `assetTag`, `serial_no`, `make`, `model`, `category`, `deviceCondition`, `status`, `specification`, `supplier`, `invoice_no`, `purchaseValue`, `purchaseDate`, `assignedTo`, `userId`, `location`, `loanStartDate`, `loanEndDate`, `createdAt`) VALUES (?)";
+
+    dbConnection.query(addDeviceQuery, [values], (error, results) => {
+      if (error) {
+        return res.status(400).json({ message: "Device already exists.", error: true });
+      }
+      return res.status(200).json({ message: "Device added successfully.", error: false });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error.", error: true });
+  }
+};
+
+module.exports = { getAllDevices, getDevice, addDevice };
