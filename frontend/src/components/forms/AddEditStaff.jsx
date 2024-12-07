@@ -115,7 +115,7 @@ function AddEditStaff({ path }) {
     };
 
     if (formType === "add") {
-      addStaff(userData, toastDispatch);
+      addStaff(userData, setShowToast);
       hanldeFormClear();
     } else {
       const { id } = params;

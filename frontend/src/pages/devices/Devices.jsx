@@ -76,7 +76,7 @@ function Devices({ path }) {
         isOpen={openModal.isShown}
         onRequestClose={() => {}}
         style={{
-          overlay: { backgroundColor: "rgb(0,0,0,0.2" },
+          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
         }}
         contentLabel=""
         className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"

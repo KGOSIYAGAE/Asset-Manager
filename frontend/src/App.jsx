@@ -52,7 +52,7 @@ function App() {
         },
         {
           path: "/devices/device-details/:id",
-          element: <DeviceDetails path={"Devices/"} />,
+          element: <DeviceDetails path={"device-details/"} />,
         },
         {
           path: "/devices/add-device",
