@@ -160,12 +160,12 @@ const updateDevice = async (req, res) => {
 const assignDevice = async (req, res) => {
   const { id } = req.params;
   const { status, location, loanStartDate, assignedTo, userId, userType } = req.body;
+
   try {
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided", error: true });
     }
 
-    console.log(req.body);
     if (!status || !location || !loanStartDate || !assignedTo || !userId || !userType) {
       return res.status(400).json({ message: "All details must be provided.", error: true });
     }
@@ -177,7 +177,7 @@ const assignDevice = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "An error occured when assigning user", error: true });
       }
-      return res.status(200).json({ message: "User assigned successfully.", error: false });
+      return res.status(200).json({ results, message: "User assigned successfully.", error: false });
     });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error: true });

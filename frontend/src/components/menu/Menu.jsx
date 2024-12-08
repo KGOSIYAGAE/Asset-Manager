@@ -4,6 +4,7 @@ import { PiStudentFill } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { MdDevices, MdDashboard } from "react-icons/md";
 import ProfileCard from "../cards/profileCard/ProfileCard";
+import { FaPeopleGroup } from "react-icons/fa6";
 import LogoCard from "../cards/logoCard/LogoCard";
 import { BsBoxArrowDown, BsBoxArrowUp, BsSendArrowDown, BsSendArrowUp } from "react-icons/bs";
 import { CgViewList } from "react-icons/cg";
@@ -44,7 +45,8 @@ function Menu() {
                 <span className="">Devices</span>
               </div>
               {/**/}
-              <div className={`${showDeviceOption ? "flex" : "hidden"} flex-col text-zinc-500 gap-3 pl-10`}>
+
+              {/*<div className={`${showDeviceOption ? "flex" : "hidden"} flex-col text-zinc-500 gap-3 pl-10`}>
                 <Link to={"/devices"}>
                   <div className="flex items-center gap-2">
                     <div className="flex bg-zinc-100 rounded-md p-2 gap-2">
@@ -67,14 +69,14 @@ function Menu() {
                   </div>
                   <span className="text-sm">Check In Device</span>
                 </div>
-              </div>
+              </div>*/}
             </div>
           </Link>
           {/**/}
           <Link to={"/users/staff/"}>
             <div className="menu-items">
               <div className="bg-zinc-100 rounded-md p-2">
-                <IoMdPeople size={18} className="" />
+                <FaPeopleGroup size={18} className="" />
               </div>
               <span className="">Staff</span>
             </div>

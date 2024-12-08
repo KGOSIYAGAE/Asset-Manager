@@ -9,6 +9,7 @@ import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 import { useStaffContext } from "../../hooks/useStaffContext";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
+import ReleaseUser from "../../components/cards/releaseUser/releaseUser";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -21,6 +22,8 @@ function DeviceDetails({ path }) {
   const params = useParams();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+
+  const [dateCreated, setDateCreated] = useState("");
 
   const setDetails = (deviceData) => {
     setDeviceDetails(...deviceData);
@@ -37,6 +40,8 @@ function DeviceDetails({ path }) {
 
   useEffect(() => {
     getDeviceDetails();
+    const newDate = deviceDetails?.createdAt.split("T")[0];
+    setDateCreated(newDate);
   }, []);
 
   return (
@@ -51,16 +56,21 @@ function DeviceDetails({ path }) {
               <SubmitButton
                 text={"Assign User"}
                 onClick={() => {
-                  setOpenModal({ isShown: true, data: "hello" });
+                  setOpenModal({ isShown: true, type: "assign", data: "hello" });
                 }}
               />
             ) : (
               <div className="flex gap-3">
-                <SubmitButton text={"Release User"} onClick={() => {}} />
+                <SubmitButton
+                  text={"Release User"}
+                  onClick={() => {
+                    setOpenModal({ isShown: true, type: "release", data: "hello" });
+                  }}
+                />
                 <SubmitButton
                   text={"Assign User"}
                   onClick={() => {
-                    setOpenModal({ isShown: true, data: "hello" });
+                    setOpenModal({ isShown: true, type: "assign", data: "hello" });
                   }}
                 />
               </div>
@@ -128,7 +138,7 @@ function DeviceDetails({ path }) {
             </div>
             <div className="flex justify-between bg-zinc-50 p-2">
               <span className="text-sm">Date Enrolled</span>
-              <span className="text-sm">{deviceDetails?.createdAt}</span>
+              <span className="text-sm">{dateCreated}</span>
             </div>
           </div>
           <div className="flex flex-col w-6/12 gap-5">
@@ -162,24 +172,40 @@ function DeviceDetails({ path }) {
       </div>
       <Modal
         isOpen={openModal.isShown}
-        onRequestClose={() => {}}
+        onRequestClose={() => {
+          setOpenModal({ isShown: false });
+        }}
         style={{
           overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
         }}
         contentLabel=""
         className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
       >
-        <IssueDevice
-          onCanel={() => {
-            setOpenModal({ isShown: false });
-          }}
-          onSubmit={() => {
-            getDeviceDetails();
-            setOpenModal({ isShown: false });
-          }}
-          data={[...staffState?.staffList, ...studentState?.studentsList]}
-          setShowToast={setShowToast}
-        />
+        {openModal.type === "assign" ? (
+          <IssueDevice
+            onCanel={() => {
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={() => {
+              getDeviceDetails();
+              setOpenModal({ isShown: false });
+            }}
+            userData={[...staffState?.staffList, ...studentState?.studentsList]}
+            setShowToast={setShowToast}
+          />
+        ) : (
+          <ReleaseUser
+            onCanel={() => {
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={() => {
+              getDeviceDetails();
+              setOpenModal({ isShown: false });
+            }}
+            data={[...staffState?.staffList, ...studentState?.studentsList]}
+            setShowToast={setShowToast}
+          />
+        )}
       </Modal>
       <ToastMessage
         isShown={showToast.isShow}

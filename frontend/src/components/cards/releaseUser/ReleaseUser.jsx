@@ -8,7 +8,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { assignUser } from "../../../services/api/devices/Device.Api";
 
-function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
+function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
 
@@ -56,12 +56,24 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
     const year = date.getFullYear();
     const today = `${year}-${month}-${day}`;
 
+    console.log(data);
+
     const { id } = params;
     if (!id) {
       return setShowToast({ isShown: true, type: "delete", message: "Device Id not provided" });
     }
 
-    if (formType === "assign") {
+    if (formType === "release") {
+      const data = {
+        status: "Available",
+        location: selectedUser.location,
+        loanStartDate: "None",
+        assignedTo: selectedUser.fullName,
+        userId: selectedUser.userId,
+        userType: selectedUser.userType,
+      };
+      assignUser(id, data, setShowToast);
+    } else {
       const data = {
         status: "Assigned",
         location: selectedUser.location,
@@ -70,22 +82,31 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
         userId: selectedUser.userId,
         userType: selectedUser.userType,
       };
-
       assignUser(id, data, setShowToast);
     }
   };
 
   useEffect(() => {
-    if (userData) {
-      setSearchResultsData(userData);
-      setFormType("assign");
+    if (data) {
+      setSearchResultsData(data);
     }
+    setSelectedUser({
+      fullName: "None",
+      userId: "None",
+      userType: "None",
+      location: "COO1 - Datacenter",
+    });
+    setFormType("release");
   }, []);
   return (
     <div>
-      <div className="flex flex-col gap-2 -z-50">
-        <span className="font-semibold p-2">Assign User</span>
+      <span className="font-semibold p-2">Release User</span>
 
+      <div className="flex flex-col gap-5 -z-50">
+        <div className="flex flex-col border border-red-400 p-4 rounded-md">
+          <span className="text-sm text-red-400">This operation will remove the current user.</span>
+          <span className="text-sm text-red-400">You can select new user below if you wish to reassign.</span>
+        </div>
         <div className="flex flex-col border-t-2 border-b-2 py-5 ">
           <div
             className="text-input col-span-2"
@@ -93,7 +114,7 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
               toggleUsers();
             }}
           >
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">User</span>
+            <span className="w-fit text-zinc-500 -mt-5 bg-white">New User</span>
             <span>{selectedUser?.fullName ? `${selectedUser.fullName} - ${selectedUser.userId}` : "- Select User -"}</span>
           </div>
           <div className={`${showUsers.isShow ? "flex" : "hidden"} flex-col relative  bg-white border border-zinc-300 rounded-md p-2 text-sm`}>
@@ -104,16 +125,30 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
               placeholder="Search here ...."
               value={searchValue}
               onChange={(e) => {
-                handleFilterUsers(e.target.value, userData);
+                handleFilterUsers(e.target.value, data);
                 setSearchValue(e.target.value);
               }}
             />
             <div className="flex flex-col h-[100px] border overflow-auto">
+              <span
+                onClick={() => {
+                  setFormType("release");
+                  setSelectedUser({
+                    fullName: "None",
+                    userId: "None",
+                    userType: "None",
+                    location: "COO1 - Datacenter",
+                  });
+                }}
+              >
+                None
+              </span>
               {searchResultsData?.map((item) => (
                 <span
                   key={item.id}
                   className="hover:bg-zinc-50 p-1"
                   onClick={() => {
+                    setFormType("reassign");
                     setSelectedUser({
                       fullName: `${item.name} ${item.surname}`,
                       userId: item.staff_no || item.student_no,
@@ -132,11 +167,11 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          <SubmitButton text={"Submit"} onClick={handleAssignDevice} />
+          <SubmitButton text={"Release"} onClick={handleAssignDevice} />
         </div>
       </div>
     </div>
   );
 }
 
-export default IssueDevice;
+export default ReleaseUser;
