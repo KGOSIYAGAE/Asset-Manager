@@ -3,16 +3,21 @@ import SubmitButton from "../../buttons/SubmitButton";
 import SearchInput from "../../inputs/searchInput/SearchInput";
 import ToastMessage from "../../toastMessage/ToastMessage";
 import { TiArrowSortedDown } from "react-icons/ti";
+import { useParams } from "react-router-dom";
+import axiosInstance from "../../../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
-function IssueDevice({ onCanel, onSubmit, data }) {
+function IssueDevice({ onCanel, onSubmit, data, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
-  const [selectedUser, setSelectedUser] = useState({ fullName: null, userId: null, userType: null });
+  const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResultsData, setSearchResultsData] = useState([]);
 
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
   const [userType, setUserType] = useState("");
+
+  const params = useParams();
+  const navigate = useNavigate();
 
   //Toggle view users
   const toggleUsers = () => {
@@ -36,18 +41,60 @@ function IssueDevice({ onCanel, onSubmit, data }) {
     setSearchResultsData([...searchResults]);
   };
 
+  //Assign device API call
+  const assignUser = async (id, data, setShowToast) => {
+    try {
+      const response = await axiosInstance.put("/devices/assign-device/" + id, data);
+
+      if (response.data && !response.data.error) {
+        setShowToast({ isShow: true, type: "add", message: response.data.message });
+        navigate(`/devices/device-details/${id}`);
+        onSubmit();
+      }
+    } catch (error) {
+      if (error.response.data && error.response.data.error) {
+        setShowToast({ isShow: true, type: "delete", message: error.response.data.message });
+      } else {
+        setShowToast({ isShow: true, type: "delete", message: "An unexpected error occured, please try again." });
+      }
+    }
+  };
+
   //Handle assign device
   const handleAssignDevice = () => {
     if (!selectedUser.fullName) {
       return setShowToast({ isShow: true, type: "delete", message: "Please select user." });
     }
     setSelectedUser({ userType: "Students" });
-    console.log(selectedUser);
-    console.log(userType);
+
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const today = `${year}-${month}-${day}`;
+
+    const data = {
+      status: "Assigned",
+      location: selectedUser.location,
+      loanStartDate: today,
+      assignedTo: selectedUser.fullName,
+      userId: selectedUser.userId,
+      userType: selectedUser.userType,
+    };
+    console.log(data);
+
+    const { id } = params;
+    if (!id) {
+      return setShowToast({ isShown: true, type: "delete", message: "Device Id not provided" });
+    }
+
+    assignUser(id, data, setShowToast);
   };
 
   useEffect(() => {
-    setSearchResultsData(data);
+    if (data) {
+      setSearchResultsData(data);
+    }
   }, []);
   return (
     <div>
@@ -91,6 +138,7 @@ function IssueDevice({ onCanel, onSubmit, data }) {
                       fullName: `${item.name} ${item.surname}`,
                       userId: item.staff_no || item.student_no,
                       userType: (item.staff_no ? "Staff" : "") || (item.student_no ? "Student" : ""),
+                      location: item.department || item.faculty,
                     });
 
                     toggleUsers();
@@ -107,14 +155,6 @@ function IssueDevice({ onCanel, onSubmit, data }) {
           <SubmitButton text={"Submit"} onClick={handleAssignDevice} />
         </div>
       </div>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

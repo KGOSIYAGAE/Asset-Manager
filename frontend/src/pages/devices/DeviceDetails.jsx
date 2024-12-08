@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AddButton from "../../components/buttons/AddButton";
 import { useParams } from "react-router-dom";
 import { getDevice } from "../../services/api/devices/Device.Api";
 import SubmitButton from "../../components/buttons/SubmitButton";
+
 import Modal from "react-modal";
 import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 import { useStaffContext } from "../../hooks/useStaffContext";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
+import ToastMessage from "../../components/toastMessage/ToastMessage";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
   const { studentState } = useStudentsContext();
 
+  //Force re-render
+
   const [isAssigned, setIsAssigned] = useState(false);
   const [deviceDetails, setDeviceDetails] = useState();
   const params = useParams();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
+  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
 
   const setDetails = (deviceData) => {
     setDeviceDetails(...deviceData);
@@ -127,20 +132,27 @@ function DeviceDetails({ path }) {
             </div>
           </div>
           <div className="flex flex-col w-6/12 gap-5">
-            <div className="flex flex-col items-center justify-center w-3/6 h-3/6 border p-2 gap-4 rounded-md shadow-md">
-              <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="w-[250px] h-[200px]" />
+            <div className="flex flex-col items-center justify-center w-2/5 h-2/5 border p-2 gap-4 rounded-md shadow-md">
+              <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="w-[200px] h-[150px]" />
             </div>
             {deviceDetails?.status === "Assigned" ? (
-              <div className="flex flex-col h-1/5 border p-2 rounded-md shadow-md">
+              <div className="flex flex-col h-2/5 justify-between border p-2 rounded-md shadow-md">
                 <span className="heading-text">Assigned User</span>
-                <div className="flex justify-between bg-zinc-50 p-2">
-                  <span className="text-sm">Name</span>
-                  <span className="text-sm">{deviceDetails?.assignedTo}</span>
+                <div>
+                  <div className="flex justify-between bg-zinc-50 p-2">
+                    <span className="text-sm">Full name</span>
+                    <span className="text-sm">{deviceDetails?.assignedTo}</span>
+                  </div>
+                  <div className="flex justify-between  p-2">
+                    <span className="text-sm">User Id</span>
+                    <span className="text-sm">{deviceDetails?.userId}</span>
+                  </div>
+                  <div className="flex justify-between bg-zinc-50 p-2">
+                    <span className="text-sm">User Type</span>
+                    <span className="text-sm">{deviceDetails?.userType}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between  p-2">
-                  <span className="text-sm">User</span>
-                  <span className="text-sm">{deviceDetails?.userId}</span>
-                </div>
+                <span className="text-blue-400 underline cursor-pointer">View More</span>
               </div>
             ) : (
               ""
@@ -161,10 +173,22 @@ function DeviceDetails({ path }) {
           onCanel={() => {
             setOpenModal({ isShown: false });
           }}
-          onSubmit={() => {}}
+          onSubmit={() => {
+            getDeviceDetails();
+            setOpenModal({ isShown: false });
+          }}
           data={[...staffState?.staffList, ...studentState?.studentsList]}
+          setShowToast={setShowToast}
         />
       </Modal>
+      <ToastMessage
+        isShown={showToast.isShow}
+        type={showToast.type}
+        message={showToast.message}
+        onClose={() => {
+          setShowToast({ isShow: false });
+        }}
+      />
     </div>
   );
 }

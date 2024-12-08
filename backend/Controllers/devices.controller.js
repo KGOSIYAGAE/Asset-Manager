@@ -142,7 +142,7 @@ const updateDevice = async (req, res) => {
     ];
 
     const updateDeviceQuery =
-      "UPDATE `devices` SET `assetTag`=?,`serial_no`=?,`make`=?,`model`=?,`category`=?,`device_condition`=?,`status`=?,`specification`=?,`warrantyExpiration`=?,`supplier`=?,`invoice_no`=?,`purchaseValue`=?,`purchaseDate`=?,`location`=?,`loanStartDate`=?,`loanEndDate`=? WHERE id = ?";
+      "UPDATE `devices` SET `assetTag`=?,`serial_no`=?,`make`=?,`model`=?,`category`=?,`device_condition`=?,`status`=?,`specification`=?,`warrantyExpiration`=?,`supplier`=?,`invoice_no`=?,`purchaseValue`=?,`purchaseDate`=?,`location`=?,`loanStartDate`=?,`loanEndDate`=? WHERE `id` = ?";
 
     dbConnection.query(updateDeviceQuery, [...values, id], (error, results) => {
       if (error) {
@@ -150,6 +150,34 @@ const updateDevice = async (req, res) => {
         return res.status(400).json({ message: "An error occured when updating device", error: true });
       }
       return res.status(200).json({ message: "Device updated successfully", error: false });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error: true });
+  }
+};
+
+//Assign device
+const assignDevice = async (req, res) => {
+  const { id } = req.params;
+  const { status, location, loanStartDate, assignedTo, userId, userType } = req.body;
+  try {
+    if (!id) {
+      return res.status(400).json({ message: "Device Id not provided", error: true });
+    }
+
+    console.log(req.body);
+    if (!status || !location || !loanStartDate || !assignedTo || !userId || !userType) {
+      return res.status(400).json({ message: "All details must be provided.", error: true });
+    }
+
+    const assignQuery = "UPDATE `devices` SET `status`=?,`location`=?,`loanStartDate`=?,`assignedTo`=?, `userId`=?, `userType`=? WHERE `id`=?";
+    const values = [status, location, loanStartDate, assignedTo, userId, userType];
+
+    dbConnection.query(assignQuery, [...values, id], (error, results) => {
+      if (error) {
+        return res.status(400).json({ message: "An error occured when assigning user", error: true });
+      }
+      return res.status(200).json({ message: "User assigned successfully.", error: false });
     });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error: true });
@@ -176,4 +204,4 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, addDevice, updateDevice, deleteDevice };
+module.exports = { getAllDevices, getDevice, addDevice, updateDevice, assignDevice, deleteDevice };
