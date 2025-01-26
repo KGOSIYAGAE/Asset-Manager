@@ -72,7 +72,7 @@ export const updateDevice = async (id, deviceDetails, setShowToast) => {
 };
 
 //Assign device API call
-export const assignUser = async (id, data, setShowToast) => {
+export const assignUser = async (id, data, onSubmit, setShowToast) => {
   try {
     const response = await axiosInstance.put("/devices/assign-device/" + id, data);
 

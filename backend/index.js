@@ -22,6 +22,17 @@ app.use("/users", StudentsRouter);
 const DevicesRouter = require("./Routes/devices.routes");
 app.use("/devices", DevicesRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log("Server running on port", process.env.PORT);
+//Login user Router
+const UserRouter = require("./Routes/user.routes");
+app.use("/auth", UserRouter);
+
+dbConnection.connect((error) => {
+  if (error) {
+    return console.log("An error occured connecting the database.");
+  }
+
+  app.listen(process.env.PORT, () => {
+    console.log("Database connected.");
+    console.log("Server running on port", process.env.PORT);
+  });
 });

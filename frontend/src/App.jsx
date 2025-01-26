@@ -1,4 +1,4 @@
-import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, Outlet, createBrowserRouter, useNavigate } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/home/Home";
 import Staff from "./pages/users/staff/Staff";
@@ -15,6 +15,8 @@ import Devices from "./pages/devices/Devices";
 import { DevicesContextProvider } from "./context/DevicesContext";
 import AddEditDevice from "./components/forms/AddEditDevice";
 import DeviceDetails from "./pages/devices/DeviceDetails";
+import Login from "./pages/login/Login";
+import { useEffect } from "react";
 
 function App() {
   //App UI Layout
@@ -36,10 +38,26 @@ function App() {
     );
   };
 
+  const PrivateRoutes = ({ element: Element, isAuthenticated }) => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (!isAuthenticated) {
+        navigate("/auth/login", { replace: true });
+      }
+    }, [isAuthenticated, navigate]);
+
+    return isAuthenticated ? Element : <h1>Authenticated</h1>;
+  };
+
   const router = createBrowserRouter([
     {
+      path: "/auth/login",
+      element: <Login />,
+    },
+    {
       path: "/",
-      element: <Layout />,
+      element: <PrivateRoutes isAuthenticated={true} element={<Layout />} />,
       children: [
         {
           path: "/",

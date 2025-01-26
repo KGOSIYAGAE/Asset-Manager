@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import axios from "axios";
 import Dashboard from "../../components/dashboard/Dashboard";
@@ -21,7 +21,7 @@ function Home() {
   }, []);
   return (
     <div>
-      <Dashboard deviceNumber={devicesState?.deviceList?.length} staffNumber={staffState?.staffList?.length} studentsNumber={studentState?.studentsList?.length} />
+      <Dashboard devices={devicesState?.deviceList} deviceNumber={devicesState?.deviceList?.length} staffNumber={staffState?.staffList?.length} studentsNumber={studentState?.studentsList?.length} />
     </div>
   );
 }

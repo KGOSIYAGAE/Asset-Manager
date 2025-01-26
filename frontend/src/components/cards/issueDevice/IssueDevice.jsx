@@ -71,7 +71,7 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
         userType: selectedUser.userType,
       };
 
-      assignUser(id, data, setShowToast);
+      assignUser(id, data, onSubmit, setShowToast);
     }
   };
 

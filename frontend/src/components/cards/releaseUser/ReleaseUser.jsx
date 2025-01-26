@@ -56,8 +56,6 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
     const year = date.getFullYear();
     const today = `${year}-${month}-${day}`;
 
-    console.log(data);
-
     const { id } = params;
     if (!id) {
       return setShowToast({ isShown: true, type: "delete", message: "Device Id not provided" });
@@ -72,7 +70,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
         userId: selectedUser.userId,
         userType: selectedUser.userType,
       };
-      assignUser(id, data, setShowToast);
+      assignUser(id, data, onSubmit, setShowToast);
     } else {
       const data = {
         status: "Assigned",
@@ -82,7 +80,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
         userId: selectedUser.userId,
         userType: selectedUser.userType,
       };
-      assignUser(id, data, setShowToast);
+      assignUser(id, data, onSubmit, setShowToast);
     }
   };
 

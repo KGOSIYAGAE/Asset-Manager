@@ -4,7 +4,7 @@ import { MdDevices } from "react-icons/md";
 import { PiStudentFill } from "react-icons/pi";
 import PieComponent from "../charts/pieChart/PieComponent";
 
-function Dashboard({ deviceNumber, staffNumber, path }) {
+function Dashboard({ deviceNumber, staffNumber, studentsNumber, path }) {
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
       <span className="text-sm">
@@ -33,7 +33,7 @@ function Dashboard({ deviceNumber, staffNumber, path }) {
             <PiStudentFill size={30} className="text-blue-900" />
           </div>
           <span className="font-semibold text-sm">Students Accounts</span>
-          <span className="font-semibold text-4xl">20</span>
+          <span className="font-semibold text-4xl">{studentsNumber}</span>
           <span className="text-sm text-blue-900 underline cursor-pointer">View more</span>
         </div>
         {/* */}

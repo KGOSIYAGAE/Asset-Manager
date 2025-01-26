@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 
-function TextInput({ label, value, isDisabled, maxLength, setOnChange }) {
+function TextInput({ label, value, isDisabled, maxLength, setOnChange, type }) {
   useEffect((e) => {}, []);
   return (
     <div className="text-input">
       <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
       <input
-        type="text"
+        type={type ? type : "text"}
         className="outline-none"
         maxLength={maxLength}
         name="input-text"
