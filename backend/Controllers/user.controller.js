@@ -1,25 +1,54 @@
 const { dbConnection } = require("../dbConnection");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
+const jwt = require("jsonwebtoken");
+
+const createToken = (username) => {
+  return jwt.sign({ username }, process.env.SECRET, { expiresIn: "3d" });
+};
 
 //Login user
 const loginUser = async (req, res) => {
-  return res.status(200).json({ message: "Login" });
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "All field must be provided", error: true });
+  }
+
+  const loginQuery = `SELECT * FROM users WHERE username = ?`;
+
+  dbConnection.query(loginQuery, username, async (error, results) => {
+    if (error) {
+      return res.status(400).json({ message: error, error: true });
+    }
+
+    const match = await bcrypt.compare(password, results[0].password);
+    console.log(match);
+
+    if (!match) {
+      return res.status(400).json({ message: "Password incorrect", error: true });
+    }
+
+    const token = createToken(username);
+
+    return res.status(200).json({ username, token, message: "Login successful", error: false });
+  });
 };
 
 //signup user
 const signupUser = async (req, res) => {
   const { username, password, role } = req.body;
 
-  if (!username) {
-    return res.status(400).json({ message: "Username not provided", error: true });
+  if (!username || !password || !role) {
+    return res.status(400).json({ message: "All field must be provided", error: true });
   }
 
-  if (!password) {
-    return res.status(400).json({ message: "Password not provided", error: true });
+  if (!validator.isEmail(username)) {
+    return res.status(400).json({ message: "username must be a valid email", error: true });
   }
 
-  if (!role) {
-    return res.status(400).json({ message: "Role not provided", error: true });
+  if (!validator.isStrongPassword(password)) {
+    return res.status(400).json({ message: "Password not strong enough", error: true });
   }
 
   const checkExitQuery = `SELECT * FROM users WHERE username = ?`;
@@ -48,7 +77,9 @@ const signupUser = async (req, res) => {
         return res.status(400).json({ message: "An error occured creating user", error: true });
       }
 
-      return res.status(200).json({ message: "User created successfully", error: false });
+      const token = createToken(username);
+
+      return res.status(200).json({ token, message: "User created successfully", error: false });
     });
   });
 };
