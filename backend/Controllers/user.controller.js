@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
-const createToken = (username) => {
-  return jwt.sign({ username }, process.env.SECRET, { expiresIn: "2d" });
+const createToken = (email) => {
+  return jwt.sign({ email }, process.env.SECRET, { expiresIn: "2d" });
 };
 
 //Login user

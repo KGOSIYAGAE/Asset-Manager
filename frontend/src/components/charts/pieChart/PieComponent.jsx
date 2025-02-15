@@ -9,35 +9,35 @@ import { useState } from "react";
 function PieComponent({ devices }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
 
-  const [assigned, setAssigned] = useState(0);
-  const [available, setAvailable] = useState(0);
-  const [faulty, setFaulty] = useState(0);
-  const [scrap, setScrap] = useState(0);
+  const [newLaptops, setNewLaptops] = useState(0);
+  const [secondHandLaptops, setSecondHandLaptops] = useState(0);
+  const [faultyLaptops, setFaultyLaptops] = useState(0);
+  const [scrapLaptops, setScrapLaptops] = useState(0);
 
   const getStatSammury = () => {
     for (let i = 0; i < devicesState?.deviceList?.length; i++) {
       //console.log(devicesState.deviceList[i]);
 
       if (devicesState.deviceList[i].device_condition === "New") {
-        setAssigned((prevSate) => {
+        setNewLaptops((prevSate) => {
           return prevSate + 1;
         });
       }
 
       if (devicesState.deviceList[i].device_condition === "Used") {
-        setAvailable((prevSate) => {
+        setSecondHandLaptops((prevSate) => {
           return prevSate + 1;
         });
       }
 
       if (devicesState.deviceList[i].device_condition === "Faulty") {
-        setFaulty((prevSate) => {
+        setFaultyLaptops((prevSate) => {
           return prevSate + 1;
         });
       }
 
       if (devicesState.deviceList[i].device_condition === "Scrap") {
-        setScrap((prevSate) => {
+        setScrapLaptops((prevSate) => {
           return prevSate + 1;
         });
       }
@@ -45,14 +45,14 @@ function PieComponent({ devices }) {
   };
 
   const data = [
-    { value: assigned, label: "New" },
-    { value: available, label: "Used" },
-    { value: faulty, label: "Faulty" },
-    { value: scrap, label: "Scrap" },
+    { value: newLaptops, label: "New" },
+    { value: secondHandLaptops, label: "Used" },
+    { value: faultyLaptops, label: "Faulty" },
+    { value: scrapLaptops, label: "Scrap" },
   ];
 
   const size = {
-    width: 400,
+    width: 380,
     height: 400,
   };
 
@@ -74,7 +74,7 @@ function PieComponent({ devices }) {
 
   useEffect(() => {
     getStatSammury();
-  }, [assigned, available, faulty, scrap, getStatSammury]);
+  }, []);
 
   return (
     <div className="h-[300px] flex justify-center items-center ">

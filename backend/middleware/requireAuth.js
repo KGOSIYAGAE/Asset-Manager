@@ -12,17 +12,17 @@ const requireAuth = async (req, res, next) => {
   const token = authorization.split(" ")[1];
 
   try {
-    const { username } = jwt.verify(token, process.env.SECRET);
+    const { email } = jwt.verify(token, process.env.SECRET);
 
-    const findUserQuery = `SELECT * FROM users WHERE username = ?`;
+    const findUserQuery = `SELECT * FROM admin_users WHERE email = ?`;
 
-    req.user = dbConnection.query(findUserQuery, username, async (error, results) => {
+    req.user = dbConnection.query(findUserQuery, email, async (error, results) => {
       if (error) {
         return res.status(400).json({ message: error, error: true });
       }
 
       if (results.length <= 0) {
-        return res.status(400).json({ message: "Usermame not found", error: true });
+        return res.status(400).json({ message: "Email not found", error: true });
       }
 
       return results.username;

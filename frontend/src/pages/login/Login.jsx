@@ -7,31 +7,32 @@ import { useNavigate } from "react-router-dom";
 import loginAxiosInstance from "../../utils/loginAxiosInstance";
 
 function Login() {
-  const [username, setEmail] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showToast, setShowToast] = useState({ isShown: false, type: "error", message: "" });
   const [showLoading, setLoading] = useState(false);
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
 
-  const onLogin = async (username, password) => {
+  const onLogin = async (email, password_hash) => {
     try {
-      if (!username) {
+      if (!email) {
         return setShowToast({ isShown: true, type: "error", message: "Username not provided" });
       }
 
-      if (!password) {
+      if (!password_hash) {
         return setShowToast({ isShown: true, type: "error", message: "Password not provided" });
       }
 
-      const loginDetails = { username, password };
+      const loginDetails = { email, password_hash };
 
       const response = await loginAxiosInstance.post("auth/login", loginDetails);
 
       if (response.data && !response.data.error) {
         localStorage.setItem("token", JSON.stringify(response.data.token));
+
         authDispatch({ type: "LOGIN", payload: response.data });
-        //console.log(response.data.token);
+
         navigate("/");
         return setShowToast({ isShown: true, type: "add", message: "Login successful" });
       }
@@ -49,7 +50,7 @@ function Login() {
       <div className="w-[400px] h-[300px] flex flex-col border p-3 gap-10 rounded-md shadow-md">
         <span>Admin Login</span>
         <div className="flex flex-col gap-5">
-          <TextInput label={"Email"} value={username} setOnChange={setEmail} type={"email"} />
+          <TextInput label={"Email"} value={email} setOnChange={setEmail} type={"email"} />
           <PasswordInput label={"Password"} value={password} setOnChange={setPassword} type={"password"} />
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
@@ -63,7 +64,7 @@ function Login() {
             value=""
             className="bg-blue-900 text-white rounded-md p-1"
             onClick={() => {
-              onLogin(username, password);
+              onLogin(email, password);
             }}
           >
             Sign in

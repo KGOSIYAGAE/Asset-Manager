@@ -8,11 +8,13 @@ import { useStaffContext } from "../../hooks/useStaffContext";
 import { getStaffData } from "../../services/api/staff/Staff.Api";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
 import { getAllStudents } from "../../services/api/students/Students.Api";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 function Home() {
   const { devicesState, devicesDispatch } = useDeviceContext();
   const { staffState, staffDispatch } = useStaffContext();
   const { studentState, studentDispatch } = useStudentsContext();
+  const { authState } = useAuthContext();
 
   useEffect(() => {
     getAllDevices(devicesDispatch);
@@ -21,7 +23,13 @@ function Home() {
   }, [devicesDispatch, staffDispatch, studentDispatch]);
   return (
     <div>
-      <Dashboard devices={devicesState?.deviceList} deviceNumber={devicesState?.deviceList?.length} staffNumber={staffState?.staffList?.length} studentsNumber={studentState?.studentsList?.length} />
+      <Dashboard
+        loggedInUser={authState?.user}
+        devices={devicesState?.deviceList}
+        deviceNumber={devicesState?.deviceList?.length}
+        staffNumber={staffState?.staffList?.length}
+        studentsNumber={studentState?.studentsList?.length}
+      />
     </div>
   );
 }
