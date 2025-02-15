@@ -1,0 +1,38 @@
+const jwt = require("jsonwebtoken");
+const { dbConnection } = require("../dbConnection");
+
+const requireAuth = async (req, res, next) => {
+  //Verify authentication
+  const { authorization } = req.headers;
+
+  if (!authorization) {
+    return res.status(401).json({ message: "Authorization token required", error: true });
+  }
+
+  const token = authorization.split(" ")[1];
+
+  try {
+    const { username } = jwt.verify(token, process.env.SECRET);
+
+    const findUserQuery = `SELECT * FROM users WHERE username = ?`;
+
+    req.user = dbConnection.query(findUserQuery, username, async (error, results) => {
+      if (error) {
+        return res.status(400).json({ message: error, error: true });
+      }
+
+      if (results.length <= 0) {
+        return res.status(400).json({ message: "Usermame not found", error: true });
+      }
+
+      return results.username;
+    });
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ message: "Request not authorized", error: true });
+  }
+};
+
+module.exports = requireAuth;

@@ -4,35 +4,42 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
 const createToken = (username) => {
-  return jwt.sign({ username }, process.env.SECRET, { expiresIn: "3d" });
+  return jwt.sign({ username }, process.env.SECRET, { expiresIn: "2d" });
 };
 
 //Login user
 const loginUser = async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  if (!username || !password) {
-    return res.status(400).json({ message: "All field must be provided", error: true });
+    if (!username || !password) {
+      return res.status(400).json({ message: "All field must be provided", error: true });
+    }
+
+    const loginQuery = `SELECT * FROM users WHERE username = ?`;
+
+    dbConnection.query(loginQuery, username, async (error, results) => {
+      if (error) {
+        return res.status(400).json({ message: error, error: true });
+      }
+
+      if (results.length <= 0) {
+        return res.status(400).json({ message: "Usermame not found", error: true });
+      }
+
+      const match = await bcrypt.compare(password, results[0].password);
+
+      if (!match) {
+        return res.status(400).json({ message: "Password incorrect", error: true });
+      }
+
+      const token = createToken(username);
+
+      return res.status(200).json({ username, token, message: "Login successful", error: false });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error: true });
   }
-
-  const loginQuery = `SELECT * FROM users WHERE username = ?`;
-
-  dbConnection.query(loginQuery, username, async (error, results) => {
-    if (error) {
-      return res.status(400).json({ message: error, error: true });
-    }
-
-    const match = await bcrypt.compare(password, results[0].password);
-    console.log(match);
-
-    if (!match) {
-      return res.status(400).json({ message: "Password incorrect", error: true });
-    }
-
-    const token = createToken(username);
-
-    return res.status(200).json({ username, token, message: "Login successful", error: false });
-  });
 };
 
 //signup user

@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import TextInput from "../../components/inputs/textInput/TextInput";
 import PasswordInput from "../../components/inputs/textInput/PasswordInput";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
-import axiosInstance from "../../utils/axiosInstance";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useNavigate } from "react-router-dom";
+import loginAxiosInstance from "../../utils/loginAxiosInstance";
 
 function Login() {
   const [username, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [showToast, setShowToast] = useState({ isShown: false, type: "error", message: "" });
+  const [showLoading, setLoading] = useState(false);
+  const { authState, authDispatch } = useAuthContext();
+  const navigate = useNavigate();
 
   const onLogin = async (username, password) => {
     try {
@@ -22,9 +26,13 @@ function Login() {
 
       const loginDetails = { username, password };
 
-      const response = await axiosInstance.post("auth/login", loginDetails);
+      const response = await loginAxiosInstance.post("auth/login", loginDetails);
 
       if (response.data && !response.data.error) {
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        authDispatch({ type: "LOGIN", payload: response.data });
+        //console.log(response.data.token);
+        navigate("/");
         return setShowToast({ isShown: true, type: "add", message: "Login successful" });
       }
     } catch (error) {
@@ -37,7 +45,7 @@ function Login() {
   };
 
   return (
-    <div className="w-screen h-svh flex items-center justify-center border border-red-500">
+    <div className="w-screen h-svh flex items-center justify-center ">
       <div className="w-[400px] h-[300px] flex flex-col border p-3 gap-10 rounded-md shadow-md">
         <span>Admin Login</span>
         <div className="flex flex-col gap-5">

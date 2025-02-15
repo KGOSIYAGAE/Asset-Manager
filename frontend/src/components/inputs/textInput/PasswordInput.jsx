@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa6";
 
 function TextInput({ label, value, isDisabled, maxLength, setOnChange, type }) {
-  useEffect((e) => {}, []);
+  useEffect((e) => {
+    setTextType("password");
+    setIsVisible(false);
+  }, []);
 
   const [textType, setTextType] = useState("text");
   const [isVisible, setIsVisible] = useState(false);
@@ -23,7 +26,7 @@ function TextInput({ label, value, isDisabled, maxLength, setOnChange, type }) {
       <div className="flex justify-between items-center">
         <input
           type={textType}
-          className="outline-none border"
+          className="w-[340px] outline-none"
           maxLength={maxLength}
           name="input-text"
           disabled={isDisabled}

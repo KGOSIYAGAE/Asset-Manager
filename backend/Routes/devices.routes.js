@@ -1,6 +1,10 @@
 const express = require("express");
 const { getAllDevices, getDevice, addDevice, updateDevice, assignDevice, deleteDevice } = require("../Controllers/devices.controller");
+const requireAuth = require("../middleware/requireAuth");
+
 const router = express.Router();
+
+router.use(requireAuth);
 
 //Get All devices
 router.get("/", getAllDevices);

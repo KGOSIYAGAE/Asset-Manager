@@ -16,9 +16,20 @@ import { DevicesContextProvider } from "./context/DevicesContext";
 import AddEditDevice from "./components/forms/AddEditDevice";
 import DeviceDetails from "./pages/devices/DeviceDetails";
 import Login from "./pages/login/Login";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  /*useEffect(() => {
+    const user = localStorage.getItem("user");
+    console.log(user);
+    if (user) {
+    setIsAuthenticated(true);
+    console.log(isAuthenticated)
+    }
+  }, [isAuthenticated, setIsAuthenticated]);*/
+
   //App UI Layout
   const Layout = () => {
     return (
@@ -38,17 +49,85 @@ function App() {
     );
   };
 
-  const PrivateRoutes = ({ element: Element, isAuthenticated }) => {
+  const PrivateRoutes = ({ element: Element }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (!isAuthenticated) {
-        navigate("/auth/login", { replace: true });
+      const user = localStorage.getItem("user");
+
+      if (!user) {
+        return navigate("/auth/login", { replace: true });
       }
-    }, [isAuthenticated, navigate]);
+      console.log(user);
+      setIsAuthenticated(true);
+      /*if (!isAuthenticated) {
+        console.log(user);
+        navigate("/auth/login", { replace: true });
+      }*/
+    }, [isAuthenticated, navigate, setIsAuthenticated]);
 
     return isAuthenticated ? Element : <h1>Authenticated</h1>;
   };
+
+  /*const router = createBrowserRouter([
+    {
+      path: "/auth/login",
+      element: <Login />,
+    },
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          path: "/dashboard",
+          element: <Home />,
+        },
+        //Devices
+        {
+          path: "/devices",
+          element: <Devices path={"Devices/"} />,
+        },
+        {
+          path: "/devices/device-details/:id",
+          element: <DeviceDetails path={"device-details/"} />,
+        },
+        {
+          path: "/devices/add-device",
+          element: <AddEditDevice path={"add-device"} />,
+        },
+        {
+          path: "/devices/edit-device/:id",
+          element: <AddEditDevice path={"edit-device"} />,
+        },
+        //Staff
+        {
+          path: "/users/staff",
+          element: <Staff path={"staff-list"} />,
+        },
+        {
+          path: "/users/staff/edit-staff/:id",
+          element: <AddEditStaff path={"edit-staff"} />,
+        },
+        {
+          path: "/users/staff/add-staff/",
+          element: <AddEditStaff path={"edit-staff"} />,
+        },
+        //Students
+        {
+          path: "/users/students",
+          element: <Students path={"student-list"} />,
+        },
+        {
+          path: "/users/students/edit-student/:student_no",
+          element: <AddEditStudent path={"edit-student"} />,
+        },
+        {
+          path: "/users/students/add-student",
+          element: <AddEditStudent path={"edit-student"} />,
+        },
+      ],
+    },
+  ]);*/
 
   const router = createBrowserRouter([
     {
@@ -57,7 +136,7 @@ function App() {
     },
     {
       path: "/",
-      element: <PrivateRoutes isAuthenticated={true} element={<Layout />} />,
+      element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
       children: [
         {
           path: "/",
