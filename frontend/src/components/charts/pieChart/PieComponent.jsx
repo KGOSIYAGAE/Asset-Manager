@@ -74,7 +74,7 @@ function PieComponent({ devices }) {
 
   useEffect(() => {
     getStatSammury();
-  }, []);
+  }, [assigned, available, faulty, scrap, getStatSammury]);
 
   return (
     <div className="h-[300px] flex justify-center items-center ">

@@ -18,7 +18,7 @@ function Home() {
     getAllDevices(devicesDispatch);
     getStaffData(staffDispatch);
     getAllStudents(studentDispatch);
-  }, []);
+  }, [devicesDispatch, staffDispatch, studentDispatch]);
   return (
     <div>
       <Dashboard devices={devicesState?.deviceList} deviceNumber={devicesState?.deviceList?.length} staffNumber={staffState?.staffList?.length} studentsNumber={studentState?.studentsList?.length} />

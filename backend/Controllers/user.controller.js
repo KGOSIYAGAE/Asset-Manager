@@ -44,47 +44,50 @@ const loginUser = async (req, res) => {
 
 //signup user
 const signupUser = async (req, res) => {
-  const { username, password, role } = req.body;
+  const { password_hash, first_name, last_name, email, role } = req.body;
 
-  if (!username || !password || !role) {
+  if (!password_hash || !first_name || !last_name || !email || !role) {
     return res.status(400).json({ message: "All field must be provided", error: true });
   }
 
-  if (!validator.isEmail(username)) {
+  if (!validator.isEmail(email)) {
     return res.status(400).json({ message: "username must be a valid email", error: true });
   }
 
-  if (!validator.isStrongPassword(password)) {
+  if (!validator.isStrongPassword(password_hash)) {
     return res.status(400).json({ message: "Password not strong enough", error: true });
   }
 
-  const checkExitQuery = `SELECT * FROM users WHERE username = ?`;
+  const checkExitQuery = `SELECT * FROM admin_users WHERE email = ?`;
 
   //Check if user exist
-  dbConnection.query(checkExitQuery, username, async (error, results) => {
+  dbConnection.query(checkExitQuery, email, async (error, results) => {
     if (error) {
       return res.status(400).json({ message: error, error: true });
     }
 
     if (results.length > 0) {
-      return res.status(400).json({ message: "Username already in use", error: true });
+      return res.status(400).json({ message: "Email already in use", error: true });
     }
 
     //Create user
-    const createUserQuery = "INSERT INTO users (`username`, `password`, `role`) VALUES (?)";
+    const createUserQuery = "INSERT INTO admin_users (`username`, `password_hash`,`first_name`,`last_name`,`email`, `role`) VALUES (?)";
 
     //password hashing
     const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(password, salt);
+    const hashPassword = await bcrypt.hash(password_hash, salt);
 
-    const values = [username, hashPassword, role];
+    //Create username
+    const fullName = `${first_name} ${last_name}`;
+
+    const values = [fullName, hashPassword, first_name, last_name, email, role];
 
     dbConnection.query(createUserQuery, [values], async (error, results) => {
       if (error) {
-        return res.status(400).json({ message: "An error occured creating user", error: true });
+        return res.status(400).json({ message: "An error occured creating user", errorM: error, error: true });
       }
 
-      const token = createToken(username);
+      const token = createToken(email);
 
       return res.status(200).json({ token, message: "User created successfully", error: false });
     });
