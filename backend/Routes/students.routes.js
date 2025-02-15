@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const requireAuth = require("../middleware/requireAuth");
 
 const { getAllStudents, getStudent, addStudents, updateStudent, deleteStudent } = require("../Controllers/students.controller");
+
+//Protects routes from unathorised use
+router.use(requireAuth);
 
 //Get All Students
 router.get("/students", getAllStudents);

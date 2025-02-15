@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const requireAuth = require("../middleware/requireAuth");
 
 const { getAllStaff, getStaff, createStaff, deleteStaff, updateStaff } = require("../Controllers/staff.controllers");
+
+//Protect routes from unathorised use
+router.use(requireAuth);
 
 //Get All Staff
 router.get("/staff", getAllStaff);

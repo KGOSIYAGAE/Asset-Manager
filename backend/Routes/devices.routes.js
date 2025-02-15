@@ -4,6 +4,7 @@ const requireAuth = require("../middleware/requireAuth");
 
 const router = express.Router();
 
+//Protect routes from unauthorised use
 router.use(requireAuth);
 
 //Get All devices

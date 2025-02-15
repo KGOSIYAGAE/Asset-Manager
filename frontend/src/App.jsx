@@ -53,12 +53,12 @@ function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
-      const user = localStorage.getItem("user");
+      const accessToken = localStorage.getItem("token");
 
-      if (!user) {
+      if (!accessToken) {
         return navigate("/auth/login", { replace: true });
       }
-      console.log(user);
+
       setIsAuthenticated(true);
       /*if (!isAuthenticated) {
         console.log(user);
