@@ -10,32 +10,32 @@ const createToken = (username) => {
 //Login user
 const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password_hash } = req.body;
 
-    if (!username || !password) {
+    if (!email || !password_hash) {
       return res.status(400).json({ message: "All field must be provided", error: true });
     }
 
-    const loginQuery = `SELECT * FROM users WHERE username = ?`;
+    const loginQuery = `SELECT * FROM admin_users WHERE email = ?`;
 
-    dbConnection.query(loginQuery, username, async (error, results) => {
+    dbConnection.query(loginQuery, email, async (error, results) => {
       if (error) {
         return res.status(400).json({ message: error, error: true });
       }
 
       if (results.length <= 0) {
-        return res.status(400).json({ message: "Usermame not found", error: true });
+        return res.status(400).json({ message: "Email not found", error: true });
       }
 
-      const match = await bcrypt.compare(password, results[0].password);
+      const match = await bcrypt.compare(password_hash, results[0].password_hash);
 
       if (!match) {
         return res.status(400).json({ message: "Password incorrect", error: true });
       }
 
-      const token = createToken(username);
+      const token = createToken(email);
 
-      return res.status(200).json({ username, token, message: "Login successful", error: false });
+      return res.status(200).json({ username: results[0].username, role: results[0].role, token, message: "Login successful", error: false });
     });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error: true });
