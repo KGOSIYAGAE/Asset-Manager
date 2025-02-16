@@ -66,9 +66,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
         status: "Available",
         location: selectedUser.location,
         loanStartDate: "None",
-        assignedTo: selectedUser.fullName,
         userId: selectedUser.userId,
-        userType: selectedUser.userType,
       };
       assignUser(id, data, onSubmit, setShowToast);
     } else {
@@ -76,9 +74,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
         status: "Assigned",
         location: selectedUser.location,
         loanStartDate: today,
-        assignedTo: selectedUser.fullName,
         userId: selectedUser.userId,
-        userType: selectedUser.userType,
       };
       assignUser(id, data, onSubmit, setShowToast);
     }

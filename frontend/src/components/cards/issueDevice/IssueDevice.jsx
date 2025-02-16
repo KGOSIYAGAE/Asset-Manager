@@ -66,9 +66,7 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
         status: "Assigned",
         location: selectedUser.location,
         loanStartDate: today,
-        assignedTo: selectedUser.fullName,
         userId: selectedUser.userId,
-        userType: selectedUser.userType,
       };
 
       assignUser(id, data, onSubmit, setShowToast);

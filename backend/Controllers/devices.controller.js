@@ -25,7 +25,8 @@ const getDevice = async (req, res) => {
   }
 
   try {
-    const getDeviceQuery = "SELECT * FROM devices WHERE id = ?";
+    //const getDeviceQuery = "SELECT * FROM devices WHERE id = ?";
+    const getDeviceQuery = `SELECT devices.id, devices.assetTag, devices.serial_no, devices.make, devices.model, devices.category, devices.device_condition, devices.status, devices.specification, devices.warrantyExpiration, devices.supplier,devices.invoice_no, devices.purchaseValue, devices.purchaseDate, devices.location, devices.createdAt, COALESCE(students.name, staff.name) AS first_name, COALESCE(students.surname, staff.surname) AS last_name, COALESCE(students.student_no, staff.staff_no) AS user_id FROM devices LEFT JOIN students ON (devices.userId = students.student_no )  LEFT JOIN staff ON (devices.userId = staff.staff_no) WHERE devices.id = ?`;
 
     dbConnection.query(getDeviceQuery, id, (error, results) => {
       if (error) {
@@ -159,19 +160,19 @@ const updateDevice = async (req, res) => {
 //Assign device
 const assignDevice = async (req, res) => {
   const { id } = req.params;
-  const { status, location, loanStartDate, assignedTo, userId, userType } = req.body;
+  const { status, location, loanStartDate, userId } = req.body;
 
   try {
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided", error: true });
     }
 
-    if (!status || !location || !loanStartDate || !assignedTo || !userId || !userType) {
+    if (!status || !location || !loanStartDate || !userId) {
       return res.status(400).json({ message: "All details must be provided.", error: true });
     }
 
-    const assignQuery = "UPDATE `devices` SET `status`=?,`location`=?,`loanStartDate`=?,`assignedTo`=?, `userId`=?, `userType`=? WHERE `id`=?";
-    const values = [status, location, loanStartDate, assignedTo, userId, userType];
+    const assignQuery = "UPDATE `devices` SET `status`=?,`location`=?,`loanStartDate`=?,`userId`=? WHERE `id`=?";
+    const values = [status, location, loanStartDate, userId];
 
     dbConnection.query(assignQuery, [...values, id], (error, results) => {
       if (error) {

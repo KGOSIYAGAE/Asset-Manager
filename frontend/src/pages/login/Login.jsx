@@ -30,7 +30,7 @@ function Login() {
 
       if (response.data && !response.data.error) {
         localStorage.setItem("token", JSON.stringify(response.data.token));
-
+        console.log("Login");
         authDispatch({ type: "LOGIN", payload: response.data });
 
         navigate("/");

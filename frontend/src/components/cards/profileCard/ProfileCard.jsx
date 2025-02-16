@@ -2,11 +2,19 @@ import React, { useEffect, useState } from "react";
 import { getIntials } from "../../../utils/getIntials";
 import { MdLogout } from "react-icons/md";
 import { useAuthContext } from "../../../hooks/useAuthContext";
+import { useNavigate } from "react-router-dom";
 
 function ProfileCard() {
   //const [userName, setUsername] = useState("Kgosiyagae Motabogi");
-  const { authState } = useAuthContext();
+  const { authState, authDispatch } = useAuthContext();
   const [loggedInUser, setLoggedInUser] = useState("N/A");
+  const navigate = useNavigate();
+
+  const logout = () => {
+    authDispatch({ type: "LOGOUT", payload: null });
+    localStorage.clear();
+    navigate("/auth/login");
+  };
 
   useEffect(() => {
     setLoggedInUser(authState?.user?.username);
@@ -22,7 +30,13 @@ function ProfileCard() {
       </div>
 
       <div className="menu-items bg-zinc-100 rounded-md p-2">
-        <MdLogout size={20} className="text-zinc-500" />
+        <MdLogout
+          size={20}
+          className="text-zinc-500"
+          onClick={() => {
+            logout();
+          }}
+        />
       </div>
     </div>
   );
