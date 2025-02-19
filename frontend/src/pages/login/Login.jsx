@@ -29,8 +29,9 @@ function Login() {
       const response = await loginAxiosInstance.post("auth/login", loginDetails);
 
       if (response.data && !response.data.error) {
-        localStorage.setItem("token", JSON.stringify(response.data.token));
-        console.log("Login");
+        //localStorage.setItem("token", JSON.stringify(response.data.token));
+        sessionStorage.setItem("currentUser", JSON.stringify({ username: response.data.username, role: response.data.role, token: response.data.token }));
+
         authDispatch({ type: "LOGIN", payload: response.data });
 
         navigate("/");

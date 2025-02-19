@@ -4,7 +4,7 @@ const requireAuth = require("../middleware/requireAuth");
 
 const { getAllStaff, getStaff, createStaff, deleteStaff, updateStaff } = require("../Controllers/staff.controllers");
 
-//Protect routes from unathorised use
+//Protect routes from unathorised
 router.use(requireAuth);
 
 //Get All Staff

@@ -6,51 +6,32 @@ import { useDeviceContext } from "../../../hooks/useDevicesContext";
 import { useEffect } from "react";
 import { useState } from "react";
 
-function PieComponent({ devices }) {
+function PieComponentMake({ devices }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
 
-  const [newLaptops, setNewLaptops] = useState(0);
-  const [secondHandLaptops, setSecondHandLaptops] = useState(0);
-  const [faultyLaptops, setFaultyLaptops] = useState(0);
-  const [scrapLaptops, setScrapLaptops] = useState(0);
+  //
+  const [lenovoLapotps, setLenovoLaptops] = useState(0);
+  const [hpLaptops, setHpLaptops] = useState(0);
 
   const getStatSummary = () => {
-    let newLaptops = 0;
-    let secondHandLaptops = 0;
-    let faultyLaptops = 0;
-    let scrapLaptops = 0;
-
+    let lenovo = 0;
+    let hp = 0;
     for (let i = 0; i < devices?.length; i++) {
-      //console.log(devicesState.deviceList[i]);
-
-      if (devices[i].device_condition === "New") {
-        newLaptops += 1;
+      if (devices[i].make === "Lenovo") {
+        lenovo += 1;
       }
 
-      if (devices[i].device_condition === "Used") {
-        secondHandLaptops += 1;
-      }
-
-      if (devices[i].device_condition === "Faulty") {
-        faultyLaptops += 1;
-      }
-
-      if (devices[i].device_condition === "Scrap") {
-        scrapLaptops += 1;
+      if (devices[i].make === "HP") {
+        hp += 1;
       }
     }
-
-    setNewLaptops(newLaptops);
-    setSecondHandLaptops(secondHandLaptops);
-    setFaultyLaptops(faultyLaptops);
-    setScrapLaptops(scrapLaptops);
+    setLenovoLaptops(lenovo);
+    setHpLaptops(hp);
   };
 
   const data = [
-    { value: newLaptops, label: "New" },
-    { value: secondHandLaptops, label: "Used" },
-    { value: faultyLaptops, label: "Faulty" },
-    { value: scrapLaptops, label: "Scrap" },
+    { value: lenovoLapotps, label: "Lenovo" },
+    { value: hpLaptops, label: "HP" },
   ];
 
   const size = {
@@ -79,7 +60,7 @@ function PieComponent({ devices }) {
   }, [devices]);
 
   return (
-    <div className="h-[200px] flex justify-center items-center ">
+    <div className="h-[200px] flex justify-center items-center">
       <PieChart
         margin={{ left: 100, right: 100 }}
         series={[{ data, innerRadius: 130 }]}
@@ -88,7 +69,7 @@ function PieComponent({ devices }) {
           legend: {
             direction: "row",
             position: { vertical: "bottom" },
-            padding: -40,
+            padding: -10,
           },
         }}
       ></PieChart>
@@ -96,4 +77,4 @@ function PieComponent({ devices }) {
   );
 }
 
-export default PieComponent;
+export default PieComponentMake;

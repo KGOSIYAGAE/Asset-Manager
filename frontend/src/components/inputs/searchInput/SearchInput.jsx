@@ -21,7 +21,9 @@ function SearchInput({ searchData, dataType }) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].model && searchData[i].model.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].assigned_to && searchData[i].assigned_to.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].serial_no && searchData[i].serial_no.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].assetTag && searchData[i].assetTag.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].name && searchData[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);

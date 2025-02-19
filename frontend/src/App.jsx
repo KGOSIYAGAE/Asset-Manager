@@ -17,6 +17,7 @@ import AddEditDevice from "./components/forms/AddEditDevice";
 import DeviceDetails from "./pages/devices/DeviceDetails";
 import Login from "./pages/login/Login";
 import { useEffect, useState } from "react";
+import { getLoggedInUser } from "./utils/getLoggedInUser";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -53,9 +54,9 @@ function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
-      const accessToken = localStorage.getItem("token");
+      const user = getLoggedInUser();
 
-      if (!accessToken) {
+      if (!user.token) {
         return navigate("/auth/login", { replace: true });
       }
 
@@ -150,6 +151,7 @@ function App() {
         {
           path: "/devices/device-details/:id",
           element: <DeviceDetails path={"device-details/"} />,
+          //errorElement: <Home />,
         },
         {
           path: "/devices/add-device",

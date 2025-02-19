@@ -3,6 +3,7 @@ import AddButton from "../../components/buttons/AddButton";
 import { useParams } from "react-router-dom";
 import { getDevice } from "../../services/api/devices/Device.Api";
 import SubmitButton from "../../components/buttons/SubmitButton";
+import { useNavigate } from "react-router-dom";
 
 import Modal from "react-modal";
 import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
@@ -25,6 +26,7 @@ function DeviceDetails({ path }) {
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
 
   const [dateCreated, setDateCreated] = useState("");
+  const navigate = useNavigate();
 
   //Get user type based on userID
   const getUserType = (user_id) => {
@@ -32,6 +34,15 @@ function DeviceDetails({ path }) {
       return setUserType("Student");
     } else {
       return setUserType("Staff");
+    }
+  };
+
+  //On View more information on user
+  const onViewMore = (user_id) => {
+    if (user_id.length > 5) {
+      return navigate(`/users/students/edit-student/${user_id}`);
+    } else {
+      return navigate(`/users/students/edit-student/${user_id}`);
     }
   };
 
@@ -53,6 +64,9 @@ function DeviceDetails({ path }) {
     const newDate = deviceDetails?.createdAt.split("T")[0];
     setDateCreated(newDate);
     //getUserType(deviceDetails?.user_id);
+    if (!staffState || !studentState) {
+      console.log("No data");
+    }
   }, []);
 
   return (
@@ -142,7 +156,13 @@ function DeviceDetails({ path }) {
           </div>
           <div className="flex justify-between bg-zinc-50 p-2">
             <span className="text-sm">Purchase Value</span>
-            <span className="text-sm">{`R ${deviceDetails?.purchaseValue}`}</span>
+            <span className="text-sm">
+              {new Intl.NumberFormat("en-ZA", {
+                style: "currency",
+                currency: "ZAR",
+              }).format(deviceDetails?.purchaseValue)}
+            </span>
+            {/*`R ${deviceDetails?.purchaseValue}` */}
           </div>
           <div className="flex justify-between  p-2">
             <span className="text-sm">Purchase Date</span>
@@ -175,7 +195,9 @@ function DeviceDetails({ path }) {
                   <span className="text-sm">{userType}</span>
                 </div>*/}
               </div>
-              <span className="text-blue-400 underline cursor-pointer">View More</span>
+              <span className="text-blue-400 underline cursor-pointer" onClick={() => {}}>
+                View More
+              </span>
             </div>
           ) : (
             ""

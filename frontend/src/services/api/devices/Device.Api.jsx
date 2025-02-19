@@ -9,8 +9,10 @@ export const getAllDevices = async (devicesDispatch) => {
       devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
     }
   } catch (error) {
-    if (error.response && error.response.data.error) {
-      return console.log(error.response.data.message);
+    if (error.response.data.errorStatus === 401 && error.response.data.error) {
+      return console.log("Authorization required, please login");
+    } else if (error.response && error.response.data.error) {
+      return console.log(error.response.data);
     } else {
       return console.log("An unexpected error occured, please try again");
     }
