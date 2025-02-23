@@ -1,16 +1,16 @@
 export const getLoggedInUser = () => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const user = {
-    username: currentUser.username,
-    role: currentUser.role,
-    token: currentUser.token,
+    username: currentUser?.username,
+    role: currentUser?.role,
+    token: currentUser?.token,
   };
   return user;
 };
 
 export const userPrevilages = () => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  const userRole = currentUser.role;
+  const userRole = currentUser?.role;
 
   switch (userRole) {
     case "global_admin":

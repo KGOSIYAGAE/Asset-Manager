@@ -13,7 +13,7 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
       <span className="text-sm">
         <b>Dashboard /</b> {path}
       </span>
-      <div className="flex flex-col p-4 bg-white rounded-md shadow-md">
+      <div className="flex flex-col p-4 bg-white rounded-md shadow-lg">
         <span className="text-xl font-semibold">
           Good Morning,
           <span className="text-blue-900 pl-1">{loggedInUser?.username}</span>
@@ -23,7 +23,7 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
       <div className="grid grid-cols-4 grid-rows-3  gap-5">
         {" "}
         {/* */}
-        <div className="flex flex-col col-span-1 rounded-md shadow-md p-4 gap-4">
+        <div className="flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4">
           <span className="font-semibold text-sm">Staff Accounts</span>
           <div className="flex flex-row justify-between items-end">
             <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
@@ -38,7 +38,7 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
           </div>
         </div>
         {/* */}
-        <div className="flex flex-col col-span-1 rounded-md shadow-md p-4 gap-4">
+        <div className="flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4">
           <span className="font-semibold text-sm">Students Accounts</span>
           <div className="flex flex-row justify-between items-end">
             <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
@@ -53,7 +53,7 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
           </div>
         </div>
         {/* */}
-        <div className="flex flex-col col-span-1 rounded-md shadow-md p-4 gap-4">
+        <div className="flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4">
           <span className="font-semibold text-sm">Number of Devices</span>
           <div className="flex flex-row justify-between items-end">
             <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
@@ -68,17 +68,17 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
           </div>
         </div>
         {/* */}
-        <div className="h-[340px] flex flex-col col-span-1 row-span-2 rounded-md shadow-md p-2 gap-4">
+        <div className="h-[340px] flex flex-col col-span-1 row-span-2 rounded-md shadow-lg p-2 gap-4">
           <span className="font-semibold text-sm">Devices by Condition</span>
           <PieComponent devices={devices} />
         </div>
         {/* */}
-        <div className="h-[300px] flex flex-col col-span-1 row-span-2 rounded-md shadow-md p-2 ">
+        <div className="h-[300px] flex flex-col col-span-1 row-span-2 rounded-md shadow-lg p-2 ">
           <span className="font-semibold text-sm">Devices by Make</span>
           <PieComponentMake devices={devices} />
         </div>
         {/* */}
-        <div className="h-[300px] flex flex-col col-span-2 row-span-2 rounded-md shadow-md p-2 ">
+        <div className="h-[300px] flex flex-col col-span-2 row-span-2 rounded-md shadow-lg p-2 ">
           <span className="font-semibold text-sm">Devices by Status</span>
           <StatusBarChart devices={devices} />
         </div>
