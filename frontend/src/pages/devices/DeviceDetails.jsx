@@ -138,9 +138,9 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Category</span>
             <span className="text-sm">{deviceDetails?.category}</span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2">
+          <div className="flex flex-col justify-between bg-zinc-50 p-2 gap-3">
             <span className="text-sm">Specification</span>
-            <span className="text-sm">{deviceDetails?.specification}</span>
+            <span className=" text-sm ">{deviceDetails?.specification}</span>
           </div>
           <div className="flex justify-between p-2">
             <span className="text-sm">Location</span>

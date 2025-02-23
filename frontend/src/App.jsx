@@ -6,6 +6,7 @@ import Students from "./pages/users/students/students";
 import Navbar from "./components/navbar/Navbar";
 import Menu from "./components/menu/Menu";
 import AddEditStaff from "./components/forms/AddEditStaff";
+import { jwtDecode } from "jwt-decode";
 
 import { StaffContextProvider } from "./context/StaffContext";
 import { SearchContextProvider } from "./context/SearchContext";
@@ -50,21 +51,40 @@ function App() {
     );
   };
 
+  //Check if token has expired
+  const isTokenExpired = (token) => {
+    if (!token) {
+      return true;
+    }
+
+    try {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decodedToken.exp < currentTime;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return true;
+    }
+  };
+
   const PrivateRoutes = ({ element: Element }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
       const user = getLoggedInUser();
 
+      //Check if user is authorized to access private protected routes
       if (!user.token) {
         return navigate("/auth/login", { replace: true });
       }
 
+      //Check if user token is still valid if not redirect to login
+      if (isTokenExpired(user.token)) {
+        sessionStorage.clear();
+        return navigate("/auth/login");
+      }
+
       setIsAuthenticated(true);
-      /*if (!isAuthenticated) {
-        console.log(user);
-        navigate("/auth/login", { replace: true });
-      }*/
     }, [isAuthenticated, navigate, setIsAuthenticated]);
 
     return isAuthenticated ? Element : <h1>Authenticated</h1>;

@@ -4,7 +4,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
 const createToken = (email) => {
-  return jwt.sign({ email }, process.env.SECRET, { expiresIn: "2d" });
+  return jwt.sign({ email }, process.env.SECRET, { expiresIn: "7200s" });
 };
 
 //Login user

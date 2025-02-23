@@ -44,11 +44,7 @@ function StatusBarChart({ devices }) {
   const uData = [availableLaptops, assignedLaptops, MaintenanceLaptops, lostLaptops];
   const xLabels = ["Available", "Assigned", "Maintenance", "Lost"];
 
-  return (
-    <div>
-      <BarChart width={500} height={280} series={[{ data: uData, id: "uvId" }]} xAxis={[{ data: xLabels, scaleType: "band" }]} />
-    </div>
-  );
+  return <BarChart width={600} height={270} series={[{ data: uData, id: "uvId" }]} xAxis={[{ data: xLabels, scaleType: "band" }]} />;
 }
 
 export default StatusBarChart;
