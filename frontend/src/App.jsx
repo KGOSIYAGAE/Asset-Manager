@@ -35,7 +35,7 @@ function App() {
   //App UI Layout
   const Layout = () => {
     return (
-      <div className="w-screen ">
+      <div className="w-screen border">
         {/*<div>
           <Navbar />
         </div>*/}

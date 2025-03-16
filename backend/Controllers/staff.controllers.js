@@ -1,5 +1,5 @@
 const mysql = require("mysql");
-const { dbConnection } = require("../dbConnection");
+const { dbConnection } = require("../util/dbConnection");
 
 //get all staff
 const getAllStaff = async (req, res) => {

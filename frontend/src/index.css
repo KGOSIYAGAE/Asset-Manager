@@ -58,4 +58,8 @@
     border-bottom: 1px solid;
     @apply border-b-zinc-100;
   }
+
+  .item-hover {
+    @apply hover:bg-blue-50;
+  }
 }

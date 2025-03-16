@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { dbConnection } = require("../dbConnection");
+const { dbConnection } = require("../util/dbConnection");
 
 const requireAuth = async (req, res, next) => {
   //Verify authentication

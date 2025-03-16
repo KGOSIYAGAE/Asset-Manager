@@ -5,45 +5,22 @@ import { styled } from "@mui/material/styles";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
 import { useEffect } from "react";
 import { useState } from "react";
+import { getDevicesConditionSummary } from "../../../utils/analyticsMethods";
 
 function PieComponent({ devices }) {
-  const { devicesState, devicesDispatch } = useDeviceContext();
-
   const [newLaptops, setNewLaptops] = useState(0);
   const [secondHandLaptops, setSecondHandLaptops] = useState(0);
   const [faultyLaptops, setFaultyLaptops] = useState(0);
   const [scrapLaptops, setScrapLaptops] = useState(0);
 
-  const getStatSummary = () => {
-    let newLaptops = 0;
-    let secondHandLaptops = 0;
-    let faultyLaptops = 0;
-    let scrapLaptops = 0;
+  //call from analyticsMethods - get condition
+  const getStatsOnLoad = () => {
+    const devicesConditionReport = getDevicesConditionSummary(devices);
 
-    for (let i = 0; i < devices?.length; i++) {
-      //console.log(devicesState.deviceList[i]);
-
-      if (devices[i].device_condition === "New") {
-        newLaptops += 1;
-      }
-
-      if (devices[i].device_condition === "Used") {
-        secondHandLaptops += 1;
-      }
-
-      if (devices[i].device_condition === "Faulty") {
-        faultyLaptops += 1;
-      }
-
-      if (devices[i].device_condition === "Scrap") {
-        scrapLaptops += 1;
-      }
-    }
-
-    setNewLaptops(newLaptops);
-    setSecondHandLaptops(secondHandLaptops);
-    setFaultyLaptops(faultyLaptops);
-    setScrapLaptops(scrapLaptops);
+    setNewLaptops(devicesConditionReport.newLaptops);
+    setSecondHandLaptops(devicesConditionReport.secondHandLaptops);
+    setFaultyLaptops(devicesConditionReport.faultyLaptops);
+    setScrapLaptops(devicesConditionReport.scrapedLaptops);
   };
 
   const data = [
@@ -75,7 +52,7 @@ function PieComponent({ devices }) {
   }
 
   useEffect(() => {
-    getStatSummary();
+    getStatsOnLoad();
   }, [devices]);
 
   return (

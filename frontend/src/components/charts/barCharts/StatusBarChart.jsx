@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { getDevicesStatusSummary } from "../../../utils/analyticsMethods";
 
 function StatusBarChart({ devices }) {
   const [availableLaptops, setAvailableLaptops] = useState(0);
@@ -7,44 +8,24 @@ function StatusBarChart({ devices }) {
   const [MaintenanceLaptops, setMaintenanceLaptops] = useState(0);
   const [lostLaptops, setLostLaptops] = useState(0);
 
-  const getStatSummary = () => {
-    let avalable = 0;
-    let assigned = 0;
-    let maintenance = 0;
-    let lost = 0;
+  const getStatOnLoad = () => {
+    //call from analyticsMethods - get status
+    const deviceStatusReport = getDevicesStatusSummary(devices);
 
-    for (let i = 0; i < devices?.length; i++) {
-      if (devices[i].status === "Available") {
-        avalable += 1;
-      }
-
-      if (devices[i].status === "Assigned") {
-        assigned += 1;
-      }
-
-      if (devices[i].status === "Maintenance") {
-        maintenance += 1;
-      }
-
-      if (devices[i].status === "Lost") {
-        lost += 1;
-      }
-    }
-
-    setLostLaptops(lost);
-    setMaintenanceLaptops(maintenance);
-    setAssignedLaptops(assigned);
-    setAvailableLaptops(avalable);
+    setLostLaptops(deviceStatusReport.markedLost);
+    setMaintenanceLaptops(deviceStatusReport.onMaintenance);
+    setAssignedLaptops(deviceStatusReport.assignedUsers);
+    setAvailableLaptops(deviceStatusReport.availableInStock);
   };
 
   useEffect(() => {
-    getStatSummary();
+    getStatOnLoad();
   }, [devices]);
 
   const uData = [availableLaptops, assignedLaptops, MaintenanceLaptops, lostLaptops];
   const xLabels = ["Available", "Assigned", "Maintenance", "Lost"];
 
-  return <BarChart width={600} height={270} series={[{ data: uData, id: "uvId" }]} xAxis={[{ data: xLabels, scaleType: "band" }]} />;
+  return <BarChart width={600} height={270} series={[{ data: uData, id: "lenovo" }]} xAxis={[{ data: xLabels, scaleType: "band" }]} />;
 }
 
 export default StatusBarChart;

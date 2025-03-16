@@ -1,4 +1,5 @@
-const { dbConnection } = require("../dbConnection");
+const { dbConnection } = require("../util/dbConnection");
+const { createNewLog } = require("../util/Table.Logger");
 
 //Get All Devices
 const getAllDevices = async (req, res) => {
@@ -178,6 +179,9 @@ const assignDevice = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "An error occured when assigning user", error: true });
       }
+      //Create log
+      createNewLog("Assigned", req.user.values, id, `Device successfully to ${userId}`);
+
       return res.status(200).json({ results, message: "User assigned successfully.", error: false });
     });
   } catch (error) {
@@ -198,6 +202,9 @@ const deleteDevice = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "Device not found", error: true });
       }
+      //Create log
+      createNewLog("delete", req.user.values, id, "Device deleted successfully.");
+
       return res.status(200).json({ message: "Device deleted successfully.", error: false });
     });
   } catch (error) {

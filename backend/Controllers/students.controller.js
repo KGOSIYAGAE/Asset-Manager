@@ -1,4 +1,4 @@
-const { dbConnection } = require("../dbConnection");
+const { dbConnection } = require("../util/dbConnection");
 
 //get Students
 const getAllStudents = async (req, res) => {

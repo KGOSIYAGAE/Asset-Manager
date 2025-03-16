@@ -5,28 +5,18 @@ import { styled } from "@mui/material/styles";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
 import { useEffect } from "react";
 import { useState } from "react";
+import { getDevicesStatsByModel } from "../../../utils/analyticsMethods";
 
 function PieComponentMake({ devices }) {
-  const { devicesState, devicesDispatch } = useDeviceContext();
-
-  //
   const [lenovoLapotps, setLenovoLaptops] = useState(0);
   const [hpLaptops, setHpLaptops] = useState(0);
 
-  const getStatSummary = () => {
-    let lenovo = 0;
-    let hp = 0;
-    for (let i = 0; i < devices?.length; i++) {
-      if (devices[i].make === "Lenovo") {
-        lenovo += 1;
-      }
+  // Analytics Methods - get Models
+  const getStatsOnLoad = () => {
+    const devicesByModelReport = getDevicesStatsByModel(devices);
 
-      if (devices[i].make === "HP") {
-        hp += 1;
-      }
-    }
-    setLenovoLaptops(lenovo);
-    setHpLaptops(hp);
+    setLenovoLaptops(devicesByModelReport.lenovoLaptops);
+    setHpLaptops(devicesByModelReport.hpLaptops);
   };
 
   const data = [
@@ -56,7 +46,7 @@ function PieComponentMake({ devices }) {
   }
 
   useEffect(() => {
-    getStatSummary();
+    getStatsOnLoad();
   }, [devices]);
 
   return (
