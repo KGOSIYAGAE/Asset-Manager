@@ -6,7 +6,8 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { assignUser } from "../../../services/api/devices/Device.Api";
+import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
+import { getTodayDate } from "../../../utils/helperMethods";
 
 function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -50,11 +51,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
     }
     setSelectedUser({ userType: "Students" });
 
-    const date = new Date();
-    const day = date.getDate();
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const today = `${year}-${month}-${day}`;
+    const today = getTodayDate();
 
     const { id } = params;
     if (!id) {
@@ -62,21 +59,27 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
     }
 
     if (formType === "release") {
+      //Release user
       const data = {
         status: "Available",
         location: selectedUser.location,
         loanStartDate: "None",
         userId: selectedUser.userId,
       };
-      assignUser(id, data, onSubmit, setShowToast);
+
+      assignReleaseUser(id, data, setShowToast);
+      onSubmit();
     } else {
+      //Assign user
       const data = {
         status: "Assigned",
         location: selectedUser.location,
         loanStartDate: today,
         userId: selectedUser.userId,
       };
-      assignUser(id, data, onSubmit, setShowToast);
+
+      assignReleaseUser(id, data, setShowToast);
+      onSubmit();
     }
   };
 
@@ -123,7 +126,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
                 setSearchValue(e.target.value);
               }}
             />
-            <div className="flex flex-col h-[100px] border overflow-auto">
+            <div className="flex flex-col h-[300px] border overflow-auto">
               <span
                 onClick={() => {
                   setFormType("release");

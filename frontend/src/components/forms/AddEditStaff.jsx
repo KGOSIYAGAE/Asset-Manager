@@ -13,6 +13,7 @@ import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { addStaff, getUser, updateStaff } from "../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
+import { generateLoanEndate } from "../../utils/helperMethods";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -29,7 +30,7 @@ function AddEditStaff({ path }) {
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
   const [dateJoined, setDateJoined] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const [laptopDetails, setLaptopDetails] = useState({

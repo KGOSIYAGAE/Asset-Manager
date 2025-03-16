@@ -25,6 +25,7 @@ export const getDevice = async (id, setFormData) => {
     const response = await axiosInstance.get("devices/" + id);
 
     if (response.data) {
+      console.log(response.data.deviceDetails);
       return setFormData(response.data.deviceDetails);
     }
   } catch (error) {
@@ -74,13 +75,13 @@ export const updateDevice = async (id, deviceDetails, setShowToast) => {
 };
 
 //Assign device API call
-export const assignUser = async (id, data, onSubmit, setShowToast) => {
+export const assignReleaseUser = async (id, data, setShowToast) => {
   try {
     const response = await axiosInstance.put("/devices/assign-device/" + id, data);
 
     if (response.data && !response.data.error) {
       setShowToast({ isShow: true, type: "add", message: response.data.message });
-      onSubmit();
+      return;
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {

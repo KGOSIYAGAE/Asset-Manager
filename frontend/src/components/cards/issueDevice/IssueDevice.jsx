@@ -6,7 +6,8 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { assignUser } from "../../../services/api/devices/Device.Api";
+import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
+import { getTodayDate } from "../../../utils/helperMethods";
 
 function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -50,11 +51,8 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
     }
     setSelectedUser({ userType: "Students" });
 
-    const date = new Date();
-    const day = date.getDate();
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const today = `${year}-${month}-${day}`;
+    //Get today's date
+    const today = getTodayDate();
 
     const { id } = params;
     if (!id) {
@@ -69,7 +67,7 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
         userId: selectedUser.userId,
       };
 
-      assignUser(id, data, onSubmit, setShowToast);
+      assignReleaseUser(id, data, onSubmit, setShowToast);
     }
   };
 
@@ -80,7 +78,7 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
     }
   }, []);
   return (
-    <div>
+    <div className="">
       <div className="flex flex-col gap-2 -z-50">
         <span className="font-semibold p-2">Assign User</span>
 
@@ -106,11 +104,11 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
                 setSearchValue(e.target.value);
               }}
             />
-            <div className="flex flex-col h-[100px] border overflow-auto">
+            <div className="flex flex-col h-[350px] border overflow-auto">
               {searchResultsData?.map((item) => (
                 <span
                   key={item.id}
-                  className="hover:bg-zinc-50 p-1"
+                  className="hover:bg-blue-100 p-1"
                   onClick={() => {
                     setSelectedUser({
                       fullName: `${item.name} ${item.surname}`,
