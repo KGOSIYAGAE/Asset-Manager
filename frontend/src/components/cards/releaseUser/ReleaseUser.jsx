@@ -89,7 +89,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
     }
     setSelectedUser({
       fullName: "None",
-      userId: "None",
+      userId: "it.stockmanager@spu.ac.za",
       userType: "None",
       location: "COO1 - Datacenter",
     });

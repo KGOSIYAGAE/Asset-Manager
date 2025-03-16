@@ -2,6 +2,7 @@ const { dbConnection } = require("../util/dbConnection");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const { createNewLog } = require("../util/Table.Logger");
 
 const createToken = (email) => {
   return jwt.sign({ email }, process.env.SECRET, { expiresIn: "7200s" });
@@ -34,6 +35,9 @@ const loginUser = async (req, res) => {
       }
 
       const token = createToken(email);
+
+      //Create log
+      createNewLog("login", email, email, `Login successfully - ${email}`);
 
       return res.status(200).json({ username: results[0].username, role: results[0].role, token, message: "Login successful", error: false });
     });
@@ -88,6 +92,9 @@ const signupUser = async (req, res) => {
       }
 
       const token = createToken(email);
+
+      //Create log
+      createNewLog("signup", email, email, `Signup successfully - ${email}`);
 
       return res.status(200).json({ token, message: "User created successfully", error: false });
     });

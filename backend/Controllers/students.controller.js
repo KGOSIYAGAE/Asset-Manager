@@ -1,4 +1,5 @@
 const { dbConnection } = require("../util/dbConnection");
+const { createNewLog } = require("../util/Table.Logger");
 
 //get Students
 const getAllStudents = async (req, res) => {
@@ -64,6 +65,10 @@ const addStudents = async (req, res) => {
           if (error) {
             return res.status(400).json({ message: "The was an error inserting data in to students table", error: true });
           }
+
+          //Create log
+          createNewLog("create", req.user.values, email, `New student user created successfully ${email}`);
+
           return res.status(200).json({ message: "Student Added Successfully", error: false });
         });
       }
@@ -95,6 +100,10 @@ const updateStudent = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "An error occured when updating student details", error: true });
       }
+
+      //Create log
+      createNewLog("update", req.user.values, email, `Student updated successfully ${email}`);
+
       return res.status(200).json({ message: "Student updated successfully", error: false });
     });
   } catch (error) {
@@ -117,6 +126,9 @@ const deleteStudent = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "Error deleting a student.", error: true });
       }
+
+      //Create log
+      createNewLog("delete", req.user.values, student_no, `Student deleted successfully ${student_no}`);
 
       return res.status(200).json({ message: "User delete successfully", error: false });
     });

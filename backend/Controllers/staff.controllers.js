@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const { dbConnection } = require("../util/dbConnection");
+const { createNewLog } = require("../util/Table.Logger");
 
 //get all staff
 const getAllStaff = async (req, res) => {
@@ -67,6 +68,9 @@ const createStaff = async (req, res) => {
           return res.status(400).json({ errorMessage: error, message: "Error create new user in staff table", error: true });
         }
 
+        //Create log
+        createNewLog("create", req.user.values, email, `New staff user created successfully ${email}`);
+
         return res.status(201).json({ staffData: results, message: "User created successfully", error: false });
       });
       //
@@ -88,6 +92,9 @@ const deleteStaff = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: "Error deleting user", error: true });
     }
+
+    //Create log
+    createNewLog("delete", req.user.values, staff_no, `User deleted successfully ${staff_no}`);
 
     return res.status(200).json({ message: "User deleted successfully", error: false });
   });
@@ -116,6 +123,10 @@ const updateStaff = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: "Error updating user on staff table", error: true });
     }
+
+    //Create log
+    createNewLog("update", req.user.values, email, `User updated successfully ${email}`);
+
     res.status(200).json({ message: "User updated successfully", error: false });
   });
 };

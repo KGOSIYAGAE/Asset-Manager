@@ -10,7 +10,7 @@ const createNewLog = (action, user_id, item_id, details) => {
       if (error) {
         return console.log("Error occured creating new log entry to table");
       }
-      return console.log("Creating new log entry successful");
+      return console.log(`New log entry: ${details}`);
     });
   } catch (error) {
     return console.log(error);

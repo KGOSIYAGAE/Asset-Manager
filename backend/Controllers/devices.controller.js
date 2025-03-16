@@ -90,6 +90,10 @@ const addDevice = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "Device already exists.", error: true });
       }
+
+      //Create log
+      createNewLog("create", req.user.values, serial_no, `New device successfully created ${serial_no}`);
+
       return res.status(200).json({ message: "Device added successfully.", error: false });
     });
   } catch (error) {
@@ -151,6 +155,10 @@ const updateDevice = async (req, res) => {
         console.log(error);
         return res.status(400).json({ message: "An error occured when updating device", error: true });
       }
+
+      //Create log
+      createNewLog("update", req.user.values, id, `Device successfully updated`);
+
       return res.status(200).json({ message: "Device updated successfully", error: false });
     });
   } catch (error) {
@@ -179,8 +187,9 @@ const assignDevice = async (req, res) => {
       if (error) {
         return res.status(400).json({ message: "An error occured when assigning user", error: true });
       }
+
       //Create log
-      createNewLog("Assigned", req.user.values, id, `Device successfully to ${userId}`);
+      createNewLog("assign", req.user.values, id, `Device successfully assigned to ${userId}`);
 
       return res.status(200).json({ results, message: "User assigned successfully.", error: false });
     });
