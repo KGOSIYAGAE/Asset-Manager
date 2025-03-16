@@ -14,12 +14,14 @@ import ToastMessage from "../../components/toastMessage/ToastMessage";
 import Modal from "react-modal";
 import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
+import ImportFile from "../../components/cards/importFile/ImportFile";
 
 function Devices({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
   const { searchState, searchDispatch } = useSearchContext();
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
+  const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
 
@@ -46,6 +48,11 @@ function Devices({ path }) {
     setOpenModal({ isShown: true, type: "issue", data: null });
   };
 
+  //Import modal
+  const ImportModal = () => {
+    setOpenImportModal({ isShown: true, type: "issue", data: null });
+  };
+
   useEffect(() => {
     searchDispatch({ type: "SET_SEARCH_NULL" });
     getAllDevices(devicesDispatch);
@@ -61,7 +68,7 @@ function Devices({ path }) {
           <div className="flex gap-2">
             <SearchInput searchData={devicesState.deviceList} dataType={"devices"} />
             <AddButton name={"Add New Device"} handleAdd={handleAdd} />
-            <RefreshButton onClick={openIssueModal} />
+            <RefreshButton onClick={ImportModal} />
           </div>
         </div>
         <DataTable
@@ -73,7 +80,7 @@ function Devices({ path }) {
         />
       </div>
       <Modal
-        isOpen={openModal.isShown}
+        isOpen={openModal.isShown || openImportModal.isShown}
         onRequestClose={() => {}}
         style={{
           overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
@@ -81,18 +88,31 @@ function Devices({ path }) {
         contentLabel=""
         className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
       >
-        <DeleteConfirmation
-          text={"Are you sure you want to delete this device?"}
-          heading={"Delete Device"}
-          laptopSerialNo={openModal.laptopSerialNo}
-          onDelete={() => {
-            deleteDevice(openModal.selectedDevice, setShowToast);
-            setOpenModal({ isShown: false });
-          }}
-          onCanel={() => {
-            setOpenModal({ isShown: false });
-          }}
-        />
+        {openModal.isShown ? (
+          <DeleteConfirmation
+            text={"Are you sure you want to delete this device?"}
+            heading={"Delete Device"}
+            laptopSerialNo={openModal.laptopSerialNo}
+            onDelete={() => {
+              deleteDevice(openModal.selectedDevice, setShowToast);
+              setOpenModal({ isShown: false });
+            }}
+            onCanel={() => {
+              setOpenModal({ isShown: false });
+            }}
+          />
+        ) : (
+          ""
+        )}
+        {openImportModal.isShown ? (
+          <ImportFile
+            onClose={() => {
+              setOpenImportModal({ isShown: false });
+            }}
+          />
+        ) : (
+          ""
+        )}
       </Modal>
       <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
