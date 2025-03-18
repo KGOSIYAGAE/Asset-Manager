@@ -147,7 +147,7 @@ export const facultyCourse = [
       },
       {
         id: 3,
-        course_name: "HCert IN HERITAGE STUDIES",
+        course_name: "HCert IN HERITAGE STUDIES - 1",
         course_code: "HER501",
       },
     ],

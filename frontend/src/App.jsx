@@ -19,6 +19,7 @@ import DeviceDetails from "./pages/devices/DeviceDetails";
 import Login from "./pages/login/Login";
 import { useEffect, useState } from "react";
 import { getLoggedInUser } from "./utils/getLoggedInUser";
+import PageNotFound from "./pages/pageNotFound/PageNotFound";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -171,7 +172,7 @@ function App() {
         {
           path: "/devices/device-details/:id",
           element: <DeviceDetails path={"device-details/"} />,
-          //errorElement: <Home />,
+          errorElement: <Home />,
         },
         {
           path: "/devices/add-device",
@@ -208,6 +209,10 @@ function App() {
           element: <AddEditStudent path={"edit-student"} />,
         },
       ],
+    },
+    {
+      path: "*",
+      element: <PageNotFound />,
     },
   ]);
 

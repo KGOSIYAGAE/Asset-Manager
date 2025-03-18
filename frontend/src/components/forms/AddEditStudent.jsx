@@ -168,8 +168,14 @@ function AddEditStudent({ path }) {
 
   useEffect(() => {
     getSelectedUser();
-    getCourseName("NAS");
   }, []);
+
+  useEffect(() => {
+    if (faculty) {
+      getCourseName(faculty);
+      setCourse(course);
+    }
+  }, [faculty]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">

@@ -61,12 +61,13 @@ function DeviceDetails({ path }) {
 
   useEffect(() => {
     getDeviceDetails();
-    const newDate = deviceDetails?.createdAt.split("T")[0];
-    setDateCreated(newDate);
     //getUserType(deviceDetails?.user_id);
     if (!staffState || !studentState) {
       console.log("No data");
     }
+
+    const newDate = deviceDetails?.createdAt.split("T")[0];
+    setDateCreated(newDate);
   }, []);
 
   return (
