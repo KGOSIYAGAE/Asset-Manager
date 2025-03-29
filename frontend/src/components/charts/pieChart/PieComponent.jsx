@@ -12,6 +12,7 @@ function PieComponent({ devices }) {
   const [secondHandLaptops, setSecondHandLaptops] = useState(0);
   const [faultyLaptops, setFaultyLaptops] = useState(0);
   const [scrapLaptops, setScrapLaptops] = useState(0);
+  const [returnLaptops, setReturnLaptops] = useState(0);
 
   //call from analyticsMethods - get condition
   const getStatsOnLoad = () => {
@@ -21,11 +22,13 @@ function PieComponent({ devices }) {
     setSecondHandLaptops(devicesConditionReport.secondHandLaptops);
     setFaultyLaptops(devicesConditionReport.faultyLaptops);
     setScrapLaptops(devicesConditionReport.scrapedLaptops);
+    setReturnLaptops(devicesConditionReport.returnLaptops);
   };
 
   const data = [
     { value: newLaptops, label: "New" },
     { value: secondHandLaptops, label: "Used" },
+    { value: returnLaptops, label: "Return" },
     { value: faultyLaptops, label: "Faulty" },
     { value: scrapLaptops, label: "Scrap" },
   ];

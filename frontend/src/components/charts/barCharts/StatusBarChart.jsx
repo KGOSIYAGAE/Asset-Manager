@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { getDevicesStatusSummary } from "../../../utils/analyticsMethods";
+import { getDevicesStatusSummary, getLenovoStatsByModel } from "../../../utils/analyticsMethods";
 
 function StatusBarChart({ devices }) {
   const [lenovo_stats, setLenovo_stats] = useState([]);

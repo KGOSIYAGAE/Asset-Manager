@@ -1,10 +1,7 @@
-//Get Stats of devices based on status
-export const getDevicesStatusSummary = (devices) => {
-  let availableInStock = 0;
-  let assignedUsers = 0;
-  let onMaintenance = 0;
-  let markedLost = 0;
+import { facultyCourse } from "./course";
 
+//Get All devices based on
+export const getDevicesStatsByMake = (devices) => {
   let LENOVO_LAPTOPS = [];
   let HP_LAPTOPS = [];
   let DELL_LAPTOPS = [];
@@ -19,6 +16,18 @@ export const getDevicesStatusSummary = (devices) => {
       HP_LAPTOPS.push(devices[i]);
     }
   }
+
+  return { LENOVO_LAPTOPS, HP_LAPTOPS };
+};
+
+//Get Stats of devices based on status
+export const getDevicesStatusSummary = (devices) => {
+  let availableInStock = 0;
+  let assignedUsers = 0;
+  let onMaintenance = 0;
+  let markedLost = 0;
+
+  const { LENOVO_LAPTOPS, HP_LAPTOPS } = getDevicesStatsByMake(devices);
 
   //get stats for lenovo laptops
   for (let i = 0; i < LENOVO_LAPTOPS?.length; i++) {
@@ -97,6 +106,7 @@ export const getDevicesConditionSummary = (devices) => {
   let secondHandLaptops = 0;
   let faultyLaptops = 0;
   let scrapedLaptops = 0;
+  let returnLaptops = 0;
 
   for (let i = 0; i < devices?.length; i++) {
     if (devices[i].device_condition === "New") {
@@ -114,30 +124,97 @@ export const getDevicesConditionSummary = (devices) => {
     if (devices[i].device_condition === "Scrap") {
       scrapedLaptops += 1;
     }
+
+    if (devices[i].device_condition === "Return") {
+      returnLaptops += 1;
+    }
   }
 
-  return { newLaptops, secondHandLaptops, faultyLaptops, scrapedLaptops };
+  return { newLaptops, secondHandLaptops, faultyLaptops, scrapedLaptops, returnLaptops };
 };
 
-//Get Stats of devices based models
-export const getDevicesStatsByModel = (devices) => {
-  let lenovoLaptops = 0;
-  let hpLaptops = 0;
-  let dellLaptops = 0;
+//Get lenovo laptops by model
+export const getLenovoStatsByModel = (devices) => {
+  let lenovo_E16 = 0; //Lenovo ThinkPads E16
+  let lenovo_V15 = 0; //Lenovo V15
 
-  for (let i = 0; i < devices?.length; i++) {
-    if (devices[i].make === "Lenovo") {
-      lenovoLaptops += 1;
+  const { LENOVO_LAPTOPS } = getDevicesStatsByMake(devices);
+
+  for (let i = 0; i < LENOVO_LAPTOPS?.length; i++) {
+    if (LENOVO_LAPTOPS[i].model === "ThinkPad E16") {
+      lenovo_E16 += 1;
     }
 
-    if (devices[i].make === "HP") {
-      hpLaptops += 1;
-    }
-
-    if (devices[i].make === "Dell") {
-      dellLaptops += 1;
+    if (LENOVO_LAPTOPS[i].model === "V15 G5 IRL") {
+      lenovo_V15 += 1;
     }
   }
 
-  return { lenovoLaptops, hpLaptops, dellLaptops };
+  return { lenovo_E16, lenovo_V15 };
+};
+
+//Get lenovo laptops by model
+export const getHPStatsByModel = (devices) => {
+  let HP_255_G9 = 0; //HP 255 G9
+
+  const { HP_LAPTOPS } = getDevicesStatsByMake(devices);
+
+  for (let i = 0; i < HP_LAPTOPS?.length; i++) {
+    if (HP_LAPTOPS[i].model === "255 G9") {
+      HP_255_G9 += 1;
+    }
+  }
+
+  return { HP_255_G9 };
+};
+
+//Get Faculty Stats
+export const getFacultyStats = (students) => {
+  let edu_stats = [];
+  let ems_stats = [];
+  let nas_stats = [];
+  let hum_stats = [];
+
+  for (let i = 0; i < students?.length; i++) {
+    if (students[i].faculty === "EDU") {
+      edu_stats.push(students[i]);
+    }
+
+    if (students[i].faculty === "EMS") {
+      ems_stats.push(students[i]);
+    }
+
+    if (students[i].faculty === "NAS") {
+      nas_stats.push(students[i]);
+    }
+
+    if (students[i].faculty === "HUM") {
+      hum_stats.push(students[i]);
+    }
+  }
+
+  return { edu_stats, ems_stats, nas_stats, hum_stats };
+};
+
+//Get course stats by Faculty
+export const getCourseStatsByFaculty = (students) => {
+  const { edu_stats, ems_stats, nas_stats, hum_stats } = getFacultyStats(students);
+  let count = 0;
+
+  let facultyNumber = 3;
+  const facultyNumbersByCourse = [];
+
+  const facultyData = [nas_stats, edu_stats, ems_stats, hum_stats];
+
+  for (let j = 0; j < facultyCourse[facultyNumber].coursesOfferd.length; j++) {
+    count = 0;
+    for (let i = 0; i < hum_stats.length; i++) {
+      if (facultyData[facultyNumber][i]?.course_code === facultyCourse[facultyNumber]?.coursesOfferd[j]?.course_code) {
+        count++;
+      }
+    }
+    facultyNumbersByCourse.push(count);
+  }
+
+  return facultyNumbersByCourse;
 };

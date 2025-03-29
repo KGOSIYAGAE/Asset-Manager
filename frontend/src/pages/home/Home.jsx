@@ -10,6 +10,7 @@ import { useStudentsContext } from "../../hooks/useStudentsContext";
 import { getAllStudents } from "../../services/api/students/Students.Api";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { getLoggedInUser } from "../../utils/getLoggedInUser";
+import { getFacultyStats } from "../../utils/analyticsMethods";
 
 function Home() {
   const { devicesState, devicesDispatch } = useDeviceContext();
@@ -30,6 +31,7 @@ function Home() {
       <Dashboard
         loggedInUser={currentUser}
         devices={devicesState?.deviceList}
+        students={studentState?.studentsList}
         deviceNumber={devicesState?.deviceList?.length}
         staffNumber={staffState?.staffList?.length}
         studentsNumber={studentState?.studentsList?.length}

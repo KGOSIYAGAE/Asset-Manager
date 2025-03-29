@@ -6,8 +6,11 @@ import PieComponent from "../charts/pieChart/PieComponent";
 import PieComponentMake from "../charts/pieChart/PieComponentMake";
 import StatusBarChart from "../charts/barCharts/statusBarChart";
 import { Link } from "react-router-dom";
+import ModelStatBarChart from "../charts/barCharts/ModelStatBarChart";
+import ExportExcelButton from "../buttons/ExportExcelButton";
+import StudentByFaculty from "../cards/studentByFaculty/StudentByFaculty";
 
-function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsNumber, path }) {
+function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber, studentsNumber, path }) {
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
       <span className="text-sm">
@@ -20,7 +23,7 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
         </span>
         <span className="text-zinc-600">Have a great day at work</span>
       </div>
-      <div className="grid grid-cols-4 grid-rows-5  gap-5">
+      <div className="grid grid-cols-4 grid-rows-8  gap-5">
         {" "}
         {/* */}
         <div className="flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
@@ -68,24 +71,45 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
           </div>
         </div>
         {/* */}
-        <div className="h-[340px] flex flex-col col-span-1 row-span-2 rounded-md shadow-lg p-2 gap-4 border">
-          <span className="font-semibold text-sm">Devices by Condition</span>
-          <PieComponent devices={devices} />
+        <div className="flex flex-col col-span-1 row-span-2 rounded-md shadow-lg gap-4 border">
+          <div className="border-b-2 rounded-t-md p-2">
+            <span className="font-semibold text-sm">Devices by Condition</span>
+          </div>
+          <div className="p-2">
+            <PieComponent devices={devices} />
+          </div>
         </div>
         {/* */}
-        <div className="h-[300px] flex flex-col col-span-1 row-span-2 rounded-md shadow-lg p-2 border">
-          <span className="font-semibold text-sm">Devices by Make</span>
-          <PieComponentMake devices={devices} />
+        <div className=" flex flex-col col-span-1 row-span-2 rounded-md shadow-lg border">
+          <div className="border-b-2 rounded-t-md p-2">
+            <span className="font-semibold text-sm">Devices by Make</span>
+          </div>
+          <div className="p-2">
+            <PieComponentMake devices={devices} />
+          </div>
         </div>
         {/* */}
-        <div className="h-[300px] flex flex-col col-span-2 row-span-2 rounded-md shadow-lg p-2 border">
-          <span className="font-semibold text-sm">Devices by Status</span>
-          <StatusBarChart devices={devices} />
+        <div className=" flex flex-col col-span-2 row-span-2 rounded-md shadow-lg border">
+          <div className="border-b-2 rounded-t-md p-2">
+            <span className="font-semibold text-sm">Devices by Status</span>
+          </div>
+          <div className="p-2">
+            <StatusBarChart devices={devices} />
+          </div>
         </div>
         {/* */}
-        <div className="h-[300px] flex flex-col col-span-2 row-span-2 rounded-md shadow-lg p-2 border">
-          <span className="font-semibold text-sm">Device</span>
-          <StatusBarChart devices={devices} />
+        <div className="flex flex-col col-span-4 row-span-2 rounded-md shadow-lg border">
+          <div className="flex items-center justify-between border-b-2 rounded-t-md p-2">
+            <span className="font-semibold text-sm">Device by Model</span>
+            <ExportExcelButton />
+          </div>
+          <div className="p-2">
+            <ModelStatBarChart devices={devices} />
+          </div>
+        </div>
+        {/* */}
+        <div className=" flex flex-col col-span-2 row-span-2 rounded-md shadow-lg border">
+          <StudentByFaculty students={students} />
         </div>
       </div>
     </div>

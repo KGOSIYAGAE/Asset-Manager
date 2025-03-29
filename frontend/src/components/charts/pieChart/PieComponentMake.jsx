@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getDevicesStatsByModel } from "../../../utils/analyticsMethods";
+import { getDevicesStatsByMake } from "../../../utils/analyticsMethods";
 
 function PieComponentMake({ devices }) {
   const [lenovoLapotps, setLenovoLaptops] = useState(0);
@@ -13,10 +13,10 @@ function PieComponentMake({ devices }) {
 
   // Analytics Methods - get Models
   const getStatsOnLoad = () => {
-    const devicesByModelReport = getDevicesStatsByModel(devices);
+    const { LENOVO_LAPTOPS, HP_LAPTOPS } = getDevicesStatsByMake(devices);
 
-    setLenovoLaptops(devicesByModelReport.lenovoLaptops);
-    setHpLaptops(devicesByModelReport.hpLaptops);
+    setLenovoLaptops(LENOVO_LAPTOPS?.length);
+    setHpLaptops(HP_LAPTOPS?.length);
   };
 
   const data = [

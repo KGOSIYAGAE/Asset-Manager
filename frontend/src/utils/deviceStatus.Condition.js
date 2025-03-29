@@ -34,11 +34,16 @@ export const deviceCondition = [
   },
   {
     id: 3,
-    name: "Faulty",
+    name: "Return",
     description: "",
   },
   {
     id: 4,
+    name: "Faulty",
+    description: "",
+  },
+  {
+    id: 5,
     name: "Scrap",
     description: "",
   },

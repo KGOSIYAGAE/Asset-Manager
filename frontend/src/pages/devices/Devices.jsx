@@ -15,6 +15,7 @@ import Modal from "react-modal";
 import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 import ImportFile from "../../components/cards/importFile/ImportFile";
+import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 
 function Devices({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
@@ -69,6 +70,7 @@ function Devices({ path }) {
             <SearchInput searchData={devicesState.deviceList} dataType={"devices"} />
             <AddButton name={"Add New Device"} handleAdd={handleAdd} />
             <RefreshButton onClick={ImportModal} />
+            <ExportExcelButton />
           </div>
         </div>
         <DataTable
