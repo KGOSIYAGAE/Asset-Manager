@@ -3,29 +3,37 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { getDevicesStatusSummary } from "../../../utils/analyticsMethods";
 
 function StatusBarChart({ devices }) {
-  const [availableLaptops, setAvailableLaptops] = useState(0);
-  const [assignedLaptops, setAssignedLaptops] = useState(0);
-  const [MaintenanceLaptops, setMaintenanceLaptops] = useState(0);
-  const [lostLaptops, setLostLaptops] = useState(0);
+  const [lenovo_stats, setLenovo_stats] = useState([]);
+  const [hp_stats, setHp_stats] = useState([]);
+  const [dell_stats, setDell_stats] = useState([]);
 
   const getStatOnLoad = () => {
     //call from analyticsMethods - get status
-    const deviceStatusReport = getDevicesStatusSummary(devices);
+    const { lenovoLaptopStats, hpLaptopStats, dellLaptopStats } = getDevicesStatusSummary(devices);
 
-    setLostLaptops(deviceStatusReport.markedLost);
-    setMaintenanceLaptops(deviceStatusReport.onMaintenance);
-    setAssignedLaptops(deviceStatusReport.assignedUsers);
-    setAvailableLaptops(deviceStatusReport.availableInStock);
+    setLenovo_stats([lenovoLaptopStats.lost, lenovoLaptopStats.assigned, lenovoLaptopStats.available, lenovoLaptopStats.maintenance]);
+    setHp_stats([hpLaptopStats.lost, hpLaptopStats.assigned, hpLaptopStats.available, hpLaptopStats.maintenance]);
+    setDell_stats([dellLaptopStats.lost, dellLaptopStats.assigned, dellLaptopStats.available, dellLaptopStats.maintenance]);
   };
 
   useEffect(() => {
     getStatOnLoad();
   }, [devices]);
 
-  const uData = [availableLaptops, assignedLaptops, MaintenanceLaptops, lostLaptops];
   const xLabels = ["Available", "Assigned", "Maintenance", "Lost"];
 
-  return <BarChart width={600} height={270} series={[{ data: uData, id: "lenovo" }]} xAxis={[{ data: xLabels, scaleType: "band" }]} />;
+  return (
+    <BarChart
+      width={600}
+      height={270}
+      series={[
+        { data: lenovo_stats, label: "lenovo" },
+        { data: hp_stats, label: "HP" },
+        { data: dell_stats, label: "Dell" },
+      ]}
+      xAxis={[{ data: xLabels, scaleType: "band" }]}
+    />
+  );
 }
 
 export default StatusBarChart;

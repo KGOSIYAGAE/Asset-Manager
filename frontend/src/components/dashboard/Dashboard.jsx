@@ -84,7 +84,7 @@ function Dashboard({ loggedInUser, devices, deviceNumber, staffNumber, studentsN
         </div>
         {/* */}
         <div className="h-[300px] flex flex-col col-span-2 row-span-2 rounded-md shadow-lg p-2 border">
-          <span className="font-semibold text-sm">Devices by Status</span>
+          <span className="font-semibold text-sm">Device</span>
           <StatusBarChart devices={devices} />
         </div>
       </div>

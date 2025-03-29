@@ -5,25 +5,90 @@ export const getDevicesStatusSummary = (devices) => {
   let onMaintenance = 0;
   let markedLost = 0;
 
+  let LENOVO_LAPTOPS = [];
+  let HP_LAPTOPS = [];
+  let DELL_LAPTOPS = [];
+  let APPLE_LAPTOPS = [];
+  let MERCER_LAPTOPS = [];
+
+  //Slipt laptop based on make
   for (let i = 0; i < devices?.length; i++) {
-    if (devices[i].status === "Available") {
+    if (devices[i].make === "Lenovo") {
+      LENOVO_LAPTOPS.push(devices[i]);
+    } else if (devices[i].make === "HP") {
+      HP_LAPTOPS.push(devices[i]);
+    }
+  }
+
+  //get stats for lenovo laptops
+  for (let i = 0; i < LENOVO_LAPTOPS?.length; i++) {
+    if (LENOVO_LAPTOPS[i].status === "Available") {
       availableInStock += 1;
     }
 
-    if (devices[i].status === "Assigned") {
+    if (LENOVO_LAPTOPS[i].status === "Assigned") {
       assignedUsers += 1;
     }
 
-    if (devices[i].status === "Maintenance") {
+    if (LENOVO_LAPTOPS[i].status === "Maintenance") {
       onMaintenance += 1;
     }
 
-    if (devices[i].status === "Lost") {
+    if (LENOVO_LAPTOPS[i].status === "Lost") {
       markedLost += 1;
     }
   }
 
-  return { availableInStock, assignedUsers, onMaintenance, markedLost };
+  //set lenovo laptops
+  const lenovoLaptopStats = {
+    available: availableInStock,
+    assigned: assignedUsers,
+    maintenance: onMaintenance,
+    lost: markedLost,
+  };
+
+  //Clear variables
+  availableInStock = 0;
+  assignedUsers = 0;
+  onMaintenance = 0;
+  markedLost = 0;
+
+  //get stats for lenovo laptops
+  for (let i = 0; i < HP_LAPTOPS?.length; i++) {
+    if (HP_LAPTOPS[i].status === "Available") {
+      availableInStock += 1;
+    }
+
+    if (HP_LAPTOPS[i].status === "Assigned") {
+      assignedUsers += 1;
+    }
+
+    if (HP_LAPTOPS[i].status === "Maintenance") {
+      onMaintenance += 1;
+    }
+
+    if (HP_LAPTOPS[i].status === "Lost") {
+      markedLost += 1;
+    }
+  }
+
+  //set hp laptops
+  const hpLaptopStats = {
+    available: availableInStock,
+    assigned: assignedUsers,
+    maintenance: onMaintenance,
+    lost: markedLost,
+  };
+
+  //set dell laptops
+  const dellLaptopStats = {
+    available: 200,
+    assigned: 400,
+    maintenance: 50,
+    lost: 10,
+  };
+
+  return { lenovoLaptopStats, hpLaptopStats, dellLaptopStats };
 };
 
 //Get Stats of devices based on condition
