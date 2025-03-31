@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import ModelStatBarChart from "../charts/barCharts/ModelStatBarChart";
 import ExportExcelButton from "../buttons/ExportExcelButton";
 import StudentByFaculty from "../cards/studentByFaculty/StudentByFaculty";
+import CourseStatBarChart from "../charts/barCharts/CourseStatBarChart";
 
 function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber, studentsNumber, path }) {
   return (
@@ -26,7 +27,7 @@ function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber,
       <div className="grid grid-cols-4 grid-rows-8  gap-5">
         {" "}
         {/* */}
-        <div className="flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
+        <div className="bg-white flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
           <span className="font-semibold text-sm">Staff Accounts</span>
           <div className="flex flex-row justify-between items-end">
             <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
@@ -41,7 +42,7 @@ function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber,
           </div>
         </div>
         {/* */}
-        <div className="flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
+        <div className="bg-white flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
           <span className="font-semibold text-sm">Students Accounts</span>
           <div className="flex flex-row justify-between items-end">
             <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
@@ -56,7 +57,7 @@ function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber,
           </div>
         </div>
         {/* */}
-        <div className="flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
+        <div className="bg-white flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
           <span className="font-semibold text-sm">Number of Devices</span>
           <div className="flex flex-row justify-between items-end">
             <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
@@ -71,16 +72,16 @@ function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber,
           </div>
         </div>
         {/* */}
-        <div className="flex flex-col col-span-1 row-span-2 rounded-md shadow-lg gap-4 border">
+        <div className="bg-white flex flex-col col-span-1 row-span-2 rounded-md shadow-lg gap-4 border">
           <div className="border-b-2 rounded-t-md p-2">
             <span className="font-semibold text-sm">Devices by Condition</span>
           </div>
-          <div className="p-2">
+          <div className="bg-white p-2">
             <PieComponent devices={devices} />
           </div>
         </div>
         {/* */}
-        <div className=" flex flex-col col-span-1 row-span-2 rounded-md shadow-lg border">
+        <div className="bg-white flex flex-col col-span-1 row-span-2 rounded-md shadow-lg border">
           <div className="border-b-2 rounded-t-md p-2">
             <span className="font-semibold text-sm">Devices by Make</span>
           </div>
@@ -89,27 +90,31 @@ function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber,
           </div>
         </div>
         {/* */}
-        <div className=" flex flex-col col-span-2 row-span-2 rounded-md shadow-lg border">
+        <div className=" bg-white flex flex-col col-span-2 row-span-2 rounded-md shadow-lg border">
           <div className="border-b-2 rounded-t-md p-2">
             <span className="font-semibold text-sm">Devices by Status</span>
           </div>
-          <div className="p-2">
+          <div className="bg-white p-2">
             <StatusBarChart devices={devices} />
           </div>
         </div>
         {/* */}
-        <div className="flex flex-col col-span-4 row-span-2 rounded-md shadow-lg border">
+        <div className=" bg-white flex flex-col col-span-4 row-span-2 rounded-md shadow-lg border">
           <div className="flex items-center justify-between border-b-2 rounded-t-md p-2">
             <span className="font-semibold text-sm">Device by Model</span>
             <ExportExcelButton />
           </div>
-          <div className="p-2">
+          <div className="bg-white p-2">
             <ModelStatBarChart devices={devices} />
           </div>
         </div>
         {/* */}
-        <div className=" flex flex-col col-span-2 row-span-2 rounded-md shadow-lg border">
+        <div className="bg-white flex flex-col col-span-1 row-span-2 rounded-md shadow-lg border p-2">
           <StudentByFaculty students={students} />
+        </div>
+        {/* */}
+        <div className="bg-white flex flex-col col-span-2 row-span-2 rounded-md shadow-lg border">
+          <CourseStatBarChart students={students} />
         </div>
       </div>
     </div>

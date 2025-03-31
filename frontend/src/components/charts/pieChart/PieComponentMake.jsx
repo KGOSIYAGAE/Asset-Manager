@@ -20,8 +20,8 @@ function PieComponentMake({ devices }) {
   };
 
   const data = [
-    { value: lenovoLapotps, label: "Lenovo" },
-    { value: hpLaptops, label: "HP" },
+    { value: lenovoLapotps, label: "Lenovo", color: "#f97316" },
+    { value: hpLaptops, label: "HP", color: "#3b82f6 " },
   ];
 
   const size = {

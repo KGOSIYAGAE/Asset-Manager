@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import { getDevicesStatusSummary, getLenovoStatsByModel } from "../../../utils/analyticsMethods";
 
 function StatusBarChart({ devices }) {
@@ -11,9 +12,9 @@ function StatusBarChart({ devices }) {
     //call from analyticsMethods - get status
     const { lenovoLaptopStats, hpLaptopStats, dellLaptopStats } = getDevicesStatusSummary(devices);
 
-    setLenovo_stats([lenovoLaptopStats.lost, lenovoLaptopStats.assigned, lenovoLaptopStats.available, lenovoLaptopStats.maintenance]);
-    setHp_stats([hpLaptopStats.lost, hpLaptopStats.assigned, hpLaptopStats.available, hpLaptopStats.maintenance]);
-    setDell_stats([dellLaptopStats.lost, dellLaptopStats.assigned, dellLaptopStats.available, dellLaptopStats.maintenance]);
+    setLenovo_stats([lenovoLaptopStats.available, lenovoLaptopStats.assigned, lenovoLaptopStats.maintenance, lenovoLaptopStats.lost]);
+    setHp_stats([hpLaptopStats.available, hpLaptopStats.assigned, hpLaptopStats.maintenance, hpLaptopStats.lost]);
+    setDell_stats([dellLaptopStats.available, dellLaptopStats.assigned, dellLaptopStats.maintenance, dellLaptopStats.lost]);
   };
 
   useEffect(() => {
@@ -22,16 +23,31 @@ function StatusBarChart({ devices }) {
 
   const xLabels = ["Available", "Assigned", "Maintenance", "Lost"];
 
+  const otherSetting = {
+    height: 300,
+    yAxis: [{ label: "Laptops" }],
+    grid: { horizontal: true },
+    sx: {
+      [`& .${axisClasses.left} .${axisClasses.label}`]: {
+        transform: "translateX(-11px)",
+      },
+    },
+  };
   return (
     <BarChart
       width={600}
       height={270}
+      slotProps={{
+        // Custom message for empty chart
+        noDataOverlay: { message: "Select some data to display." },
+      }}
       series={[
-        { data: lenovo_stats, label: "lenovo" },
-        { data: hp_stats, label: "HP" },
+        { data: lenovo_stats, label: "lenovo", color: "#f97316" },
+        { data: hp_stats, label: "HP", color: "#3b82f6 " },
         { data: dell_stats, label: "Dell" },
       ]}
       xAxis={[{ data: xLabels, scaleType: "band" }]}
+      {...otherSetting}
     />
   );
 }

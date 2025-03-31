@@ -84,8 +84,6 @@ function AddEditDevice({ path }) {
     setPurchaseDate(deviceDetails[0].purchaseDate);
     setLoanStartDate(deviceDetails[0].loanStartDate);
     setLoanEndDate(deviceDetails[0].loanEndDate);
-
-    console.log(deviceDetails);
   };
 
   //Handle Submit

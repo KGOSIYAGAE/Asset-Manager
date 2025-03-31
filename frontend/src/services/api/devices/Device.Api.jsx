@@ -25,7 +25,6 @@ export const getDevice = async (id, setFormData) => {
     const response = await axiosInstance.get("devices/" + id);
 
     if (response.data) {
-      console.log(response.data.deviceDetails);
       return setFormData(response.data.deviceDetails);
     }
   } catch (error) {

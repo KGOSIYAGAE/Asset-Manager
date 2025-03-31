@@ -25,6 +25,8 @@ function SearchInput({ searchData, dataType }) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].assetTag && searchData[i].assetTag.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
+        } else if (searchData[i].assetTag && searchData[i].userId.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
         } else if (searchData[i].name && searchData[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].surname && searchData[i].surname.toLowerCase().includes(searchQuery.toLowerCase())) {

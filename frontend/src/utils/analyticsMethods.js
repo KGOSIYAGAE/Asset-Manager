@@ -91,10 +91,10 @@ export const getDevicesStatusSummary = (devices) => {
 
   //set dell laptops
   const dellLaptopStats = {
-    available: 200,
-    assigned: 400,
-    maintenance: 50,
-    lost: 10,
+    available: 0,
+    assigned: 0,
+    maintenance: 0,
+    lost: 0,
   };
 
   return { lenovoLaptopStats, hpLaptopStats, dellLaptopStats };
@@ -197,16 +197,15 @@ export const getFacultyStats = (students) => {
 };
 
 //Get course stats by Faculty
-export const getCourseStatsByFaculty = (students) => {
+export const getCourseStatsByFaculty = (students, facultyNumber) => {
   const { edu_stats, ems_stats, nas_stats, hum_stats } = getFacultyStats(students);
   let count = 0;
 
-  let facultyNumber = 3;
   const facultyNumbersByCourse = [];
 
   const facultyData = [nas_stats, edu_stats, ems_stats, hum_stats];
 
-  for (let j = 0; j < facultyCourse[facultyNumber].coursesOfferd.length; j++) {
+  for (let j = 0; j < facultyCourse[facultyNumber]?.coursesOfferd.length; j++) {
     count = 0;
     for (let i = 0; i < hum_stats.length; i++) {
       if (facultyData[facultyNumber][i]?.course_code === facultyCourse[facultyNumber]?.coursesOfferd[j]?.course_code) {

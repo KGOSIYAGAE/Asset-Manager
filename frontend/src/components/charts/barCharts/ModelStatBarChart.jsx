@@ -23,6 +23,11 @@ function ModelStatBarChart({ devices }) {
   const values = [lenovo_E16, lenovo_V15, 0, hp_255G9, 0, 0];
   const xLabels = ["ThinkPad E16", "Lenovo V15", "HP 255 G8", "HP 255 G9", "HP 455 G9", "HP 455 G10"];
 
+  const otherSetting = {
+    xAxis: [{ label: "Laptops" }],
+    grid: { horizontal: true, vertical: true },
+  };
+
   return (
     <div>
       <BarChart
@@ -32,11 +37,16 @@ function ModelStatBarChart({ devices }) {
           top: 40,
           bottom: 50,
         }}
+        slotProps={{
+          // Custom message for empty chart
+          noDataOverlay: { message: "Select some data to display." },
+        }}
         width={1000}
         height={270}
-        series={[{ data: values, color: "#f28e2c" }]}
+        series={[{ data: values, color: "#f97316" }]}
         yAxis={[{ data: xLabels, scaleType: "band" }]}
         layout="horizontal"
+        {...otherSetting}
       />
     </div>
   );
