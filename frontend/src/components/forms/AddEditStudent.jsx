@@ -22,6 +22,7 @@ function AddEditStudent({ path }) {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [student_no, setStudent_no] = useState("");
+  const [idNumber, setIdNumber] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
   const [faculty, setFaculty] = useState("NAS");
@@ -43,6 +44,7 @@ function AddEditStudent({ path }) {
     setName("");
     setSurname("");
     setStudent_no("");
+    setIdNumber("");
     setPhone_Number("");
     setEmail("");
     setFaculty("");
@@ -66,6 +68,10 @@ function AddEditStudent({ path }) {
       return setShowToast({ isShown: true, type: "error", message: "Student number must be provided" });
     }
 
+    if (!idNumber) {
+      return setShowToast({ isShown: true, type: "error", message: "ID number must be provided" });
+    }
+
     if (!phone_number) {
       return setShowToast({ isShown: true, type: "error", message: "Phone number must be provided" });
     }
@@ -78,6 +84,7 @@ function AddEditStudent({ path }) {
       name,
       surname,
       student_no,
+      idNumber,
       phone_number,
       email,
       faculty,
@@ -105,6 +112,7 @@ function AddEditStudent({ path }) {
     setFormType("edit");
     setName(studentData[0].name);
     setSurname(studentData[0].surname);
+    setIdNumber(studentData[0].id_number);
     setStudent_no(studentData[0].student_no);
     setPhone_Number(studentData[0].phone_number);
     setEmail(studentData[0].email);
@@ -199,7 +207,11 @@ function AddEditStudent({ path }) {
             <TextInput label={"Student Number"} value={student_no} isDisabled={isDisabled} maxLength={9} setOnChange={setStudent_no} />
           </div>
 
-          <div className=" col-span-3">
+          <div className=" col-span-1">
+            <TextInput label={"ID Number"} value={idNumber} isDisabled={isDisabled} maxLength={13} setOnChange={setIdNumber} />
+          </div>
+
+          <div className=" col-span-1">
             <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} maxLength={10} setOnChange={setPhone_Number} />
           </div>
 

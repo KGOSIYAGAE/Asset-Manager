@@ -24,7 +24,6 @@ function StatusBarChart({ devices }) {
   const xLabels = ["Available", "Assigned", "Maintenance", "Lost"];
 
   const otherSetting = {
-    height: 300,
     yAxis: [{ label: "Laptops" }],
     grid: { horizontal: true },
     sx: {

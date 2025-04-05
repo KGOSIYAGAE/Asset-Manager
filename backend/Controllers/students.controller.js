@@ -37,10 +37,10 @@ const getStudent = async (req, res) => {
 
 //Add Student
 const addStudents = async (req, res) => {
-  const { name, surname, student_no, phone_number, email, faculty, course, course_code, isActive, registration_date } = req.body;
+  const { name, surname, student_no, idNumber, phone_number, email, faculty, course, course_code, isActive, registration_date } = req.body;
 
   try {
-    if (!name || !surname || !student_no || !phone_number || !email || !faculty || !course || !course_code || !isActive) {
+    if (!name || !surname || !student_no || !idNumber || !phone_number || !email || !faculty || !course || !course_code || !isActive) {
       return res.status(400).json({ message: "All details must be provided" });
     }
 
@@ -50,8 +50,8 @@ const addStudents = async (req, res) => {
 
     const checkUserQuery = "SELECT * FROM students WHERE `student_no` = ?";
 
-    const values = [name, surname, student_no, phone_number, email, faculty, course, course_code, isActive, registration_date];
-    const addQuery = "INSERT INTO students (`name`, `surname`, `student_no`, `phone_number`, `email`, `faculty`, `course`, `course_code`, `isActive`, `registration_date`) VALUES (?)";
+    const values = [name, surname, student_no, idNumber, phone_number, email, faculty, course, course_code, isActive, registration_date];
+    const addQuery = "INSERT INTO students (`name`, `surname`, `student_no`, `id_number`, `phone_number`, `email`, `faculty`, `course`, `course_code`, `isActive`, `registration_date`) VALUES (?)";
 
     dbConnection.query(checkUserQuery, student_no, (error, results) => {
       if (error) {
@@ -82,20 +82,20 @@ const addStudents = async (req, res) => {
 const updateStudent = async (req, res) => {
   const params_student_no = req.params.student_no;
 
-  const { name, surname, student_no, phone_number, email, faculty, course, course_code, isActive, registration_date } = req.body;
+  const { name, surname, student_no, idNumber, phone_number, email, faculty, course, course_code, isActive, registration_date } = req.body;
 
   try {
     if (!params_student_no) {
       return res.status(400).json({ message: "Student number must be provided.", error: true });
     }
 
-    if (!name || !surname || !student_no || !phone_number || !email || !faculty || !course || !course_code || !isActive || !registration_date) {
+    if (!name || !surname || !student_no || !idNumber || !phone_number || !email || !faculty || !course || !course_code || !isActive || !registration_date) {
       return res.status(400).json({ message: "All details must be provided" });
     }
 
-    const values = [name, surname, student_no, phone_number, email, faculty, course, course_code, isActive, registration_date];
+    const values = [name, surname, student_no, idNumber, phone_number, email, faculty, course, course_code, isActive, registration_date];
     const updateStudentQuery =
-      "UPDATE students SET `name`=?,`surname`=?,`student_no`=?,`phone_number`=?,`email`=?,`faculty`=?,`course`=?,`course_code`=?,`isActive`=?,`registration_date`=? WHERE `student_no` = ?";
+      "UPDATE students SET `name`=?,`surname`=?,`student_no`=?,`id_number`=?,`phone_number`=?,`email`=?,`faculty`=?,`course`=?,`course_code`=?,`isActive`=?,`registration_date`=? WHERE `student_no` = ?";
     dbConnection.query(updateStudentQuery, [...values, params_student_no], (error, results) => {
       if (error) {
         return res.status(400).json({ message: "An error occured when updating student details", error: true });
