@@ -108,6 +108,8 @@ function Devices({ path }) {
         )}
         {openImportModal.isShown ? (
           <ImportFile
+            type={"devices"}
+            setShowToast={setShowToast}
             onClose={() => {
               setOpenImportModal({ isShown: false });
             }}

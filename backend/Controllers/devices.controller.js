@@ -101,6 +101,58 @@ const addDevice = async (req, res) => {
   }
 };
 
+//Bulk Add devices
+const bulkAddDevice = async (req, res) => {
+  try {
+    const devices = req.body.devices;
+
+    if (!Array.isArray(devices || devices.length === 0)) {
+      return res.status(400).json({ message: "Invalid or empty device list", error: true });
+    }
+
+    const values = devices.map((device) => [
+      device.assetTag,
+      device.serial_no,
+      device.make,
+      device.model,
+      device.category,
+      device.device_condition,
+      device.status,
+      device.warrantyExpiration,
+      device.specification,
+      device.supplier,
+      device.invoice_no,
+      device.description_no,
+      device.purchaseValue,
+      device.purchaseDate,
+      device.location,
+    ]);
+
+    //console.log(values);
+
+    const addDeviceQuery =
+      "INSERT INTO devices (`assetTag`, `serial_no`, `make`, `model`, `category`, `device_condition`,`status`, `warrantyExpiration` ,`specification`, `supplier`, `invoice_no`,`descriptionNumber`, `purchaseValue`, `purchaseDate`, `location`) VALUES ?";
+
+    dbConnection.query(addDeviceQuery, [values], (error, results) => {
+      if (error) {
+        if (error?.errno === 1062) {
+          console.log(`Bulk insert error: ${error.sqlMessage}`);
+          return res.status(400).json({ message: error.sqlMessage, error: true });
+        }
+        console.log(`SQL Error: ${error.sqlMessage}`);
+        return res.status(400).json({ message: `SQL Error: ${error.sqlMessage}`, error: true });
+      }
+
+      //Create log
+      createNewLog("Bulk create", req.user.values, results.insertId, `${results.affectedRows} devices created successfully`);
+
+      return res.status(200).json({ results, message: `${results.affectedRows} devices created successfully`, error: false });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error.", error: true });
+  }
+};
+
 //Update device
 const updateDevice = async (req, res) => {
   try {
@@ -221,4 +273,4 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, addDevice, updateDevice, assignDevice, deleteDevice };
+module.exports = { getAllDevices, getDevice, addDevice, bulkAddDevice, updateDevice, assignDevice, deleteDevice };

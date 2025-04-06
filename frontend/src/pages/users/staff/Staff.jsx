@@ -12,6 +12,7 @@ import ToastMessage from "../../../components/toastMessage/ToastMessage";
 import { getStaffData, deleteStaff } from "../../../services/api/staff/Staff.Api";
 import Modal from "react-modal";
 import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
+import ImportFile from "../../../components/cards/importFile/ImportFile";
 
 function Staff({ path }) {
   //Context
@@ -19,6 +20,7 @@ function Staff({ path }) {
   const { searchState, searchDispatch } = useSearchContext();
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", data: null });
+  const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
 
@@ -44,6 +46,11 @@ function Staff({ path }) {
     navigate("/users/staff/add-staff");
   };
 
+  //Import modal
+  const ImportModal = () => {
+    setOpenImportModal({ isShown: true, type: "issue", data: null });
+  };
+
   useEffect(() => {
     //API CALL ON RENDER
     searchDispatch({ type: "SET_SEARCH_NULL" });
@@ -61,13 +68,13 @@ function Staff({ path }) {
           <div className="flex gap-2">
             <SearchInput searchData={staffState.staffList} />
             <AddButton name={"Add New Staff"} handleAdd={handleAdd} />
-            <RefreshButton />
+            <RefreshButton onClick={ImportModal} />
           </div>
         </div>
         <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
       </div>
       <Modal
-        isOpen={openModal.isShown}
+        isOpen={openModal.isShown || openImportModal.isShown}
         onRequestClose={() => {}}
         style={{
           overlay: { backgroundColor: "rgb(0,0,0,0.2" },
@@ -75,17 +82,34 @@ function Staff({ path }) {
         contentLabel=""
         className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
       >
-        <DeleteConfirmation
-          onCanel={() => {
-            setOpenModal({ isShown: false });
-          }}
-          onDelete={() => {
-            deleteStaff(openModal.selectedUser, setShowToast);
-            setOpenModal({ isShown: false });
-          }}
-          email={openModal.email}
-        />
+        {openModal.isShown ? (
+          <DeleteConfirmation
+            onCanel={() => {
+              setOpenModal({ isShown: false });
+            }}
+            onDelete={() => {
+              deleteStaff(openModal.selectedUser, setShowToast);
+              setOpenModal({ isShown: false });
+            }}
+            email={openModal.email}
+          />
+        ) : (
+          ""
+        )}
+
+        {openImportModal.isShown ? (
+          <ImportFile
+            type={"staff"}
+            setShowToast={setShowToast}
+            onClose={() => {
+              setOpenImportModal({ isShown: false });
+            }}
+          />
+        ) : (
+          ""
+        )}
       </Modal>
+
       <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={handleToastClose} />
     </div>
   );

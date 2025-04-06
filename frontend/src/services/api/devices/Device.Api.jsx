@@ -52,6 +52,26 @@ export const addDevice = async (deviceData, setShowToast) => {
   }
 };
 
+//bulk add devices api
+export const bulkAddDevice = async (devicesData, setShowToast, onClose) => {
+  try {
+    const response = await axiosInstance.post("/devices/add-devices/", devicesData);
+    if (response.data) {
+      //console.log(response.data);
+      onClose();
+      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      onClose();
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+    } else {
+      console.log("An unexpected error occured, please try again");
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+    }
+  }
+};
+
 //Handle update device
 export const updateDevice = async (id, deviceDetails, setShowToast) => {
   try {

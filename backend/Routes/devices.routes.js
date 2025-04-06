@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllDevices, getDevice, addDevice, updateDevice, assignDevice, deleteDevice } = require("../Controllers/devices.controller");
+const { getAllDevices, getDevice, addDevice, bulkAddDevice, updateDevice, assignDevice, deleteDevice } = require("../Controllers/devices.controller");
 const requireAuth = require("../middleware/requireAuth");
 
 const router = express.Router();
@@ -13,8 +13,11 @@ router.get("/", getAllDevices);
 //Get devices
 router.get("/:id", getDevice);
 
-//Add devices
+//Add device
 router.post("/add-device/", addDevice);
+
+//Bulk Add devices
+router.post("/add-devices/", bulkAddDevice);
 
 //Update devices
 router.put("/edit-device/:id", updateDevice);
