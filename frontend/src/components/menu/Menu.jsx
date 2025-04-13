@@ -9,21 +9,21 @@ import LogoCard from "../cards/logoCard/LogoCard";
 import { BsBoxArrowDown, BsBoxArrowUp, BsSendArrowDown, BsSendArrowUp } from "react-icons/bs";
 import { CgViewList } from "react-icons/cg";
 
-function Menu() {
+function Menu({ isMinimized }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
 
   return (
     <div className="h-svh flex flex-col justify-between">
-      <div className="flex flex-col p-3">
-        <LogoCard />
-        <span className="text-zinc-800 font-bold">Menu</span>
-        <div className="flex flex-col gap-5 p-3">
+      <div className={`h-svh flex flex-col ${isMinimized ? "items-center" : ""} p-3`}>
+        {isMinimized ? <span className="font-bold">SPU</span> : <LogoCard />}
+        {isMinimized ? "" : <span className="text-zinc-800 font-bold">Menu</span>}
+        <div className={`flex flex-col gap-5 ${isMinimized ? " py-10" : "p-3"}`}>
           <Link to={"/"}>
             <div className="menu-items">
               <div className="bg-zinc-100 rounded-md p-2">
                 <MdDashboard size={18} className="" />
               </div>
-              <span className="">Dashboard</span>
+              {isMinimized ? "" : <span className="">Dashboard</span>}
             </div>
           </Link>
           {/**/}
@@ -42,7 +42,7 @@ function Menu() {
                 <div className="bg-zinc-100 rounded-md p-2">
                   <MdDevices size={18} className="" />
                 </div>
-                <span className="">Devices</span>
+                {isMinimized ? "" : <span className="">Devices</span>}
               </div>
               {/**/}
 
@@ -78,7 +78,7 @@ function Menu() {
               <div className="bg-zinc-100 rounded-md p-2">
                 <FaPeopleGroup size={18} className="" />
               </div>
-              <span className="">Staff</span>
+              {isMinimized ? "" : <span className="">Staff</span>}
             </div>
           </Link>
           {/**/}
@@ -87,14 +87,12 @@ function Menu() {
               <div className="bg-zinc-100 rounded-md p-2">
                 <PiStudentFill size={18} className="" />
               </div>
-              <span className="">Students</span>
+              {isMinimized ? "" : <span className="">Students</span>}
             </div>
           </Link>
         </div>
       </div>
-      <div>
-        <ProfileCard />
-      </div>
+      <div></div>
     </div>
   );
 }

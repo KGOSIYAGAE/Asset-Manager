@@ -59,6 +59,11 @@
     @apply border-b-zinc-100;
   }
 
+  .top-border {
+    border-top: rgb(191, 191, 191) 0.1svi solid;
+    @apply border-b-zinc-100;
+  }
+
   .item-hover {
     @apply hover:bg-blue-50;
   }

@@ -23,6 +23,7 @@ import PageNotFound from "./pages/pageNotFound/PageNotFound";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMinimize, setIsMinimize] = useState(false);
 
   /*useEffect(() => {
     const user = localStorage.getItem("user");
@@ -33,20 +34,27 @@ function App() {
     }
   }, [isAuthenticated, setIsAuthenticated]);*/
 
+  //Menu Minimize
+  const handleMinimizeMenu = () => {
+    if (isMinimize) {
+      setIsMinimize(false);
+    } else {
+      setIsMinimize(true);
+    }
+  };
+
   //App UI Layout
   const Layout = () => {
     return (
-      <div className="w-screen border">
-        {/*<div>
-          <Navbar />
-        </div>*/}
-        <div className="w-screen flex">
-          <div className="w-2/12 border ">
-            <Menu />
+      <div className="w-screen flex">
+        <div className={`${isMinimize ? "w-[60px] " : "w-2/12"} border`}>
+          <Menu isMinimized={isMinimize} />
+        </div>
+        <div className={`${isMinimize ? "w-full" : "w-10/12"}`}>
+          <div className="bottom-border">
+            <Navbar onCloseMenu={handleMinimizeMenu} />
           </div>
-          <div className="w-10/12 ">
-            <Outlet />
-          </div>
+          <Outlet />
         </div>
       </div>
     );

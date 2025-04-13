@@ -14,6 +14,7 @@ function Login() {
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
 
+  //Login Api Call
   const onLogin = async (email, password) => {
     try {
       if (!email) {
@@ -29,7 +30,7 @@ function Login() {
       const response = await loginAxiosInstance.post("api/admin/login", loginDetails);
 
       if (response?.data && !response?.data?.error) {
-        //localStorage.setItem("token", JSON.stringify(response.data.token));
+        //Store user details to session storage
         sessionStorage.setItem("currentUser", JSON.stringify({ fullName: response.data.fullName, role: response.data.role, token: response.data.token }));
 
         authDispatch({ type: "LOGIN", payload: response.data });
