@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { MdDevices } from "react-icons/md";
 import { PiStudentFill } from "react-icons/pi";
@@ -20,7 +20,7 @@ function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber,
       <div className="flex flex-col p-4 bg-white rounded-md shadow-lg">
         <span className="text-xl font-semibold">
           Good Morning,
-          <span className="text-blue-900 pl-1">{loggedInUser?.username}</span>
+          <span className="text-blue-900 pl-1">{loggedInUser?.fullName}</span>
         </span>
         <span className="text-zinc-600">Have a great day at work</span>
       </div>

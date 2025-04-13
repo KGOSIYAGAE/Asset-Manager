@@ -20,9 +20,9 @@ function Home() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    getAllDevices(devicesDispatch);
+    /*getAllDevices(devicesDispatch);
     getStaffData(staffDispatch);
-    getAllStudents(studentDispatch);
+    getAllStudents(studentDispatch);*/
 
     setCurrentUser(getLoggedInUser());
   }, [devicesDispatch, staffDispatch, studentDispatch]);

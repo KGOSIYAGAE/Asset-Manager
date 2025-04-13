@@ -14,23 +14,23 @@ function Login() {
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
 
-  const onLogin = async (email, password_hash) => {
+  const onLogin = async (email, password) => {
     try {
       if (!email) {
         return setShowToast({ isShown: true, type: "error", message: "Username not provided" });
       }
 
-      if (!password_hash) {
+      if (!password) {
         return setShowToast({ isShown: true, type: "error", message: "Password not provided" });
       }
 
-      const loginDetails = { email, password_hash };
+      const loginDetails = { email, password };
 
-      const response = await loginAxiosInstance.post("auth/login", loginDetails);
+      const response = await loginAxiosInstance.post("api/admin/login", loginDetails);
 
-      if (response.data && !response.data.error) {
+      if (response?.data && !response?.data?.error) {
         //localStorage.setItem("token", JSON.stringify(response.data.token));
-        sessionStorage.setItem("currentUser", JSON.stringify({ username: response.data.username, role: response.data.role, token: response.data.token }));
+        sessionStorage.setItem("currentUser", JSON.stringify({ fullName: response.data.fullName, role: response.data.role, token: response.data.token }));
 
         authDispatch({ type: "LOGIN", payload: response.data });
 
@@ -38,7 +38,7 @@ function Login() {
         return setShowToast({ isShown: true, type: "add", message: "Login successful" });
       }
     } catch (error) {
-      if (error.response.data && error.response.data.error) {
+      if (error.response?.data && error.response?.data?.error) {
         return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
       } else {
         return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });

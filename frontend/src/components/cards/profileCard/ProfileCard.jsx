@@ -24,10 +24,10 @@ function ProfileCard() {
   return (
     <div className=" flex items-center p-3 gap-3 border">
       <div className="w-[50px] flex justify-center bg-zinc-100 p-3 rounded-full border border-zinc-300">
-        <span>{getIntials(loggedInUser?.username)}</span>
+        <span>{getIntials(loggedInUser?.fullName)}</span>
       </div>
       <div className="flex flex-col justify-center">
-        <span>{`${loggedInUser?.username}`}</span>
+        <span>{`${loggedInUser?.fullName}`}</span>
       </div>
 
       <div className="menu-items bg-zinc-100 rounded-md p-2">

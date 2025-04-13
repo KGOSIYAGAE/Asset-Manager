@@ -8,8 +8,11 @@ const app = express();
 
 //CORS Middleware
 app.use(cors({ origin: "*" }));
+
+//Determines what size file can be bulk added.
 app.use(express.json({ limit: "25mb" }));
 
+/*
 //Staff Router
 const StaffRouter = require("./Routes/staff.routes");
 app.use("/users", StaffRouter);
@@ -35,4 +38,14 @@ dbConnection.connect((error) => {
     console.log("Database connected.");
     console.log("Server running on port", process.env.PORT);
   });
+});
+*/
+
+/*Update*/
+const adminRouter = require("./Routes/adminRoutes");
+
+app.use("/api/admin/", adminRouter);
+
+app.listen(process.env.PORT, () => {
+  console.log("Server running on port", process.env.PORT);
 });

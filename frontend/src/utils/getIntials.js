@@ -1,9 +1,9 @@
-export const getIntials = (userName) => {
-  if (!userName) {
+export const getIntials = (fullName) => {
+  if (!fullName) {
     return "Null";
   }
 
-  let names = userName.split(" ");
+  let names = fullName.split(" ");
   let initials = "";
 
   for (let i = 0; i < names.length; i++) {
