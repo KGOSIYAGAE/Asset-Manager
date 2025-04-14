@@ -9,7 +9,7 @@ const createToken = (email) => {
 };
 
 //Admin Login
-const getAdmin = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -53,7 +53,7 @@ const getAdmin = async (req, res) => {
 };
 
 //Admin Signup
-const createAdmin = async (req, res) => {
+const signUp = async (req, res) => {
   try {
     const { password, first_name, last_name, email, role } = req.body;
 
@@ -100,4 +100,4 @@ const createAdmin = async (req, res) => {
 
 //Admin Update
 
-module.exports = { getAdmin, createAdmin };
+module.exports = { login, signUp };

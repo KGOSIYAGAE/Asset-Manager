@@ -3,7 +3,9 @@ import axiosInstance from "../../../utils/axiosInstance";
 //Get All devices
 export const getAllDevices = async (devicesDispatch) => {
   try {
-    const response = await axiosInstance.get("/devices/");
+    const response = await axiosInstance.get("/api/devices/");
+
+    console.log(response);
 
     if (response.data.deviceList) {
       devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });

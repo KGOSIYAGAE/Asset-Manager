@@ -59,14 +59,14 @@ function Devices({ path }) {
     getAllDevices(devicesDispatch);
   }, []);
   return (
-    <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
-      <span className="text-sm">
+    <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
+      <span className="text-sm ">
         <b> {path}</b>
       </span>
-      <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md ">
+      <div className=" flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
         <div className="flex justify-between">
           <span className="heading-text">Device List</span>
-          <div className="flex gap-2">
+          <div className="flex gap-2 ">
             <SearchInput searchData={devicesState.deviceList} dataType={"devices"} />
             <AddButton name={"Add New Device"} handleAdd={handleAdd} />
             <RefreshButton onClick={ImportModal} />
@@ -88,7 +88,7 @@ function Devices({ path }) {
           overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
         }}
         contentLabel=""
-        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
+        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5  "
       >
         {openModal.isShown ? (
           <DeleteConfirmation

@@ -46,11 +46,11 @@ function App() {
   //App UI Layout
   const Layout = () => {
     return (
-      <div className="w-screen flex">
+      <div className="w-screen flex ">
         <div className={`${isMinimize ? "w-[60px] " : "w-2/12"} border`}>
           <Menu isMinimized={isMinimize} />
         </div>
-        <div className={`${isMinimize ? "w-full" : "w-10/12"}`}>
+        <div className={`${isMinimize ? "w-full" : "w-10/12"} `}>
           <div className="bottom-border">
             <Navbar onCloseMenu={handleMinimizeMenu} />
           </div>

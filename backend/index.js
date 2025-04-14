@@ -42,9 +42,13 @@ dbConnection.connect((error) => {
 */
 
 /*Update*/
+//Admin
 const adminRouter = require("./Routes/adminRoutes");
-
 app.use("/api/admin/", adminRouter);
+
+//Devices
+const deviceRouter = require("./Routes/deviceRoutes");
+app.use("/api/devices", deviceRouter);
 
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
