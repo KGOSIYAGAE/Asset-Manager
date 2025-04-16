@@ -43,37 +43,68 @@ const getDevice = async (req, res) => {
 };
 
 //Create device
-/*
+
 const createDevice = async (req, res) => {
   try {
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warrantyExpiration, location, supplier, invoice_no, purchaseValue, purchaseDate, loanStartDate, loanEndDate } =
-      req.body;
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue } = req.body;
 
-    if (
-      !assetTag ||
-      !make ||
-      !model ||
-      !serial_no ||
-      !spec ||
-      !category ||
-      !device_condition ||
-      !status ||
-      !warrantyExpiration ||
-      !location ||
-      !supplier ||
-      !invoice_no ||
-      !purchaseValue ||
-      !purchaseDate
-    ) {
-      return res.status(400).json({ message: "All fields are required!" });
+    //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
+
+    if (!assetTag) {
+      return res.status(400).json({ message: "Asset Tag is required!" });
+    }
+    if (!make) {
+      return res.status(400).json({ message: "Make is required!" });
+    }
+    if (!model) {
+      return res.status(400).json({ message: "Model is required!" });
+    }
+    if (!serial_no) {
+      return res.status(400).json({ message: "Serial number is required!" });
+    }
+    if (!spec) {
+      return res.status(400).json({ message: "Specification is required!" });
+    }
+    if (!category) {
+      return res.status(400).json({ message: "Category is required!" });
+    }
+    if (!device_condition) {
+      return res.status(400).json({ message: "Device condition is required!" });
+    }
+    if (!status) {
+      return res.status(400).json({ message: "Device status is required!" });
+    }
+    if (!warranty_end_date) {
+      return res.status(400).json({ message: "Warranty end date is required!" });
+    }
+    if (!invoice_no) {
+      return res.status(400).json({ message: "Invoice number is required!" });
+    }
+    if (!purchaseValue) {
+      return res.status(400).json({ message: "Purchase value is required!" });
+    }
+    if (!currentValue) {
+      return res.status(400).json({ message: "Current value is required!" });
     }
 
-    const create_device_query = "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, date_issued, return_date, warranty_end_date, purchase_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+    const create_device_query =
+      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);";
+    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_no];
 
+    const { rowCount } = await query(create_device_query, [...VALUES]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when creating a device", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Successfully created", error: false });
   } catch (error) {
     console.log(error);
+    if (error.code === "23505") {
+      return res.status(400).json({ message: `Device already exist` });
+    }
     return res.status(500).json({ message: `Internal server error: ${error}` });
   }
-};*/
+};
 
-module.exports = { getAllDevices, getDevice };
+module.exports = { getAllDevices, getDevice, createDevice };

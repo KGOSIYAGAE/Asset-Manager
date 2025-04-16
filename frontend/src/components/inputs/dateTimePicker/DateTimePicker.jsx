@@ -13,9 +13,10 @@ function DateTimePicker({ label, value, setOnChange }) {
       <input
         type="date"
         className="flex outline-none"
-        value={date}
+        value={date ? date : value}
         onChange={(e) => {
-          setOnChange(date);
+          console.log(e.target.value);
+          setOnChange(e.target.value);
         }}
       />
     </div>

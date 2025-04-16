@@ -72,7 +72,7 @@ function DeviceDetails({ path }) {
     setDateCreated(handleTimeStamp(deviceDetails?.created_at));
     setWarrantyEndDate(handleTimeStamp(deviceDetails?.warranty_end_date));
     setPurchaseDate(handleTimeStamp(deviceDetails?.purchase_date));
-  }, [dateCreated, warrantyEndDate, purchaseDate]);
+  }, [deviceDetails?.created_at]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -166,6 +166,16 @@ function DeviceDetails({ path }) {
                 style: "currency",
                 currency: "ZAR",
               }).format(deviceDetails?.purchase_price)}
+            </span>
+            {/*`R ${deviceDetails?.purchaseValue}` */}
+          </div>
+          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+            <span className="text-sm">Current Value</span>
+            <span className="text-sm">
+              {new Intl.NumberFormat("en-ZA", {
+                style: "currency",
+                currency: "ZAR",
+              }).format(deviceDetails?.value_price)}
             </span>
             {/*`R ${deviceDetails?.purchaseValue}` */}
           </div>

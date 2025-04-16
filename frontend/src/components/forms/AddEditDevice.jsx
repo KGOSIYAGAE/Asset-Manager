@@ -18,10 +18,10 @@ function AddEditDevice({ path }) {
   const [serial_no, setSerial_no] = useState("");
   const [assetTag, setAssetTag] = useState("");
   const [spec, setSpec] = useState("");
-  const [category, setCategory] = useState(""); // Laptop, desktop, all in one, Monitor
-  const [device_condition, setDevice_Condition] = useState(""); //New, Used, Faulty/ Scrap
-  const [status, setStatus] = useState(""); //Available, Loaned, Assigned, Under Maintenance, Lost
-  const [warrantyExpiration, setWarrantyExperation] = useState("");
+  const [category, setCategory] = useState("Laptop"); // Laptop, desktop, all in one, Monitor
+  const [device_condition, setDevice_Condition] = useState("New"); //New, Used, Faulty/ Scrap
+  const [status, setStatus] = useState("Available"); //Available, Loaned, Assigned, Under Maintenance, Lost
+  const [warranty_end_date, setWarranty_End_date] = useState("");
   const [invoice_no, setInvoice_no] = useState("");
   const [purchaseValue, setPurchaseValue] = useState("");
   const [currentValue, setCurrentValue] = useState("");
@@ -69,7 +69,7 @@ function AddEditDevice({ path }) {
     setCategory(deviceDetails[0].category);
     setDevice_Condition(deviceDetails[0].device_condition);
     setStatus(deviceDetails[0].status);
-    setWarrantyExperation(deviceDetails[0].warranty_end_date);
+    setWarranty_End_date(deviceDetails[0].warranty_end_date);
     setInvoice_no(deviceDetails[0].invoice_number);
     setPurchaseValue(deviceDetails[0].purchase_price);
     setCurrentValue(deviceDetails[0].purchase_price);
@@ -77,6 +77,7 @@ function AddEditDevice({ path }) {
 
   //Handle Submit
   const handleSubmit = () => {
+    console.log(warranty_end_date);
     if (!serial_no) {
       return setShowToast({ isShown: true, type: "error", message: "Device serial number must be provided." });
     }
@@ -95,8 +96,8 @@ function AddEditDevice({ path }) {
     if (!make) {
       return setShowToast({ isShown: true, type: "error", message: "Device manufacture must be provided." });
     }
-    if (!warrantyExpiration) {
-      return setShowToast({ isShown: true, type: "error", message: "Device warranty expiration date must be provided." });
+    if (!warranty_end_date) {
+      return setShowToast({ isShown: true, type: "error", message: "Device warranty end date must be provided." });
     }
     if (!purchaseValue) {
       return setShowToast({ isShown: true, type: "error", message: "Device purchase value must be provided." });
@@ -120,10 +121,10 @@ function AddEditDevice({ path }) {
       category,
       device_condition,
       status,
-      warrantyExpiration,
+      warranty_end_date,
       invoice_no,
       purchaseValue,
-      purchaseDate,
+      currentValue,
     };
 
     if (formType === "Add") {
@@ -185,7 +186,7 @@ function AddEditDevice({ path }) {
           </div>
 
           <div className="col-span-2">
-            <DateTimePicker label={"Warranty Experation date"} value={warrantyExpiration} setOnChange={setWarrantyExperation} />
+            <DateTimePicker label={"Warranty End Date"} value={warranty_end_date} setOnChange={setWarranty_End_date} />
           </div>
 
           <div className="col-span-3">
@@ -193,7 +194,7 @@ function AddEditDevice({ path }) {
           </div>
 
           <div className="col-span-3">
-            <TextInput label={"Current Value"} value={currentValue} isDisabled={false} maxLength={10} setOnChange={setPurchaseValue} />
+            <TextInput label={"Current Value"} value={currentValue} isDisabled={false} maxLength={10} setOnChange={setCurrentValue} />
           </div>
 
           <div className="col-span-3">
