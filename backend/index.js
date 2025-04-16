@@ -50,6 +50,10 @@ app.use("/api/admin/", adminRouter);
 const deviceRouter = require("./Routes/deviceRoutes");
 app.use("/api/devices", deviceRouter);
 
+//Inovices
+const invoiceRouter = require("./Routes/invoiceRouter");
+app.use("/api/invoices", invoiceRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
 });
