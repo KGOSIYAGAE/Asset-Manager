@@ -5,8 +5,6 @@ export const getAllDevices = async (devicesDispatch) => {
   try {
     const response = await axiosInstance.get("/api/devices/");
 
-    console.log(response);
-
     if (response.data.deviceList) {
       devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
     }
@@ -24,7 +22,9 @@ export const getAllDevices = async (devicesDispatch) => {
 //Hanlde get device
 export const getDevice = async (id, setFormData) => {
   try {
-    const response = await axiosInstance.get("devices/" + id);
+    const response = await axiosInstance.get("/api/devices/" + id);
+
+    console.log(response);
 
     if (response.data) {
       return setFormData(response.data.deviceDetails);

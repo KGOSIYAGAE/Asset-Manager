@@ -11,6 +11,7 @@ import { useStaffContext } from "../../hooks/useStaffContext";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import ReleaseUser from "../../components/cards/releaseUser/releaseUser";
+import { handleTimeStamp } from "../../utils/dateConverter";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -26,6 +27,9 @@ function DeviceDetails({ path }) {
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
 
   const [dateCreated, setDateCreated] = useState("");
+  const [warrantyEndDate, setWarrantyEndDate] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
+
   const navigate = useNavigate();
 
   //Get user type based on userID
@@ -65,10 +69,10 @@ function DeviceDetails({ path }) {
     if (!staffState || !studentState) {
       console.log("No data");
     }
-
-    const newDate = deviceDetails?.createdAt.split("T")[0];
-    setDateCreated(newDate);
-  }, []);
+    setDateCreated(handleTimeStamp(deviceDetails?.created_at));
+    setWarrantyEndDate(handleTimeStamp(deviceDetails?.warranty_end_date));
+    setPurchaseDate(handleTimeStamp(deviceDetails?.purchase_date));
+  }, [dateCreated, warrantyEndDate, purchaseDate]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -117,7 +121,7 @@ function DeviceDetails({ path }) {
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Asset Tag</span>
-            <span className="text-sm">{deviceDetails?.assetTag}</span>
+            <span className="text-sm">{deviceDetails?.asset_tag}</span>
           </div>
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Serial Number</span>
@@ -133,7 +137,7 @@ function DeviceDetails({ path }) {
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Warranty End date</span>
-            <span className="text-sm">{deviceDetails?.warrantyExpiration}</span>
+            <span className="text-sm">{warrantyEndDate}</span>
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Category</span>
@@ -149,11 +153,11 @@ function DeviceDetails({ path }) {
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Supplier</span>
-            <span className="text-sm">{deviceDetails?.supplier}</span>
+            <span className="text-sm">{deviceDetails?.supplier_name}</span>
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Invoice</span>
-            <span className="text-sm">{deviceDetails?.invoice_no}</span>
+            <span className="text-sm">{deviceDetails?.invoice_number}</span>
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Purchase Value</span>
@@ -161,13 +165,13 @@ function DeviceDetails({ path }) {
               {new Intl.NumberFormat("en-ZA", {
                 style: "currency",
                 currency: "ZAR",
-              }).format(deviceDetails?.purchaseValue)}
+              }).format(deviceDetails?.purchase_price)}
             </span>
             {/*`R ${deviceDetails?.purchaseValue}` */}
           </div>
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Purchase Date</span>
-            <span className="text-sm">{deviceDetails?.purchaseDate}</span>
+            <span className="text-sm">{purchaseDate}</span>
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Date Enrolled</span>
@@ -221,7 +225,7 @@ function DeviceDetails({ path }) {
         contentLabel=""
         className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
       >
-        {openModal.type === "assign" ? (
+        {/*openModal.type === "assign" ? (
           <IssueDevice
             onCanel={() => {
               setOpenModal({ isShown: false });
@@ -245,7 +249,7 @@ function DeviceDetails({ path }) {
             data={[...staffState?.staffList, ...studentState?.studentsList]}
             setShowToast={setShowToast}
           />
-        )}
+        )*/}
       </Modal>
       <ToastMessage
         isShown={showToast.isShow}
