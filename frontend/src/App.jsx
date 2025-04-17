@@ -20,6 +20,7 @@ import Login from "./pages/login/Login";
 import { useEffect, useState } from "react";
 import { getLoggedInUser } from "./utils/getLoggedInUser";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
+import { InvoiceContextProvider } from "./context/InvoicesContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -226,13 +227,15 @@ function App() {
 
   return (
     <SearchContextProvider>
-      <DevicesContextProvider>
-        <StudentsContextProvider>
-          <StaffContextProvider>
-            <RouterProvider router={router} />
-          </StaffContextProvider>
-        </StudentsContextProvider>
-      </DevicesContextProvider>
+      <InvoiceContextProvider>
+        <DevicesContextProvider>
+          <StudentsContextProvider>
+            <StaffContextProvider>
+              <RouterProvider router={router} />
+            </StaffContextProvider>
+          </StudentsContextProvider>
+        </DevicesContextProvider>
+      </InvoiceContextProvider>
     </SearchContextProvider>
   );
 }

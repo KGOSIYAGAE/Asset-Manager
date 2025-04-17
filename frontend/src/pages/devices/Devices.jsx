@@ -67,7 +67,7 @@ function Devices({ path }) {
         <div className="flex justify-between">
           <span className="heading-text">Device List</span>
           <div className="flex gap-2 ">
-            <SearchInput searchData={devicesState.deviceList} dataType={"devices"} />
+            <SearchInput searchData={devicesState?.deviceList} dataType={"devices"} />
             <AddButton name={"Add New Device"} handleAdd={handleAdd} />
             <RefreshButton onClick={ImportModal} />
             <ExportExcelButton />

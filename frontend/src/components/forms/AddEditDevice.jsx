@@ -9,8 +9,10 @@ import { deviceCondition, deviceStatus } from "../../utils/deviceStatus.Conditio
 import { deviceCategory, deviceManufacture } from "../../utils/deviceDetails";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../utils/axiosInstance";
 import { addDevice, getDevice, updateDevice } from "../../services/api/devices/Device.Api";
+import { getAllInvoices } from "../../services/api/invoices/Inovices.Api";
+import { useInvoiceContext } from "../../hooks/useInvoiceContext";
+import InvoiceSelectInput from "../inputs/invoiceSelectInput/InvoiceSelectInput";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
@@ -23,12 +25,15 @@ function AddEditDevice({ path }) {
   const [status, setStatus] = useState("Available"); //Available, Loaned, Assigned, Under Maintenance, Lost
   const [warranty_end_date, setWarranty_End_date] = useState("");
   const [invoice_no, setInvoice_no] = useState("");
+  const [invoice_id, setInvoice_id] = useState(0);
   const [purchaseValue, setPurchaseValue] = useState("");
   const [currentValue, setCurrentValue] = useState("");
 
   const [modelList, setModelList] = useState([]);
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [formType, setFormType] = useState("Add");
+
+  const { invoiceState, invoiceDispatch } = useInvoiceContext();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -77,7 +82,6 @@ function AddEditDevice({ path }) {
 
   //Handle Submit
   const handleSubmit = () => {
-    console.log(warranty_end_date);
     if (!serial_no) {
       return setShowToast({ isShown: true, type: "error", message: "Device serial number must be provided." });
     }
@@ -105,7 +109,7 @@ function AddEditDevice({ path }) {
     if (!currentValue) {
       return setShowToast({ isShown: true, type: "error", message: "Device current value must be provided." });
     }
-    if (!invoice_no) {
+    if (invoice_id <= 0) {
       return setShowToast({ isShown: true, type: "error", message: "Device invoice number must be provided." });
     }
     if (!spec) {
@@ -122,7 +126,7 @@ function AddEditDevice({ path }) {
       device_condition,
       status,
       warranty_end_date,
-      invoice_no,
+      invoice_id,
       purchaseValue,
       currentValue,
     };
@@ -147,6 +151,7 @@ function AddEditDevice({ path }) {
 
   useEffect(() => {
     getDeviceDetails();
+    getAllInvoices(invoiceDispatch);
   }, []);
 
   return (
@@ -197,8 +202,16 @@ function AddEditDevice({ path }) {
             <TextInput label={"Current Value"} value={currentValue} isDisabled={false} maxLength={10} setOnChange={setCurrentValue} />
           </div>
 
-          <div className="col-span-3">
-            <TextInput label={"Invoice Number"} value={invoice_no} isDisabled={false} maxLength={10} setOnChange={setInvoice_no} />
+          <div className="col-span-2">
+            <InvoiceSelectInput
+              label={"Invoice Number"}
+              value={invoice_no}
+              options={invoiceState?.invoiceList}
+              optionName={"invoice_number"}
+              isDisabled={false}
+              setOnChange={setInvoice_no}
+              onChoose={setInvoice_id}
+            />
           </div>
 
           <div className="col-span-8">
