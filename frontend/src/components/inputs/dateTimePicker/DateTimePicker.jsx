@@ -15,7 +15,6 @@ function DateTimePicker({ label, value, setOnChange }) {
         className="flex outline-none"
         value={date ? date : value}
         onChange={(e) => {
-          console.log(e.target.value);
           setOnChange(e.target.value);
         }}
       />

@@ -119,7 +119,7 @@ export const deleteDevice = async (id, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
     }
 
-    const response = await axiosInstance.delete("/devices/delete-device/" + id);
+    const response = await axiosInstance.delete("/api/devices/delete-device/" + id);
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "add", message: response.data.message });

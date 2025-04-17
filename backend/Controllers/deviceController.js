@@ -43,7 +43,6 @@ const getDevice = async (req, res) => {
 };
 
 //Create device
-
 const createDevice = async (req, res) => {
   try {
     const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_id, purchaseValue, currentValue } = req.body;
@@ -107,4 +106,31 @@ const createDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, createDevice };
+//Delete device
+const deleteDevice = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Device Id must be provided", error: true });
+    }
+
+    const find_device_query = "SELECT * FROM devices WHERE id = $1";
+    const { rowCount } = await query(find_device_query, [id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "Device matching Id not found", error: true });
+    }
+
+    const delete_device_query = "DELETE FROM devices WHERE id = $1";
+
+    const { rows } = await query(delete_device_query, [id]);
+
+    return res.status(200).json({ message: "Device deleted successfully", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+module.exports = { getAllDevices, getDevice, createDevice, deleteDevice };

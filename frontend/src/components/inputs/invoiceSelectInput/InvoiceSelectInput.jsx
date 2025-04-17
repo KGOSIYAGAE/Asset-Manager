@@ -31,6 +31,7 @@ function InvoiceSelectInput({ label, value, options, optionName, isDisabled, set
           onChoose(handleGetInvoiceId(e.target.value));
         }}
       >
+        <option></option>
         {options.map((option) => fnc(option, optionName))}
       </select>
     </div>

@@ -25,6 +25,7 @@ function SelectInput({ label, value, options, optionName, isDisabled, setOnChang
           }
         }}
       >
+        <option></option>
         {options.map((option) => fnc(option, optionName))}
       </select>
     </div>
