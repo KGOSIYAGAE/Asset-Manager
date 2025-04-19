@@ -34,6 +34,6 @@ export const devicesTableHeaders = [
   { field: "device_condition", headerName: "Condition", width: 110 },
   { field: "status", headerName: "Status", width: 100 },
   { field: "category", headerName: "Category", width: 100 },
-  { field: "warrantyEndDate", headerName: "Warranty End Date", width: 118 },
+  { field: "warranty_end_date", headerName: "Warranty End Date", width: 140 },
   { field: "user_id", headerName: "Assigned To", width: 110 },
 ];

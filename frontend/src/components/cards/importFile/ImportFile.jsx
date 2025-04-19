@@ -66,11 +66,11 @@ function ImportFile({ type, setShowToast, onClose }) {
   return (
     <div>
       <div className="flex flex-col p-2 gap-7">
-        <div className="flex justify-between">
+        <div className="flex justify-between cursor-pointer">
           <span className="text-xl font-semibold">Upload file</span>
           <MdClose
             size={25}
-            className="text-slate-500"
+            className="text-slate-500 hover:text-red-500"
             onClick={() => {
               onClose();
             }}

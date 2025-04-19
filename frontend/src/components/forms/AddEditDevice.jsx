@@ -76,8 +76,9 @@ function AddEditDevice({ path }) {
     setStatus(deviceDetails[0].status);
     setWarranty_End_date(deviceDetails[0].warranty_end_date);
     setInvoice_no(deviceDetails[0].invoice_number);
+    setInvoice_id(deviceDetails[0].invoice_id);
     setPurchaseValue(deviceDetails[0].purchase_price);
-    setCurrentValue(deviceDetails[0].purchase_price);
+    setCurrentValue(deviceDetails[0].value_price);
   };
 
   //Handle Submit
@@ -150,8 +151,8 @@ function AddEditDevice({ path }) {
   };
 
   useEffect(() => {
-    getDeviceDetails();
     getAllInvoices(invoiceDispatch);
+    getDeviceDetails();
   }, []);
 
   return (
@@ -202,18 +203,21 @@ function AddEditDevice({ path }) {
             <TextInput label={"Current Value"} value={currentValue} isDisabled={false} maxLength={10} setOnChange={setCurrentValue} />
           </div>
 
-          <div className="col-span-2">
-            <InvoiceSelectInput
-              label={"Invoice Number"}
-              value={invoice_no}
-              options={invoiceState?.invoiceList}
-              optionName={"invoice_number"}
-              isDisabled={false}
-              setOnChange={setInvoice_no}
-              onChoose={setInvoice_id}
-            />
-          </div>
-
+          {invoiceState ? (
+            <div className="col-span-2">
+              <InvoiceSelectInput
+                label={"Invoice Number"}
+                value={invoice_no}
+                options={invoiceState?.invoiceList}
+                optionName={"invoice_number"}
+                isDisabled={false}
+                setOnChange={setInvoice_no}
+                onChoose={setInvoice_id}
+              />
+            </div>
+          ) : (
+            ""
+          )}
           <div className="col-span-8">
             <TextArea label={"Specification"} value={spec} isDisabled={false} setOnChange={setSpec} />
           </div>

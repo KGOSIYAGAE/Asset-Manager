@@ -32,7 +32,7 @@ function InvoiceSelectInput({ label, value, options, optionName, isDisabled, set
         }}
       >
         <option></option>
-        {options.map((option) => fnc(option, optionName))}
+        {options?.map((option) => fnc(option, optionName))}
       </select>
     </div>
   );

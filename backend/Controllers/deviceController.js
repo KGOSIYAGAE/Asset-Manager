@@ -1,4 +1,5 @@
 const { query } = require("../util/pg_dbConnection");
+const format = require("pg-format");
 
 //Get all devices
 const getAllDevices = async (req, res) => {
@@ -77,7 +78,7 @@ const createDevice = async (req, res) => {
       return res.status(400).json({ message: "Warranty end date is required!" });
     }
     if (!invoice_id) {
-      return res.status(400).json({ message: "Invoice number is required!" });
+      return res.status(400).json({ message: "Invoice id is required!" });
     }
     if (!purchaseValue) {
       return res.status(400).json({ message: "Purchase value is required!" });
@@ -102,6 +103,113 @@ const createDevice = async (req, res) => {
     if (error.code === "23505") {
       return res.status(400).json({ message: `Device already exist` });
     }
+    return res.status(500).json({ message: `Internal server error: ${error}` });
+  }
+};
+
+//Bulk create devices
+const bulkCreateDevice = async (req, res) => {
+  try {
+    const { devices } = req.body;
+
+    if (!Array.isArray(devices || devices.length === 0)) {
+      return res.status(400).json({ message: "Invalid or empty device list", error: true });
+    }
+
+    const VALUES = devices.map((device) => [
+      device.make,
+      device.model,
+      device.category,
+      device.device_condition,
+      device.status,
+      device.assetTag,
+      device.serial_no,
+      device.spec,
+      device.warranty_end_date,
+      device.purchaseValue,
+      device.currentValue,
+      device.invoice_id,
+    ]);
+
+    const bulk_create_device_query = format(
+      "INSERT INTO devices (make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id) VALUES %L",
+      VALUES
+    );
+
+    const { rowCount } = await query(bulk_create_device_query);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when adding devices", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: `${rowCount} devices successfully created.`, error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}` });
+  }
+};
+
+//Update device
+const updateDevice = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Device Id is required!", error: true });
+    }
+
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_id, purchaseValue, currentValue } = req.body;
+
+    if (!assetTag) {
+      return res.status(400).json({ message: "Asset Tag is required!", error: true });
+    }
+    if (!make) {
+      return res.status(400).json({ message: "Make is required!", error: true });
+    }
+    if (!model) {
+      return res.status(400).json({ message: "Model is required!", error: true });
+    }
+    if (!serial_no) {
+      return res.status(400).json({ message: "Serial number is required!", error: true });
+    }
+    if (!spec) {
+      return res.status(400).json({ message: "Specification is required!", error: true });
+    }
+    if (!category) {
+      return res.status(400).json({ message: "Category is required!", error: true });
+    }
+    if (!device_condition) {
+      return res.status(400).json({ message: "Device condition is required!", error: true });
+    }
+    if (!status) {
+      return res.status(400).json({ message: "Device status is required!", error: true });
+    }
+    if (!warranty_end_date) {
+      return res.status(400).json({ message: "Warranty end date is required!", error: true });
+    }
+    if (!invoice_id) {
+      return res.status(400).json({ message: "Invoice id is required!", error: true });
+    }
+    if (!purchaseValue) {
+      return res.status(400).json({ message: "Purchase value is required!", error: true });
+    }
+    if (!currentValue) {
+      return res.status(400).json({ message: "Current value is required!", error: true });
+    }
+
+    const update_device_query =
+      "UPDATE devices SET make=$1, model=$2, category=$3, device_condition=$4, status=$5, asset_tag=$6, serial_no=$7, specification=$8, warranty_end_date=$9, purchase_price=$10, value_price=$11, invoice_id=$12 WHERE id =$13 ;";
+    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_id];
+
+    const { rowCount } = await query(update_device_query, [...VALUES, id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when updating the device", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Device updated successfully", error: false });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}` });
   }
 };
@@ -133,4 +241,4 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, createDevice, deleteDevice };
+module.exports = { getAllDevices, getDevice, createDevice, deleteDevice, updateDevice, bulkCreateDevice };

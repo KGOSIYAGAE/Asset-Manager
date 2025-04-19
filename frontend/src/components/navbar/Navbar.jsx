@@ -12,7 +12,7 @@ function Navbar({ onCloseMenu, notifications }) {
   }, [notifications]);
 
   return (
-    <div className="flex justify-between items-center shadow-md px-3">
+    <div className="flex justify-between items-center shadow-md px-3 cursor-pointer">
       <div
         onClick={() => {
           onCloseMenu();

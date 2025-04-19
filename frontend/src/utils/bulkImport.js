@@ -7,21 +7,18 @@ export const bulkCreateDevices = (file, setShowToast, onClose) => {
     let data = [];
     for (let i = 0; i < rows.length; i++) {
       data.push({
-        assetTag: rows[i][0],
-        serial_no: rows[i][1],
-        make: rows[i][2],
-        model: rows[i][3],
-        category: rows[i][4],
-        device_condition: rows[i][5],
-        status: rows[i][6],
-        specification: rows[i][7],
-        warrantyExpiration: `${rows[i][8]}`,
-        supplier: rows[i][9],
-        invoice_no: rows[i][10],
-        description_no: rows[i][11],
-        purchaseValue: rows[i][12],
-        purchaseDate: `${rows[i][13]}`,
-        location: rows[i][14],
+        make: rows[i][0],
+        model: rows[i][1],
+        category: rows[i][2],
+        device_condition: rows[i][3],
+        status: rows[i][4],
+        assetTag: rows[i][5],
+        serial_no: rows[i][6],
+        spec: rows[i][7],
+        warranty_end_date: `${rows[i][8]}`,
+        purchaseValue: rows[i][9],
+        currentValue: rows[i][10],
+        invoice_id: rows[i][11],
       });
     }
 

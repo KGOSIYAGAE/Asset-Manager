@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "pg": "^8.14.1",
+    "pg-format": "^1.0.4",
     "validator": "^13.12.0"
   }
 }

@@ -41,7 +41,7 @@ export const addDevice = async (deviceData, setShowToast) => {
   try {
     const response = await axiosInstance.post("/api/devices/add-device/", deviceData);
     if (response.data) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
@@ -56,11 +56,10 @@ export const addDevice = async (deviceData, setShowToast) => {
 //bulk add devices api
 export const bulkAddDevice = async (devicesData, setShowToast, onClose) => {
   try {
-    const response = await axiosInstance.post("/devices/add-devices/", devicesData);
+    const response = await axiosInstance.post("/api/devices/bulk-add-devices/", devicesData);
     if (response.data) {
-      //console.log(response.data);
       onClose();
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
@@ -80,10 +79,10 @@ export const updateDevice = async (id, deviceDetails, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Device id must be provided" });
     }
 
-    const response = await axiosInstance.put("/devices/edit-device/" + id, deviceDetails);
+    const response = await axiosInstance.put("/api/devices/update-device/" + id, deviceDetails);
 
     if (response.data) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
@@ -122,7 +121,7 @@ export const deleteDevice = async (id, setShowToast) => {
     const response = await axiosInstance.delete("/api/devices/delete-device/" + id);
 
     if (response.data) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
