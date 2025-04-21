@@ -54,6 +54,10 @@ app.use("/api/devices", deviceRouter);
 const invoiceRouter = require("./Routes/invoiceRouter");
 app.use("/api/invoices", invoiceRouter);
 
+//Students
+const studentRouter = require("./Routes/studentsRoutes");
+app.use("/api/students", studentRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
 });

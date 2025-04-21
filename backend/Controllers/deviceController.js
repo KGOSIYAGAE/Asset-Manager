@@ -28,7 +28,31 @@ const getDevice = async (req, res) => {
       return res.status(400).json({ message: "Device id not provided", error: true });
     }
 
-    const getDeviceQuery = "SELECT * FROM devices_invoices_suppliers WHERE id = $1";
+    const getDeviceQuery = "SELECT * FROM devices WHERE id = $1";
+
+    const { rows } = await query(getDeviceQuery, [id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Device matching the id not found", error: true });
+    }
+
+    return res.status(200).json({ deviceDetails: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//Get all device details by id
+const getDeviceDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Device id not provided", error: true });
+    }
+
+    const getDeviceQuery = `SELECT * FROM "deviceDetails" WHERE id = $1`;
 
     const { rows } = await query(getDeviceQuery, [id]);
 
@@ -241,4 +265,4 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, createDevice, deleteDevice, updateDevice, bulkCreateDevice };
+module.exports = { getAllDevices, getDevice, getDeviceDetails, createDevice, deleteDevice, updateDevice, bulkCreateDevice };

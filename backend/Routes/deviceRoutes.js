@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { getAllDevices, getDevice, createDevice, updateDevice, deleteDevice, bulkCreateDevice } = require("../Controllers/deviceController");
+const { getAllDevices, getDevice, getDeviceDetails, createDevice, updateDevice, deleteDevice, bulkCreateDevice } = require("../Controllers/deviceController");
 
 //Get all devices
 router.get("/", getAllDevices);
 
 //Get all devices
 router.get("/:id", getDevice);
+
+//Get all devices details
+router.get("/device-details/:id", getDeviceDetails);
 
 //Create new device
 router.post("/add-device", createDevice);

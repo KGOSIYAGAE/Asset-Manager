@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextInput from "../../components/inputs/textInput/TextInput";
 import PasswordInput from "../../components/inputs/textInput/PasswordInput";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
 import loginAxiosInstance from "../../utils/loginAxiosInstance";
+import { checkInternetConnection } from "../../utils/systemChecks";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,8 @@ function Login() {
   const [showLoading, setLoading] = useState(false);
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
+
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   //Login Api Call
   const onLogin = async (email, password) => {
@@ -39,13 +42,21 @@ function Login() {
         return setShowToast({ isShown: true, type: "add", message: "Login successful" });
       }
     } catch (error) {
-      if (error.response?.data && error.response?.data?.error) {
+      if (!isOnline) {
+        return checkInternetConnection(isOnline, setShowToast);
+      } else if (error.response?.data && error.response?.data?.error) {
         return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
       } else {
         return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
       }
     }
   };
+
+  {
+    /*useEffect(() => {
+    checkInternetConnection(isOnline, setShowToast);
+  }, [isOnline]);*/
+  }
 
   return (
     <div className="w-screen h-svh flex items-center justify-center ">

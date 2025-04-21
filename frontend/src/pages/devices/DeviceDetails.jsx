@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import AddButton from "../../components/buttons/AddButton";
 import { useParams } from "react-router-dom";
-import { getDevice } from "../../services/api/devices/Device.Api";
+import { getAllDeviceDetails, getDevice } from "../../services/api/devices/Device.Api";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { useNavigate } from "react-router-dom";
 
@@ -60,7 +60,7 @@ function DeviceDetails({ path }) {
     if (!id) {
       return console.log("Selected device id not provided");
     }
-    getDevice(id, setDetails);
+    getAllDeviceDetails(id, setDetails);
   };
 
   useEffect(() => {
@@ -75,7 +75,7 @@ function DeviceDetails({ path }) {
   }, [deviceDetails?.created_at]);
 
   return (
-    <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
+    <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
       <span className="text-sm">
         <b>Devices /</b> {path}
       </span>
@@ -108,8 +108,9 @@ function DeviceDetails({ path }) {
           </div>
         </div>
       </div>
-      <div className="flex gap-5">
-        <div className="flex flex-col w-6/12 border p-1 rounded-md shadow-md">
+
+      <div className="grid grid-cols-6 grid-rows-2 gap-5">
+        <div className="col-span-3 border p-1 rounded-md shadow-md">
           <span className="heading-text">Device Details</span>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Make</span>
@@ -189,7 +190,7 @@ function DeviceDetails({ path }) {
           </div>
         </div>
 
-        <div className="flex flex-col w-6/12 gap-5">
+        <div className="col-span-3 gap-5 border">
           <div className="flex flex-col items-center justify-center w-2/5 h-2/5 border p-2 gap-4 rounded-md shadow-md">
             <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="w-[200px] h-[150px]" />
           </div>
@@ -223,7 +224,9 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
+        <div className="col-span-6 h-[200px] bg-red-300"> j</div>
       </div>
+
       <Modal
         isOpen={openModal.isShown}
         onRequestClose={() => {

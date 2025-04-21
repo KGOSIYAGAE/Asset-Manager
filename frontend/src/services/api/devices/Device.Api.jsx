@@ -36,6 +36,23 @@ export const getDevice = async (id, setFormData) => {
   }
 };
 
+//Hanlde get device
+export const getAllDeviceDetails = async (id, setFormData) => {
+  try {
+    const response = await axiosInstance.get("/api/devices/device-details/" + id);
+
+    if (response.data) {
+      return setFormData(response.data.deviceDetails);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
 //add device api
 export const addDevice = async (deviceData, setShowToast) => {
   try {
