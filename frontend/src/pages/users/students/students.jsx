@@ -29,7 +29,7 @@ function students({ path }) {
   };
   //Hanlde Edit
   const handleEdit = (cellValues) => {
-    navigate(`/users/students/edit-student/${cellValues.row.student_no}`);
+    navigate(`/users/students/edit-student/${cellValues.row.student_number}`);
   };
 
   //Hanlde delete

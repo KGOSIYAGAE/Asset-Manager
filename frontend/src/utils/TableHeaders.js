@@ -14,15 +14,15 @@ export const staffTableHeaders = [
 
 //Students TableHeaders
 export const studentsTableHeaders = [
-  { field: "student_no", headerName: "Student No", width: 100 },
-  { field: "name", headerName: "First name", width: 100 },
-  { field: "surname", headerName: "Last name", width: 100 },
-  { field: "phone_number", headerName: "Phone", width: 110 },
+  { field: "student_number", headerName: "Student No", width: 100 },
+  { field: "name", headerName: "First name", width: 120 },
+  { field: "surname", headerName: "Last name", width: 110 },
+  { field: "id_number", headerName: "ID Number", width: 125 },
+  { field: "phone_number", headerName: "Phone", width: 100 },
+  { field: "email", headerName: "Email", width: 180 },
+  { field: "acc_status", headerName: "Account status", width: 115 },
   { field: "faculty", headerName: "Faculty", width: 90 },
-  { field: "course", headerName: "Course", width: 200 },
-  { field: "course_code", headerName: "Course Code", width: 110 },
-  { field: "isActive", headerName: "Account status", width: 120 },
-  { field: "registration_date", headerName: "Registration Date", width: 150 },
+  { field: "registration_date", headerName: "Registration Date", width: 140 },
 ];
 
 //Device TableHeaders

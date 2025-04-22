@@ -3,9 +3,10 @@ import axiosInstance from "../../../utils/axiosInstance";
 //get All Students
 export const getAllStudents = async (studentDispatch) => {
   try {
-    const response = await axiosInstance.get("/users/students");
+    const response = await axiosInstance.get("/api/students/");
 
-    if (response.data && response.data.studentsData) {
+    if (!response.data.error) {
+      console.log(response.data.studentsData);
       return studentDispatch({ type: "SET_STUDENTS", payload: response.data.studentsData });
     }
   } catch (error) {
@@ -18,9 +19,9 @@ export const getAllStudents = async (studentDispatch) => {
 };
 
 //get Student
-export const getStudent = async (student_no, setFormData) => {
+export const getStudent = async (student_number, setFormData) => {
   try {
-    const response = await axiosInstance.get("/users/students/get-student/" + student_no);
+    const response = await axiosInstance.get("/api/students/" + student_number);
     if (response.data && !response.data.error) {
       return setFormData(response.data.studentData);
     }

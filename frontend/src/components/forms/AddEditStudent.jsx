@@ -21,7 +21,7 @@ function AddEditStudent({ path }) {
 
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
-  const [student_no, setStudent_no] = useState("");
+  const [studentNumber, setStudentNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
@@ -83,7 +83,7 @@ function AddEditStudent({ path }) {
     const studentData = {
       name,
       surname,
-      student_no,
+      studentNumber,
       idNumber,
       phone_number,
       email,
@@ -100,9 +100,9 @@ function AddEditStudent({ path }) {
       clearForm();
     } else {
       console.log("update");
-      const { student_no } = params;
-      if (student_no) {
-        updateStudent(student_no, studentData, setShowToast);
+      const { student_number } = params;
+      if (student_number) {
+        updateStudent(student_number, studentData, setShowToast);
       }
     }
   };
@@ -113,13 +113,13 @@ function AddEditStudent({ path }) {
     setName(studentData[0].name);
     setSurname(studentData[0].surname);
     setIdNumber(studentData[0].id_number);
-    setStudent_no(studentData[0].student_no);
+    setStudentNumber(studentData[0].student_number);
     setPhone_Number(studentData[0].phone_number);
     setEmail(studentData[0].email);
     setFaculty(studentData[0].faculty);
     setCourse(studentData[0].course);
     setCourse_Code(studentData[0].course_code);
-    setIsActive(studentData[0].isActive);
+    setIsActive(studentData[0].acc_status);
     setLaptopDetails(studentData[0].laptop);
     setRegistration_Date(studentData[0].registration_date);
   };
@@ -204,7 +204,7 @@ function AddEditStudent({ path }) {
           </div>
 
           <div className=" col-span-2">
-            <TextInput label={"Student Number"} value={student_no} isDisabled={isDisabled} maxLength={9} setOnChange={setStudent_no} />
+            <TextInput label={"Student Number"} value={studentNumber} isDisabled={isDisabled} maxLength={9} setOnChange={setStudentNumber} />
           </div>
 
           <div className=" col-span-1">

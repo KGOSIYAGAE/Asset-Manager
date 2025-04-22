@@ -21,8 +21,9 @@ function Home() {
 
   useEffect(() => {
     getAllDevices(devicesDispatch);
+    getAllStudents(studentDispatch);
     /*getStaffData(staffDispatch);
-    getAllStudents(studentDispatch);*/
+     */
 
     setCurrentUser(getLoggedInUser());
   }, [devicesDispatch, staffDispatch, studentDispatch]);
@@ -32,9 +33,9 @@ function Home() {
         loggedInUser={currentUser}
         devices={devicesState?.deviceList}
         students={studentState?.studentsList}
-        deviceNumber={devicesState?.deviceList?.length}
-        staffNumber={staffState?.staffList?.length}
-        studentsNumber={studentState?.studentsList?.length}
+        deviceNumber={devicesState?.deviceList?.length || 0}
+        staffNumber={staffState?.staffList?.length || 0}
+        studentsNumber={studentState?.studentsList?.length || 0}
       />
     </div>
   );
