@@ -40,10 +40,10 @@ export const addStudent = async (studentData, setShowToast) => {
       return setShowToast({ isShown: true, type: "add", message: "Student data must be provided" });
     }
 
-    const response = await axiosInstance.post("/users/students/add-student", studentData);
+    const response = await axiosInstance.post("/api/students/create-student", studentData);
 
     if (response.data) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {

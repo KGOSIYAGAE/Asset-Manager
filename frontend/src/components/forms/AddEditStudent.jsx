@@ -17,8 +17,8 @@ import ToastMessage from "../toastMessage/ToastMessage";
 import { addStudent, getStudent, updateStudent } from "../../services/api/students/Students.Api";
 import { useCourseContext } from "../../hooks/useCourseContext";
 import { getAllCourses } from "../../services/api/courses/course.Api";
-import OptionsSelctInput from "../inputs/optionsSelctInput/CourseSelctInput";
-import CourseSelctInput from "../inputs/optionsSelctInput/CourseSelctInput";
+import OptionsSelctInput from "../inputs/CourseSelctInput/CourseSelctInput";
+import CourseSelctInput from "../inputs/CourseSelctInput/CourseSelctInput";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
@@ -71,7 +71,7 @@ function AddEditStudent({ path }) {
       return setShowToast({ isShown: true, type: "error", message: "Last name must be provided" });
     }
 
-    if (!student_no) {
+    if (!studentNumber) {
       return setShowToast({ isShown: true, type: "error", message: "Student number must be provided" });
     }
 
@@ -94,12 +94,12 @@ function AddEditStudent({ path }) {
       idNumber,
       phone_number,
       email,
-      faculty,
-      course,
-      course_code,
+      course_id,
       isActive,
       registration_date,
     };
+
+    console.log(studentData);
 
     if (formType === "add") {
       console.log("add");
@@ -244,10 +244,6 @@ function AddEditStudent({ path }) {
             setCourseCode={setCourse_Code}
           />
 
-          {/*<SelectInput label={"Faculty"} value={faculty} options={facultyCourse} optionName={"faculty_name"} isDisabled={isDisabled} setOnChange={setFaculty} onChoose={getCourseName} />
-           
-          <SelectInput label={"Course"} value={course} options={courseList} optionName={"course_name"} isDisabled={isDisabled} setOnChange={setCourse} onChoose={getCourseCode} />
-*/}
           <div className=" col-span-2">
             <TextInput label={"Course Code"} value={course_code} isDisabled={true} setOnChange={() => {}} />
           </div>

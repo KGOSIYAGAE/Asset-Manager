@@ -46,4 +46,37 @@ const getStudentDetails = async (req, res) => {
   }
 };
 
-module.exports = { getStudents, getStudentDetails };
+//Create student
+const createStudent = async (req, res) => {
+  try {
+    const { name, surname, studentNumber, idNumber, phone_number, email, course_id, isActive, registration_date } = req.body;
+
+    if (!name || !surname || !studentNumber || !idNumber || !phone_number || !email || !course_id || !isActive || !registration_date) {
+      return res.status(400).json({ message: "All field must be provided", error: true });
+    }
+
+    const checkUserQuery = "SELECT * FROM students WHERE student_number = $1";
+
+    const { rows } = await query(checkUserQuery, [studentNumber]);
+
+    if (rows.length > 0) {
+      return res.status(400).json({ rows, message: "User mathcing student number already exists", error: true });
+    }
+
+    const create_user_query = "INSERT INTO students (name, surname, id_number, phone_number, email, student_number, course_id, acc_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+    const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, course_id, isActive, registration_date];
+
+    const { rowCount } = await query(create_user_query, [...VALUES]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured creating student", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+module.exports = { getStudents, getStudentDetails, createStudent };
