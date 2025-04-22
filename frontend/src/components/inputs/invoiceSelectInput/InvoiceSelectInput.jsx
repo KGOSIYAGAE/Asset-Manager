@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function InvoiceSelectInput({ label, value, options, optionName, isDisabled, setOnChange, onChoose }) {
+function InvoiceSelectInput({ label, value, invoiceId, options, optionName, isDisabled, setOnChange, onChoose }) {
   const fnc = (option, name) => {
     return <option key={option.id}>{option.invoice_number}</option>;
   };
@@ -10,14 +10,23 @@ function InvoiceSelectInput({ label, value, options, optionName, isDisabled, set
   const handleGetInvoiceId = (invoiceNumber) => {
     for (let i = 0; i < options.length; i++) {
       if (options[i].invoice_number === invoiceNumber) {
+        setInputValue(options[i].invoice_number);
         return options[i].id;
       }
     }
   };
 
+  const handleGetInvoiceNumber = (invoiceId) => {
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].id === invoiceId) {
+        return setInputValue(options[i].invoice_number);
+      }
+    }
+  };
+
   useEffect(() => {
-    setInputValue(value);
-  }, [value]);
+    handleGetInvoiceNumber(invoiceId);
+  }, [invoiceId]);
 
   return (
     <div className="text-input col-span-2">

@@ -208,6 +208,7 @@ function AddEditDevice({ path }) {
               <InvoiceSelectInput
                 label={"Invoice Number"}
                 value={invoice_no}
+                invoiceId={invoice_id}
                 options={invoiceState?.invoiceList}
                 optionName={"invoice_number"}
                 isDisabled={false}

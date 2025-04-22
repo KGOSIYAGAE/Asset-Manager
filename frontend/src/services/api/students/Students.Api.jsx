@@ -6,7 +6,6 @@ export const getAllStudents = async (studentDispatch) => {
     const response = await axiosInstance.get("/api/students/");
 
     if (!response.data.error) {
-      console.log(response.data.studentsData);
       return studentDispatch({ type: "SET_STUDENTS", payload: response.data.studentsData });
     }
   } catch (error) {

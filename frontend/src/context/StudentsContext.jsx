@@ -3,8 +3,6 @@ import { createContext, useReducer } from "react";
 export const StudentsContext = createContext();
 
 export const studentsReducer = (state, action) => {
-  console.log(action);
-
   switch (action.type) {
     case "SET_STUDENTS":
       return {

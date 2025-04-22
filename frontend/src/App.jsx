@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { getLoggedInUser } from "./utils/getLoggedInUser";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import { InvoiceContextProvider } from "./context/InvoicesContext";
+import { CourseContextProvider } from "./context/CoursesContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -228,13 +229,15 @@ function App() {
   return (
     <SearchContextProvider>
       <InvoiceContextProvider>
-        <DevicesContextProvider>
-          <StudentsContextProvider>
-            <StaffContextProvider>
-              <RouterProvider router={router} />
-            </StaffContextProvider>
-          </StudentsContextProvider>
-        </DevicesContextProvider>
+        <CourseContextProvider>
+          <DevicesContextProvider>
+            <StudentsContextProvider>
+              <StaffContextProvider>
+                <RouterProvider router={router} />
+              </StaffContextProvider>
+            </StudentsContextProvider>
+          </DevicesContextProvider>
+        </CourseContextProvider>
       </InvoiceContextProvider>
     </SearchContextProvider>
   );

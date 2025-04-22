@@ -66,6 +66,7 @@ function DeviceDetails({ path }) {
   useEffect(() => {
     getDeviceDetails();
     //getUserType(deviceDetails?.user_id);
+
     if (!staffState || !studentState) {
       console.log("No data");
     }

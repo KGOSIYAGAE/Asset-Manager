@@ -15,6 +15,10 @@ import axiosInstance from "../../utils/axiosInstance";
 import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { addStudent, getStudent, updateStudent } from "../../services/api/students/Students.Api";
+import { useCourseContext } from "../../hooks/useCourseContext";
+import { getAllCourses } from "../../services/api/courses/course.Api";
+import OptionsSelctInput from "../inputs/optionsSelctInput/CourseSelctInput";
+import CourseSelctInput from "../inputs/optionsSelctInput/CourseSelctInput";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
@@ -28,6 +32,7 @@ function AddEditStudent({ path }) {
   const [faculty, setFaculty] = useState("NAS");
   const [course_code, setCourse_Code] = useState("");
   const [course, setCourse] = useState("");
+  const [course_id, setCourse_Id] = useState("");
   const [isActive, setIsActive] = useState("");
   const [laptopDetails, setLaptopDetails] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -36,6 +41,8 @@ function AddEditStudent({ path }) {
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [courseList, setCourseList] = useState([]);
   const [formType, setFormType] = useState("add");
+
+  const { courseState, courseDispatch } = useCourseContext();
 
   const params = useParams();
 
@@ -118,6 +125,7 @@ function AddEditStudent({ path }) {
     setEmail(studentData[0].email);
     setFaculty(studentData[0].faculty);
     setCourse(studentData[0].course);
+    setCourse_Id(studentData[0].course_id);
     setCourse_Code(studentData[0].course_code);
     setIsActive(studentData[0].acc_status);
     setLaptopDetails(studentData[0].laptop);
@@ -179,11 +187,16 @@ function AddEditStudent({ path }) {
   }, []);
 
   useEffect(() => {
-    if (faculty) {
+    getAllCourses(courseDispatch);
+  }, []);
+
+  //faculty
+  /* 
+  if (faculty) {
       getCourseName(faculty);
       setCourse(course);
     }
-  }, [faculty]);
+  */
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -219,10 +232,22 @@ function AddEditStudent({ path }) {
             <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} maxLength={50} setOnChange={setEmail} />
           </div>
 
-          <SelectInput label={"Faculty"} value={faculty} options={facultyCourse} optionName={"faculty_name"} isDisabled={isDisabled} setOnChange={setFaculty} onChoose={getCourseName} />
+          <CourseSelctInput
+            label={"Course"}
+            value={course}
+            courseId={course_id}
+            options={courseState?.courseList}
+            optionName={"course_name"}
+            isDisabled={isDisabled}
+            setOnChange={setCourse}
+            onChoose={setCourse_Id}
+            setCourseCode={setCourse_Code}
+          />
 
+          {/*<SelectInput label={"Faculty"} value={faculty} options={facultyCourse} optionName={"faculty_name"} isDisabled={isDisabled} setOnChange={setFaculty} onChoose={getCourseName} />
+           
           <SelectInput label={"Course"} value={course} options={courseList} optionName={"course_name"} isDisabled={isDisabled} setOnChange={setCourse} onChoose={getCourseCode} />
-
+*/}
           <div className=" col-span-2">
             <TextInput label={"Course Code"} value={course_code} isDisabled={true} setOnChange={() => {}} />
           </div>

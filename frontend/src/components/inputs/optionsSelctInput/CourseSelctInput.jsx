@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
 
-function optionsSelctInput({ label, value, options, optionName, isDisabled, setOnChange, onChoose }) {
+function CourseSelctInput({ label, value, courseId, options, optionName, isDisabled, setOnChange, onChoose, setCourseCode }) {
   const fnc = (option, name) => {
-    return <option key={option.id}>{option.invoice_number}</option>;
+    return <option key={option.id}>{option?.invoice_number || option?.course_name}</option>;
   };
 
   const [inputValue, setInputValue] = useState("");
 
-  const handleGetId = (invoiceNumber) => {
+  const handleGetId = (selectedItem) => {
     for (let i = 0; i < options.length; i++) {
-      if (options[i].invoice_number === invoiceNumber) {
+      if (options[i]?.course_name === selectedItem) {
+        setCourseCode(options[i].course_code);
         return options[i].id;
       }
     }
   };
 
+  const handleGetCourseName = (courseId) => {
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].id === courseId) {
+        setCourseCode(options[i].course_code);
+        return setInputValue(options[i].course_name);
+      }
+    }
+  };
+
   useEffect(() => {
-    setInputValue(value);
-  }, [value]);
+    handleGetCourseName(courseId);
+  }, [courseId]);
 
   return (
     <div className="text-input col-span-2">
@@ -38,4 +48,4 @@ function optionsSelctInput({ label, value, options, optionName, isDisabled, setO
   );
 }
 
-export default optionsSelctInput;
+export default CourseSelctInput;
