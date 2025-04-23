@@ -79,4 +79,11 @@ const createStudent = async (req, res) => {
   }
 };
 
+//Delete student
+const deleteStudent = async (req, res) => {
+  try {
+  } catch (error) {
+    console.lo;
+  }
+};
 module.exports = { getStudents, getStudentDetails, createStudent };

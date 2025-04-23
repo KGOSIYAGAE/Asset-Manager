@@ -12,6 +12,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showToast, setShowToast] = useState({ isShown: false, type: "error", message: "" });
   const [showLoading, setLoading] = useState(false);
+  const [isDiabled, setIsDisabled] = useState(true);
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
 
@@ -52,16 +53,29 @@ function Login() {
     }
   };
 
-  {
-    /*useEffect(() => {
-    checkInternetConnection(isOnline, setShowToast);
-  }, [isOnline]);*/
-  }
+  const toggleIsDisbaled = () => {
+    if (password === "") {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+  };
+
+  useEffect(() => {
+    //checkInternetConnection(isOnline, setShowToast);
+    toggleIsDisbaled();
+  }, [password]);
 
   return (
     <div className="w-screen h-svh flex items-center justify-center ">
-      <div className="w-[400px] h-[300px] flex flex-col border p-3 gap-10 rounded-md shadow-md">
-        <span>Admin Login</span>
+      <div className="w-full h-svh">
+        <img src="\public\campus_squre.jpg" alt="" className="w-full" />
+      </div>
+      <div className="w-[150px] h-[150px] rounded-full absolute z-10 top-10 left-10 ">
+        <img src="\public\SPU 1.png" alt="" srcset="" />
+      </div>
+      <div className="w-[400px] h-[300px] bg-white flex flex-col p-3 gap-10 rounded-md shadow-md absolute">
+        <span className="font-bold text-md login-heading">SIGN IN</span>
         <div className="flex flex-col gap-5">
           <TextInput label={"Email"} value={email} setOnChange={setEmail} type={"email"} />
           <PasswordInput label={"Password"} value={password} setOnChange={setPassword} type={"password"} />
@@ -75,12 +89,13 @@ function Login() {
           <button
             type="button"
             value=""
-            className="bg-blue-900 text-white rounded-md p-1"
+            disabled={isDiabled}
+            className={`${isDiabled ? "bg-slate-300" : "bg-primary"} text-white text-sm font-semibold rounded-md p-1`}
             onClick={() => {
               onLogin(email, password);
             }}
           >
-            Sign in
+            SIGN IN
           </button>
         </div>
       </div>
