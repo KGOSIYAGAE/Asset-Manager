@@ -1,5 +1,7 @@
 const { query } = require("../util/pg_dbConnection");
 
+const checkStudentExist = async (req, res) => {};
+
 //Get all students
 const getStudents = async (req, res) => {
   try {
@@ -82,8 +84,27 @@ const createStudent = async (req, res) => {
 //Delete student
 const deleteStudent = async (req, res) => {
   try {
+    const { student_no } = req.params;
+
+    if (!student_no) {
+      return res.status(400).json({ message: "Student number ggdgdgmust be provided", error: true });
+    }
+
+    const checkUserQuery = "SELECT * FROM students WHERE student_number = $1";
+
+    const { rows } = await query(checkUserQuery, [student_no]);
+
+    if (rows.length <= 0) {
+      return res.status(400).json({ rows, message: "User mathcing student number not found", error: true });
+    }
+
+    const delete_student_query = "DELETE FROM students WHERE student_number = $1";
+    const rowCount = await query(delete_student_query, [student_no]);
+
+    return res.status(200).json({ message: "Student deleted successfully", error: false });
   } catch (error) {
-    console.lo;
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-module.exports = { getStudents, getStudentDetails, createStudent };
+module.exports = { getStudents, getStudentDetails, createStudent, deleteStudent };

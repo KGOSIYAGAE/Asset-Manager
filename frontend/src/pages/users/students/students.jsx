@@ -34,7 +34,7 @@ function students({ path }) {
 
   //Hanlde delete
   const handleDelete = (cellValues) => {
-    setOpenModal({ isShown: true, type: "delete", selcetedUser: cellValues.row.student_no, userEmail: cellValues.row.email });
+    setOpenModal({ isShown: true, type: "delete", selcetedUser: cellValues.row.student_number, userEmail: cellValues.row.email });
   };
 
   //Handle Add

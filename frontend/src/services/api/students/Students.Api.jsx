@@ -82,11 +82,10 @@ export const deleteStudent = async (student_no, setShowToast) => {
   }
 
   try {
-    const response = await axiosInstance.delete("users/students/delete-student/" + student_no);
+    const response = await axiosInstance.delete("/api/students/delete-student/" + student_no);
 
-    if (response.data && !response.error) {
-      console.log(response.data);
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    if (!response.error) {
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.error) {
