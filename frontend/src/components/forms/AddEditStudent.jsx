@@ -107,9 +107,9 @@ function AddEditStudent({ path }) {
       clearForm();
     } else {
       console.log("update");
-      const { student_number } = params;
-      if (student_number) {
-        updateStudent(student_number, studentData, setShowToast);
+      const { student_no } = params;
+      if (student_no) {
+        updateStudent(student_no, studentData, setShowToast);
       }
     }
   };

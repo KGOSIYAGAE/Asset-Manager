@@ -23,9 +23,9 @@ function SearchInput({ searchData, dataType }) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].serial_no && searchData[i].serial_no.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].assetTag && searchData[i].assetTag.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].asset_tag && searchData[i].asset_tag.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].assetTag && searchData[i].userId.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].userId && searchData[i].userId.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].name && searchData[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
@@ -33,7 +33,9 @@ function SearchInput({ searchData, dataType }) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].staff_no && searchData[i].staff_no.toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].student_no && searchData[i].student_no.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].id_number && searchData[i].id_number.toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        } else if (searchData[i].student_number.toString() && searchData[i].student_number.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
         }
       }

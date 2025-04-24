@@ -81,6 +81,38 @@ const createStudent = async (req, res) => {
   }
 };
 
+//Update student
+const updateStudent = async (req, res) => {
+  try {
+    const { student_no } = req.params;
+
+    if (!student_no) {
+      return res.status(400).json({ message: "Student number must be provided", error: true });
+    }
+
+    const { name, surname, studentNumber, idNumber, phone_number, email, course_id, isActive, registration_date } = req.body;
+
+    if (!name || !surname || !studentNumber || !idNumber || !phone_number || !email || !course_id || !isActive || !registration_date) {
+      return res.status(400).json({ message: "All field must be provided", error: true });
+    }
+
+    const update_student_query =
+      "UPDATE students SET name=$1, surname=$2, id_number=$3, phone_number=$4, email=$5, student_number=$6, course_id=$7, acc_status=$8, registration_date=$9 WHERE student_number = $10";
+    const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, course_id, isActive, registration_date];
+
+    const { rowCount, rows } = await query(update_student_query, [...VALUES, student_no]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when updating the device", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Student updated successfully", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Delete student
 const deleteStudent = async (req, res) => {
   try {
@@ -107,4 +139,4 @@ const deleteStudent = async (req, res) => {
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-module.exports = { getStudents, getStudentDetails, createStudent, deleteStudent };
+module.exports = { getStudents, getStudentDetails, createStudent, updateStudent, deleteStudent };

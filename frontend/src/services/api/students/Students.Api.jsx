@@ -61,10 +61,10 @@ export const updateStudent = async (student_no, studentData, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Student number must be provided" });
     }
 
-    const response = await axiosInstance.put("/users/students/update-student/" + student_no, studentData);
+    const response = await axiosInstance.put("/api/students/update-student/" + student_no, studentData);
 
-    if (response.data && !response.data.error) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    if (!response.data.error) {
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.error) {

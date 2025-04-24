@@ -8,7 +8,7 @@ function InvoiceSelectInput({ label, value, invoiceId, options, optionName, isDi
   const [inputValue, setInputValue] = useState("");
 
   const handleGetInvoiceId = (invoiceNumber) => {
-    for (let i = 0; i < options.length; i++) {
+    for (let i = 0; i < options?.length; i++) {
       if (options[i].invoice_number === invoiceNumber) {
         setInputValue(options[i].invoice_number);
         return options[i].id;
@@ -17,7 +17,7 @@ function InvoiceSelectInput({ label, value, invoiceId, options, optionName, isDi
   };
 
   const handleGetInvoiceNumber = (invoiceId) => {
-    for (let i = 0; i < options.length; i++) {
+    for (let i = 0; i < options?.length; i++) {
       if (options[i].id === invoiceId) {
         return setInputValue(options[i].invoice_number);
       }

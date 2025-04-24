@@ -8,7 +8,7 @@ function CourseSelctInput({ label, value, courseId, options, optionName, isDisab
   const [inputValue, setInputValue] = useState("");
 
   const handleGetId = (selectedItem) => {
-    for (let i = 0; i < options.length; i++) {
+    for (let i = 0; i < options?.length; i++) {
       if (options[i]?.course_name === selectedItem) {
         setCourseCode(options[i].course_code);
         return options[i].id;
@@ -17,7 +17,7 @@ function CourseSelctInput({ label, value, courseId, options, optionName, isDisab
   };
 
   const handleGetCourseName = (courseId) => {
-    for (let i = 0; i < options.length; i++) {
+    for (let i = 0; i < options?.length; i++) {
       if (options[i].id === courseId) {
         setCourseCode(options[i].course_code);
         return setInputValue(options[i].course_name);

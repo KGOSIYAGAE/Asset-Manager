@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import SearchInput from "../../../components/inputs/searchInput/SearchInput";
 import AddButton from "../../../components/buttons/AddButton";
-import RefreshButton from "../../../components/buttons/RefreshButton";
+import RefreshButton from "../../../components/buttons/BulkAddButton";
 import DataTable from "../../../components/dataGrid/DataTable";
 import { staffTableHeaders } from "../../../utils/TableHeaders";
 import { useStaffContext } from "../../../hooks/useStaffContext";

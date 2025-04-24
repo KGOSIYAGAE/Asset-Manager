@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import SearchInput from "../../components/inputs/searchInput/SearchInput";
 import AddButton from "../../components/buttons/AddButton";
-import RefreshButton from "../../components/buttons/RefreshButton";
 import DataTable from "../../components/dataGrid/DataTable";
 import { devicesTableHeaders } from "../../utils/TableHeaders";
 
 import { useDeviceContext } from "../../hooks/useDevicesContext";
-import axiosInstance from "../../utils/axiosInstance";
 import { useSearchContext } from "../../hooks/useSearchContext";
 import { useNavigate } from "react-router-dom";
 import { deleteDevice, getAllDevices } from "../../services/api/devices/Device.Api";
@@ -16,6 +14,7 @@ import DeleteConfirmation from "../../components/cards/deleteConfirmation/Delete
 import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 import ImportFile from "../../components/cards/importFile/ImportFile";
 import ExportExcelButton from "../../components/buttons/ExportExcelButton";
+import BulkAddButton from "../../components/buttons/BulkAddButton";
 
 function Devices({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
@@ -57,7 +56,7 @@ function Devices({ path }) {
   useEffect(() => {
     searchDispatch({ type: "SET_SEARCH_NULL" });
     getAllDevices(devicesDispatch);
-  }, []);
+  }, [showToast]);
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
       <span className="text-sm ">
@@ -69,7 +68,7 @@ function Devices({ path }) {
           <div className="flex gap-2 ">
             <SearchInput searchData={devicesState?.deviceList} dataType={"devices"} />
             <AddButton name={"Add New Device"} handleAdd={handleAdd} />
-            <RefreshButton onClick={ImportModal} />
+            <BulkAddButton onClick={ImportModal} />
             <ExportExcelButton />
           </div>
         </div>
@@ -103,10 +102,7 @@ function Devices({ path }) {
               setOpenModal({ isShown: false });
             }}
           />
-        ) : (
-          ""
-        )}
-        {openImportModal.isShown ? (
+        ) : openImportModal.isShown ? (
           <ImportFile
             type={"devices"}
             setShowToast={setShowToast}
