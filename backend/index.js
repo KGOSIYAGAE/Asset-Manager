@@ -66,6 +66,10 @@ app.use("/api/courses", courseRouter);
 const staffRouter = require("./Routes/staffRoutes");
 app.use("/api/staff", staffRouter);
 
+//Departments
+const departmentRouter = require("./Routes/departmentRoutes");
+app.use("/api/departments", departmentRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
 });

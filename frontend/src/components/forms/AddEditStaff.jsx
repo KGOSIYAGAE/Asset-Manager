@@ -14,9 +14,14 @@ import ToastMessage from "../toastMessage/ToastMessage";
 import { addStaff, getUser, updateStaff } from "../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
 import { generateLoanEndate } from "../../utils/helperMethods";
+import { getAllDepartments } from "../../services/api/departments/Departments.Api";
+import { useDepartmentContext } from "../../hooks/useDepartmentContext";
+import DepartmentSelectInput from "../inputs/departmentSelectInput/departmentSelectInput";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
+  const { departmentState, departmentDispatch } = useDepartmentContext();
+
   const params = useParams();
   const navigate = useNavigate();
 
@@ -158,6 +163,7 @@ function AddEditStaff({ path }) {
 
   useEffect(() => {
     getUserDetails();
+    getAllDepartments(departmentDispatch);
   }, []);
 
   return (
@@ -191,7 +197,14 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <SelectInput label={"Department"} value={department} options={departmentsList} optionName={"name"} isDisabled={isDisabled} setOnChange={setDepartment} />
+            <DepartmentSelectInput
+              label={"Department"}
+              value={department}
+              options={departmentState?.departmentsList}
+              optionName={"department_name"}
+              isDisabled={isDisabled}
+              setOnChange={setDepartment}
+            />
           </div>
 
           <div className="col-span-2">
