@@ -21,12 +21,12 @@ function TextInput({ label, value, isDisabled, maxLength, setOnChange, type }) {
   };
 
   return (
-    <div className="text-input">
-      <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col">
+      <span className="w-fit text-zinc-500  bg-white">{label}</span>
+      <div className="flex justify-between items-center p-1">
         <input
           type={textType}
-          className="w-[340px] outline-none"
+          className="w-full outline-none border-2 focus:border-red-600 rounded-md p-1"
           maxLength={maxLength}
           name="input-text"
           disabled={isDisabled}
@@ -35,23 +35,25 @@ function TextInput({ label, value, isDisabled, maxLength, setOnChange, type }) {
             setOnChange(e.target.value);
           }}
         />
-        {isVisible ? (
-          <FaEye
-            size={20}
-            className="text-zinc-600"
-            onClick={() => {
-              togglePassword();
-            }}
-          />
-        ) : (
-          <FaEyeSlash
-            size={20}
-            className="text-zinc-600"
-            onClick={() => {
-              togglePassword();
-            }}
-          />
-        )}
+        <div className="absolute right-8">
+          {isVisible ? (
+            <FaEye
+              size={20}
+              className="text-zinc-600"
+              onClick={() => {
+                togglePassword();
+              }}
+            />
+          ) : (
+            <FaEyeSlash
+              size={20}
+              className="text-zinc-600"
+              onClick={() => {
+                togglePassword();
+              }}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

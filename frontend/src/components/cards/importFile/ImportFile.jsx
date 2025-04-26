@@ -4,7 +4,7 @@ import { MdClose } from "react-icons/md";
 import CancelButton from "../../buttons/CancelButton";
 
 import ToastMessage from "../../toastMessage/ToastMessage";
-import { bulkCreateDevices } from "../../../utils/bulkImport";
+import { bulkCreateDevices, bulkCreateStudents } from "../../../utils/bulkImport";
 
 function ImportFile({ type, setShowToast, onClose }) {
   const [isDrag, setIsDrag] = useState(false);
@@ -21,7 +21,7 @@ function ImportFile({ type, setShowToast, onClose }) {
     }
 
     if (type === "students") {
-      return console.log(type);
+      return bulkCreateStudents(file, setShowToast, onClose);
     }
   };
 
@@ -110,7 +110,7 @@ function ImportFile({ type, setShowToast, onClose }) {
           <div className="bg-slate-50 flex justify-between rounded-md p-2">
             <div className="flex flex-col gap-2">
               <div className="flex items-center">
-                <div className="flex bg-white rounded-md  gap-3 p-2">
+                <div className="w-[250px] flex items-center bg-white rounded-md  gap-3 p-2">
                   <img src="\public\excel-48.png" alt="" className="w-[30px]" />
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold">{file[0]?.name}</span>
@@ -136,7 +136,7 @@ function ImportFile({ type, setShowToast, onClose }) {
         ) : (
           <div className="bg-slate-50 flex justify-between rounded-md p-2">
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-3">
+              <div className="w-[250px] flex items-center bg-white rounded-md  gap-3 p-2">
                 <div className="bg-white rounded-md p-2">
                   <img src="\public\excel-48.png" alt="" className="w-[30px]" />
                 </div>

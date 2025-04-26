@@ -1,4 +1,5 @@
 const { query } = require("../util/pg_dbConnection");
+const format = require("pg-format");
 
 const checkStudentExist = async (req, res) => {};
 
@@ -81,6 +82,42 @@ const createStudent = async (req, res) => {
   }
 };
 
+//Bulk create students
+const bulkCreateStudents = async (req, res) => {
+  try {
+    const { students } = req.body;
+
+    if (!Array.isArray(students || students.length === 0)) {
+      return res.status(400).json({ message: "Invalid or empty student list", error: true });
+    }
+
+    const VALUES = students.map((student) => [
+      student.name,
+      student.surname,
+      student.idNumber,
+      student.phone_number,
+      student.email,
+      student.studentNumber,
+      student.course_id,
+      student.isActive,
+      student.registration_date,
+    ]);
+
+    const bulk_create_students_query = format("INSERT INTO students (name, surname, id_number, phone_number, email, student_number, course_id, acc_status, registration_date) VALUES %L", VALUES);
+
+    const { rowCount } = await query(bulk_create_students_query);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when adding students", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: `${rowCount} students successfully created.`, error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Update student
 const updateStudent = async (req, res) => {
   try {
@@ -139,4 +176,4 @@ const deleteStudent = async (req, res) => {
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-module.exports = { getStudents, getStudentDetails, createStudent, updateStudent, deleteStudent };
+module.exports = { getStudents, getStudentDetails, createStudent, bulkCreateStudents, updateStudent, deleteStudent };

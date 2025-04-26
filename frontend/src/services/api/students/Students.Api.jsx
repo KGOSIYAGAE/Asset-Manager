@@ -54,6 +54,28 @@ export const addStudent = async (studentData, setShowToast) => {
   }
 };
 
+//Bulk Add Student
+export const bulkAddStudent = async (studentsData, setShowToast, onClose) => {
+  try {
+    if (!studentsData) {
+      return setShowToast({ isShown: true, type: "add", message: "Student data must be provided" });
+    }
+
+    const response = await axiosInstance.post("/api/students/bulk-create-student", studentsData);
+
+    if (response.data) {
+      onClose();
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+    } else {
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, Please try again." });
+    }
+  }
+};
+
 //Update student
 export const updateStudent = async (student_no, studentData, setShowToast) => {
   try {

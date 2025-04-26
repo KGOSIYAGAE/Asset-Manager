@@ -6,6 +6,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
 import loginAxiosInstance from "../../utils/loginAxiosInstance";
 import { checkInternetConnection } from "../../utils/systemChecks";
+import LoginEmailInput from "../../components/inputs/loginEmailInput/LoginEmailInput";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -69,15 +70,15 @@ function Login() {
   return (
     <div className="w-screen h-svh flex items-center justify-center ">
       <div className="w-full h-svh">
-        <img src="\public\campus_squre.jpg" alt="" className="w-full" />
+        <img src="\public\library_2.jpg" alt="" className="w-full" />
       </div>
       <div className="w-[150px] h-[150px] rounded-full absolute z-10 top-10 left-10 ">
         <img src="\public\SPU 1.png" alt="" srcset="" />
       </div>
-      <div className="w-[400px] h-[300px] bg-white flex flex-col p-3 gap-10 rounded-md shadow-md absolute">
+      <div className="w-[400px] h-[350px] bg-white flex flex-col p-3 gap-10 rounded-md shadow-md absolute">
         <span className="font-bold text-md login-heading">SIGN IN</span>
         <div className="flex flex-col gap-5">
-          <TextInput label={"Email"} value={email} setOnChange={setEmail} type={"email"} />
+          <LoginEmailInput label={"Email"} value={email} setOnChange={setEmail} type={"email"} />
           <PasswordInput label={"Password"} value={password} setOnChange={setPassword} type={"password"} />
           <div className="flex justify-between">
             <div className="flex items-center gap-2">

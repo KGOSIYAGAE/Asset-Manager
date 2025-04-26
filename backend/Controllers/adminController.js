@@ -25,8 +25,10 @@ const login = async (req, res) => {
 
     const { rows } = await query(SQL_QUERY, [email]);
 
-    if (!rows) {
-      return res.status(400).json({ message: "User not found", error: true });
+    console.log(rows);
+
+    if (rows.length <= 0) {
+      return res.status(400).json({ message: "Email incorrect", error: true });
     }
 
     //Verify password
