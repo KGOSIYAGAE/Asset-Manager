@@ -239,7 +239,7 @@ function DeviceDetails({ path }) {
         contentLabel=""
         className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
       >
-        {/*openModal.type === "assign" ? (
+        {openModal.type === "assign" ? (
           <IssueDevice
             onCanel={() => {
               setOpenModal({ isShown: false });
@@ -263,7 +263,7 @@ function DeviceDetails({ path }) {
             data={[...staffState?.staffList, ...studentState?.studentsList]}
             setShowToast={setShowToast}
           />
-        )*/}
+        )}
       </Modal>
       <ToastMessage
         isShown={showToast.isShow}

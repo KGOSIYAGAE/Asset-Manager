@@ -119,7 +119,7 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
 
                     toggleUsers();
                   }}
-                >{`${item.name} ${item.surname} - ${item?.staff_no || item.student_no}`}</span>
+                >{`${item.name} ${item.surname} - ${item?.staff_no || item.student_number}`}</span>
               ))}
             </div>
           </div>

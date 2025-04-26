@@ -58,3 +58,33 @@ export const bulkCreateStudents = (file, setShowToast, onClose) => {
     return bulkAddStudent(studentData, setShowToast, onClose);
   });
 };
+
+//Bulk Add Students
+export const bulkCreateStaff = (file, setShowToast, onClose) => {
+  readXlsxFile(file[0]).then((rows) => {
+    let data = [];
+    for (let i = 0; i < rows.length; i++) {
+      data.push({
+        name: rows[i][0],
+        surname: rows[i][1],
+        phone_number: rows[i][2],
+        email: rows[i][3],
+        staff_no: rows[i][4],
+        position_id: rows[i][5],
+        contract_type: rows[i][6],
+        isActive: rows[i][7],
+      });
+    }
+
+    /*INSERT INTO public.staff(
+	 name, surname, phone_number, email, staff_no, position_id, contract_type, acc_status)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); */
+    const staffData = {
+      staff: data,
+    };
+
+    console.log(studentData);
+
+    return bulkAddStudent(staffData, setShowToast, onClose);
+  });
+};

@@ -22,8 +22,7 @@ function Home() {
   useEffect(() => {
     getAllDevices(devicesDispatch);
     getAllStudents(studentDispatch);
-    /*getStaffData(staffDispatch);
-     */
+    getStaffData(staffDispatch);
 
     setCurrentUser(getLoggedInUser());
   }, [devicesDispatch, staffDispatch, studentDispatch]);

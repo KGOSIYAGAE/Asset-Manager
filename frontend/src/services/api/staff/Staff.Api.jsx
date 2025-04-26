@@ -4,9 +4,9 @@ import axiosInstance from "../../../utils/axiosInstance";
 //Handle getData API CALL
 export const getStaffData = async (staffDispatch) => {
   try {
-    const response = await axiosInstance.get("/users/staff/");
+    const response = await axiosInstance.get("/api/staff/");
 
-    if (response.data && response.data.staffData) {
+    if (!response.data.error) {
       staffDispatch({ type: "SET_STAFF", payload: response.data.staffData });
     }
   } catch (error) {
@@ -82,7 +82,7 @@ export const getUser = async (id, setFormData) => {
   }
 
   try {
-    const response = await axiosInstance.get("/users/staff/" + id);
+    const response = await axiosInstance.get("/api/staff/" + id);
 
     if (response.data && response.data.staffData) {
       return setFormData(response.data.staffData[0]);

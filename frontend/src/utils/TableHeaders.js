@@ -1,15 +1,14 @@
 //Staff TableHeaders
 export const staffTableHeaders = [
-  { field: "staff_no", headerName: "Staff No", width: 70 },
-  { field: "name", headerName: "First name", width: 100 },
-  { field: "surname", headerName: "Last name", width: 100 },
+  { field: "staff_no", headerName: "Staff No", width: 100 },
+  { field: "name", headerName: "First name", width: 120 },
+  { field: "surname", headerName: "Last name", width: 120 },
   { field: "phone_number", headerName: "Phone", width: 100 },
-  { field: "department", headerName: "Department", width: 95 },
-  { field: "position", headerName: "Job title", width: 170 },
+  { field: "email", headerName: "Email", width: 200 },
   { field: "contract_type", headerName: "Employment type", width: 130 },
-  { field: "isActive", headerName: "Status", cellClassName: "active", width: 70 },
-  { field: "dateJoined", headerName: "Date joined", width: 100 },
-  { field: "endDate", headerName: "End date", width: 120 },
+  { field: "acc_status", headerName: "Status", cellClassName: "active", width: 100 },
+  { field: "start_date", headerName: "Start date", width: 100 },
+  { field: "end_date", headerName: "End date", width: 100 },
 ];
 
 //Students TableHeaders

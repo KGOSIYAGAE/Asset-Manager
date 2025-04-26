@@ -59,10 +59,10 @@ function AddEditStaff({ path }) {
     setPosition(userDetails.position);
     setDepartment(userDetails.department);
     setContract_Type(userDetails.contract_type);
-    setIsActive(userDetails.isActive);
+    setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
-    setDateJoined(userDetails.dateJoined);
-    setEndDate(userDetails.endDate);
+    setDateJoined(userDetails.start_date);
+    setEndDate(userDetails.end_date);
   };
 
   //Handle Submit / Update
@@ -191,11 +191,11 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <TextInput label={"Position"} value={position} isDisabled={isDisabled} maxLength={50} setOnChange={setPosition} />
+            <SelectInput label={"Department"} value={department} options={departmentsList} optionName={"name"} isDisabled={isDisabled} setOnChange={setDepartment} />
           </div>
 
           <div className="col-span-2">
-            <SelectInput label={"Department"} value={department} options={departmentsList} optionName={"name"} isDisabled={isDisabled} setOnChange={setDepartment} />
+            <TextInput label={"Position"} value={position} isDisabled={isDisabled} maxLength={50} setOnChange={setPosition} />
           </div>
 
           <div className="col-span-2">
