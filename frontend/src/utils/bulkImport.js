@@ -59,7 +59,7 @@ export const bulkCreateStudents = (file, setShowToast, onClose) => {
   });
 };
 
-//Bulk Add Students
+//Bulk Add Staff
 export const bulkCreateStaff = (file, setShowToast, onClose) => {
   readXlsxFile(file[0]).then((rows) => {
     let data = [];

@@ -70,6 +70,10 @@ app.use("/api/staff", staffRouter);
 const departmentRouter = require("./Routes/departmentRoutes");
 app.use("/api/departments", departmentRouter);
 
+//Positions
+const positionRouter = require("./Routes/positionRoutes");
+app.use("/api/positions", positionRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
 });
