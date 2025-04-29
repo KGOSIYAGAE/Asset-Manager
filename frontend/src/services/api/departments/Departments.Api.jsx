@@ -8,8 +8,6 @@ export const getAllDepartments = async (departmentDispatch) => {
       return console.log(response.data.message);
     }
 
-    console.log(response.data.departmentList);
-
     return departmentDispatch({ type: "SET_DEPARTMENTS", payload: response.data.departmentList });
   } catch (error) {
     if (error.response && error.response.data.error) {

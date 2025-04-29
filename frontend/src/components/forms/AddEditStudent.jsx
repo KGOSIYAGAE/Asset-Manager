@@ -99,8 +99,6 @@ function AddEditStudent({ path }) {
       registration_date,
     };
 
-    console.log(studentData);
-
     if (formType === "add") {
       console.log("add");
       addStudent(studentData, setShowToast);

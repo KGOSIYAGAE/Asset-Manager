@@ -30,7 +30,8 @@ function AddEditStaff({ path }) {
   const [staff_no, setStaff_no] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
-  const [department, setDepartment] = useState("");
+  const [department_name, setDepartment_name] = useState("");
+  const [department_id, setDepartment_id] = useState(0);
   const [position, setPosition] = useState("");
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
@@ -62,7 +63,8 @@ function AddEditStaff({ path }) {
     setPhone_Number(userDetails.phone_number);
     setEmail(userDetails.email);
     setPosition(userDetails.position);
-    setDepartment(userDetails.department);
+    setDepartment_name(userDetails.department);
+    setDepartment_id(userDetails.department_id);
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
@@ -112,7 +114,7 @@ function AddEditStaff({ path }) {
       staff_no,
       phone_number,
       email,
-      department,
+      department_id,
       position,
       contract_type,
       isActive,
@@ -139,7 +141,7 @@ function AddEditStaff({ path }) {
     setPhone_Number("");
     setEmail("");
     setPosition("");
-    setDepartment("");
+    setDepartment_name("");
     setContract_Type("");
     setIsActive("");
     setLaptopDetails("");
@@ -199,11 +201,13 @@ function AddEditStaff({ path }) {
           <div className="col-span-2">
             <DepartmentSelectInput
               label={"Department"}
-              value={department}
+              value={department_name}
+              departmentId={department_id}
               options={departmentState?.departmentsList}
               optionName={"department_name"}
               isDisabled={isDisabled}
-              setOnChange={setDepartment}
+              setOnChange={setDepartment_name}
+              onChoose={setDepartment_id}
             />
           </div>
 
