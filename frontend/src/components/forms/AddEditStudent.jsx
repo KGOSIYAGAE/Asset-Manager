@@ -6,7 +6,7 @@ import { facultyCourse } from "../../utils/course";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
 import { useParams } from "react-router-dom";
 import TextInput from "../inputs/textInput/TextInput";
-import SelectInput from "../inputs/selectInput/SelectInput";
+import SelectInput from "../inputs/selectInputs/selectInput/SelectInput";
 import FormLaptopDetails from "../cards/formLaptopDetails/FormLaptopDetails";
 import FormUserStatus from "../cards/formUserStatus/FormUserStatus";
 import SubmitButton from "../buttons/SubmitButton";
@@ -17,8 +17,8 @@ import ToastMessage from "../toastMessage/ToastMessage";
 import { addStudent, getStudent, updateStudent } from "../../services/api/students/Students.Api";
 import { useCourseContext } from "../../hooks/useCourseContext";
 import { getAllCourses } from "../../services/api/courses/course.Api";
-import OptionsSelctInput from "../inputs/CourseSelctInput/CourseSelctInput";
-import CourseSelctInput from "../inputs/CourseSelctInput/CourseSelctInput";
+import OptionsSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
+import CourseSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();

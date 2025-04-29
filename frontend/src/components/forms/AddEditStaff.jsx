@@ -4,7 +4,7 @@ import { employmentTypes } from "../../utils/employmentTypeList";
 import { useStaffContext } from "../../hooks/useStaffContext";
 import { useParams } from "react-router-dom";
 import TextInput from "../inputs/textInput/TextInput";
-import SelectInput from "../inputs/selectInput/SelectInput";
+import SelectInput from "../inputs/selectInputs/selectInput/SelectInput";
 import FormLaptopDetails from "../cards/formLaptopDetails/FormLaptopDetails";
 import FormUserStatus from "../cards/formUserStatus/FormUserStatus";
 import SubmitButton from "../buttons/SubmitButton";
@@ -16,11 +16,14 @@ import { useNavigate } from "react-router-dom";
 import { generateLoanEndate } from "../../utils/helperMethods";
 import { getAllDepartments } from "../../services/api/departments/Departments.Api";
 import { useDepartmentContext } from "../../hooks/useDepartmentContext";
-import DepartmentSelectInput from "../inputs/departmentSelectInput/departmentSelectInput";
+import DepartmentSelectInput from "../inputs/selectInputs/departmentSelectInput/departmentSelectInput";
+import { getAllPositions } from "../../services/api/positions/Positions.Api";
+import { usePositionContext } from "../../hooks/usePositionsContext";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
   const { departmentState, departmentDispatch } = useDepartmentContext();
+  const { positionState, positionDispatch } = usePositionContext();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -166,7 +169,12 @@ function AddEditStaff({ path }) {
   useEffect(() => {
     getUserDetails();
     getAllDepartments(departmentDispatch);
+    getAllPositions(positionDispatch);
   }, []);
+
+  useEffect(() => {
+    console.log(positionState);
+  }, [positionState]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">

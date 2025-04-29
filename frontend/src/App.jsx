@@ -23,6 +23,7 @@ import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import { InvoiceContextProvider } from "./context/InvoicesContext";
 import { CourseContextProvider } from "./context/CoursesContext";
 import { DepartmentContextProvider } from "./context/departmentsContext";
+import { PositionsContextProvider } from "./context/PositionsContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -230,17 +231,19 @@ function App() {
   return (
     <SearchContextProvider>
       <DepartmentContextProvider>
-        <InvoiceContextProvider>
-          <CourseContextProvider>
-            <DevicesContextProvider>
-              <StudentsContextProvider>
-                <StaffContextProvider>
-                  <RouterProvider router={router} />
-                </StaffContextProvider>
-              </StudentsContextProvider>
-            </DevicesContextProvider>
-          </CourseContextProvider>
-        </InvoiceContextProvider>
+        <PositionsContextProvider>
+          <InvoiceContextProvider>
+            <CourseContextProvider>
+              <DevicesContextProvider>
+                <StudentsContextProvider>
+                  <StaffContextProvider>
+                    <RouterProvider router={router} />
+                  </StaffContextProvider>
+                </StudentsContextProvider>
+              </DevicesContextProvider>
+            </CourseContextProvider>
+          </InvoiceContextProvider>
+        </PositionsContextProvider>
       </DepartmentContextProvider>
     </SearchContextProvider>
   );

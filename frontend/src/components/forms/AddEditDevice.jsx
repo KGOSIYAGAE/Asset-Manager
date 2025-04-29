@@ -4,7 +4,7 @@ import TextArea from "../inputs/textArea/TextArea";
 import SubmitButton from "../buttons/SubmitButton";
 import CancelButton from "../buttons/CancelButton";
 import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
-import SelectInput from "../inputs/selectInput/SelectInput";
+import SelectInput from "../inputs/selectInputs/selectInput/SelectInput";
 import { deviceCondition, deviceStatus } from "../../utils/deviceStatus.Condition";
 import { deviceCategory, deviceManufacture } from "../../utils/deviceDetails";
 import ToastMessage from "../toastMessage/ToastMessage";
@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { addDevice, getDevice, updateDevice } from "../../services/api/devices/Device.Api";
 import { getAllInvoices } from "../../services/api/invoices/Inovices.Api";
 import { useInvoiceContext } from "../../hooks/useInvoiceContext";
-import InvoiceSelectInput from "../inputs/invoiceSelectInput/InvoiceSelectInput";
+import InvoiceSelectInput from "../inputs/selectInputs/invoiceSelectInput/InvoiceSelectInput";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
