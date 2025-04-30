@@ -4,7 +4,7 @@ import { MdClose } from "react-icons/md";
 import CancelButton from "../../buttons/CancelButton";
 
 import ToastMessage from "../../toastMessage/ToastMessage";
-import { bulkCreateDevices, bulkCreateStudents } from "../../../utils/bulkImport";
+import { bulkCreateDevices, bulkCreateStaff, bulkCreateStudents } from "../../../utils/bulkImport";
 
 function ImportFile({ type, setShowToast, onClose }) {
   const [isDrag, setIsDrag] = useState(false);
@@ -17,7 +17,7 @@ function ImportFile({ type, setShowToast, onClose }) {
     }
 
     if (type === "staff") {
-      return console.log(type);
+      return bulkCreateStaff(file, setShowToast, onClose);
     }
 
     if (type === "students") {

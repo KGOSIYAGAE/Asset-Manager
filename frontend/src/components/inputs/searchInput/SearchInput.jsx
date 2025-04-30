@@ -17,27 +17,29 @@ function SearchInput({ searchData, dataType }) {
 
     try {
       for (let i = 0; i < searchData.length; i++) {
-        if (searchData[i].make && searchData[i].make.toLowerCase().includes(searchQuery.toLowerCase())) {
+        if (searchData[i].name?.toString() && searchData[i].name?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].model && searchData[i].model.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].surname?.toString() && searchData[i].surname?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].serial_no && searchData[i].serial_no.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].staff_no?.toString() && searchData[i].staff_no?.toString().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].asset_tag && searchData[i].asset_tag.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].id_number?.toString() && searchData[i].id_number?.toString().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].userId && searchData[i].userId.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].student_number?.toString() && searchData[i].student_number?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].name && searchData[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].make?.toString() && searchData[i].make?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].surname && searchData[i].surname.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].model?.toString() && searchData[i].model?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].staff_no && searchData[i].staff_no.toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].serial_no?.toString() && searchData[i].serial_no?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        } else if (searchData[i].id_number && searchData[i].id_number.toLowerCase().includes(searchQuery.toLowerCase())) {
-          searchResults.push(searchData[i]);
-        } else if (searchData[i].student_number.toString() && searchData[i].student_number.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+        } else if (searchData[i].asset_tag?.toString() && searchData[i].asset_tag?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
         }
+
+        /*else if (searchData[i].userId?.toString() && searchData[i].userId?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
+        }*/
       }
 
       return searchDispatch({ type: "SET_SEARCH_RESULTS", payload: searchResults });

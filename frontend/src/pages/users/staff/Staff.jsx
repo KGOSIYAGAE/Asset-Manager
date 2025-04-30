@@ -13,6 +13,7 @@ import { getStaffData, deleteStaff } from "../../../services/api/staff/Staff.Api
 import Modal from "react-modal";
 import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
 import ImportFile from "../../../components/cards/importFile/ImportFile";
+import BulkAddButton from "../../../components/buttons/BulkAddButton";
 
 function Staff({ path }) {
   //Context
@@ -68,7 +69,8 @@ function Staff({ path }) {
           <div className="flex gap-2">
             <SearchInput searchData={staffState.staffList} />
             <AddButton name={"Add New Staff"} handleAdd={handleAdd} />
-            <RefreshButton onClick={ImportModal} />
+
+            <BulkAddButton onClick={ImportModal} />
           </div>
         </div>
         <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
@@ -93,11 +95,7 @@ function Staff({ path }) {
             }}
             email={openModal.email}
           />
-        ) : (
-          ""
-        )}
-
-        {openImportModal.isShown ? (
+        ) : openImportModal.isShown ? (
           <ImportFile
             type={"staff"}
             setShowToast={setShowToast}

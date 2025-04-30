@@ -19,6 +19,7 @@ import { useCourseContext } from "../../hooks/useCourseContext";
 import { getAllCourses } from "../../services/api/courses/course.Api";
 import OptionsSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
 import CourseSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
+import { handleTimeStamp } from "../../utils/dateConverter";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
@@ -127,7 +128,7 @@ function AddEditStudent({ path }) {
     setCourse_Code(studentData[0].course_code);
     setIsActive(studentData[0].acc_status);
     setLaptopDetails(studentData[0].laptop);
-    setRegistration_Date(studentData[0].registration_date);
+    setRegistration_Date(handleTimeStamp(studentData[0].registration_date));
   };
 
   //Get User API Call

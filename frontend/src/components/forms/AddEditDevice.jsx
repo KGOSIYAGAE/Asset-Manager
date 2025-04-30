@@ -13,6 +13,7 @@ import { addDevice, getDevice, updateDevice } from "../../services/api/devices/D
 import { getAllInvoices } from "../../services/api/invoices/Inovices.Api";
 import { useInvoiceContext } from "../../hooks/useInvoiceContext";
 import InvoiceSelectInput from "../inputs/selectInputs/invoiceSelectInput/InvoiceSelectInput";
+import { handleTimeStamp } from "../../utils/dateConverter";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
@@ -74,7 +75,7 @@ function AddEditDevice({ path }) {
     setCategory(deviceDetails[0].category);
     setDevice_Condition(deviceDetails[0].device_condition);
     setStatus(deviceDetails[0].status);
-    setWarranty_End_date(deviceDetails[0].warranty_end_date);
+    setWarranty_End_date(handleTimeStamp(deviceDetails[0].warranty_end_date));
     setInvoice_no(deviceDetails[0].invoice_number);
     setInvoice_id(deviceDetails[0].invoice_id);
     setPurchaseValue(deviceDetails[0].purchase_price);

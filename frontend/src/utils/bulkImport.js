@@ -1,6 +1,7 @@
 import { bulkAddDevice } from "../services/api/devices/Device.Api";
 import readXlsxFile from "read-excel-file";
 import { bulkAddStudent } from "../services/api/students/Students.Api";
+import { bulkAddStaff } from "../services/api/staff/Staff.Api";
 
 //Bulk Add Devices
 export const bulkCreateDevices = (file, setShowToast, onClose) => {
@@ -70,9 +71,12 @@ export const bulkCreateStaff = (file, setShowToast, onClose) => {
         phone_number: rows[i][2],
         email: rows[i][3],
         staff_no: rows[i][4],
-        position_id: rows[i][5],
-        contract_type: rows[i][6],
-        isActive: rows[i][7],
+        contract_type: rows[i][5],
+        position_id: rows[i][6],
+        department_id: rows[i][7],
+        isActive: rows[i][8],
+        start_date: rows[i][9],
+        endDate: rows[i][10],
       });
     }
 
@@ -83,8 +87,6 @@ export const bulkCreateStaff = (file, setShowToast, onClose) => {
       staff: data,
     };
 
-    console.log(studentData);
-
-    return bulkAddStudent(staffData, setShowToast, onClose);
+    return bulkAddStaff(staffData, setShowToast, onClose);
   });
 };

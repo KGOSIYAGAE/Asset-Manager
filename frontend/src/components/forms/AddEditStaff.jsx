@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { departmentsList } from "../../utils/departmentList";
 import { employmentTypes } from "../../utils/employmentTypeList";
 import { useStaffContext } from "../../hooks/useStaffContext";
+import { addYears } from "date-fns";
 import { useParams } from "react-router-dom";
 import TextInput from "../inputs/textInput/TextInput";
 import SelectInput from "../inputs/selectInputs/selectInput/SelectInput";
@@ -16,9 +17,11 @@ import { useNavigate } from "react-router-dom";
 import { generateLoanEndate } from "../../utils/helperMethods";
 import { getAllDepartments } from "../../services/api/departments/Departments.Api";
 import { useDepartmentContext } from "../../hooks/useDepartmentContext";
-import DepartmentSelectInput from "../inputs/selectInputs/departmentSelectInput/departmentSelectInput";
+import DepartmentSelectInput from "../inputs/selectInputs/departmentSelectInput/DepartmentSelectInput";
 import { getAllPositions } from "../../services/api/positions/Positions.Api";
 import { usePositionContext } from "../../hooks/usePositionsContext";
+import PositionSelectInput from "../inputs/selectInputs/positionSelectInput/PositionSelectInput";
+import { handleTimeStamp } from "../../utils/dateConverter";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -35,10 +38,11 @@ function AddEditStaff({ path }) {
   const [email, setEmail] = useState("");
   const [department_name, setDepartment_name] = useState("");
   const [department_id, setDepartment_id] = useState(0);
-  const [position, setPosition] = useState("");
+  const [position_name, setPosition_name] = useState("");
+  const [position_id, setPosition_id] = useState(0);
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
-  const [dateJoined, setDateJoined] = useState("");
+  const [start_date, setStart_date] = useState("");
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -65,14 +69,15 @@ function AddEditStaff({ path }) {
     setStaff_no(userDetails.staff_no);
     setPhone_Number(userDetails.phone_number);
     setEmail(userDetails.email);
-    setPosition(userDetails.position);
+    setPosition_name(userDetails.position);
+    setPosition_id(userDetails.position_id);
     setDepartment_name(userDetails.department);
     setDepartment_id(userDetails.department_id);
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
-    setDateJoined(userDetails.start_date);
-    setEndDate(userDetails.end_date);
+    setStart_date(handleTimeStamp(userDetails.start_date));
+    setEndDate(handleTimeStamp(userDetails.end_date));
   };
 
   //Handle Submit / Update
@@ -97,7 +102,11 @@ function AddEditStaff({ path }) {
       return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
     }
 
-    if (!position) {
+    if (!department_id) {
+      return setShowToast({ isShown: true, type: "", message: "Department must be provided" });
+    }
+
+    if (!position_id) {
       return setShowToast({ isShown: true, type: "", message: "Position must be provided" });
     }
 
@@ -105,7 +114,7 @@ function AddEditStaff({ path }) {
       return setShowToast({ isShown: true, type: "", message: "User status must be provided" });
     }
 
-    if (!dateJoined) {
+    if (!start_date) {
       return setShowToast({ isShown: true, type: "", message: "Start date must be provided" });
     }
 
@@ -118,11 +127,11 @@ function AddEditStaff({ path }) {
       phone_number,
       email,
       department_id,
-      position,
+      position_id,
       contract_type,
       isActive,
-      dateJoined,
-      endDate,
+      start_date,
+      endDate: endDate || addYears(start_date, 1),
     };
 
     if (formType === "add") {
@@ -143,12 +152,12 @@ function AddEditStaff({ path }) {
     setStaff_no("");
     setPhone_Number("");
     setEmail("");
-    setPosition("");
+    setPosition_name("");
     setDepartment_name("");
     setContract_Type("");
     setIsActive("");
     setLaptopDetails("");
-    setDateJoined("");
+    setStart_date("");
     setEndDate("");
   };
 
@@ -171,10 +180,6 @@ function AddEditStaff({ path }) {
     getAllDepartments(departmentDispatch);
     getAllPositions(positionDispatch);
   }, []);
-
-  useEffect(() => {
-    console.log(positionState);
-  }, [positionState]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -220,7 +225,15 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <TextInput label={"Position"} value={position} isDisabled={isDisabled} maxLength={50} setOnChange={setPosition} />
+            <PositionSelectInput
+              label={"Position"}
+              positionId={position_id}
+              options={positionState?.positionList}
+              optionName={"title"}
+              isDisabled={isDisabled}
+              setOnChange={setPosition_name}
+              onChoose={setPosition_id}
+            />
           </div>
 
           <div className="col-span-2">
@@ -228,7 +241,7 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-1">
-            <DateTimePicker label={"Starting Date"} value={dateJoined} setOnChange={setDateJoined} />
+            <DateTimePicker label={"Starting Date"} value={start_date} setOnChange={setStart_date} />
           </div>
 
           {contract_type !== "Permanent" ? (

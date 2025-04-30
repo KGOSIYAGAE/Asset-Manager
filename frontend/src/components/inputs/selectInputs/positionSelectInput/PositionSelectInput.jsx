@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from "react";
 
-function DepartmentSelectInput({ label, value, departmentId, options, optionName, isDisabled, setOnChange, onChoose, setCourseCode }) {
+function PositionSelectInput({ label, positionId, options, optionName, isDisabled, setOnChange, onChoose }) {
   const fnc = (option, name) => {
-    return <option key={option.id}>{option?.description}</option>;
+    return <option key={option.id}>{option.title}</option>;
   };
 
   const [inputValue, setInputValue] = useState("");
 
-  const handleGetId = (selectedItem) => {
+  const handleGetPositionId = (position_title) => {
     for (let i = 0; i < options?.length; i++) {
-      if (options[i]?.description.includes(selectedItem)) {
-        //setCourseCode(options[i].course_code);
+      if (options[i].title === position_title) {
+        setInputValue(options[i].id);
         return options[i].id;
       }
     }
   };
 
-  const handleGetDepartmentName = (departmentId) => {
+  const handleGetpositionTitle = (position_id) => {
     for (let i = 0; i < options?.length; i++) {
-      if (options[i].id === departmentId) {
-        return setInputValue(options[i].description);
+      if (options[i].id === position_id) {
+        return setInputValue(options[i].title);
       }
     }
   };
 
   useEffect(() => {
-    handleGetDepartmentName(departmentId);
-  }, [departmentId]);
+    handleGetpositionTitle(positionId);
+  }, [positionId]);
 
   return (
     <div className="text-input col-span-2">
@@ -37,8 +37,7 @@ function DepartmentSelectInput({ label, value, departmentId, options, optionName
         value={inputValue}
         onChange={(e) => {
           setOnChange(e.target.value);
-          handleGetId(e.target.value);
-          onChoose(handleGetId(e.target.value));
+          onChoose(handleGetPositionId(e.target.value));
         }}
       >
         <option></option>
@@ -48,4 +47,4 @@ function DepartmentSelectInput({ label, value, departmentId, options, optionName
   );
 }
 
-export default DepartmentSelectInput;
+export default PositionSelectInput;

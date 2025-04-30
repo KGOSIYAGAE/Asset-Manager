@@ -1,3 +1,5 @@
+import { handleTimeStamp } from "./dateConverter";
+
 //Staff TableHeaders
 export const staffTableHeaders = [
   { field: "staff_no", headerName: "Staff No", width: 100 },
@@ -23,6 +25,7 @@ export const studentsTableHeaders = [
   { field: "registration_date", headerName: "Registration Date", width: 140 },
 ];
 
+//registration_date
 //Device TableHeaders
 export const devicesTableHeaders = [
   { field: "asset_tag", headerName: "Asset Tag", width: 100 },

@@ -21,16 +21,16 @@ export const getStaffData = async (staffDispatch) => {
 //Add staff API CALL
 export const addStaff = async (userData, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/users/staff/add-staff", userData);
+    const response = await axiosInstance.post("/api/staff/create-staff", userData);
 
-    if (response.data) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+    if (!response.data.error) {
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data & error.response.error) {
-      return setShowToast({ isShown: true, type: "", message: error.response.data.message });
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
-      return setShowToast({ isShown: true, type: "", message: "An unexpected error occured, please try again" });
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
     }
   }
 };
@@ -42,16 +42,16 @@ export const updateStaff = async (id, userData, setShowToast) => {
       return console.log("Staff number must be provided");
     }
 
-    const response = await axiosInstance.put("/users/staff/update-staff/" + id, userData);
+    const response = await axiosInstance.put("/api/staff/update-staff/" + id, userData);
 
     if (response.data && response.data.message) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data & error.response.error) {
-      return setShowToast({ isShown: true, type: "", message: error.response.data.message });
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
-      return setShowToast({ isShown: true, type: "", message: "An unexpected error occured, please try again" });
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
     }
   }
 };
@@ -62,16 +62,38 @@ export const deleteStaff = async (staff_no, setShowToast) => {
     if (!staff_no) {
       return console.log("Staff number must be provided");
     }
-    const response = await axiosInstance.delete("/users/staff/delete-staff/" + staff_no);
+    const response = await axiosInstance.delete("/api/staff/delete-staff/" + staff_no);
 
     if (response.data && !response.error) {
-      return setShowToast({ isShown: true, type: "add", message: response.data.message });
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.error) {
-      return setShowToast({ isShown: true, type: "", message: error.response.data.message });
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
-      return setShowToast({ isShown: true, type: "", message: "An unexpected error occured, please try again" });
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+    }
+  }
+};
+
+//Bulk Add Student
+export const bulkAddStaff = async (staffData, setShowToast, onClose) => {
+  try {
+    if (!staffData) {
+      return setShowToast({ isShown: true, type: "add", message: "Staff data must be provided" });
+    }
+
+    const response = await axiosInstance.post("/api/staff/bulk-create-staff", staffData);
+
+    if (response.data) {
+      onClose();
+      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+    } else {
+      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, Please try again." });
     }
   }
 };
