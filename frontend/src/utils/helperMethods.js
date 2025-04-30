@@ -1,4 +1,4 @@
-import { assignReleaseUser } from "../services/api/devices/Device.Api";
+//import { assignReleaseUser } from "../services/api/devices/Device.Api";
 
 //Generate End date for permanent staff members
 export const generateLoanEndate = (startDate) => {
@@ -22,7 +22,7 @@ export const releaseOnDelete = (id, setShowToast) => {
     location: "COO1 - Datacenter",
   };
 
-  assignReleaseUser(id, data, setShowToast);
+  //assignReleaseUser(id, data, setShowToast);
 };
 
 //Get todays date

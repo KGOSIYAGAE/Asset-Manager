@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllDevices, getDevice, getDeviceDetails, createDevice, updateDevice, deleteDevice, bulkCreateDevice } = require("../Controllers/deviceController");
+const { getAllDevices, getDevice, getDeviceDetails, createDevice, updateDevice, deleteDevice, bulkCreateDevice, assignDevice, releaseDevice } = require("../Controllers/deviceController");
 
 //Get all devices
 router.get("/", getAllDevices);
@@ -19,6 +19,12 @@ router.post("/bulk-add-devices", bulkCreateDevice);
 
 //Update device
 router.put("/update-device/:id", updateDevice);
+
+//Update device
+router.put("/assign-device/:id", assignDevice);
+
+//Update device
+router.put("/release-device/:id", releaseDevice);
 
 //Delete device
 router.delete("/delete-device/:id", deleteDevice);

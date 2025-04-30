@@ -6,7 +6,7 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
+import { assignDevice } from "../../../services/api/devices/Device.Api";
 import { getTodayDate } from "../../../utils/helperMethods";
 
 function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
@@ -35,9 +35,13 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
   const handleFilterUsers = (searchQuery, data) => {
     const searchResults = [];
     for (let i = 0; i < data.length; i++) {
-      if (data[i].name && data[i].name.toLowerCase().includes(searchQuery.toLowerCase())) {
+      if (data[i].name?.toString() && data[i].name?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
         searchResults.push(data[i]);
-      } else if (data[i].surname && data[i].surname.toLowerCase().includes(searchQuery.toLowerCase())) {
+      } else if (data[i].surname?.toString() && data[i].surname?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+        searchResults.push(data[i]);
+      } else if (data[i].staff_no?.toString() && data[i].staff_no?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+        searchResults.push(data[i]);
+      } else if (data[i].student_number?.toString() && data[i].student_number?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
         searchResults.push(data[i]);
       }
     }
@@ -47,34 +51,32 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
   //Handle assign device
   const handleAssignDevice = () => {
     if (!selectedUser.fullName) {
-      return setShowToast({ isShow: true, type: "delete", message: "Please select user." });
+      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
-    setSelectedUser({ userType: "Students" });
 
     //Get today's date
     const today = getTodayDate();
 
     const { id } = params;
     if (!id) {
-      return setShowToast({ isShown: true, type: "delete", message: "Device Id not provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
     }
 
-    if (formType === "assign") {
-      const data = {
-        status: "Assigned",
-        location: selectedUser.location,
-        loanStartDate: today,
-        userId: selectedUser.userId,
-      };
+    const data = {
+      fullName: selectedUser.fullName,
+      status: "Assigned",
+      date_issued: today,
+      userId: selectedUser.userId,
+    };
 
-      assignReleaseUser(id, data, onSubmit, setShowToast);
-    }
+    assignDevice(id, data, setShowToast);
+
+    return onSubmit();
   };
 
   useEffect(() => {
     if (userData) {
       setSearchResultsData(userData);
-      setFormType("assign");
     }
   }, []);
   return (
@@ -112,9 +114,8 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
                   onClick={() => {
                     setSelectedUser({
                       fullName: `${item.name} ${item.surname}`,
-                      userId: item.staff_no || item.student_no,
-                      userType: (item.staff_no ? "Staff" : "") || (item.student_no ? "Student" : ""),
-                      location: item.department || item.faculty,
+                      userId: item.staff_no || item.student_number,
+                      userType: (item.staff_no ? "Staff" : "") || (item.student_number ? "Student" : ""),
                     });
 
                     toggleUsers();

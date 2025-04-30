@@ -83,21 +83,15 @@ function DeviceDetails({ path }) {
       <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
         <div className="flex justify-end">
           <div>
-            {deviceDetails?.status !== "Assigned" ? (
+            {deviceDetails?.status === "Assigned" ? (
               <SubmitButton
-                text={"Assign User"}
+                text={"Release User"}
                 onClick={() => {
-                  setOpenModal({ isShown: true, type: "assign", data: "hello" });
+                  setOpenModal({ isShown: true, type: "release", data: "hello" });
                 }}
               />
             ) : (
               <div className="flex gap-3">
-                <SubmitButton
-                  text={"Release User"}
-                  onClick={() => {
-                    setOpenModal({ isShown: true, type: "release", data: "hello" });
-                  }}
-                />
                 <SubmitButton
                   text={"Assign User"}
                   onClick={() => {
@@ -164,22 +158,22 @@ function DeviceDetails({ path }) {
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Purchase Value</span>
             <span className="text-sm">
-              {new Intl.NumberFormat("en-ZA", {
+              {/*new Intl.NumberFormat("en-ZA", {
                 style: "currency",
                 currency: "ZAR",
-              }).format(deviceDetails?.purchase_price)}
+              }).format(deviceDetails?.purchase_price)*/}
             </span>
-            {/*`R ${deviceDetails?.purchaseValue}` */}
+            {`R ${deviceDetails?.purchase_price}`}
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Current Value</span>
             <span className="text-sm">
-              {new Intl.NumberFormat("en-ZA", {
+              {/*new Intl.NumberFormat("en-ZA", {
                 style: "currency",
                 currency: "ZAR",
-              }).format(deviceDetails?.value_price)}
+              }).format(parseInt(deviceDetails?.value_price))*/}
             </span>
-            {/*`R ${deviceDetails?.purchaseValue}` */}
+            {`R ${deviceDetails?.value_price}`}
           </div>
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Purchase Date</span>
@@ -201,7 +195,7 @@ function DeviceDetails({ path }) {
               <div>
                 <div className="flex justify-between bg-zinc-50 p-2">
                   <span className="text-sm">Full name</span>
-                  <span className="text-sm">{`${deviceDetails?.first_name} ${deviceDetails?.last_name}`}</span>
+                  <span className="text-sm">{`${deviceDetails?.full_name}`}</span>
                 </div>
                 <div className="flex justify-between  p-2">
                   <span className="text-sm">User Id</span>

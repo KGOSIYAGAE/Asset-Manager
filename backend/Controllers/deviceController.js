@@ -52,7 +52,7 @@ const getDeviceDetails = async (req, res) => {
       return res.status(400).json({ message: "Device id not provided", error: true });
     }
 
-    const getDeviceQuery = `SELECT * FROM "deviceDetails" WHERE id = $1`;
+    const getDeviceQuery = `SELECT * FROM "deviceUserDetails" WHERE id = $1`;
 
     const { rows } = await query(getDeviceQuery, [id]);
 
@@ -238,6 +238,66 @@ const updateDevice = async (req, res) => {
   }
 };
 
+//Assign device
+const assignDevice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fullName, status, userId, date_issued } = req.body;
+    console.log(req.body);
+    if (!id) {
+      return res.status(400).json({ message: "Device Id not provided.", error: true });
+    }
+
+    if (!status || !userId || !date_issued) {
+      return res.status(400).json({ message: "All fields must be provided.", error: true });
+    }
+
+    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3 WHERE id=$4";
+    const VALUES = [status, userId, date_issued];
+
+    const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when assigning the device", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: `Device successfully assigned to ${fullName}`, error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//Assign device
+const releaseDevice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, userId, return_date } = req.body;
+    console.log(req.body);
+    if (!id) {
+      return res.status(400).json({ message: "Device Id not provided.", error: true });
+    }
+
+    if (!status || !userId || !return_date) {
+      return res.status(400).json({ message: "All fields must be provided.fff", error: true });
+    }
+
+    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, return_date=$3 WHERE id=$4";
+    const VALUES = [status, userId, return_date];
+
+    const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when releasing the device from user", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: `Device successfully released from previous user.`, error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Delete device
 const deleteDevice = async (req, res) => {
   try {
@@ -265,4 +325,4 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDevice, getDeviceDetails, createDevice, deleteDevice, updateDevice, bulkCreateDevice };
+module.exports = { getAllDevices, getDevice, getDeviceDetails, createDevice, deleteDevice, updateDevice, bulkCreateDevice, assignDevice, releaseDevice };

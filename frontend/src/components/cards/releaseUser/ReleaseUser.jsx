@@ -6,8 +6,9 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
+//import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
 import { getTodayDate } from "../../../utils/helperMethods";
+import { assignDevice, releaseDevice } from "../../../services/api/devices/Device.Api";
 
 function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -47,7 +48,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
   //Handle assign device
   const handleAssignDevice = () => {
     if (!selectedUser.fullName) {
-      return setShowToast({ isShow: true, type: "delete", message: "Please select user." });
+      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
     setSelectedUser({ userType: "Students" });
 
@@ -55,31 +56,30 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
 
     const { id } = params;
     if (!id) {
-      return setShowToast({ isShown: true, type: "delete", message: "Device Id not provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
     }
 
     if (formType === "release") {
       //Release user
       const data = {
         status: "Available",
-        location: selectedUser.location,
-        loanStartDate: "None",
         userId: selectedUser.userId,
+        return_date: getTodayDate(),
       };
 
-      assignReleaseUser(id, data, setShowToast);
-      onSubmit();
+      releaseDevice(id, data, setShowToast);
+      return onSubmit();
     } else {
-      //Assign user
+      //re-assign user
       const data = {
+        fullName: selectedUser.fullName,
         status: "Assigned",
-        location: selectedUser.location,
-        loanStartDate: today,
         userId: selectedUser.userId,
+        date_issued: getTodayDate(),
       };
 
-      assignReleaseUser(id, data, setShowToast);
-      onSubmit();
+      assignDevice(id, data, setShowToast);
+      return onSubmit();
     }
   };
 
@@ -88,10 +88,8 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
       setSearchResultsData(data);
     }
     setSelectedUser({
-      fullName: "None",
-      userId: "it.stockmanager@spu.ac.za",
-      userType: "None",
-      location: "COO1 - Datacenter",
+      fullName: "None - IT Stock manager",
+      userId: parseInt("10000"),
     });
     setFormType("release");
   }, []);
@@ -131,11 +129,10 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
                 onClick={() => {
                   setFormType("release");
                   setSelectedUser({
-                    fullName: "None",
-                    userId: "None",
-                    userType: "None",
-                    location: "COO1 - Datacenter",
+                    fullName: "None - IT Stock manager",
+                    userId: parseInt("10000"),
                   });
+                  toggleUsers();
                 }}
               >
                 None
@@ -148,14 +145,12 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
                     setFormType("reassign");
                     setSelectedUser({
                       fullName: `${item.name} ${item.surname}`,
-                      userId: item.staff_no || item.student_no,
-                      userType: (item.staff_no ? "Staff" : "") || (item.student_no ? "Student" : ""),
-                      location: item.department || item.faculty,
+                      userId: item.staff_no || item.student_number,
                     });
 
                     toggleUsers();
                   }}
-                >{`${item.name} ${item.surname} - ${item?.staff_no || item.student_no}`}</span>
+                >{`${item.name} ${item.surname} - ${item?.staff_no || item.student_number}`}</span>
               ))}
             </div>
           </div>
