@@ -1,5 +1,6 @@
 const { query } = require("../util/pg_dbConnection");
 const format = require("pg-format");
+const { createNewLog } = require("../util/Table.Logger");
 
 //Get all devices
 const getAllDevices = async (req, res) => {
@@ -121,6 +122,9 @@ const createDevice = async (req, res) => {
       return res.status(400).json({ message: "An error occured when creating a device", error: true });
     }
 
+    //Create new log
+    createNewLog("Create", req.user, id, `Device successfully created.`);
+
     return res.status(200).json({ rowCount, message: "Successfully created", error: false });
   } catch (error) {
     console.log(error);
@@ -165,6 +169,9 @@ const bulkCreateDevice = async (req, res) => {
     if (rowCount <= 0) {
       return res.status(400).json({ message: "An error occured when adding devices", error: true });
     }
+
+    //Create new log
+    createNewLog("Bulk create", req.user, id, `Device successfully created.`);
 
     return res.status(200).json({ rowCount, message: `${rowCount} devices successfully created.`, error: false });
   } catch (error) {
@@ -231,7 +238,10 @@ const updateDevice = async (req, res) => {
       return res.status(400).json({ message: "An error occured when updating the device", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: "Device updated successfully", error: false });
+    //Create new log
+    createNewLog("Update", req.user, id, `Device successfully updated.`);
+
+    return res.status(200).json({ rowCount, message: "Device successfully updated", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}` });
@@ -243,7 +253,7 @@ const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
     const { fullName, status, userId, date_issued } = req.body;
-    console.log(req.body);
+
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
@@ -261,6 +271,9 @@ const assignDevice = async (req, res) => {
       return res.status(400).json({ message: "An error occured when assigning the device", error: true });
     }
 
+    //Create new log
+    createNewLog("Assign", req.user, id, `Device successfully assigned to ${fullName}`);
+
     return res.status(200).json({ rowCount, message: `Device successfully assigned to ${fullName}`, error: false });
   } catch (error) {
     console.log(error);
@@ -273,7 +286,7 @@ const releaseDevice = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, userId, return_date } = req.body;
-    console.log(req.body);
+
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
@@ -290,6 +303,9 @@ const releaseDevice = async (req, res) => {
     if (rowCount <= 0) {
       return res.status(400).json({ message: "An error occured when releasing the device from user", error: true });
     }
+
+    //Create new log
+    createNewLog("Release", req.user, id, `Device successfully released from previous user.`);
 
     return res.status(200).json({ rowCount, message: `Device successfully released from previous user.`, error: false });
   } catch (error) {
@@ -317,6 +333,9 @@ const deleteDevice = async (req, res) => {
     const delete_device_query = "DELETE FROM devices WHERE id = $1";
 
     const { rows } = await query(delete_device_query, [id]);
+
+    //Create new log
+    createNewLog("Delete", req.user, id, `Device successfully deleted.`);
 
     return res.status(200).json({ message: "Device deleted successfully", error: false });
   } catch (error) {

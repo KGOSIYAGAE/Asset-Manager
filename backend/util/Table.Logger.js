@@ -1,19 +1,60 @@
-const { dbConnection } = require("../util/dbConnection");
+const { query } = require("../util/pg_dbConnection");
 
-const createNewLog = (action, user_id, item_id, details) => {
-  const INSERT_LOG = "INSERT INTO `log_table`(`action`, `user_id`, `item_id`, `details`) VALUES (?)";
-
-  const values = [action, user_id, item_id, details];
-
+//device log
+const createNewLog = async (action, crested_by, item_id, description) => {
   try {
-    dbConnection.query(INSERT_LOG, [values], (error, results) => {
-      if (error) {
-        return console.log("Error occured creating new log entry to table");
-      }
-      return console.log(`New log entry: ${details}`);
-    });
+    const INSERT_LOG = "INSERT INTO device_log (action, description, item_id, created_by) VALUES ($1,$2,$3,$4);";
+
+    const values = [action, description, item_id, crested_by];
+
+    const { rowCount, rows } = await query(INSERT_LOG, [...values]);
+
+    if (rowCount <= 0) {
+      return console.log("Error occured creating new log entry to table");
+    }
+    return console.log(`New log entry: ${description}`);
   } catch (error) {
     return console.log(error);
+  }
+};
+
+const getAllLogs = async (req, res) => {
+  try {
+    const getAllLogs = "SELECT * FROM device_log";
+
+    const { rowCount, rows } = await query(getAllLogs);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "No logs found", error: true });
+    }
+
+    return res.status(400).json({ rowCount, logList: rows, message: "Success", error: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+const getAlllogsForDevice = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Device id not provided", error: true });
+    }
+
+    const getAllLogs = "SELECT * FROM device_log WHERE item_id = $1";
+
+    const { rowCount, rows } = await query(getAllLogs, [id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "No logs found", error: true });
+    }
+
+    return res.status(400).json({ rowCount, logList: rows, message: "Success", error: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
 

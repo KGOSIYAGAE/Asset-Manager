@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const { dbConnection } = require("../util/dbConnection");
+
+const { query } = require("../util/pg_dbConnection");
 
 const requireAuth = async (req, res, next) => {
   //Verify authentication
@@ -14,19 +15,15 @@ const requireAuth = async (req, res, next) => {
   try {
     const { email } = jwt.verify(token, process.env.SECRET);
 
-    const findUserQuery = `SELECT * FROM admin_users WHERE email = ?`;
+    const findUserQuery = "SELECT * FROM admin_users WHERE email = $1";
 
-    req.user = dbConnection.query(findUserQuery, email, async (error, results) => {
-      if (error) {
-        return res.status(400).json({ message: error, error: true });
-      }
+    const { rowCount, rows } = await query(findUserQuery, [email]);
 
-      if (results.length <= 0) {
-        return res.status(400).json({ message: "Email not found", error: true });
-      }
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "Email not found", error: true });
+    }
 
-      return results.username;
-    });
+    req.user = rows[0]._id;
 
     next();
   } catch (error) {

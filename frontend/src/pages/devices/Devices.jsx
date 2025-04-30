@@ -56,7 +56,7 @@ function Devices({ path }) {
   useEffect(() => {
     searchDispatch({ type: "SET_SEARCH_NULL" });
     getAllDevices(devicesDispatch);
-  }, [showToast]);
+  }, []);
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
       <span className="text-sm ">
