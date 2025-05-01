@@ -14,7 +14,7 @@ import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { addStaff, getUser, updateStaff } from "../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
-import { generateLoanEndate } from "../../utils/helperMethods";
+import { generateReturnDate } from "../../utils/helperMethods";
 import { getAllDepartments } from "../../services/api/departments/Departments.Api";
 import { useDepartmentContext } from "../../hooks/useDepartmentContext";
 import DepartmentSelectInput from "../inputs/selectInputs/departmentSelectInput/DepartmentSelectInput";
@@ -120,6 +120,14 @@ function AddEditStaff({ path }) {
 
     setError(null);
 
+    let end_date;
+
+    if (contract_type === "Permanent") {
+      end_date = generateReturnDate(start_date);
+    } else {
+      end_date = endDate;
+    }
+
     const userData = {
       name,
       surname,
@@ -131,7 +139,7 @@ function AddEditStaff({ path }) {
       contract_type,
       isActive,
       start_date,
-      endDate: endDate || addYears(start_date, 1),
+      endDate: end_date,
     };
 
     if (formType === "add") {

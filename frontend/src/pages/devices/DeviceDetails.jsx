@@ -104,7 +104,7 @@ function DeviceDetails({ path }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-6 grid-rows-2 gap-5">
+      <div className="grid grid-cols-5 grid-rows-2 gap-5">
         <div className="col-span-3 border p-1 rounded-md shadow-md">
           <span className="heading-text">Device Details</span>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
@@ -185,7 +185,7 @@ function DeviceDetails({ path }) {
           </div>
         </div>
 
-        <div className="col-span-3 gap-5 border">
+        <div className="flex flex-col col-span-3 gap-5">
           <div className="flex flex-col items-center justify-center w-2/5 h-2/5 border p-2 gap-4 rounded-md shadow-md">
             <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="w-[200px] h-[150px]" />
           </div>
@@ -219,7 +219,29 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
-        <div className="col-span-6 h-[200px] bg-red-300"> j</div>
+        <div className="col-span-6 h-[250px] bg-white rounded-md shadow-md p-2 overflow-x-auto ">
+          <span className="heading-text ">Device Activity Log</span>
+          <div className="w-full text-sm  rounded-sm">
+            <table className="w-full bg-white ">
+              <thead className=" bg-slate-100">
+                <th>Device Id</th>
+                <th>Action</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Created At</th>
+              </thead>
+              <tbody className="">
+                <tr className="hover:bg-slate-50">
+                  <td>3541</td>
+                  <td>Create</td>
+                  <td>Device successfully assigned to kgosi motabogi</td>
+                  <td>Hello</td>
+                  <td>Hello</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <Modal

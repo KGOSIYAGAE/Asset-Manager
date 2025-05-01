@@ -1,6 +1,6 @@
 const { query } = require("../util/pg_dbConnection");
 const format = require("pg-format");
-const { createNewLog } = require("../util/Table.Logger");
+const { createNewLog } = require("./deviceLogController");
 
 //Get all devices
 const getAllDevices = async (req, res) => {

@@ -1,7 +1,7 @@
 //import { assignReleaseUser } from "../services/api/devices/Device.Api";
 
 //Generate End date for permanent staff members
-export const generateLoanEndate = (startDate) => {
+export const generateReturnDate = (startDate) => {
   const years = 3;
 
   const date = new Date(startDate);
