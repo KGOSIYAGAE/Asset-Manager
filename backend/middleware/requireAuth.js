@@ -28,7 +28,7 @@ const requireAuth = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(401).json({ errorStatus: 401, message: "Request not authorized", error: true });
+    return res.status(401).json({ errorStatus: 401, message: "Request not authorized, Please login.", error: true });
   }
 };
 

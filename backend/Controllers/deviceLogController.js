@@ -20,7 +20,7 @@ const createNewLog = async (action, crested_by, item_id, description) => {
 
 const getAllLogs = async (req, res) => {
   try {
-    const getAllLogs = "SELECT * FROM device_log";
+    const getAllLogs = `SELECT * FROM "deviceLogDetails" ORDER BY id DESC`;
 
     const { rowCount, rows } = await query(getAllLogs);
 
@@ -28,7 +28,7 @@ const getAllLogs = async (req, res) => {
       return res.status(400).json({ message: "No logs found", error: true });
     }
 
-    return res.status(400).json({ rowCount, logList: rows, message: "Success", error: true });
+    return res.status(200).json({ rowCount, deviceLogList: rows, message: "Success", error: true });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -43,7 +43,7 @@ const getAlllogsForDevice = async (req, res) => {
       return res.status(400).json({ message: "Device id not provided", error: true });
     }
 
-    const getAllLogs = "SELECT * FROM device_log WHERE item_id = $1";
+    const getAllLogs = `SELECT * FROM "deviceLogDetails"  WHERE item_id = $1 ORDER BY id DESC`;
 
     const { rowCount, rows } = await query(getAllLogs, [id]);
 
@@ -51,11 +51,11 @@ const getAlllogsForDevice = async (req, res) => {
       return res.status(400).json({ message: "No logs found", error: true });
     }
 
-    return res.status(400).json({ rowCount, logList: rows, message: "Success", error: true });
+    return res.status(200).json({ rowCount, deviceLogList: rows, message: "Success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
 
-module.exports = { createNewLog };
+module.exports = { createNewLog, getAllLogs, getAlllogsForDevice };

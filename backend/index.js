@@ -74,6 +74,10 @@ app.use("/api/departments", departmentRouter);
 const positionRouter = require("./Routes/positionRoutes");
 app.use("/api/positions", positionRouter);
 
+//Device logs
+const deviceLogRouter = require("./Routes/deviceLogRoutes");
+app.use("/api/device-logs", deviceLogRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port", process.env.PORT);
 });

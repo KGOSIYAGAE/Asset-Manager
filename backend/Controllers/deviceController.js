@@ -123,7 +123,7 @@ const createDevice = async (req, res) => {
     }
 
     //Create new log
-    createNewLog("Create", req.user, id, `Device successfully created.`);
+    //createNewLog("Create", req.user, id, `Device successfully created.`);
 
     return res.status(200).json({ rowCount, message: "Successfully created", error: false });
   } catch (error) {
@@ -171,7 +171,7 @@ const bulkCreateDevice = async (req, res) => {
     }
 
     //Create new log
-    createNewLog("Bulk create", req.user, id, `Device successfully created.`);
+    //createNewLog("Bulk create", req.user, id, `Device successfully created.`);
 
     return res.status(200).json({ rowCount, message: `${rowCount} devices successfully created.`, error: false });
   } catch (error) {

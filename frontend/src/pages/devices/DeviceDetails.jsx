@@ -12,6 +12,7 @@ import { useStudentsContext } from "../../hooks/useStudentsContext";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import ReleaseUser from "../../components/cards/releaseUser/releaseUser";
 import { handleTimeStamp } from "../../utils/dateConverter";
+import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -22,6 +23,7 @@ function DeviceDetails({ path }) {
   const [isAssigned, setIsAssigned] = useState(false);
   const [userType, setUserType] = useState("");
   const [deviceDetails, setDeviceDetails] = useState();
+  const [deviceLogs, setDeviceLogs] = useState();
   const params = useParams();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
@@ -31,6 +33,7 @@ function DeviceDetails({ path }) {
   const [purchaseDate, setPurchaseDate] = useState("");
 
   const navigate = useNavigate();
+  let rowNumber = 0;
 
   //Get user type based on userID
   const getUserType = (user_id) => {
@@ -60,6 +63,7 @@ function DeviceDetails({ path }) {
     if (!id) {
       return console.log("Selected device id not provided");
     }
+    getAllDeviceLogs(id, setDeviceLogs);
     getAllDeviceDetails(id, setDetails);
   };
 
@@ -70,6 +74,7 @@ function DeviceDetails({ path }) {
     if (!staffState || !studentState) {
       console.log("No data");
     }
+
     setDateCreated(handleTimeStamp(deviceDetails?.created_at));
     setWarrantyEndDate(handleTimeStamp(deviceDetails?.warranty_end_date));
     setPurchaseDate(handleTimeStamp(deviceDetails?.purchase_date));
@@ -224,6 +229,7 @@ function DeviceDetails({ path }) {
           <div className="w-full text-sm  rounded-sm">
             <table className="w-full bg-white ">
               <thead className=" bg-slate-100">
+                <th>#</th>
                 <th>Device Id</th>
                 <th>Action</th>
                 <th>Description</th>
@@ -231,13 +237,18 @@ function DeviceDetails({ path }) {
                 <th>Created At</th>
               </thead>
               <tbody className="">
-                <tr className="hover:bg-slate-50">
-                  <td>3541</td>
-                  <td>Create</td>
-                  <td>Device successfully assigned to kgosi motabogi</td>
-                  <td>Hello</td>
-                  <td>Hello</td>
-                </tr>
+                {deviceLogs
+                  ? deviceLogs.map((log) => (
+                      <tr className="hover:bg-slate-50">
+                        <td>{}</td>
+                        <td>{log.item_id}</td>
+                        <td>{log.action}</td>
+                        <td>{log.description}</td>
+                        <td>{log.created_by}</td>
+                        <td>{log.created_at}</td>
+                      </tr>
+                    ))
+                  : ""}
               </tbody>
             </table>
           </div>
