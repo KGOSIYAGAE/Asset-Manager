@@ -5,7 +5,7 @@ const { createNewLog } = require("./deviceLogController");
 //Get all devices
 const getAllDevices = async (req, res) => {
   try {
-    const GET_ALL_QUERY = "SELECT * FROM devices";
+    const GET_ALL_QUERY = "SELECT * FROM devices ORDER BY date_issued ASC";
 
     const { rows } = await query(GET_ALL_QUERY);
 

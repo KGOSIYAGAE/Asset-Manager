@@ -13,6 +13,8 @@ import ToastMessage from "../../components/toastMessage/ToastMessage";
 import ReleaseUser from "../../components/cards/releaseUser/releaseUser";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
+import { MdLocalPrintshop } from "react-icons/md";
+import StudentAOD from "../../components/student AOD/StudentAOD";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -67,6 +69,17 @@ function DeviceDetails({ path }) {
     getAllDeviceDetails(id, setDetails);
   };
 
+  const handleOnPrint = () => {
+    let printContents = document.getElementById("print-file").innerHTML;
+    let originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+
+    window.print();
+
+    document.body.innerHTML = originalContents;
+  };
+
   useEffect(() => {
     getDeviceDetails();
     //getUserType(deviceDetails?.user_id);
@@ -110,7 +123,7 @@ function DeviceDetails({ path }) {
       </div>
 
       <div className="grid grid-cols-5 grid-rows-2 gap-5">
-        <div className="col-span-3 border p-1 rounded-md shadow-md">
+        <div className="col-span-3 row-span-1 border p-1 rounded-md shadow-md">
           <span className="heading-text">Device Details</span>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Make</span>
@@ -195,14 +208,14 @@ function DeviceDetails({ path }) {
             <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="w-[200px] h-[150px]" />
           </div>
           {deviceDetails?.status === "Assigned" ? (
-            <div className="flex flex-col h-2/6 justify-between border p-2 rounded-md shadow-md">
+            <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md">
               <span className="heading-text">Assigned User</span>
               <div>
                 <div className="flex justify-between bg-zinc-50 p-2">
                   <span className="text-sm">Full name</span>
                   <span className="text-sm">{`${deviceDetails?.full_name}`}</span>
                 </div>
-                <div className="flex justify-between  p-2">
+                <div className="flex justify-between  p-1">
                   <span className="text-sm">User Id</span>
                   <span className="text-sm">{deviceDetails?.user_id}</span>
                 </div>
@@ -224,7 +237,8 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
-        <div className="col-span-6 h-[250px] bg-white rounded-md shadow-md p-2 overflow-x-auto ">
+
+        <div className="col-span-6 h-[250px] bg-white rounded-md shadow-md p-2 overflow-x-auto">
           <span className="heading-text ">Device Activity Log</span>
           <div className="w-full text-sm  rounded-sm">
             <table className="w-full bg-white ">
@@ -253,6 +267,10 @@ function DeviceDetails({ path }) {
             </table>
           </div>
         </div>
+
+        <div className="col-span-6 bg-white border border-green-500 p-5" id="print-file">
+          <StudentAOD />
+        </div>
       </div>
 
       <Modal
@@ -278,7 +296,7 @@ function DeviceDetails({ path }) {
             userData={[...staffState?.staffList, ...studentState?.studentsList]}
             setShowToast={setShowToast}
           />
-        ) : (
+        ) : openModal.type === "release" ? (
           <ReleaseUser
             onCanel={() => {
               setOpenModal({ isShown: false });
@@ -290,6 +308,8 @@ function DeviceDetails({ path }) {
             data={[...staffState?.staffList, ...studentState?.studentsList]}
             setShowToast={setShowToast}
           />
+        ) : (
+          ""
         )}
       </Modal>
       <ToastMessage
@@ -300,6 +320,18 @@ function DeviceDetails({ path }) {
           setShowToast({ isShow: false });
         }}
       />
+      <div className="w-full flex justify-end bg-white p-3 absolute border bottom-0 left-0 gap-3">
+        <button
+          className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
+          onClick={() => {
+            //setOpenModal({ isShown: true, type: "print", data: "hello" });
+            handleOnPrint();
+          }}
+        >
+          <MdLocalPrintshop size={25} />
+        </button>
+        <button className="flex justify-center items-center bg-cyan-500 text-white p-2 rounded-md">Save PDF</button>
+      </div>
     </div>
   );
 }

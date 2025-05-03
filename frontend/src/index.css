@@ -85,4 +85,91 @@
     text-align: left;
     padding: 8px;
   }
+
+  /***************************************/
+
+  .printable {
+    @apply bg-white block text-red-400 text-[12px];
+  }
+
+  .page-header {
+    @apply flex justify-between;
+  }
+
+  .page-logo {
+    @apply w-28 h-28;
+  }
+  .page-address {
+    @apply flex flex-col text-[10px];
+  }
+  .address-heading {
+    @apply font-bold text-[12px] p-[2px];
+  }
+
+  .address-text {
+    @apply p-[2px];
+  }
+
+  .body-header {
+    @apply text-center;
+  }
+
+  .page-body {
+    @apply h-[710px];
+  }
+
+  .body-title {
+    font-weight: bold;
+    font-size: 17px;
+  }
+
+  .page-content {
+    @apply flex flex-col gap-2;
+  }
+
+  .content {
+    display: flex;
+    margin: -5px 0px 5px 0px;
+    /*border: 1px red solid;*/
+    @apply flex;
+  }
+
+  .page-footer {
+    /*display: flex;
+    border: 1px green solid;
+    padding-top: 30px;*/
+    @apply flex mt-5;
+  }
+
+  .left {
+    /*border: 1px red solid;*/
+    @apply flex flex-col flex-1;
+  }
+
+  .right {
+    flex: 1;
+    /*border: 1px red solid;*/
+    @apply flex flex-col flex-1;
+  }
+
+  .boo {
+    margin-bottom: 2px;
+  }
+  .boo2 {
+    /*border: 1px red solid;*/
+    @apply flex;
+  }
+  .boo3 {
+    margin-top: 5px;
+    /*border: 1px purple solid;*/
+  }
+  .boo4 {
+    margin-top: -10px;
+    /*border: 1px orange solid;*/
+  }
+
+  .content-data {
+    font-weight: bold;
+  }
+  /***************************************/
 }
