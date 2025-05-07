@@ -86,10 +86,9 @@
     padding: 8px;
   }
 
-  /***************************************/
-
+  /*Student AOD Start*/
   .printable {
-    @apply bg-white block text-red-400 text-[12px];
+    @apply bg-white text-black text-[12px];
   }
 
   .page-header {
@@ -138,7 +137,7 @@
     /*display: flex;
     border: 1px green solid;
     padding-top: 30px;*/
-    @apply flex mt-5;
+    @apply flex mt-24;
   }
 
   .left {
@@ -171,5 +170,7 @@
   .content-data {
     font-weight: bold;
   }
-  /***************************************/
+  /*Student AOD End*/
+
+  /*Staff Form Start*/
 }

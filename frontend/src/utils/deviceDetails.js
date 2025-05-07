@@ -72,8 +72,18 @@ export const deviceManufacture = [
     description: "",
     deviceModel: [
       {
+        id: 0,
+        name: "V15 IRL",
+        specification: "",
+      },
+      {
         id: 1,
-        name: "Lenovo 23",
+        name: "E16",
+        specification: "",
+      },
+      {
+        id: 2,
+        name: "L14",
         specification: "",
       },
     ],
@@ -85,7 +95,7 @@ export const deviceManufacture = [
     deviceModel: [
       {
         id: 1,
-        name: "H3C 23",
+        name: "H3C Laptop",
         specification: "",
       },
     ],

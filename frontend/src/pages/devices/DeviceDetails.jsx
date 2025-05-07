@@ -15,6 +15,7 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
 import { MdLocalPrintshop } from "react-icons/md";
 import StudentAOD from "../../components/student AOD/StudentAOD";
+import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -33,13 +34,16 @@ function DeviceDetails({ path }) {
   const [dateCreated, setDateCreated] = useState("");
   const [warrantyEndDate, setWarrantyEndDate] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
+  const [print, setPrint] = useState(false);
 
   const navigate = useNavigate();
   let rowNumber = 0;
 
   //Get user type based on userID
   const getUserType = (user_id) => {
-    if (user_id.length > 5) {
+    let userId = user_id?.toString();
+    console.log(userId?.length);
+    if (userId?.length > 5) {
       return setUserType("Student");
     } else {
       return setUserType("Staff");
@@ -78,11 +82,12 @@ function DeviceDetails({ path }) {
     window.print();
 
     document.body.innerHTML = originalContents;
+    window.location.reload();
   };
 
   useEffect(() => {
     getDeviceDetails();
-    //getUserType(deviceDetails?.user_id);
+    getUserType(deviceDetails?.user_id);
 
     if (!staffState || !studentState) {
       console.log("No data");
@@ -91,7 +96,7 @@ function DeviceDetails({ path }) {
     setDateCreated(handleTimeStamp(deviceDetails?.created_at));
     setWarrantyEndDate(handleTimeStamp(deviceDetails?.warranty_end_date));
     setPurchaseDate(handleTimeStamp(deviceDetails?.purchase_date));
-  }, [deviceDetails?.created_at]);
+  }, [deviceDetails?.created_at, deviceDetails?.user_id]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
@@ -267,10 +272,6 @@ function DeviceDetails({ path }) {
             </table>
           </div>
         </div>
-
-        <div className="col-span-6 bg-white border border-green-500 p-5" id="print-file">
-          <StudentAOD />
-        </div>
       </div>
 
       <Modal
@@ -282,7 +283,9 @@ function DeviceDetails({ path }) {
           overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
         }}
         contentLabel=""
-        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
+        className={`${
+          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
         {openModal.type === "assign" ? (
           <IssueDevice
@@ -308,8 +311,14 @@ function DeviceDetails({ path }) {
             data={[...staffState?.staffList, ...studentState?.studentsList]}
             setShowToast={setShowToast}
           />
+        ) : openModal.type === "Student" ? (
+          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
+            <StudentAOD handleOnPrint={handleOnPrint} deviceDetails={deviceDetails} />
+          </div>
         ) : (
-          ""
+          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
+            <StaffIssueForm />
+          </div>
         )}
       </Modal>
       <ToastMessage
@@ -324,8 +333,7 @@ function DeviceDetails({ path }) {
         <button
           className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
           onClick={() => {
-            //setOpenModal({ isShown: true, type: "print", data: "hello" });
-            handleOnPrint();
+            setOpenModal({ isShown: true, type: userType, data: "hello" });
           }}
         >
           <MdLocalPrintshop size={25} />

@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { getMonthName } from "../../utils/helperMethods";
 
-function StudentAOD() {
+function StudentAOD({ deviceDetails, handleOnPrint }) {
   const [year, setYear] = useState();
+  const [month, setMonth] = useState();
+  const [day, setDay] = useState();
 
   useEffect(() => {
     const date = new Date();
     setYear(date.getFullYear());
+    setDay(date.getDate());
+    setMonth(getMonthName(date.getMonth()));
+    //handleOnPrint();
   }, []);
 
   return (
-    <div className="printable overflow-auto">
+    <div className="printable ">
       <div class="page-header">
         <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
         <div class="page-address">
@@ -57,8 +63,9 @@ function StudentAOD() {
           </div>
           <span>
             do hereby acknowledge myself to be truly and lawfully indebted unto and in favour of Sol Plaatje University (hereinafter referred to as ‘SPU’) in the sum of <b>R</b>
-            <span class="laptopValue content-data"></span> being in respect of a laptop, Model: <span class="laptopModel content-data"></span>
-            with Serial No: <span class="laptopSerialNo content-data"></span> provided to me by SPU to be used as a student laptop.
+            <span class="laptopValue content-data">{deviceDetails?.purchase_price}</span> being in respect of a laptop, Model:{" "}
+            <span class="laptopModel content-data">{`${deviceDetails?.make} ${deviceDetails?.model}`}</span>
+            with Serial No: <span class="laptopSerialNo content-data">{deviceDetails?.serial_no}</span> provided to me by SPU to be used as a student laptop.
           </span>
           {/*<br>*/}
           <div class="boo3">
@@ -110,7 +117,9 @@ function StudentAOD() {
               </li>
             </ol>
           </div>
-          Signed at Kimberley on the: ……………………… day of ………………………………………… {year}
+          <div>
+            Signed at Kimberley on the: <span className="font-semibold">{day}</span> day of <span className="font-semibold">{month}</span> <span className="font-semibold">{year}</span>
+          </div>
         </div>
         {/*<br>*/}
       </div>
