@@ -128,6 +128,7 @@ export const getDevicesConditionSummary = (devices) => {
 
   return { newLaptops, secondHandLaptops, faultyLaptops, scrapedLaptops };
 };
+////////////////////////////////////////////////////////
 
 //Get lenovo laptops by model
 export const getLenovoStatsByModel = (devices) => {
@@ -148,12 +149,15 @@ export const getLenovoStatsByModel = (devices) => {
 
   return [lenovo_E16, lenovo_V15];
 };
+////////////////////////////////////////////////////////
 
 //Get hp laptops by model
 export const getHPStatsByModel = (devices) => {
   let HP_255_G8 = 0; //HP 255 G8
   let HP_255_G9 = 0; //HP 255 G9
   let HP_455_G8 = 0; //HP 455 G8
+  let HP_455_G9 = 0; //HP 455 G9
+  let HP_455_G10 = 0; //HP 455 G10
 
   const { HP_LAPTOPS } = getDevicesStatsByMake(devices);
 
@@ -167,9 +171,15 @@ export const getHPStatsByModel = (devices) => {
     if (HP_LAPTOPS[i].model === "455 G8") {
       HP_455_G8 += 1;
     }
+    if (HP_LAPTOPS[i].model === "455 G9") {
+      HP_455_G9 += 1;
+    }
+    if (HP_LAPTOPS[i].model === "455 G10") {
+      HP_455_G10 += 1;
+    }
   }
 
-  return [HP_255_G8, HP_255_G9, HP_455_G8];
+  return [HP_255_G8, HP_255_G9, HP_455_G8, HP_455_G9, HP_455_G10];
 };
 
 ////////////////////////////////////////////////////////
@@ -182,25 +192,26 @@ export const getFacultyStats = (students) => {
   let hum_stats = [];
 
   for (let i = 0; i < students?.length; i++) {
-    if (students[i].faculty === "EDU") {
+    if (students[i].faculty_abbreviation === "EDU") {
       edu_stats.push(students[i]);
     }
 
-    if (students[i].faculty === "EMS") {
+    if (students[i].faculty_abbreviation === "EMS") {
       ems_stats.push(students[i]);
     }
 
-    if (students[i].faculty === "NAS") {
+    if (students[i].faculty_abbreviation === "NAS") {
       nas_stats.push(students[i]);
     }
 
-    if (students[i].faculty === "HUM") {
+    if (students[i].faculty_abbreviation === "HUM") {
       hum_stats.push(students[i]);
     }
   }
 
   return { edu_stats, ems_stats, nas_stats, hum_stats };
 };
+////////////////////////////////////////////////////////
 
 //Get course stats by Faculty
 export const getCourseStatsByFaculty = (students, facultyNumber) => {

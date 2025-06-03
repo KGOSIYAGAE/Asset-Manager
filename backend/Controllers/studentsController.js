@@ -6,7 +6,7 @@ const checkStudentExist = async (req, res) => {};
 //Get all students
 const getStudents = async (req, res) => {
   try {
-    const get_students_query = "SELECT * FROM students";
+    const get_students_query = `SELECT * FROM "studentDetails"`;
 
     const { rowCount, rows } = await query(get_students_query);
 

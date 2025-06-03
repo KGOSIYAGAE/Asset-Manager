@@ -26,7 +26,7 @@ function StudentByFaculty({ students }) {
   });
 
   const getFacutlyDetails = () => {
-    console.log(students);
+    //console.log(students);
 
     const { edu_stats, ems_stats, nas_stats, hum_stats } = getFacultyStats(students);
 
