@@ -3,25 +3,20 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { getHPStatsByModel, getLenovoStatsByModel } from "../../../utils/analyticsMethods";
 
 function ModelStatBarChart({ devices }) {
-  const [lenovo_E16, setLenovo_E16] = useState(0);
-  const [lenovo_V15, setLenovo_V15] = useState(0);
-  const [hp_255G9, setHp_255G9] = useState(0);
+  const [lenovoStats, setLenovoStats] = useState([]);
+  const [hpStats, setHpStats] = useState([]);
 
   const getStatOnLoad = () => {
-    const { lenovo_E16, lenovo_V15 } = getLenovoStatsByModel(devices);
-    const { HP_255_G9 } = getHPStatsByModel(devices);
-
-    setLenovo_E16(lenovo_E16);
-    setLenovo_V15(lenovo_V15);
-    setHp_255G9(HP_255_G9);
+    setLenovoStats([...getLenovoStatsByModel(devices)]);
+    setHpStats([...getHPStatsByModel(devices)]);
   };
 
   useEffect(() => {
     getStatOnLoad();
   }, [devices]);
 
-  const values = [lenovo_E16, lenovo_V15, 0, hp_255G9, 0, 0];
-  const xLabels = ["ThinkPad E16", "Lenovo V15", "HP 255 G8", "HP 255 G9", "HP 455 G9", "HP 455 G10"];
+  const values = [...lenovoStats, ...hpStats];
+  const xLabels = ["ThinkPad E16", "Lenovo V15", "HP 255 G8", "HP 255 G9", "HP 455 G8", "HP 455 G9", "HP 455 G10"];
 
   const otherSetting = {
     xAxis: [{ label: "Laptops" }],

@@ -33,6 +33,22 @@ export const getStudent = async (student_number, setFormData) => {
   }
 };
 
+//get Student
+export const getStudentDetails = async (student_number, studentData) => {
+  try {
+    const response = await axiosInstance.get("/api/students/" + student_number);
+    if (response.data && !response.data.error) {
+      return studentData(...response.data.studentData);
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
 //Add Student
 export const addStudent = async (studentData, setShowToast) => {
   try {

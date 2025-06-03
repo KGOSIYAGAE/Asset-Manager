@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { getAllStaff, getStaff, createStaff, bulkCreateStaff, updateStaff, deleteStaff } = require("../Controllers/staffController");
+const { getAllStaff, getStaff, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff } = require("../Controllers/staffController");
 
 //get all staff
 router.get("/", getAllStaff);
 
 //get staff by id
 router.get("/:id", getStaff);
+
+//get staff by staff_no
+router.get("/staff-details/:staff_no", getStaffDetails);
 
 //Create staff
 router.post("/create-staff/", createStaff);

@@ -42,7 +42,7 @@ function DeviceDetails({ path }) {
   //Get user type based on userID
   const getUserType = (user_id) => {
     let userId = user_id?.toString();
-    console.log(userId?.length);
+
     if (userId?.length > 5) {
       return setUserType("Student");
     } else {
@@ -210,7 +210,7 @@ function DeviceDetails({ path }) {
 
         <div className="flex flex-col col-span-3 gap-5">
           <div className="flex flex-col items-center justify-center w-2/5 h-2/5 border p-2 gap-4 rounded-md shadow-md">
-            <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="w-[200px] h-[150px]" />
+            <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="sm:w-[200px] md:w-[150px] sm:h-[150px] " />
           </div>
           {deviceDetails?.status === "Assigned" ? (
             <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md">
@@ -312,12 +312,12 @@ function DeviceDetails({ path }) {
             setShowToast={setShowToast}
           />
         ) : openModal.type === "Student" ? (
-          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <StudentAOD handleOnPrint={handleOnPrint} deviceDetails={deviceDetails} />
+          <div className=" h-[1100px]  col-span-6 bg-white " id="print-file">
+            <StudentAOD handleOnPrint={handleOnPrint} deviceDetails={deviceDetails} student_no={deviceDetails?.user_id} />
           </div>
         ) : (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <StaffIssueForm />
+            <StaffIssueForm handleOnPrint={handleOnPrint} deviceDetails={deviceDetails} staff_no={deviceDetails?.user_id} />
           </div>
         )}
       </Modal>

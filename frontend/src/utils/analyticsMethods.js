@@ -124,13 +124,9 @@ export const getDevicesConditionSummary = (devices) => {
     if (devices[i].device_condition === "Scrap") {
       scrapedLaptops += 1;
     }
-
-    if (devices[i].device_condition === "Return") {
-      returnLaptops += 1;
-    }
   }
 
-  return { newLaptops, secondHandLaptops, faultyLaptops, scrapedLaptops, returnLaptops };
+  return { newLaptops, secondHandLaptops, faultyLaptops, scrapedLaptops };
 };
 
 //Get lenovo laptops by model
@@ -150,23 +146,33 @@ export const getLenovoStatsByModel = (devices) => {
     }
   }
 
-  return { lenovo_E16, lenovo_V15 };
+  return [lenovo_E16, lenovo_V15];
 };
 
-//Get lenovo laptops by model
+//Get hp laptops by model
 export const getHPStatsByModel = (devices) => {
+  let HP_255_G8 = 0; //HP 255 G8
   let HP_255_G9 = 0; //HP 255 G9
+  let HP_455_G8 = 0; //HP 455 G8
 
   const { HP_LAPTOPS } = getDevicesStatsByMake(devices);
 
   for (let i = 0; i < HP_LAPTOPS?.length; i++) {
+    if (HP_LAPTOPS[i].model === "255 G8") {
+      HP_255_G8 += 1;
+    }
     if (HP_LAPTOPS[i].model === "255 G9") {
       HP_255_G9 += 1;
     }
+    if (HP_LAPTOPS[i].model === "455 G8") {
+      HP_455_G8 += 1;
+    }
   }
 
-  return { HP_255_G9 };
+  return [HP_255_G8, HP_255_G9, HP_455_G8];
 };
+
+////////////////////////////////////////////////////////
 
 //Get Faculty Stats
 export const getFacultyStats = (students) => {

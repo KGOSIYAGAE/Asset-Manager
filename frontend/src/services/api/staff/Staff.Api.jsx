@@ -118,3 +118,24 @@ export const getUser = async (id, setFormData) => {
     }
   }
 };
+
+export const getStaffDetails = async (staff_no, setStaffData) => {
+  if (!staff_no) {
+    return console.log("Staff number must be provided");
+  }
+
+  try {
+    const response = await axiosInstance.get("/api/staff/staff-details/" + staff_no);
+
+    if (response.data && response.data.staffData) {
+      return setStaffData(...response.data.staffData);
+      //staffDispatch({ type: "SET_SELECTED_STAFF", payload: response.data.staffData });
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again.");
+    }
+  }
+};

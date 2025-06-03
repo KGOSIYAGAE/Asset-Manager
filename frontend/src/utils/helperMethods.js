@@ -43,6 +43,16 @@ export const getTodayDate = () => {
   return `${year}-${finalMonth}-${day}`;
 };
 
+//Get todays date
+export const getTodayFullDate = () => {
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
+  return { year, month, day };
+};
+
 export const getMonthName = (month) => {
   switch (month) {
     case 0:

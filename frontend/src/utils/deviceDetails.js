@@ -73,7 +73,7 @@ export const deviceManufacture = [
     deviceModel: [
       {
         id: 0,
-        name: "V15 IRL",
+        name: "V15 G5 IRL",
         specification: "",
       },
       {

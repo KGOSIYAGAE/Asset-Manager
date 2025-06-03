@@ -50,6 +50,30 @@ const getStaff = async (req, res) => {
   }
 };
 
+//Get staff by staff_no
+const getStaffDetails = async (req, res) => {
+  try {
+    const { staff_no } = req.params;
+
+    if (!staff_no) {
+      return res.status(200).json({ message: "Staff number required", error: true });
+    }
+
+    const get_staff_query = `SELECT * FROM "staffDetails" WHERE staff_no = $1`;
+
+    const { rowCount, rows } = await query(get_staff_query, [staff_no]);
+
+    if (rowCount <= 0) {
+      return res.status(200).json({ rowCount, message: "Staff matching staff no not found", error: false });
+    }
+
+    return res.status(200).json({ staffData: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Create staff
 const createStaff = async (req, res) => {
   try {
@@ -232,4 +256,4 @@ const deleteStaff = async (req, res) => {
   }
 };
 
-module.exports = { getAllStaff, getStaff, createStaff, bulkCreateStaff, updateStaff, deleteStaff };
+module.exports = { getAllStaff, getStaff, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff };

@@ -30,7 +30,7 @@ const getStudentDetails = async (req, res) => {
       return res.status(400).json({ message: "Student Id must be provided.", error: true });
     }
 
-    const get_student_query = "SELECT * FROM students WHERE student_number = $1";
+    const get_student_query = `SELECT * FROM "studentDetails" WHERE student_number = $1`;
 
     const { rowCount, rows } = await query(get_student_query, [student_no]);
 

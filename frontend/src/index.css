@@ -88,7 +88,7 @@
 
   /*Student AOD Start*/
   .printable {
-    @apply bg-white text-black text-[12px];
+    @apply w-full bg-white text-black text-[12px];
   }
 
   .page-header {
@@ -173,4 +173,27 @@
   /*Student AOD End*/
 
   /*Staff Form Start*/
+  .staff-form-header {
+    @apply flex;
+  }
+
+  .black-b-border {
+    border-bottom: 1px solid;
+    @apply border-black;
+  }
+
+  .black-t-border {
+    border-top: rgb(191, 191, 191) 0.1svi solid;
+    @apply border-black;
+  }
+
+  .black-l-border {
+    border-left: rgb(191, 191, 191) 0.1svi solid;
+    @apply border-black;
+  }
+
+  .black-r-border {
+    border-right: rgb(191, 191, 191) 0.1svi solid;
+    @apply border-black;
+  }
 }

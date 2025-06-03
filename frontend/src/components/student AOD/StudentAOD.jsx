@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { getMonthName } from "../../utils/helperMethods";
+import { getMonthName, getTodayFullDate } from "../../utils/helperMethods";
+import { getStudent, getStudentDetails } from "../../services/api/students/Students.Api";
 
-function StudentAOD({ deviceDetails, handleOnPrint }) {
+function StudentAOD({ deviceDetails, handleOnPrint, student_no }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
+  const [studentData, setStudentData] = useState();
+
+  const getData = () => {
+    if (student_no) {
+      getStudentDetails(student_no, setStudentData);
+    }
+  };
 
   useEffect(() => {
-    const date = new Date();
-    setYear(date.getFullYear());
-    setDay(date.getDate());
-    setMonth(getMonthName(date.getMonth()));
+    const { year, month, day } = getTodayFullDate();
+    setYear(year);
+    setDay(day);
+    setMonth(getMonthName(month));
+    getData();
+
     //handleOnPrint();
   }, []);
 
@@ -39,25 +49,25 @@ function StudentAOD({ deviceDetails, handleOnPrint }) {
           <div class="content">
             <div class="left">
               <span class="boo">
-                Full Names: <span class="fullnames content-data"></span>
+                Full Names: <span class="fullnames content-data">{`${studentData?.name} ${studentData?.surname}`}</span>
               </span>
               <span class="boo">
-                Course Code: <span class="qualCode content-data"></span>
+                Course Code: <span class="qualCode content-data">{studentData?.course_code}</span>
               </span>
               <span class="boo">
-                Student Number: <span class="studentNo content-data"></span>
+                Student Number: <span class="studentNo content-data">{studentData?.student_number}</span>
               </span>
               <span class="boo">
-                Contact Number: <span class="phoneNo content-data"></span>
+                Contact Number: <span class="phoneNo content-data">{studentData?.phone_number}</span>
               </span>
             </div>
             <div class="right">
-              <span class="boo">&#160</span>
+              <span class="boo"></span>
               <span class="boo">
-                Course Name: <span class="qualName content-data"></span>
+                Course Name: <span class="qualName content-data">{studentData?.course_name}</span>
               </span>
               <p class="boo">
-                ID Number: <span class="idNo content-data"></span>
+                ID Number: <span class="idNo content-data">{studentData?.id_number}</span>
               </p>
             </div>
           </div>
@@ -100,7 +110,7 @@ function StudentAOD({ deviceDetails, handleOnPrint }) {
                 <ol className="flex flex-col marker:text-black list-decimal list-inside px-5 gap-2">
                   <li>
                     <b>
-                      The Student: <span class="fullnames2 content-data"></span>
+                      The Student: <span class="fullnames2 content-data">{`${studentData?.name} ${studentData?.surname}`}</span>
                     </b>
                   </li>
                   <li>SPU: Luka Jantjie House, Chapel Street, Kimberley, 8301</li>
