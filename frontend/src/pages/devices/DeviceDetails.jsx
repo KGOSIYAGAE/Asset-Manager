@@ -16,6 +16,8 @@ import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
 import { MdLocalPrintshop } from "react-icons/md";
 import StudentAOD from "../../components/student AOD/StudentAOD";
 import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
+import DeviceLogTable from "../../components/tables/DeviceLogTable";
+import { hasPermission } from "../../utils/getLoggedInUser";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -103,29 +105,31 @@ function DeviceDetails({ path }) {
       <span className="text-sm">
         <b>Devices /</b> {path}
       </span>
-      <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
-        <div className="flex justify-end">
-          <div>
-            {deviceDetails?.status === "Assigned" ? (
-              <SubmitButton
-                text={"Release User"}
-                onClick={() => {
-                  setOpenModal({ isShown: true, type: "release", data: "hello" });
-                }}
-              />
-            ) : (
-              <div className="flex gap-3">
+      {hasPermission("assign") && (
+        <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
+          <div className="flex justify-end">
+            <div>
+              {deviceDetails?.status === "Assigned" ? (
                 <SubmitButton
-                  text={"Assign User"}
+                  text={"Release User"}
                   onClick={() => {
-                    setOpenModal({ isShown: true, type: "assign", data: "hello" });
+                    setOpenModal({ isShown: true, type: "release", data: "hello" });
                   }}
                 />
-              </div>
-            )}
+              ) : (
+                <div className="flex gap-3">
+                  <SubmitButton
+                    text={"Assign User"}
+                    onClick={() => {
+                      setOpenModal({ isShown: true, type: "assign", data: "hello" });
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="grid grid-cols-5 grid-rows-2 gap-5">
         <div className="col-span-3 row-span-1 border p-1 rounded-md shadow-md">
@@ -206,9 +210,17 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Date Enrolled</span>
             <span className="text-sm">{dateCreated}</span>
           </div>
+          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+            <span className="text-sm">Return / Upgrade Date</span>
+            <span className="text-sm">
+              {(function () {
+                return handleTimeStamp(deviceDetails?.loan_end_date);
+              })()}
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-col col-span-3 gap-5">
+        <div className="flex flex-col col-span-2 gap-5">
           <div className="flex flex-col items-center justify-center w-2/5 h-2/5 border p-2 gap-4 rounded-md shadow-md">
             <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="sm:w-[200px] md:w-[150px] sm:h-[150px] " />
           </div>
@@ -242,36 +254,7 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
-
-        <div className="col-span-6 h-[250px] bg-white rounded-md shadow-md p-2 overflow-x-auto">
-          <span className="heading-text ">Device Activity Log</span>
-          <div className="w-full text-sm  rounded-sm">
-            <table className="w-full bg-white ">
-              <thead className=" bg-slate-100">
-                <th>#</th>
-                <th>Device Id</th>
-                <th>Action</th>
-                <th>Description</th>
-                <th>Created By</th>
-                <th>Created At</th>
-              </thead>
-              <tbody className="">
-                {deviceLogs
-                  ? deviceLogs.map((log) => (
-                      <tr className="hover:bg-slate-50">
-                        <td>{}</td>
-                        <td>{log.item_id}</td>
-                        <td>{log.action}</td>
-                        <td>{log.description}</td>
-                        <td>{log.created_by}</td>
-                        <td>{log.created_at}</td>
-                      </tr>
-                    ))
-                  : ""}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {hasPermission("administration") && <DeviceLogTable deviceLogs={deviceLogs} label={"Devices Logs"} />}
       </div>
 
       <Modal
@@ -329,17 +312,19 @@ function DeviceDetails({ path }) {
           setShowToast({ isShow: false });
         }}
       />
-      <div className="w-full flex justify-end bg-white p-3 absolute border bottom-0 left-0 gap-3">
-        <button
-          className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
-          onClick={() => {
-            setOpenModal({ isShown: true, type: userType, data: "hello" });
-          }}
-        >
-          <MdLocalPrintshop size={25} />
-        </button>
-        <button className="flex justify-center items-center bg-cyan-500 text-white p-2 rounded-md">Save PDF</button>
-      </div>
+      {hasPermission("assign") && (
+        <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
+          <button
+            className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
+            onClick={() => {
+              setOpenModal({ isShown: true, type: userType, data: "hello" });
+            }}
+          >
+            <MdLocalPrintshop size={25} />
+          </button>
+          <button className="flex justify-center items-center bg-cyan-500 text-white p-2 rounded-md">Save PDF</button>
+        </div>
+      )}
     </div>
   );
 }

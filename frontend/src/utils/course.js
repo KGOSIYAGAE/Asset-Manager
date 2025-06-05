@@ -12,7 +12,7 @@ export const facultyCourse = [
       {
         id: 1,
         course_name: "Dip IN INFO AND COMM TECH APP DEV",
-        course_code: "ICT602",
+        course_code: "ICT601",
       },
       {
         id: 2,

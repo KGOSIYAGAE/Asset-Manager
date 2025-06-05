@@ -22,6 +22,7 @@ import { getAllPositions } from "../../services/api/positions/Positions.Api";
 import { usePositionContext } from "../../hooks/usePositionsContext";
 import PositionSelectInput from "../inputs/selectInputs/positionSelectInput/PositionSelectInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
+import { hasPermission } from "../../utils/getLoggedInUser";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -270,7 +271,7 @@ function AddEditStaff({ path }) {
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
-            {formType === "add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleSubmit} />}
+            {formType === "add" ? hasPermission("create") && <SubmitButton text={"Submit"} onClick={handleSubmit} /> : hasPermission("edit") && <SubmitButton text={"Update"} onClick={handleSubmit} />}
 
             <CancelButton onClick={hanldeFormClear} />
           </div>

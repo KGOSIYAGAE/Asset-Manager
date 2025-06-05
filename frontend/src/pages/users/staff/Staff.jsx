@@ -14,6 +14,8 @@ import Modal from "react-modal";
 import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
 import ImportFile from "../../../components/cards/importFile/ImportFile";
 import BulkAddButton from "../../../components/buttons/BulkAddButton";
+import { hasPermission } from "../../../utils/getLoggedInUser";
+import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
 
 function Staff({ path }) {
   //Context
@@ -68,9 +70,9 @@ function Staff({ path }) {
           <span className="heading-text">Staff List</span>
           <div className="flex gap-2">
             <SearchInput searchData={staffState.staffList} />
-            <AddButton name={"Add New Staff"} handleAdd={handleAdd} />
-
-            <BulkAddButton onClick={ImportModal} />
+            {hasPermission("create") && <AddButton name={"Add New Staff"} handleAdd={handleAdd} />}
+            {hasPermission("bulk-create") && <BulkAddButton onClick={ImportModal} />}
+            {hasPermission("export") && <ExportExcelButton />}
           </div>
         </div>
         <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />

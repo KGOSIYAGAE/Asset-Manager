@@ -14,6 +14,7 @@ import { getAllInvoices } from "../../services/api/invoices/Inovices.Api";
 import { useInvoiceContext } from "../../hooks/useInvoiceContext";
 import InvoiceSelectInput from "../inputs/selectInputs/invoiceSelectInput/InvoiceSelectInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
+import { hasPermission } from "../../utils/getLoggedInUser";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
@@ -231,7 +232,7 @@ function AddEditDevice({ path }) {
             }}
           />
 
-          {formType === "Add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleSubmit} />}
+          {formType === "Add" ? hasPermission("create") && <SubmitButton text={"Submit"} onClick={handleSubmit} /> : hasPermission("edit") && <SubmitButton text={"Update"} onClick={handleSubmit} />}
         </div>
       </div>
       <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />

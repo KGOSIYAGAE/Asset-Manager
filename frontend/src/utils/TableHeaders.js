@@ -9,8 +9,26 @@ export const staffTableHeaders = [
   { field: "email", headerName: "Email", width: 200 },
   { field: "contract_type", headerName: "Employment type", width: 130 },
   { field: "acc_status", headerName: "Status", cellClassName: "active", width: 100 },
-  { field: "start_date", headerName: "Start date", width: 100 },
-  { field: "end_date", headerName: "End date", width: 100 },
+  {
+    field: "start_date",
+    headerName: "Start date",
+    width: 100,
+    valueGetter: (value) => {
+      if (value) {
+        return handleTimeStamp(value);
+      }
+    },
+  },
+  {
+    field: "end_date",
+    headerName: "End date",
+    width: 100,
+    valueGetter: (value) => {
+      if (value) {
+        return handleTimeStamp(value);
+      }
+    },
+  },
 ];
 
 //Students TableHeaders
@@ -22,7 +40,16 @@ export const studentsTableHeaders = [
   { field: "phone_number", headerName: "Phone", width: 100 },
   { field: "email", headerName: "Email", width: 180 },
   { field: "acc_status", headerName: "Account status", width: 115 },
-  { field: "registration_date", headerName: "Registration Date", width: 140 },
+  {
+    field: "registration_date",
+    headerName: "Registration Date",
+    width: 140,
+    valueGetter: (value) => {
+      if (value) {
+        return handleTimeStamp(value);
+      }
+    },
+  },
 ];
 
 //registration_date
@@ -35,6 +62,15 @@ export const devicesTableHeaders = [
   { field: "device_condition", headerName: "Condition", width: 110 },
   { field: "status", headerName: "Status", width: 100 },
   { field: "category", headerName: "Category", width: 100 },
-  { field: "warranty_end_date", headerName: "Warranty End Date", width: 140 },
+  {
+    field: "warranty_end_date",
+    headerName: "Warranty End Date",
+    width: 140,
+    valueGetter: (value) => {
+      if (value) {
+        return handleTimeStamp(value);
+      }
+    },
+  },
   { field: "user_id", headerName: "Assigned To", width: 110 },
 ];

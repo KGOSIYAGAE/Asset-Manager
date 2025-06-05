@@ -19,6 +19,25 @@ export const getAllDevices = async (devicesDispatch) => {
   }
 };
 
+//Get All device due for return
+export const getAllDeviceLoanDue = async (loanDueDispatch) => {
+  try {
+    const response = await axiosInstance.get("/api/devices/loan-due");
+
+    if (response.data.deviceList) {
+      return loanDueDispatch({ type: "SET_LOANSDUE", payload: response.data.deviceList });
+    }
+  } catch (error) {
+    if (error.response.data.errorStatus === 401 && error.response.data.error) {
+      return console.log("Authorization required, please login");
+    } else if (error.response && error.response.data.error) {
+      return console.log(error.response.data);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
 //Hanlde get device
 export const getDevice = async (id, setFormData) => {
   try {

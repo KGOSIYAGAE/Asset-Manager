@@ -181,10 +181,10 @@ export const getHPStatsByModel = (devices) => {
 
   return [HP_255_G8, HP_255_G9, HP_455_G8, HP_455_G9, HP_455_G10];
 };
-
 ////////////////////////////////////////////////////////
 
 //Get Faculty Stats
+
 export const getFacultyStats = (students) => {
   let edu_stats = [];
   let ems_stats = [];
@@ -234,3 +234,33 @@ export const getCourseStatsByFaculty = (students, facultyNumber) => {
 
   return facultyNumbersByCourse;
 };
+////////////////////////////////////////////////////////
+
+//Get Stats of devices based on condition
+export const getDevicesCategorySummary = (devices) => {
+  let laptops = 0;
+  let desktops = 0;
+  let allInOnes = 0;
+  let monitors = 0;
+
+  for (let i = 0; i < devices?.length; i++) {
+    if (devices[i].category === "Laptop") {
+      laptops += 1;
+    }
+
+    if (devices[i].category === "Desktop") {
+      desktops += 1;
+    }
+
+    if (devices[i].category === "All In One") {
+      allInOnes += 1;
+    }
+
+    if (devices[i].category === "Monitor") {
+      monitors += 1;
+    }
+  }
+
+  return { laptops, desktops, allInOnes, monitors };
+};
+////////////////////////////////////////////////////////

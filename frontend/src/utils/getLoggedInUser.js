@@ -8,16 +8,27 @@ export const getLoggedInUser = () => {
   return user;
 };
 
-export const userPrevilages = () => {
+export const hasPermission = (permission) => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const userRole = currentUser?.role;
 
-  switch (userRole) {
-    case "global_admin":
-      return false;
-    case "admin":
-      return false;
-    default:
-      return true;
+  const ROLES = {
+    admin: {
+      can: ["create", "edit", "delete", "view", "administration", "bulk-create", "export", "assign"],
+    },
+    editor: {
+      can: ["create", "edit", "view", "assign"],
+    },
+    viewer: {
+      can: ["view"],
+    },
+  };
+
+  const permissions = ROLES[userRole].can;
+
+  if (permissions.includes(permission)) {
+    return true;
   }
+
+  return false;
 };

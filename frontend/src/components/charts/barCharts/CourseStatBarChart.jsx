@@ -80,7 +80,7 @@ function CourseStatBarChart({ students }) {
           // Custom message for empty chart
           noDataOverlay: { message: "Select some data to display." },
         }}
-        width={500}
+        width={600}
         height={300}
         series={[{ data: courseStat, color: "#f97316" }]}
         yAxis={[{ data: xLabels, scaleType: "band" }]}

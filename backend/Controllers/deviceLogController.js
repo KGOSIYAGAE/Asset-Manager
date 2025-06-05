@@ -20,7 +20,7 @@ const createNewLog = async (action, crested_by, item_id, description) => {
 
 const getAllLogs = async (req, res) => {
   try {
-    const getAllLogs = `SELECT * FROM "deviceLogDetails" ORDER BY id DESC`;
+    const getAllLogs = `SELECT * FROM "deviceLogDetails" ORDER BY id DESC LIMIT 10`;
 
     const { rowCount, rows } = await query(getAllLogs);
 
@@ -28,12 +28,31 @@ const getAllLogs = async (req, res) => {
       return res.status(400).json({ message: "No logs found", error: true });
     }
 
-    return res.status(200).json({ rowCount, deviceLogList: rows, message: "Success", error: true });
+    return res.status(200).json({ rowCount, deviceLogList: rows, message: "Success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
+
+const getAllLatestDevicesLogs = async (req, res) => {
+  try {
+    const getAllLogs = `SELECT * FROM public.device_log WHERE description LIKE '%Device%' ORDER BY created_at DESC LIMIT 10;`;
+
+    const { rowCount, rows } = await query(getAllLogs);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "No logs found", error: true });
+    }
+
+    return res.status(200).json({ rowCount, deviceLogList: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//SELECT * FROM public.device_log WHERE description LIKE '%Device%' ORDER BY created_at DESC LIMIT 5;
 
 const getAlllogsForDevice = async (req, res) => {
   try {
@@ -58,4 +77,4 @@ const getAlllogsForDevice = async (req, res) => {
   }
 };
 
-module.exports = { createNewLog, getAllLogs, getAlllogsForDevice };
+module.exports = { createNewLog, getAllLogs, getAlllogsForDevice, getAllLatestDevicesLogs };

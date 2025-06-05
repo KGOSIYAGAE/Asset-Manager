@@ -24,6 +24,8 @@ import { InvoiceContextProvider } from "./context/InvoicesContext";
 import { CourseContextProvider } from "./context/CoursesContext";
 import { DepartmentContextProvider } from "./context/departmentsContext";
 import { PositionsContextProvider } from "./context/PositionsContext";
+import { LogsContextProvider } from "./context/LogsContext";
+import { LoanDueContextProvider } from "./context/LoanDueContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -80,7 +82,7 @@ function App() {
     }
   };
 
-  const PrivateRoutes = ({ element: Element }) => {
+  const PrivateRoutes = ({ element: Element, allowedRoles }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -229,23 +231,27 @@ function App() {
   ]);
 
   return (
-    <SearchContextProvider>
-      <DepartmentContextProvider>
-        <PositionsContextProvider>
-          <InvoiceContextProvider>
-            <CourseContextProvider>
-              <DevicesContextProvider>
-                <StudentsContextProvider>
-                  <StaffContextProvider>
-                    <RouterProvider router={router} />
-                  </StaffContextProvider>
-                </StudentsContextProvider>
-              </DevicesContextProvider>
-            </CourseContextProvider>
-          </InvoiceContextProvider>
-        </PositionsContextProvider>
-      </DepartmentContextProvider>
-    </SearchContextProvider>
+    <LogsContextProvider>
+      <SearchContextProvider>
+        <DepartmentContextProvider>
+          <PositionsContextProvider>
+            <InvoiceContextProvider>
+              <CourseContextProvider>
+                <LoanDueContextProvider>
+                  <DevicesContextProvider>
+                    <StudentsContextProvider>
+                      <StaffContextProvider>
+                        <RouterProvider router={router} />
+                      </StaffContextProvider>
+                    </StudentsContextProvider>
+                  </DevicesContextProvider>
+                </LoanDueContextProvider>
+              </CourseContextProvider>
+            </InvoiceContextProvider>
+          </PositionsContextProvider>
+        </DepartmentContextProvider>
+      </SearchContextProvider>
+    </LogsContextProvider>
   );
 }
 

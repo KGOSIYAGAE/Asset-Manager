@@ -1,13 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const { getAllDevices, getDevice, getDeviceDetails, createDevice, updateDevice, deleteDevice, bulkCreateDevice, assignDevice, releaseDevice } = require("../Controllers/deviceController");
+const {
+  getAllDevices,
+  getDeviceLoanDue,
+  getDevice,
+  getDeviceDetails,
+  createDevice,
+  updateDevice,
+  deleteDevice,
+  bulkCreateDevice,
+  assignDevice,
+  releaseDevice,
+} = require("../Controllers/deviceController");
 const requireAuth = require("../middleware/requireAuth");
+//const checkRole = require("../middleware/checkRole");
 
 //
 router.use(requireAuth);
 
 //Get all devices
 router.get("/", getAllDevices);
+
+//Get all device due for return
+router.get("/loan-due", getDeviceLoanDue);
 
 //Get all devices
 router.get("/:id", getDevice);

@@ -20,6 +20,7 @@ import { getAllCourses } from "../../services/api/courses/course.Api";
 import OptionsSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
 import CourseSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
+import { hasPermission } from "../../utils/getLoggedInUser";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
@@ -261,7 +262,7 @@ function AddEditStudent({ path }) {
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
-            {formType === "add" ? <SubmitButton text={"Submit"} onClick={handleSubmit} /> : <SubmitButton text={"Update"} onClick={handleSubmit} />}
+            {formType === "add" ? hasPermission("create") && <SubmitButton text={"Submit"} onClick={handleSubmit} /> : hasPermission("edit") && <SubmitButton text={"Update"} onClick={handleSubmit} />}
             <CancelButton />
           </div>
         </div>

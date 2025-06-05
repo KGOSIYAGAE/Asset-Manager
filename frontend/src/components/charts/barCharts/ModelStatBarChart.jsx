@@ -36,7 +36,7 @@ function ModelStatBarChart({ devices }) {
           // Custom message for empty chart
           noDataOverlay: { message: "Select some data to display." },
         }}
-        width={1000}
+        width={900}
         height={270}
         series={[{ data: values, color: "#f97316" }]}
         yAxis={[{ data: xLabels, scaleType: "band" }]}

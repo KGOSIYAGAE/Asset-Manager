@@ -13,6 +13,7 @@ import DeleteConfirmation from "../../../components/cards/deleteConfirmation/Del
 import BulkAddButton from "../../../components/buttons/BulkAddButton";
 import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
 import ImportFile from "../../../components/cards/importFile/ImportFile";
+import { hasPermission } from "../../../utils/getLoggedInUser";
 
 function students({ path }) {
   const { searchState, searchDispatch } = useSearchContext();
@@ -62,9 +63,10 @@ function students({ path }) {
           <span className="heading-text">Students List</span>
           <div className="flex gap-2">
             <SearchInput searchData={studentState.studentsList} />
-            <AddButton name={"Add New Student"} handleAdd={handleAdd} />
-            <BulkAddButton onClick={ImportModal} />
-            <ExportExcelButton />
+            {hasPermission("create") && <AddButton name={"Add New Student"} handleAdd={handleAdd} />}
+
+            {hasPermission("bulk-create") && <BulkAddButton onClick={ImportModal} />}
+            {hasPermission("export") && <ExportExcelButton />}
           </div>
         </div>
         <DataTable rows={searchState.searchResults ? searchState.searchResults : studentState.studentsList} colHeaders={studentsTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />

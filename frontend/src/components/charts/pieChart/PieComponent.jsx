@@ -56,7 +56,7 @@ function PieComponent({ devices }) {
   }, [devices]);
 
   return (
-    <div className="h-[200px] flex justify-center items-center ">
+    <div className="h-[200px] flex justify-center items-center">
       <PieChart
         margin={{ left: 100, right: 100 }}
         series={[{ data, innerRadius: 130 }]}
@@ -65,7 +65,7 @@ function PieComponent({ devices }) {
           legend: {
             direction: "row",
             position: { vertical: "bottom" },
-            padding: -40,
+            padding: -10,
           },
         }}
       ></PieChart>

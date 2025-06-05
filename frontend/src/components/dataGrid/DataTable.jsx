@@ -5,6 +5,7 @@ import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { IoMdOpen } from "react-icons/io";
 import { CiViewList } from "react-icons/ci";
 import { CgDetailsMore } from "react-icons/cg";
+import { hasPermission } from "../../utils/getLoggedInUser";
 
 function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetails }) {
   const actionsColumn = [
@@ -19,12 +20,17 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetai
             >
               <CiViewList size={20} />
             </div>
-            <div className="w-[30px] flex items-center justify-center text-green-500 bg-green-100 p-1 rounded-md border border-green-500 cursor-pointer" onClick={() => handleEdit(cellValues)}>
-              <MdEdit size={20}></MdEdit>
-            </div>
-            <div className="w-[30px] flex items-center justify-center text-red-500 bg-red-100 p-1 rounded-md border border-red-500 cursor-pointer" onClick={() => handleDelete(cellValues)}>
-              <MdDeleteForever size={20}></MdDeleteForever>
-            </div>
+            {hasPermission("edit") && (
+              <div className="w-[30px] flex items-center justify-center text-green-500 bg-green-100 p-1 rounded-md border border-green-500 cursor-pointer" onClick={() => handleEdit(cellValues)}>
+                <MdEdit size={20}></MdEdit>
+              </div>
+            )}
+
+            {hasPermission("delete") && (
+              <div className="w-[30px] flex items-center justify-center text-red-500 bg-red-100 p-1 rounded-md border border-red-500 cursor-pointer" onClick={() => handleDelete(cellValues)}>
+                <MdDeleteForever size={20}></MdDeleteForever>
+              </div>
+            )}
           </div>
         );
       },

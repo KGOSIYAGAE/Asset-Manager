@@ -2,6 +2,18 @@ const jwt = require("jsonwebtoken");
 
 const { query } = require("../util/pg_dbConnection");
 
+const roles = {
+  admin: {
+    can: ["create", "edit", "delete", "view"],
+  },
+  editor: {
+    can: ["create", "edit", "view"],
+  },
+  viewer: {
+    can: ["view"],
+  },
+};
+
 const requireAuth = async (req, res, next) => {
   //Verify authentication
   const { authorization } = req.headers;
@@ -24,7 +36,6 @@ const requireAuth = async (req, res, next) => {
     }
 
     req.user = rows[0]._id;
-
     next();
   } catch (error) {
     console.log(error);
