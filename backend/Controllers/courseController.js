@@ -3,7 +3,7 @@ const { query } = require("../util/pg_dbConnection");
 //Get all courses
 const getAllCourses = async (req, res) => {
   try {
-    const get_all_courses_query = "SELECT * FROM courses";
+    const get_all_courses_query = "SELECT * FROM courses ORDER BY faculty_id ASC";
 
     const { rowCount, rows } = await query(get_all_courses_query);
 

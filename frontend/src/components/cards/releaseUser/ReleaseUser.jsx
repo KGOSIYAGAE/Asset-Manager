@@ -62,6 +62,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
     if (formType === "release") {
       //Release user
       const data = {
+        fullName: selectedUser.fullName,
         status: "Available",
         userId: selectedUser.userId,
         return_date: getTodayDate(),
@@ -88,7 +89,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
       setSearchResultsData(data);
     }
     setSelectedUser({
-      fullName: "None - IT Stock manager",
+      fullName: "IT Stock manager",
       userId: parseInt("10000"),
     });
     setFormType("release");
@@ -129,7 +130,7 @@ function ReleaseUser({ onCanel, onSubmit, data, setShowToast }) {
                 onClick={() => {
                   setFormType("release");
                   setSelectedUser({
-                    fullName: "None - IT Stock manager",
+                    fullName: "IT Stock manager",
                     userId: parseInt("10000"),
                   });
                   toggleUsers();

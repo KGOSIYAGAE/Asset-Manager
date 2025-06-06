@@ -86,6 +86,30 @@ const getDeviceDetails = async (req, res) => {
   }
 };
 
+//Get all device assigned to user by user_id
+const getDevicesAssigned = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    if (!user_id) {
+      return res.status(400).json({ message: "Device id not provided", error: true });
+    }
+
+    const getDeviceQuery = `SELECT * FROM "deviceUserDetails" WHERE user_id = $1`;
+
+    const { rows } = await query(getDeviceQuery, [user_id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Device matching the id not found", error: true });
+    }
+
+    return res.status(200).json({ deviceList: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Create device
 const createDevice = async (req, res) => {
   try {
@@ -175,10 +199,12 @@ const bulkCreateDevice = async (req, res) => {
       device.purchaseValue,
       device.currentValue,
       device.invoice_id,
+      device.user_id,
+      device.date_issued,
     ]);
 
     const bulk_create_device_query = format(
-      "INSERT INTO devices (make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id) VALUES %L",
+      "INSERT INTO devices (make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id, user_id, date_issued) VALUES %L",
       VALUES
     );
 
@@ -303,15 +329,25 @@ const assignDevice = async (req, res) => {
 const releaseDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, userId, return_date } = req.body;
+    const { fullName, status, userId, return_date } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!status || !userId || !return_date) {
+    if (!fullName || !status || !userId || !return_date) {
       return res.status(400).json({ message: "All fields must be provided.fff", error: true });
     }
+
+    const getDeviceQuery = `SELECT * FROM "deviceUserDetails" WHERE id = $1`;
+
+    const { rows } = await query(getDeviceQuery, [id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Device matching the id not found", error: true });
+    }
+
+    console.log(`Previous user ${rows[0].full_name}`);
 
     const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, return_date=$3 WHERE id=$4";
     const VALUES = [status, userId, return_date];
@@ -323,9 +359,9 @@ const releaseDevice = async (req, res) => {
     }
 
     //Create new log
-    createNewLog("Release", req.user, id, `Device successfully released from previous user.`);
+    createNewLog("Release", req.user, id, `Device successfully released from ${rows[0].full_name} to ${fullName}`);
 
-    return res.status(200).json({ rowCount, message: `Device successfully released from previous user.`, error: false });
+    return res.status(200).json({ rowCount, message: `Device successfully released from ${rows[0].full_name} to ${fullName}.`, error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -362,4 +398,4 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDeviceLoanDue, getDevice, getDeviceDetails, createDevice, deleteDevice, updateDevice, bulkCreateDevice, assignDevice, releaseDevice };
+module.exports = { getAllDevices, getDeviceLoanDue, getDevice, getDeviceDetails, getDevicesAssigned, createDevice, deleteDevice, updateDevice, bulkCreateDevice, assignDevice, releaseDevice };

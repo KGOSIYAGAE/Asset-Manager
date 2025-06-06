@@ -12,8 +12,8 @@ function StatusBarChart({ devices }) {
     //call from analyticsMethods - get status
     const { lenovoLaptopStats, hpLaptopStats, dellLaptopStats } = getDevicesStatusSummary(devices);
 
-    setLenovo_stats([lenovoLaptopStats.available, lenovoLaptopStats.assigned, lenovoLaptopStats.maintenance, lenovoLaptopStats.lost]);
-    setHp_stats([hpLaptopStats.available, hpLaptopStats.assigned, hpLaptopStats.maintenance, hpLaptopStats.lost]);
+    setLenovo_stats([lenovoLaptopStats.available, lenovoLaptopStats.assigned, lenovoLaptopStats.returns, lenovoLaptopStats.sold, lenovoLaptopStats.maintenance, lenovoLaptopStats.lost]);
+    setHp_stats([hpLaptopStats.available, hpLaptopStats.assigned, hpLaptopStats.returns, hpLaptopStats.sold, hpLaptopStats.maintenance, hpLaptopStats.lost]);
     setDell_stats([dellLaptopStats.available, dellLaptopStats.assigned, dellLaptopStats.maintenance, dellLaptopStats.lost]);
   };
 
@@ -21,7 +21,7 @@ function StatusBarChart({ devices }) {
     getStatOnLoad();
   }, [devices]);
 
-  const xLabels = ["Available", "Assigned", "Maintenance", "Lost"];
+  const xLabels = ["Available", "Assigned", "Student-Return", "Sold", "Maintenance", "Lost"];
 
   const otherSetting = {
     yAxis: [{ label: "Laptops" }],

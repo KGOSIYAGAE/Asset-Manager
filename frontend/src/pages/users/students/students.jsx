@@ -33,6 +33,11 @@ function students({ path }) {
     navigate(`/users/students/edit-student/${cellValues.row.student_number}`);
   };
 
+  //Hanlde view details
+  const handleViewDetails = (cellValues) => {
+    navigate(`/users/students/student-details/${cellValues.row.student_number}`);
+  };
+
   //Hanlde delete
   const handleDelete = (cellValues) => {
     setOpenModal({ isShown: true, type: "delete", selcetedUser: cellValues.row.student_number, userEmail: cellValues.row.email });
@@ -69,7 +74,13 @@ function students({ path }) {
             {hasPermission("export") && <ExportExcelButton />}
           </div>
         </div>
-        <DataTable rows={searchState.searchResults ? searchState.searchResults : studentState.studentsList} colHeaders={studentsTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
+        <DataTable
+          rows={searchState.searchResults ? searchState.searchResults : studentState.studentsList}
+          colHeaders={studentsTableHeaders}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+          handleViewDetails={handleViewDetails}
+        />
       </div>
       <Modal
         isOpen={openModal.isShown || openImportModal.isShown}

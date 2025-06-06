@@ -3,6 +3,14 @@ import readXlsxFile from "read-excel-file";
 import { bulkAddStudent } from "../services/api/students/Students.Api";
 import { bulkAddStaff } from "../services/api/staff/Staff.Api";
 
+const dateCorrection = (wrongDate) => {
+  let date = new Date(wrongDate);
+  date = date.toLocaleDateString();
+  const dateOutput = date.split("/").reverse().join("/");
+
+  return dateOutput;
+};
+
 //Bulk Add Devices
 export const bulkCreateDevices = (file, setShowToast, onClose) => {
   readXlsxFile(file[0]).then((rows) => {
@@ -17,10 +25,16 @@ export const bulkCreateDevices = (file, setShowToast, onClose) => {
         assetTag: rows[i][5],
         serial_no: rows[i][6],
         spec: rows[i][7],
-        warranty_end_date: `${rows[i][8]}`,
+        warranty_end_date: `${(() => {
+          return dateCorrection(rows[i][8]);
+        })()}`,
         purchaseValue: rows[i][9],
         currentValue: rows[i][10],
         invoice_id: rows[i][11],
+        user_id: rows[i][12],
+        date_issued: `${(() => {
+          return dateCorrection(rows[i][13]);
+        })()}`,
       });
     }
 
@@ -46,7 +60,9 @@ export const bulkCreateStudents = (file, setShowToast, onClose) => {
         studentNumber: rows[i][5],
         course_id: rows[i][6],
         isActive: rows[i][7],
-        registration_date: `${rows[i][8]}`,
+        registration_date: `${(() => {
+          return dateCorrection(rows[i][8]);
+        })()}`,
       });
     }
 

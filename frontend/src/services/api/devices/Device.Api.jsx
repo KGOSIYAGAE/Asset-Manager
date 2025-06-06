@@ -72,6 +72,23 @@ export const getAllDeviceDetails = async (id, setFormData) => {
   }
 };
 
+//Hanlde get user device
+export const getAllUserDevices = async (user_id, devicesDispatch) => {
+  try {
+    const response = await axiosInstance.get("/api/devices/user-devices/" + user_id);
+
+    if (response.data) {
+      return devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
 //add device api
 export const addDevice = async (deviceData, setShowToast) => {
   try {
@@ -102,7 +119,7 @@ export const bulkAddDevice = async (devicesData, setShowToast, onClose) => {
       onClose();
       return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
-      console.log("An unexpected error occured, please try again");
+      console.log("An unexpected error occured, please try again", error);
       return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
     }
   }

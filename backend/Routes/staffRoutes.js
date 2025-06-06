@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { getAllStaff, getStaff, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff } = require("../Controllers/staffController");
 
+const requireAuth = require("../middleware/requireAuth");
+
+//
+router.use(requireAuth);
+
 //get all staff
 router.get("/", getAllStaff);
 

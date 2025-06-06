@@ -10,7 +10,7 @@ const app = express();
 app.use(cors({ origin: "*" }));
 
 //Determines what size file can be bulk added.
-app.use(express.json({ limit: "25mb" }));
+app.use(express.json({ limit: "1gb" }));
 
 /*
 //Staff Router

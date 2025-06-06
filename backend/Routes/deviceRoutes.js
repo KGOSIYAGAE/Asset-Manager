@@ -5,6 +5,7 @@ const {
   getDeviceLoanDue,
   getDevice,
   getDeviceDetails,
+  getDevicesAssigned,
   createDevice,
   updateDevice,
   deleteDevice,
@@ -29,6 +30,9 @@ router.get("/:id", getDevice);
 
 //Get all devices details
 router.get("/device-details/:id", getDeviceDetails);
+
+//Get all devices details
+router.get("/user-devices/:user_id", getDevicesAssigned);
 
 //Create new device
 router.post("/add-device", createDevice);

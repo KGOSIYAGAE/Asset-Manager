@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { getStudents, getStudentDetails, createStudent, bulkCreateStudents, updateStudent, deleteStudent } = require("../Controllers/studentsController");
 
+const requireAuth = require("../middleware/requireAuth");
+
+//
+router.use(requireAuth);
+
 //Get all students
 router.get("/", getStudents);
 

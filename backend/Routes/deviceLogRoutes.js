@@ -3,6 +3,11 @@ const router = express.Router();
 
 const { getAllLogs, getAlllogsForDevice, getAllLatestDevicesLogs } = require("../Controllers/deviceLogController");
 
+const requireAuth = require("../middleware/requireAuth");
+
+//
+router.use(requireAuth);
+
 //Get all logs
 router.get("/", getAllLogs);
 

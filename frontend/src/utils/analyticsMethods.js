@@ -26,6 +26,8 @@ export const getDevicesStatusSummary = (devices) => {
   let assignedUsers = 0;
   let onMaintenance = 0;
   let markedLost = 0;
+  let returns = 0;
+  let soldLaptops = 0;
 
   const { LENOVO_LAPTOPS, HP_LAPTOPS } = getDevicesStatsByMake(devices);
 
@@ -37,6 +39,14 @@ export const getDevicesStatusSummary = (devices) => {
 
     if (LENOVO_LAPTOPS[i].status === "Assigned") {
       assignedUsers += 1;
+    }
+
+    if (LENOVO_LAPTOPS[i].status === "Student-Return") {
+      returns += 1;
+    }
+
+    if (LENOVO_LAPTOPS[i].status === "Sold") {
+      soldLaptops += 1;
     }
 
     if (LENOVO_LAPTOPS[i].status === "Maintenance") {
@@ -54,6 +64,8 @@ export const getDevicesStatusSummary = (devices) => {
     assigned: assignedUsers,
     maintenance: onMaintenance,
     lost: markedLost,
+    returns,
+    sold: soldLaptops,
   };
 
   //Clear variables
@@ -61,6 +73,8 @@ export const getDevicesStatusSummary = (devices) => {
   assignedUsers = 0;
   onMaintenance = 0;
   markedLost = 0;
+  returns = 0;
+  soldLaptops = 0;
 
   //get stats for lenovo laptops
   for (let i = 0; i < HP_LAPTOPS?.length; i++) {
@@ -70,6 +84,14 @@ export const getDevicesStatusSummary = (devices) => {
 
     if (HP_LAPTOPS[i].status === "Assigned") {
       assignedUsers += 1;
+    }
+
+    if (HP_LAPTOPS[i].status === "Student-Return") {
+      returns += 1;
+    }
+
+    if (HP_LAPTOPS[i].status === "Sold") {
+      soldLaptops += 1;
     }
 
     if (HP_LAPTOPS[i].status === "Maintenance") {
@@ -87,6 +109,8 @@ export const getDevicesStatusSummary = (devices) => {
     assigned: assignedUsers,
     maintenance: onMaintenance,
     lost: markedLost,
+    returns,
+    sold: soldLaptops,
   };
 
   //set dell laptops
