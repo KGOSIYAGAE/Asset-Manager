@@ -3,7 +3,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 //Get All devices
 export const getAllDevices = async (devicesDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/devices/");
+    const response = await axiosInstance.get("/devices/");
 
     if (response.data.deviceList) {
       devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
@@ -22,7 +22,7 @@ export const getAllDevices = async (devicesDispatch) => {
 //Get All device due for return
 export const getAllDeviceLoanDue = async (loanDueDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/devices/loan-due");
+    const response = await axiosInstance.get("/devices/loan-due");
 
     if (response.data.deviceList) {
       return loanDueDispatch({ type: "SET_LOANSDUE", payload: response.data.deviceList });
@@ -41,7 +41,7 @@ export const getAllDeviceLoanDue = async (loanDueDispatch) => {
 //Hanlde get device
 export const getDevice = async (id, setFormData) => {
   try {
-    const response = await axiosInstance.get("/api/devices/" + id);
+    const response = await axiosInstance.get("/devices/" + id);
 
     if (response.data) {
       return setFormData(response.data.deviceDetails);
@@ -58,7 +58,7 @@ export const getDevice = async (id, setFormData) => {
 //Hanlde get device
 export const getAllDeviceDetails = async (id, setFormData) => {
   try {
-    const response = await axiosInstance.get("/api/devices/device-details/" + id);
+    const response = await axiosInstance.get("/devices/device-details/" + id);
 
     if (response.data) {
       return setFormData(response.data.deviceDetails);
@@ -75,7 +75,7 @@ export const getAllDeviceDetails = async (id, setFormData) => {
 //Hanlde get user device
 export const getAllUserDevices = async (user_id, devicesDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/devices/user-devices/" + user_id);
+    const response = await axiosInstance.get("/devices/user-devices/" + user_id);
 
     if (response.data) {
       return devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
@@ -92,7 +92,7 @@ export const getAllUserDevices = async (user_id, devicesDispatch) => {
 //add device api
 export const addDevice = async (deviceData, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/api/devices/add-device/", deviceData);
+    const response = await axiosInstance.post("/devices/add-device/", deviceData);
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
@@ -109,7 +109,7 @@ export const addDevice = async (deviceData, setShowToast) => {
 //bulk add devices api
 export const bulkAddDevice = async (devicesData, setShowToast, onClose) => {
   try {
-    const response = await axiosInstance.post("/api/devices/bulk-add-devices/", devicesData);
+    const response = await axiosInstance.post("/devices/bulk-add-devices/", devicesData);
     if (response.data) {
       onClose();
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -132,7 +132,7 @@ export const updateDevice = async (id, deviceDetails, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Device id must be provided" });
     }
 
-    const response = await axiosInstance.put("/api/devices/update-device/" + id, deviceDetails);
+    const response = await axiosInstance.put("/devices/update-device/" + id, deviceDetails);
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -149,7 +149,7 @@ export const updateDevice = async (id, deviceDetails, setShowToast) => {
 //Assign device API call
 export const assignDevice = async (id, data, setShowToast) => {
   try {
-    const response = await axiosInstance.put("/api/devices/assign-device/" + id, data);
+    const response = await axiosInstance.put("/devices/assign-device/" + id, data);
 
     if (!response.data.error) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -166,7 +166,7 @@ export const assignDevice = async (id, data, setShowToast) => {
 //Assign device API call
 export const releaseDevice = async (id, data, setShowToast) => {
   try {
-    const response = await axiosInstance.put("/api/devices/release-device/" + id, data);
+    const response = await axiosInstance.put("/devices/release-device/" + id, data);
 
     if (!response.data.error) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -187,7 +187,7 @@ export const deleteDevice = async (id, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
     }
 
-    const response = await axiosInstance.delete("/api/devices/delete-device/" + id);
+    const response = await axiosInstance.delete("/devices/delete-device/" + id);
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });

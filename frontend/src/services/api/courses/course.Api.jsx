@@ -2,7 +2,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 
 export const getAllCourses = async (courseDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/courses/");
+    const response = await axiosInstance.get("/courses/");
 
     if (response.data.error) {
       return console.log(response.data.message);

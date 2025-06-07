@@ -2,7 +2,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 
 export const getAllDeviceLogs = async (id, setDeviceLogs) => {
   try {
-    const response = await axiosInstance.get("/api/device-logs/" + id);
+    const response = await axiosInstance.get("/device-logs/" + id);
 
     //console.log(...response.data.deviceLogList);
 
@@ -23,7 +23,7 @@ export const getAllDeviceLogs = async (id, setDeviceLogs) => {
 
 export const getAllLatestDevicesLogs = async (logDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/device-logs/");
+    const response = await axiosInstance.get("/device-logs/");
 
     if (!response.data.error) {
       return logDispatch({ type: "SET_LOGS", payload: response.data.deviceLogList });

@@ -1,7 +1,14 @@
 import axios from "axios";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-const BASE_URL = "http://localhost:3000";
+//Loacal HOST
+const BASE_URL = "http://localhost:3000/api/v1/asset-manager";
+
+//NODE_ENV = 'development'
+//NODE_ENV = 'production'
+
+//Production
+//const BASE_URL = process.env.NODE_ENV == "production" ? ""
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,

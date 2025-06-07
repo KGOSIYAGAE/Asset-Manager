@@ -21,7 +21,7 @@ export const changePassword = async (email, oldPassword, newPassword, setShowToa
       newPassword,
     };
 
-    const response = await axiosInstance.put("/api/admin/change-password", data);
+    const response = await axiosInstance.put("/change-password", data);
 
     if (!response.data.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });

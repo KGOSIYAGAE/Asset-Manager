@@ -2,7 +2,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 
 export const getAllDepartments = async (departmentDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/departments/");
+    const response = await axiosInstance.get("/departments/");
 
     if (response.data.error) {
       return console.log(response.data.message);

@@ -3,7 +3,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 //get All Students
 export const getAllStudents = async (studentDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/students/");
+    const response = await axiosInstance.get("/students/");
 
     if (!response.data.error) {
       return studentDispatch({ type: "SET_STUDENTS", payload: response.data.studentsData });
@@ -20,7 +20,7 @@ export const getAllStudents = async (studentDispatch) => {
 //get Student
 export const getStudent = async (student_number, setFormData) => {
   try {
-    const response = await axiosInstance.get("/api/students/" + student_number);
+    const response = await axiosInstance.get("/students/" + student_number);
     if (response.data && !response.data.error) {
       return setFormData(response.data.studentData);
     }
@@ -36,7 +36,7 @@ export const getStudent = async (student_number, setFormData) => {
 //get Student
 export const getStudentDetails = async (student_number, studentData) => {
   try {
-    const response = await axiosInstance.get("/api/students/" + student_number);
+    const response = await axiosInstance.get("/students/" + student_number);
 
     if (response.data && !response.data.error) {
       return studentData(...response.data.studentData);
@@ -57,7 +57,7 @@ export const addStudent = async (studentData, setShowToast) => {
       return setShowToast({ isShown: true, type: "add", message: "Student data must be provided" });
     }
 
-    const response = await axiosInstance.post("/api/students/create-student", studentData);
+    const response = await axiosInstance.post("/students/create-student", studentData);
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -78,7 +78,7 @@ export const bulkAddStudent = async (studentsData, setShowToast, onClose) => {
       return setShowToast({ isShown: true, type: "add", message: "Student data must be provided" });
     }
 
-    const response = await axiosInstance.post("/api/students/bulk-create-student", studentsData);
+    const response = await axiosInstance.post("/students/bulk-create-student", studentsData);
 
     if (response.data) {
       onClose();
@@ -100,7 +100,7 @@ export const updateStudent = async (student_no, studentData, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Student number must be provided" });
     }
 
-    const response = await axiosInstance.put("/api/students/update-student/" + student_no, studentData);
+    const response = await axiosInstance.put("/students/update-student/" + student_no, studentData);
 
     if (!response.data.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -121,7 +121,7 @@ export const deleteStudent = async (student_no, setShowToast) => {
   }
 
   try {
-    const response = await axiosInstance.delete("/api/students/delete-student/" + student_no);
+    const response = await axiosInstance.delete("/students/delete-student/" + student_no);
 
     if (!response.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });

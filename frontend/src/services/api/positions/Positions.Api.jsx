@@ -3,7 +3,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 //get all positions
 export const getAllPositions = async (positionsDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/positions/");
+    const response = await axiosInstance.get("/positions/");
 
     if (!response.data.error) {
       positionsDispatch({ type: "SET_POSITIONS", payload: response.data.positionList });

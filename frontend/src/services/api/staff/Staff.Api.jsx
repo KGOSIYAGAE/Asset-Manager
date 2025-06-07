@@ -4,7 +4,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 //Handle getData API CALL
 export const getStaffData = async (staffDispatch) => {
   try {
-    const response = await axiosInstance.get("/api/staff/");
+    const response = await axiosInstance.get("/staff/");
 
     if (!response.data.error) {
       staffDispatch({ type: "SET_STAFF", payload: response.data.staffData });
@@ -21,7 +21,7 @@ export const getStaffData = async (staffDispatch) => {
 //Add staff API CALL
 export const addStaff = async (userData, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/api/staff/create-staff", userData);
+    const response = await axiosInstance.post("/staff/create-staff", userData);
 
     if (!response.data.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -42,7 +42,7 @@ export const updateStaff = async (id, userData, setShowToast) => {
       return console.log("Staff number must be provided");
     }
 
-    const response = await axiosInstance.put("/api/staff/update-staff/" + id, userData);
+    const response = await axiosInstance.put("/staff/update-staff/" + id, userData);
 
     if (response.data && response.data.message) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -62,7 +62,7 @@ export const deleteStaff = async (staff_no, setShowToast) => {
     if (!staff_no) {
       return console.log("Staff number must be provided");
     }
-    const response = await axiosInstance.delete("/api/staff/delete-staff/" + staff_no);
+    const response = await axiosInstance.delete("/staff/delete-staff/" + staff_no);
 
     if (response.data && !response.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -83,7 +83,7 @@ export const bulkAddStaff = async (staffData, setShowToast, onClose) => {
       return setShowToast({ isShown: true, type: "add", message: "Staff data must be provided" });
     }
 
-    const response = await axiosInstance.post("/api/staff/bulk-create-staff", staffData);
+    const response = await axiosInstance.post("/staff/bulk-create-staff", staffData);
 
     if (response.data) {
       onClose();
@@ -104,7 +104,7 @@ export const getUser = async (id, setFormData) => {
   }
 
   try {
-    const response = await axiosInstance.get("/api/staff/" + id);
+    const response = await axiosInstance.get("/staff/" + id);
 
     if (response.data && response.data.staffData) {
       return setFormData(response.data.staffData[0]);
@@ -125,7 +125,7 @@ export const getStaffDetails = async (staff_no, setStaffData) => {
   }
 
   try {
-    const response = await axiosInstance.get("/api/staff/staff-details/" + staff_no);
+    const response = await axiosInstance.get("/staff/staff-details/" + staff_no);
 
     if (response.data && response.data.staffData) {
       return setStaffData(...response.data.staffData);

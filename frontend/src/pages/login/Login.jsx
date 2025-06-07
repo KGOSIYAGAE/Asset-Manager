@@ -32,7 +32,7 @@ function Login() {
 
       const loginDetails = { email, password };
 
-      const response = await loginAxiosInstance.post("api/admin/login", loginDetails);
+      const response = await loginAxiosInstance.post("/login", loginDetails);
 
       if (response?.data && !response?.data?.error) {
         //Store user details to session storage
