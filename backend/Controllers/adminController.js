@@ -21,7 +21,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "User password required", error: true });
     }
 
-    const SQL_QUERY = "SELECT * FROM admin_users WHERE email = $1";
+    /*const SQL_QUERY = "SELECT * FROM admin_users WHERE email = $1";*/
+    const SQL_QUERY = "SELECT * FROM staff WHERE email = $1";
 
     const { rows } = await query(SQL_QUERY, [email]);
 
@@ -41,9 +42,11 @@ const login = async (req, res) => {
     const token = createToken(email);
 
     return res.status(200).json({
-      fullName: `${rows[0]?.firstname} ${rows[0]?.lastname}`,
+      /*fullName: `${rows[0]?.firstname} ${rows[0]?.lastname}`,*/
+      fullName: `${rows[0]?.name} ${rows[0]?.surname}`,
       email: email,
       role: rows[0]?.userrole,
+      id: rows[0].id,
       token,
       message: "Login Success",
       error: false,

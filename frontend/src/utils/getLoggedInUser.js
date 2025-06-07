@@ -2,6 +2,7 @@ export const getLoggedInUser = () => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const user = {
     fullName: currentUser?.fullName,
+    id: currentUser?.id,
     role: currentUser?.role,
     token: currentUser?.token,
   };

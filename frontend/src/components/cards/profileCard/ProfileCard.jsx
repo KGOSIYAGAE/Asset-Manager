@@ -30,6 +30,12 @@ function ProfileCard() {
     navigate("/auth/login");
   };
 
+  //Profile
+  const openProfile = () => {
+    const { id } = getLoggedInUser();
+    navigate("/user/" + id);
+  };
+
   useEffect(() => {
     setLoggedInUser(getLoggedInUser());
   }, [getLoggedInUser]);
@@ -61,7 +67,12 @@ function ProfileCard() {
             <FaRegUser className="" size={15} />
             <span className="">Profile</span>
           </div>
-          <div className="flex items-center  text-sm menu-items p-2 gap-2">
+          <div
+            className="flex items-center  text-sm menu-items p-2 gap-2"
+            onClick={() => {
+              openProfile();
+            }}
+          >
             <SlWrench className="" size={15} />
             <span className="">Settings</span>
           </div>

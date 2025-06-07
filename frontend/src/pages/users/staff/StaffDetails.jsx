@@ -79,6 +79,10 @@ function StaffDetails({ path }) {
               <span className="text-sm bg-red-500 border shadow-sm p-1 rounded-md text-white">{staffDetails?.acc_status}</span>
             )}
           </div>
+          <div className="flex justify-between  p-2 item-hover">
+            <span className="text-sm">User Role</span>
+            <span className="text-sm">{staffDetails?.userrole || "None"}</span>
+          </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Department</span>
             <span className="text-sm">{`${staffDetails?.department_name}`}</span>

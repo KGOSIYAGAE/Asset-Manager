@@ -36,7 +36,7 @@ function Login() {
 
       if (response?.data && !response?.data?.error) {
         //Store user details to session storage
-        sessionStorage.setItem("currentUser", JSON.stringify({ fullName: response.data.fullName, role: response.data.role, token: response.data.token }));
+        sessionStorage.setItem("currentUser", JSON.stringify({ fullName: response.data.fullName, role: response.data.role, id: response.data.id, token: response.data.token }));
 
         authDispatch({ type: "LOGIN", payload: response.data });
 

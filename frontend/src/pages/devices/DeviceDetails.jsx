@@ -215,7 +215,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">
               {(function () {
                 return handleTimeStamp(deviceDetails?.loan_end_date);
-              })()}
+              })() || "None"}
             </span>
           </div>
         </div>

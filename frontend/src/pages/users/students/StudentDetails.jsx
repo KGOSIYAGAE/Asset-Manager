@@ -85,7 +85,7 @@ function StudentDetails({ path }) {
             <span className="text-sm">Faculty</span>
             <span className="text-sm">{`${studentDetails?.faculty_name} - ${studentDetails?.faculty_abbreviation}`}</span>
           </div>
-          <div className="flex flex-col justify-between bg-zinc-50 p-2 gap-3 item-hover">
+          <div className="flex justify-between bg-zinc-50 p-2 gap-3 item-hover">
             <span className="text-sm">Course Name</span>
             <span className=" text-sm ">{studentDetails?.course_name}</span>
           </div>

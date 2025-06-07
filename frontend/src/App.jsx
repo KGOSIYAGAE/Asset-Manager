@@ -28,6 +28,7 @@ import { LogsContextProvider } from "./context/LogsContext";
 import { LoanDueContextProvider } from "./context/LoanDueContext";
 import StudentDetails from "./pages/users/students/StudentDetails";
 import StaffDetails from "./pages/users/staff/StaffDetails";
+import UserProfile from "./pages/users/UserProfile";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -180,6 +181,7 @@ function App() {
           path: "/",
           element: <Home />,
         },
+
         //Devices
         {
           path: "/devices",
@@ -197,6 +199,11 @@ function App() {
         {
           path: "/devices/edit-device/:id",
           element: <AddEditDevice path={"edit-device"} />,
+        },
+        //Account settings
+        {
+          path: "/user/:id",
+          element: <UserProfile path={"/"} />,
         },
         //Staff
         {
