@@ -44,6 +44,11 @@ function Staff({ path }) {
     navigate(`/users/staff/edit-staff/${cellValues.row.id}`);
   };
 
+  //Hanlde view details
+  const handleViewDetails = (cellValues) => {
+    navigate(`/users/students/staff-details/${cellValues.row.staff_no}`);
+  };
+
   //Handle Add
   const handleAdd = () => {
     navigate("/users/staff/add-staff");
@@ -75,7 +80,13 @@ function Staff({ path }) {
             {hasPermission("export") && <ExportExcelButton />}
           </div>
         </div>
-        <DataTable rows={searchState.searchResults ? searchState.searchResults : staffState.staffList} colHeaders={staffTableHeaders} handleEdit={handleEdit} handleDelete={handleDelete} />
+        <DataTable
+          rows={searchState.searchResults ? searchState.searchResults : staffState.staffList}
+          colHeaders={staffTableHeaders}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+          handleViewDetails={handleViewDetails}
+        />
       </div>
       <Modal
         isOpen={openModal.isShown || openImportModal.isShown}

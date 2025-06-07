@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ExportExcelButton from "../buttons/ExportExcelButton";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
+import { useNavigate } from "react-router-dom";
 
 function UserDevicesTable({ deviceList }) {
+  const navigate = useNavigate();
+
+  //Handle Edit
+  const handleViewDevice = (id) => {
+    navigate(`/devices/device-details/${id}`);
+  };
+
+  useEffect(() => {
+    console.log();
+  }, []);
+
   return (
     <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
       <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
@@ -48,7 +60,14 @@ function UserDevicesTable({ deviceList }) {
                       })()}
                     </td>
                     <td>
-                      <span className="text-blue-500 underline cursor-pointer">View more</span>
+                      <span
+                        className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                        onClick={() => {
+                          handleViewDevice(device.id);
+                        }}
+                      >
+                        View more
+                      </span>
                     </td>
                   </tr>
                 ))

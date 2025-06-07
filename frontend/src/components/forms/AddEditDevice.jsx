@@ -6,7 +6,7 @@ import CancelButton from "../buttons/CancelButton";
 import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 import SelectInput from "../inputs/selectInputs/selectInput/SelectInput";
 import { deviceCondition, deviceStatus } from "../../utils/deviceStatus.Condition";
-import { deviceCategory, deviceManufacture } from "../../utils/deviceDetails";
+import { deviceCategory, deviceManufacture, ICT_DEVICES } from "../../utils/deviceDetails";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { useNavigate, useParams } from "react-router-dom";
 import { addDevice, getDevice, updateDevice } from "../../services/api/devices/Device.Api";
@@ -15,6 +15,7 @@ import { useInvoiceContext } from "../../hooks/useInvoiceContext";
 import InvoiceSelectInput from "../inputs/selectInputs/invoiceSelectInput/InvoiceSelectInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
+import CategorySelectInput from "../inputs/selectInputs/deviceCategorySelectInput/CategorySelectInput";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
@@ -36,32 +37,27 @@ function AddEditDevice({ path }) {
   const [formType, setFormType] = useState("Add");
 
   const { invoiceState, invoiceDispatch } = useInvoiceContext();
+  const [deviceMufactures, setDeviceManufactures] = useState([]);
+  const [deviceModels, setDeviceModels] = useState([]);
 
   const params = useParams();
   const navigate = useNavigate();
 
-  //handle auto populate model
-  const handleModel = (deviceMake) => {
-    switch (deviceMake) {
-      case "HP":
-        setModelList([...deviceManufacture[0].deviceModel]);
-        setModel(deviceManufacture[0].deviceModel[0].name);
-        break;
-      case "DELL":
-        setModelList([...deviceManufacture[1].deviceModel]);
-        setModel(deviceManufacture[1].deviceModel[0].name);
-        break;
-      case "Lenovo":
-        setModelList([...deviceManufacture[2].deviceModel]);
-        setModel(deviceManufacture[2].deviceModel[0].name);
-        break;
-      case "H3C":
-        setModelList([...deviceManufacture[3].deviceModel]);
-        setModel(deviceManufacture[3].deviceModel[0].name);
-        break;
+  //handle auto populate make
+  const handleMake = (deviceCategory) => {
+    for (let i = 0; i < ICT_DEVICES.length; i++) {
+      if (ICT_DEVICES[i].category === deviceCategory) {
+        setDeviceManufactures(ICT_DEVICES[i]?.manufatures);
+      }
+    }
+  };
 
-      default:
-        break;
+  //handle auto populate make
+  const handleModel = (manufatures) => {
+    for (let i = 0; i < deviceMufactures.length; i++) {
+      if (deviceMufactures[i].name === manufatures) {
+        setDeviceModels(deviceMufactures[i].deviceModel);
+      }
     }
   };
 
@@ -71,7 +67,7 @@ function AddEditDevice({ path }) {
     setSerial_no(deviceDetails[0].serial_no);
     setAssetTag(deviceDetails[0].asset_tag);
     setMake(deviceDetails[0].make);
-    handleModel(deviceDetails[0].make);
+    setModel(deviceDetails[0].model);
     setSpec(deviceDetails[0].specification);
     setCategory(deviceDetails[0].category);
     setDevice_Condition(deviceDetails[0].device_condition);
@@ -167,15 +163,18 @@ function AddEditDevice({ path }) {
           <span className="heading-text">Device Details</span>
         </div>
         <div className="grid grid-cols-8 gap-8 pt-5">
-          <div className="col-span-2">
-            <SelectInput label={"Manufacture"} value={make} options={deviceManufacture} optionName={"name"} isDisabled={false} setOnChange={setMake} onChoose={handleModel} />
-          </div>
-          <div className="col-span-2">
-            <SelectInput label={"Model"} value={model} options={modelList} optionName={"name"} opisDisabled={false} setOnChange={setModel} />
+          <div className="col-span-3">
+            {/*<SelectInput label={"Category"} value={category} options={deviceCategory} optionName={"name"} isDisabled={false} setOnChange={setCategory} />*/}
+            <CategorySelectInput label={"Category"} value={category} options={ICT_DEVICES} setOnChange={setCategory} onChoose={handleMake} />
           </div>
 
-          <div className="col-span-3">
-            <SelectInput label={"Category"} value={category} options={deviceCategory} optionName={"name"} isDisabled={false} setOnChange={setCategory} />
+          <div className="col-span-2">
+            {/*<SelectInput label={"Manufacture"} value={make} options={deviceManufacture} optionName={"name"} isDisabled={false} setOnChange={setMake} onChoose={handleModel} />*/}
+            <CategorySelectInput label={"Make"} value={make} options={deviceMufactures} setOnChange={setMake} onChoose={handleModel} />
+          </div>
+          <div className="col-span-2">
+            {/*<SelectInput label={"Model"} value={model} options={modelList} optionName={"name"} opisDisabled={false} setOnChange={setModel} />*/}
+            <CategorySelectInput label={"Model"} value={model} options={deviceModels} setOnChange={setModel} />
           </div>
 
           <div className="col-span-2">

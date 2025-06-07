@@ -27,6 +27,7 @@ import { PositionsContextProvider } from "./context/PositionsContext";
 import { LogsContextProvider } from "./context/LogsContext";
 import { LoanDueContextProvider } from "./context/LoanDueContext";
 import StudentDetails from "./pages/users/students/StudentDetails";
+import StaffDetails from "./pages/users/staff/StaffDetails";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -210,6 +211,8 @@ function App() {
           path: "/users/staff/add-staff/",
           element: <AddEditStaff path={"edit-staff"} />,
         },
+        { path: "/users/students/staff-details/:staff_no", element: <StaffDetails path={"staff-details/"} />, errorElement: <Home /> },
+
         //Students
         {
           path: "/users/students",

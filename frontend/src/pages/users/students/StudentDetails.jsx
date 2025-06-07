@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getStudentDetails } from "../../../services/api/students/Students.Api";
 import { handleTimeStamp } from "../../../utils/dateConverter";
 import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
 import { getAllUserDevices } from "../../../services/api/devices/Device.Api";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
 import UserDevicesTable from "../../../components/tables/UserDevicesTable";
+import { MdEdit } from "react-icons/md";
 
 function StudentDetails({ path }) {
   const [studentDetails, setStudentDetails] = useState();
   const params = useParams();
   const { devicesState, devicesDispatch } = useDeviceContext();
+
+  const navigate = useNavigate();
+
+  //Handle Edit
+  const handleEdit = (student_no) => {
+    navigate(`/users/students/edit-student/${student_no}`);
+  };
 
   ///Sets the form with data
   const setFormDetails = (studentData) => {
@@ -96,6 +104,14 @@ function StudentDetails({ path }) {
                 return handleTimeStamp(studentDetails?.registration_date);
               })()}
             </span>
+          </div>
+          <div className="w-full flex justify-end p-2 ">
+            <div
+              className="w-[30px] flex items-center justify-center text-green-400 hover:text-green-500 bg-green-100 p-1 rounded-md border border-green-400 hover:border-green-500 cursor-pointer"
+              onClick={() => handleEdit(studentDetails?.student_number)}
+            >
+              <MdEdit size={20}></MdEdit>
+            </div>
           </div>
         </div>
         {/* */}
