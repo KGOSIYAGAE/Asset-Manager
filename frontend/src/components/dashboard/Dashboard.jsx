@@ -4,7 +4,7 @@ import { MdDevices } from "react-icons/md";
 import { PiStudentFill } from "react-icons/pi";
 import PieComponent from "../charts/pieChart/PieComponent";
 import PieComponentMake from "../charts/pieChart/PieComponentMake";
-import StatusBarChart from "../charts/barCharts/statusBarChart";
+import StatusBarChart from "../charts/barCharts/StatusBarChart";
 import { Link } from "react-router-dom";
 import ModelStatBarChart from "../charts/barCharts/ModelStatBarChart";
 import ExportExcelButton from "../buttons/ExportExcelButton";

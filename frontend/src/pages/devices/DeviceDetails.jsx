@@ -10,7 +10,7 @@ import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 import { useStaffContext } from "../../hooks/useStaffContext";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
-import ReleaseUser from "../../components/cards/releaseUser/releaseUser";
+import ReleaseUser from "../../components/cards/releaseUser/ReleaseUser";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
 import { MdLocalPrintshop } from "react-icons/md";
