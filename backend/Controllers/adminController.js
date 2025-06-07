@@ -8,6 +8,14 @@ const createToken = (email) => {
   return jwt.sign({ email }, process.env.SECRET, { expiresIn: "7200s" });
 };
 
+//Password hashing
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  const hash_password = await bcrypt.hash(password, salt);
+
+  return hash_password;
+};
+
 //Admin Login
 const login = async (req, res) => {
   try {
@@ -25,8 +33,6 @@ const login = async (req, res) => {
     const SQL_QUERY = "SELECT * FROM staff WHERE email = $1";
 
     const { rows } = await query(SQL_QUERY, [email]);
-
-    console.log(rows);
 
     if (rows.length <= 0) {
       return res.status(400).json({ message: "Email incorrect", error: true });
@@ -103,6 +109,58 @@ const signUp = async (req, res) => {
   }
 };
 
-//Admin Update
+//Admin change password
+const changePassword = async (req, res) => {
+  const { email, oldPassword, newPassword } = req.body;
+  console.log(oldPassword);
 
-module.exports = { login, signUp };
+  try {
+    if (!email) {
+      return res.status(400).json({ message: "User email required", error: true });
+    }
+
+    if (!oldPassword) {
+      return res.status(400).json({ message: "Old password required", error: true });
+    }
+
+    if (!newPassword) {
+      return res.status(400).json({ message: "New password required", error: true });
+    }
+
+    const SQL_QUERY = "SELECT * FROM staff WHERE email = $1";
+
+    const { rows } = await query(SQL_QUERY, [email]);
+
+    if (rows.length <= 0) {
+      return res.status(400).json({ message: "Email incorrect", error: true });
+    }
+
+    //Verify password
+    const match = await bcrypt.compare(oldPassword, rows[0]?.hash_password);
+
+    if (!match) {
+      return res.status(400).json({ message: "Old password incorrect", error: true });
+    }
+
+    //Password hashing
+    const salt = await bcrypt.genSalt(10);
+    const hash_password = await bcrypt.hash(newPassword, salt);
+
+    const update_passwordQuery = "UPDATE staff SET hash_password=$1 WHERE email = $2;";
+
+    const { rowCount } = await query(update_passwordQuery, [hash_password, email]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when updating the device", error: true });
+    }
+    //Create new log
+    //createNewLog("Update", req.user, id, `Password successfully updated.`);
+
+    return res.status(200).json({ rowCount, message: "Password successfully changed", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}` });
+  }
+};
+
+module.exports = { login, signUp, changePassword };

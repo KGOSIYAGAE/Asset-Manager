@@ -16,9 +16,11 @@ import SelectInput from "../../components/inputs/selectInputs/selectInput/Select
 import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import CancelButton from "../../components/buttons/CancelButton";
-import { getUser } from "../../services/api/staff/Staff.Api";
+import { getUser, updateStaff } from "../../services/api/staff/Staff.Api";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { MdPerson } from "react-icons/md";
+import ToastMessage from "../../components/toastMessage/ToastMessage";
+import { changePassword } from "../../services/api/admin/Admin.Api";
 
 function UserProfile({ path }) {
   const { staffState } = useStaffContext();
@@ -55,8 +57,6 @@ function UserProfile({ path }) {
 
   const [formType, setFormType] = useState("add");
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
-
-  const changePassword = () => {};
 
   //Toast close code
   const handleToastClose = () => {
@@ -277,13 +277,13 @@ function UserProfile({ path }) {
               <MdPerson size={70} className="text-zinc-500" />
             </div>
             <div className="flex flex-col">
-              <span className="font-medium">
+              <span className="font-semibold">
                 {(() => {
                   const { fullName } = getLoggedInUser();
                   return fullName;
                 })()}
               </span>
-              <span>Position</span>
+              <span>{position_name}</span>
             </div>
           </div>
         </div>
@@ -336,12 +336,22 @@ function UserProfile({ path }) {
           </div>
           <div className="flex justify-end">
             <div className="flex gap-5">
-              {newPassword === confirmPassword ? <SubmitButton text={"Save"} onClick={() => {}} /> : ""}
+              {newPassword === confirmPassword ? (
+                <SubmitButton
+                  text={"Save"}
+                  onClick={() => {
+                    changePassword(email, oldPassowrd, newPassword, setShowToast);
+                  }}
+                />
+              ) : (
+                ""
+              )}
               <CancelButton onClick={hanldePasswordFormClear} />
             </div>
           </div>
         </div>
       </div>
+      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={handleToastClose} />
     </div>
   );
 }

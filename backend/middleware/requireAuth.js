@@ -15,7 +15,7 @@ const requireAuth = async (req, res, next) => {
   try {
     const { email } = jwt.verify(token, process.env.SECRET);
 
-    const findUserQuery = "SELECT * FROM admin_users WHERE email = $1";
+    const findUserQuery = "SELECT * FROM staff WHERE email = $1";
 
     const { rowCount, rows } = await query(findUserQuery, [email]);
 

@@ -19,6 +19,7 @@ function PositionSelectInput({ label, positionId, options, optionName, isDisable
   const handleGetpositionTitle = (position_id) => {
     for (let i = 0; i < options?.length; i++) {
       if (options[i].id === position_id) {
+        setOnChange(options[i].title);
         return setInputValue(options[i].title);
       }
     }
@@ -26,7 +27,7 @@ function PositionSelectInput({ label, positionId, options, optionName, isDisable
 
   useEffect(() => {
     handleGetpositionTitle(positionId);
-  }, [positionId]);
+  }, [positionId, handleGetpositionTitle]);
 
   return (
     <div className="text-input col-span-2">
