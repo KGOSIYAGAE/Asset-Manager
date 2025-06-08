@@ -93,13 +93,13 @@ function App() {
 
       //Check if user is authorized to access private protected routes
       if (!user.token) {
-        return navigate("/auth/login", { replace: true });
+        return navigate("/login", { replace: true });
       }
 
       //Check if user token is still valid if not redirect to login
       if (isTokenExpired(user.token)) {
         sessionStorage.clear();
-        return navigate("/auth/login");
+        return navigate("/login");
       }
 
       setIsAuthenticated(true);
@@ -170,7 +170,7 @@ function App() {
 
   const router = createBrowserRouter([
     {
-      path: "/auth/login",
+      path: "/",
       element: <Login />,
     },
     {
@@ -178,7 +178,7 @@ function App() {
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
       children: [
         {
-          path: "/",
+          path: "/home",
           element: <Home />,
         },
 

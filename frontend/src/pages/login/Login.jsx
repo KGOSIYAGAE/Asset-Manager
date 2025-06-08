@@ -40,7 +40,7 @@ function Login() {
 
         authDispatch({ type: "LOGIN", payload: response.data });
 
-        navigate("/");
+        navigate("/home");
         return setShowToast({ isShown: true, type: "add", message: "Login successful" });
       }
     } catch (error) {

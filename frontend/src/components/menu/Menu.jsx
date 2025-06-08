@@ -18,7 +18,7 @@ function Menu({ isMinimized }) {
         {isMinimized ? <span className="font-bold">SPU</span> : <LogoCard />}
         {isMinimized ? "" : <span className="text-zinc-800 font-bold">Menu</span>}
         <div className={`flex flex-col gap-5 ${isMinimized ? " py-10" : "p-3"}`}>
-          <Link to={"/"}>
+          <Link to={"/home"}>
             <div className="menu-items">
               <div className="bg-zinc-100 rounded-md p-2">
                 <MdDashboard size={18} className="" />

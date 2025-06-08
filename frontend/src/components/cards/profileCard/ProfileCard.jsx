@@ -27,7 +27,7 @@ function ProfileCard() {
   const logout = () => {
     authDispatch({ type: "LOGOUT", payload: null });
     sessionStorage.clear();
-    navigate("/auth/login");
+    navigate("/");
   };
 
   //Profile
