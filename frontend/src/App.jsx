@@ -174,7 +174,6 @@ function App() {
       element: <Login />,
     },
     {
-      path: "/",
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
       children: [
         {
@@ -218,7 +217,7 @@ function App() {
           path: "/users/staff/add-staff/",
           element: <AddEditStaff path={"edit-staff"} />,
         },
-        { path: "/users/students/staff-details/:staff_no", element: <StaffDetails path={"staff-details/"} />, errorElement: <Home /> },
+        { path: "/users/staff/staff-details/:staff_no", element: <StaffDetails path={"staff-details/"} />, errorElement: <Home /> },
 
         //Students
         {

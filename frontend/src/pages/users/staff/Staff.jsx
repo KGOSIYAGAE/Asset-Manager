@@ -46,7 +46,7 @@ function Staff({ path }) {
 
   //Hanlde view details
   const handleViewDetails = (cellValues) => {
-    navigate(`/users/students/staff-details/${cellValues.row.staff_no}`);
+    navigate(`/users/staff/staff-details/${cellValues.row.staff_no}`);
   };
 
   //Handle Add

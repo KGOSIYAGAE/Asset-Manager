@@ -82,7 +82,7 @@ function Menu({ isMinimized }) {
             </div>
           </Link>
           {/**/}
-          <Link to={"users/students"}>
+          <Link to={"/users/students"}>
             <div className="menu-items">
               <div className="bg-zinc-100 rounded-md p-2">
                 <PiStudentFill size={18} className="" />
