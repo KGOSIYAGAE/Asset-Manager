@@ -14,8 +14,17 @@ export const hasPermission = (permission) => {
   const userRole = currentUser?.role;
 
   const ROLES = {
-    admin: {
+    support_admin: {
       can: ["create", "edit", "delete", "view", "administration", "bulk-create", "export", "assign"],
+    },
+    support_technician: {
+      can: ["create", "edit", "view", "administration", "assign"],
+    },
+    networks_admin: {
+      can: ["create", "edit", "delete", "view", "administration", "bulk-create", "export", "assign"],
+    },
+    networks_technician: {
+      can: ["create", "edit", "view", "administration", "assign"],
     },
     editor: {
       can: ["create", "edit", "view", "assign"],

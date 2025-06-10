@@ -93,13 +93,13 @@ function App() {
 
       //Check if user is authorized to access private protected routes
       if (!user.token) {
-        return navigate("/login", { replace: true });
+        return navigate("/", { replace: true });
       }
 
       //Check if user token is still valid if not redirect to login
       if (isTokenExpired(user.token)) {
         sessionStorage.clear();
-        return navigate("/login");
+        return navigate("/");
       }
 
       setIsAuthenticated(true);

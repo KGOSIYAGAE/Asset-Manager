@@ -5,9 +5,25 @@ const { createNewLog } = require("./deviceLogController");
 //Get all devices
 const getAllDevices = async (req, res) => {
   try {
-    const GET_ALL_QUERY = "SELECT * FROM devices ORDER BY date_issued ASC";
+    const userrole = req.userrole;
 
-    const { rows } = await query(GET_ALL_QUERY);
+    if (!userrole) {
+      return res.status(400).json({ message: "User role must be provided", error: true });
+    }
+
+    const GET_ALL_QUERY = `SELECT * FROM devices 
+     WHERE device_type = 
+      CASE 
+        WHEN $1 = 'support_admin' THEN 'Support' 
+        WHEN $1 = 'support_technician' THEN 'Support'
+        WHEN $1 = 'networks_admin' THEN 'Network'
+        WHEN $1 = 'networks_technician' THEN 'Network'
+        WHEN $1 = 'av_admin' THEN 'Audio Visual'
+        WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
+        ELSE device_type 
+      END`;
+
+    const { rows } = await query(GET_ALL_QUERY, [userrole]);
 
     if (!rows) {
       return res.status(400).json({ message: "An error occured fetching devices", error: true });

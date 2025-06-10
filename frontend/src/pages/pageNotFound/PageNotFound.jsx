@@ -12,7 +12,7 @@ function PageNotFound() {
       <button
         className="bg-blue-500 text-white font-semibold rounded-3xl px-4 py-1 hover:bg-blue-600"
         onClick={() => {
-          navigate("/");
+          navigate("/home");
         }}
       >
         GO BACK HOME

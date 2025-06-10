@@ -27,51 +27,40 @@ function Menu({ isMinimized }) {
             </div>
           </Link>
           {/**/}
-          <Link to={"/devices"}>
-            <div className="flex flex-col gap-2">
-              <div
-                className="menu-items"
-                onClick={() => {
-                  if (showDeviceOption) {
-                    setShowDeviceOptions(false);
-                  } else {
-                    setShowDeviceOptions(true);
-                  }
-                }}
-              >
-                <div className="bg-zinc-100 rounded-md p-2">
-                  <MdDevices size={18} className="" />
-                </div>
-                {isMinimized ? "" : <span className="">Devices</span>}
-              </div>
-              {/**/}
 
-              {/*<div className={`${showDeviceOption ? "flex" : "hidden"} flex-col text-zinc-500 gap-3 pl-10`}>
-                <Link to={"/devices"}>
-                  <div className="flex items-center gap-2">
-                    <div className="flex bg-zinc-100 rounded-md p-2 gap-2">
-                      <CgViewList size={18} className="" />
-                    </div>
-                    <span className="text-sm">View All Device</span>
-                  </div>
-                </Link>
-                <Link to={"/devices/check-out-device"}>
-                  <div className="flex items-center gap-2" onClick={() => {}}>
-                    <div className="flex bg-zinc-100 rounded-md p-2 gap-2">
-                      <BsBoxArrowUp size={18} className="" />
-                    </div>
-                    <span className="text-sm">Check Out Device</span>
-                  </div>
-                </Link>
-                <div className="flex items-center gap-2">
-                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2">
-                    <BsBoxArrowDown size={18} className="" />
-                  </div>
-                  <span className="text-sm">Check In Device</span>
-                </div>
-              </div>*/}
+          <div className="flex flex-col gap-2">
+            <div
+              className="menu-items"
+              onClick={() => {
+                showDeviceOption ? setShowDeviceOptions(false) : setShowDeviceOptions(true);
+              }}
+            >
+              <div className="bg-zinc-100 rounded-md p-2">
+                <MdDevices size={18} className="" />
+              </div>
+              {isMinimized ? "" : <span className="">Devices</span>}
             </div>
-          </Link>
+            {/**/}
+
+            <div className={`${showDeviceOption ? "flex" : "hidden"} flex-col text-zinc-500 gap-3 pl-10`}>
+              <Link to={"/devices"}>
+                <div className="flex items-center gap-2 menu-items">
+                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                  <span className="text-sm">View All</span>
+                </div>
+              </Link>
+              <Link to={"/devices/check-out-device"}>
+                <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
+                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                  <span className="text-sm">Loans</span>
+                </div>
+              </Link>
+              <div className="flex items-center gap-2 menu-items">
+                <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                <span className="text-sm">Due upgrade</span>
+              </div>
+            </div>
+          </div>
           {/**/}
           <Link to={"/users/staff/"}>
             <div className="menu-items">

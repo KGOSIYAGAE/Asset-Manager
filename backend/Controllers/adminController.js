@@ -112,7 +112,7 @@ const signUp = async (req, res) => {
 //Admin change password
 const changePassword = async (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
-  console.log(oldPassword);
+  console.log(email);
 
   try {
     if (!email) {
