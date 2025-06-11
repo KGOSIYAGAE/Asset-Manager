@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ExportExcelButton from "../buttons/ExportExcelButton";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { getAllDeviceLoanDue } from "../../services/api/devices/Device.Api";
@@ -6,9 +6,12 @@ import { useDeviceContext } from "../../hooks/useDevicesContext";
 import { useNavigate } from "react-router-dom";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import AddButton from "../buttons/AddButton";
+import Modal from "react-modal";
 
-function OverdueLoan({ loanDueState, label }) {
+function OverdueLoanTable({ loanDueState, label }) {
   const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
+  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
 
   //Handle view more
   const handleViewDevice = (id) => {
@@ -21,7 +24,14 @@ function OverdueLoan({ loanDueState, label }) {
       <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
         <span className="heading-text ">{label}</span>
         <div className="flex gap-2 ">
-          {hasPermission("create") && <AddButton name={"Create New Loan"} handleAdd={() => {}} />}
+          {hasPermission("create") && (
+            <AddButton
+              name={"Create New Loan"}
+              handleAdd={() => {
+                setOpenModal({ isShown: true, type: "new-loan", data: "hello" });
+              }}
+            />
+          )}
           <ExportExcelButton />
         </div>
       </div>
@@ -78,8 +88,21 @@ function OverdueLoan({ loanDueState, label }) {
           </tbody>
         </table>
       </div>
+      <Modal
+        isOpen={openModal.isShown}
+        onRequestClose={() => {
+          setOpenModal({ isShown: false });
+        }}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+        }}
+        contentLabel=""
+        className={`${
+          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+      ></Modal>
     </div>
   );
 }
 
-export default OverdueLoan;
+export default OverdueLoanTable;

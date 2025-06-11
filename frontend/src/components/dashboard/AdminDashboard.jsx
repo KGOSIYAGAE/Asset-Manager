@@ -12,7 +12,7 @@ import StudentByFaculty from "../cards/studentByFaculty/StudentByFaculty";
 import CourseStatBarChart from "../charts/barCharts/CourseStatBarChart";
 import DeviceLogTable from "../tables/DeviceLogTable";
 import { getAllLatestDevicesLogs } from "../../services/api/deviceLogs/DeviceLogs";
-import OverdueLoan from "../tables/OverdueLoan";
+import OverdueLoan from "../tables/OverdueLoanTable";
 import DueUpgradeLaptopsTable from "../tables/DueUpgradeLaptopsTable";
 
 import { devicesTableHeaders } from "../../utils/TableHeaders";

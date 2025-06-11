@@ -23,7 +23,7 @@ const requireAuth = async (req, res, next) => {
       return res.status(400).json({ message: "Email not found", error: true });
     }
 
-    req.user = rows[0]._id;
+    req.user = rows[0].id;
     req.userrole = rows[0].userrole;
 
     next();

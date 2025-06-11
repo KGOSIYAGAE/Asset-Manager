@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
-import { hasPermission } from "../../utils/getLoggedInUser";
-import ExportExcelButton from "../../components/buttons/ExportExcelButton";
-import AddButton from "../../components/buttons/AddButton";
 import { useLoanDueContext } from "../../hooks/useLoanDueContext";
 import { getAllDeviceLoanDue } from "../../services/api/devices/Device.Api";
-import OverdueLoan from "../../components/tables/OverdueLoan";
+import OverdueLoanTable from "../../components/tables/OverdueLoanTable";
 
 function DevicesOnLoan({ path }) {
   const { loanDueState, loanDueDispatch } = useLoanDueContext();
@@ -23,7 +20,7 @@ function DevicesOnLoan({ path }) {
 
       {/* */}
       <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
-        <OverdueLoan loanDueState={loanDueState?.loanDueList} label={"Devices Loaned"} />
+        <OverdueLoanTable loanDueState={loanDueState?.loanDueList} label={"Devices Loaned"} />
       </div>
       {/* */}
     </div>

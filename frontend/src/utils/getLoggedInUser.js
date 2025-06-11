@@ -15,13 +15,13 @@ export const hasPermission = (permission) => {
 
   const ROLES = {
     support_admin: {
-      can: ["create", "edit", "delete", "view", "support-dash", "bulk-create", "export", "assign"],
+      can: ["create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign"],
     },
     support_technician: {
       can: ["create", "edit", "view", "support-dash", "assign"],
     },
     networks_admin: {
-      can: ["create", "edit", "delete", "view", "networks-dash", "bulk-create", "export", "assign"],
+      can: ["create", "edit", "delete", "view", "networks-dash", "view-logs", "bulk-create", "export", "assign"],
     },
     networks_technician: {
       can: ["create", "edit", "view", "networks-dash", "assign"],

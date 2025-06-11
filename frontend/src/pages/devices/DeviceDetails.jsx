@@ -254,7 +254,7 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
-        {hasPermission("administration") && <DeviceLogTable deviceLogs={deviceLogs} label={"Devices Logs"} />}
+        {hasPermission("view-logs") && <DeviceLogTable deviceLogs={deviceLogs} label={"Devices Logs"} />}
       </div>
 
       <Modal
