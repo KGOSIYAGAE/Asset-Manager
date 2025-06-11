@@ -22,7 +22,7 @@ export const getAllDevices = async (devicesDispatch) => {
 //Get All device due for return
 export const getAllDeviceLoanDue = async (loanDueDispatch) => {
   try {
-    const response = await axiosInstance.get("/devices/loan-due");
+    const response = await axiosInstance.get("/devices/due-upgrade");
 
     if (response.data.deviceList) {
       return loanDueDispatch({ type: "SET_LOANSDUE", payload: response.data.deviceList });

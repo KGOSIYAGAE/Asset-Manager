@@ -13,7 +13,8 @@ import CourseStatBarChart from "../charts/barCharts/CourseStatBarChart";
 import DeviceLogTable from "../tables/DeviceLogTable";
 import { getAllLatestDevicesLogs } from "../../services/api/deviceLogs/DeviceLogs";
 import OverdueLoan from "../tables/OverdueLoan";
-import DataTable from "../dataGrid/DataTable";
+import DueUpgradeLaptopsTable from "../tables/DueUpgradeLaptopsTable";
+
 import { devicesTableHeaders } from "../../utils/TableHeaders";
 import PieCategory from "../charts/pieChart/PieCategory";
 import { hasPermission } from "../../utils/getLoggedInUser";
@@ -126,7 +127,7 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
           </div>
           {/* */}
           <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
-            <OverdueLoan loanDueState={loanDueState} label={"Over Due Loans & Upgraded Due"} />
+            <DueUpgradeLaptopsTable loanDueState={loanDueState} label={"User Devices Due Upgrade"} />
           </div>
           {/* */}
           <div className="bg-white flex flex-col col-span-1 row-span-1 rounded-md shadow-lg border p-2">

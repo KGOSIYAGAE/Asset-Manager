@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   getAllDevices,
-  getDeviceLoanDue,
+  getDeviceDueUpgrade,
   getDevice,
   getDeviceDetails,
   getDevicesAssigned,
@@ -23,7 +23,7 @@ router.use(requireAuth);
 router.get("/", getAllDevices);
 
 //Get all device due for return
-router.get("/loan-due", getDeviceLoanDue);
+router.get("/due-upgrade", getDeviceDueUpgrade);
 
 //Get all devices
 router.get("/:id", getDevice);

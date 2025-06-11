@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import { IoMdPeople } from "react-icons/io";
 import { PiStudentFill } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { MdDevices, MdDashboard } from "react-icons/md";
-import ProfileCard from "../cards/profileCard/ProfileCard";
 import { FaPeopleGroup } from "react-icons/fa6";
 import LogoCard from "../cards/logoCard/LogoCard";
-import { BsBoxArrowDown, BsBoxArrowUp, BsSendArrowDown, BsSendArrowUp } from "react-icons/bs";
-import { CgViewList } from "react-icons/cg";
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 function Menu({ isMinimized }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
@@ -30,7 +27,7 @@ function Menu({ isMinimized }) {
 
           <div className="flex flex-col gap-2">
             <div
-              className="menu-items"
+              className="menu-items "
               onClick={() => {
                 showDeviceOption ? setShowDeviceOptions(false) : setShowDeviceOptions(true);
               }}
@@ -39,6 +36,7 @@ function Menu({ isMinimized }) {
                 <MdDevices size={18} className="" />
               </div>
               {isMinimized ? "" : <span className="">Devices</span>}
+              <div className=" flex absolute ">{showDeviceOption ? <IoChevronUp size={15} className=" relative left-44" /> : <IoChevronDown size={15} className=" relative left-44" />}</div>
             </div>
             {/**/}
 
@@ -49,16 +47,18 @@ function Menu({ isMinimized }) {
                   <span className="text-sm">View All</span>
                 </div>
               </Link>
-              <Link to={"/devices/check-out-device"}>
+              <Link to={"/devices/loaned-device"}>
                 <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
                   <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
                   <span className="text-sm">Loans</span>
                 </div>
               </Link>
-              <div className="flex items-center gap-2 menu-items">
-                <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
-                <span className="text-sm">Due upgrade</span>
-              </div>
+              <Link to={"/devices/device-due-upgrade"}>
+                <div className="flex items-center gap-2 menu-items">
+                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                  <span className="text-sm">Due upgrade</span>
+                </div>
+              </Link>
             </div>
           </div>
           {/**/}

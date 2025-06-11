@@ -4,10 +4,8 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { getAllDeviceLoanDue } from "../../services/api/devices/Device.Api";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
 import { useNavigate } from "react-router-dom";
-import { hasPermission } from "../../utils/getLoggedInUser";
-import AddButton from "../buttons/AddButton";
 
-function OverdueLoan({ loanDueState, label }) {
+function DueUpgradeLaptopsTable({ loanDueState, label }) {
   const navigate = useNavigate();
 
   //Handle view more
@@ -20,10 +18,7 @@ function OverdueLoan({ loanDueState, label }) {
     <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
       <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
         <span className="heading-text ">{label}</span>
-        <div className="flex gap-2 ">
-          {hasPermission("create") && <AddButton name={"Create New Loan"} handleAdd={() => {}} />}
-          <ExportExcelButton />
-        </div>
+        <ExportExcelButton />
       </div>
       <div className="w-full text-sm  rounded-sm">
         <table className="w-full bg-white ">
@@ -82,4 +77,4 @@ function OverdueLoan({ loanDueState, label }) {
   );
 }
 
-export default OverdueLoan;
+export default DueUpgradeLaptopsTable;

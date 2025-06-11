@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function UserDevicesTable({ deviceList }) {
   const navigate = useNavigate();
 
-  //Handle Edit
+  //Handle view more
   const handleViewDevice = (id) => {
     navigate(`/devices/device-details/${id}`);
   };

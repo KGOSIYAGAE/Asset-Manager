@@ -38,7 +38,7 @@ function Home() {
   return (
     <div>
       <UserDashCard loggedInUser={currentUser} />
-      {hasPermission("administration") && (
+      {hasPermission("support-dash") && (
         <AdminDashboard
           devices={devicesState?.deviceList}
           students={studentState?.studentsList}

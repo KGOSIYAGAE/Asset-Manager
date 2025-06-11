@@ -29,6 +29,8 @@ import { LoanDueContextProvider } from "./context/LoanDueContext";
 import StudentDetails from "./pages/users/students/StudentDetails";
 import StaffDetails from "./pages/users/staff/StaffDetails";
 import UserProfile from "./pages/users/UserProfile";
+import DevicesOnLoan from "./pages/devices/DevicesOnLoan";
+import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -198,6 +200,14 @@ function App() {
         {
           path: "/devices/edit-device/:id",
           element: <AddEditDevice path={"edit-device"} />,
+        },
+        {
+          path: "/devices/loaned-device",
+          element: <DevicesOnLoan path={"loaned-devices"} />,
+        },
+        {
+          path: "/devices/device-due-upgrade",
+          element: <DevicesDueUpgrade path={"device-due-upgrade"} />,
         },
         //Account settings
         {

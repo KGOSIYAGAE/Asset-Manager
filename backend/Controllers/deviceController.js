@@ -37,9 +37,9 @@ const getAllDevices = async (req, res) => {
 };
 
 //Get all devices
-const getDeviceLoanDue = async (req, res) => {
+const getDeviceDueUpgrade = async (req, res) => {
   try {
-    const GET_ALL_QUERY = `SELECT * FROM "deviceUserDetails" WHERE loan_end_date < CURRENT_DATE`;
+    const GET_ALL_QUERY = `SELECT * FROM "deviceUserDetails" WHERE next_upgrade_date < CURRENT_DATE AND category = 'Laptop'`;
 
     const { rows } = await query(GET_ALL_QUERY);
 
@@ -414,4 +414,4 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDeviceLoanDue, getDevice, getDeviceDetails, getDevicesAssigned, createDevice, deleteDevice, updateDevice, bulkCreateDevice, assignDevice, releaseDevice };
+module.exports = { getAllDevices, getDeviceDueUpgrade, getDevice, getDeviceDetails, getDevicesAssigned, createDevice, deleteDevice, updateDevice, bulkCreateDevice, assignDevice, releaseDevice };
