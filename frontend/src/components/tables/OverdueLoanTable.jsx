@@ -7,11 +7,19 @@ import { useNavigate } from "react-router-dom";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import AddButton from "../buttons/AddButton";
 import Modal from "react-modal";
+import CreateNewLoan from "../cards/createNewLoan/CreateNewLoan";
+import { useStaffContext } from "../../hooks/useStaffContext";
+import { useStudentsContext } from "../../hooks/useStudentsContext";
+import ToastMessage from "../toastMessage/ToastMessage";
 
 function OverdueLoanTable({ loanDueState, label }) {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+
+  const { staffState } = useStaffContext();
+  const { studentState } = useStudentsContext();
+  const { devicesState } = useDeviceContext();
 
   //Handle view more
   const handleViewDevice = (id) => {
@@ -100,7 +108,28 @@ function OverdueLoanTable({ loanDueState, label }) {
         className={`${
           openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
-      ></Modal>
+      >
+        <CreateNewLoan
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+          onSubmit={() => {
+            //getDeviceDetails();
+            setOpenModal({ isShown: false });
+          }}
+          userData={[...staffState?.staffList, ...studentState?.studentsList]}
+          devicesData={[...devicesState?.deviceList]}
+          setShowToast={setShowToast}
+        />
+      </Modal>
+      <ToastMessage
+        isShown={showToast.isShow}
+        type={showToast.type}
+        message={showToast.message}
+        onClose={() => {
+          setShowToast({ isShow: false });
+        }}
+      />
     </div>
   );
 }

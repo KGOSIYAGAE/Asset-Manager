@@ -312,18 +312,18 @@ const updateDevice = async (req, res) => {
 const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName, status, userId, date_issued } = req.body;
+    const { fullName, status, userId, date_issued, upgradeDate } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!status || !userId || !date_issued) {
+    if (!status || !userId || !date_issued || !upgradeDate) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
-    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3 WHERE id=$4";
-    const VALUES = [status, userId, date_issued];
+    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3, next_upgrade_date=$4 WHERE id=$5";
+    const VALUES = [status, userId, date_issued, upgradeDate];
 
     const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
 
@@ -345,7 +345,7 @@ const assignDevice = async (req, res) => {
 const releaseDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName, status, userId, return_date } = req.body;
+    const { fullName, status, userId, return_date, upgradeDate, date_issued } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
@@ -365,8 +365,8 @@ const releaseDevice = async (req, res) => {
 
     console.log(`Previous user ${rows[0].full_name}`);
 
-    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, return_date=$3 WHERE id=$4";
-    const VALUES = [status, userId, return_date];
+    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, return_date=$3, next_upgrade_date=$4 ,date_issued=$5  WHERE id=$6";
+    const VALUES = [status, userId, return_date, upgradeDate, date_issued];
 
     const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
 

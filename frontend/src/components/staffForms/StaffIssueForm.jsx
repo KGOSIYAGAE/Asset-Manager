@@ -30,7 +30,7 @@ function StaffIssueForm({ handleOnPrint, deviceDetails, staff_no }) {
   return (
     <div className="printable ">
       <div className="w-full flex justify-center">
-        <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
+        <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
       </div>
       <div className="w-full flex flex-col gap-5 p-2">
         {/**/}

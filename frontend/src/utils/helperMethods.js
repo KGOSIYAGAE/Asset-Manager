@@ -1,7 +1,7 @@
 //import { assignReleaseUser } from "../services/api/devices/Device.Api";
 
-//Generate End date for permanent staff members
-export const generateReturnDate = (startDate) => {
+//Generate upgrade date for permanent staff members laptops
+export const generateUpgradeDate = (startDate) => {
   const years = 3;
 
   const date = new Date(startDate);
@@ -79,5 +79,14 @@ export const getMonthName = (month) => {
       return "November";
     case 11:
       return "December";
+  }
+};
+
+export const handleCurrency = (value) => {
+  if (value) {
+    return new Intl.NumberFormat("en-ZA", {
+      style: "currency",
+      currency: "ZAR",
+    }).format(parseInt(value));
   }
 };

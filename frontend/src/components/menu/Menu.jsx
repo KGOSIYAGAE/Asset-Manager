@@ -27,16 +27,18 @@ function Menu({ isMinimized }) {
 
           <div className="flex flex-col gap-2">
             <div
-              className="menu-items "
+              className="menu-items  justify-between "
               onClick={() => {
                 showDeviceOption ? setShowDeviceOptions(false) : setShowDeviceOptions(true);
               }}
             >
-              <div className="bg-zinc-100 rounded-md p-2">
-                <MdDevices size={18} className="" />
+              <div className="flex items-center ">
+                <div className="bg-zinc-100 rounded-md p-2">
+                  <MdDevices size={18} className="" />
+                </div>
+                {isMinimized ? "" : <span className="">Devices</span>}
               </div>
-              {isMinimized ? "" : <span className="">Devices</span>}
-              <div className=" flex absolute ">{showDeviceOption ? <IoChevronUp size={15} className=" relative left-44" /> : <IoChevronDown size={15} className=" relative left-44" />}</div>
+              <div className=" flex ">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
             </div>
             {/**/}
 

@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { assignDevice } from "../../../services/api/devices/Device.Api";
-import { getTodayDate } from "../../../utils/helperMethods";
+import { generateUpgradeDate, getTodayDate } from "../../../utils/helperMethods";
 
 function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -54,9 +54,6 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
 
-    //Get today's date
-    const today = getTodayDate();
-
     const { id } = params;
     if (!id) {
       return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
@@ -65,10 +62,17 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
     const data = {
       fullName: selectedUser.fullName,
       status: "Assigned",
-      date_issued: today,
+      date_issued: getTodayDate(),
       userId: selectedUser.userId,
+      upgradeDate: (() => {
+        if (selectedUser.userId.toString().length <= 5) {
+          return generateUpgradeDate(getTodayDate());
+        }
+        return null;
+      })(),
     };
 
+    //console.log(data);
     assignDevice(id, data, setShowToast);
 
     return onSubmit();
@@ -78,7 +82,7 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
     if (userData) {
       setSearchResultsData(userData);
     }
-  }, []);
+  }, [userData]);
   return (
     <div className="">
       <div className="flex flex-col gap-2 -z-50">

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "../../components/inputs/textInput/TextInput";
-import { generateReturnDate } from "../../utils/helperMethods";
 import { getAllDepartments } from "../../services/api/departments/Departments.Api";
 import { getAllPositions } from "../../services/api/positions/Positions.Api";
 import { useStaffContext } from "../../hooks/useStaffContext";
@@ -125,11 +124,11 @@ function UserProfile({ path }) {
 
     let end_date;
 
-    if (contract_type === "Permanent") {
-      end_date = generateReturnDate(start_date);
-    } else {
+    /*if (contract_type !== "Permanent") {
       end_date = endDate;
-    }
+    } else {
+      end_date = null;
+    }*/
 
     const userData = {
       name,
@@ -142,7 +141,7 @@ function UserProfile({ path }) {
       contract_type,
       isActive,
       start_date,
-      endDate: end_date,
+      endDate: end_date || null,
     };
 
     if (formType === "add") {

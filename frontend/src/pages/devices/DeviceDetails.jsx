@@ -18,6 +18,7 @@ import StudentAOD from "../../components/student AOD/StudentAOD";
 import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
 import DeviceLogTable from "../../components/tables/DeviceLogTable";
 import { hasPermission } from "../../utils/getLoggedInUser";
+import { handleCurrency } from "../../utils/helperMethods";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -94,10 +95,6 @@ function DeviceDetails({ path }) {
     if (!staffState || !studentState) {
       console.log("No data");
     }
-
-    setDateCreated(handleTimeStamp(deviceDetails?.created_at));
-    setWarrantyEndDate(handleTimeStamp(deviceDetails?.warranty_end_date));
-    setPurchaseDate(handleTimeStamp(deviceDetails?.purchase_date));
   }, [deviceDetails?.created_at, deviceDetails?.user_id]);
 
   return (
@@ -160,7 +157,11 @@ function DeviceDetails({ path }) {
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Warranty End date</span>
-            <span className="text-sm">{warrantyEndDate}</span>
+            <span className="text-sm">
+              {(() => {
+                return handleTimeStamp(deviceDetails?.warranty_end_date);
+              })()}
+            </span>
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Category</span>
@@ -185,36 +186,59 @@ function DeviceDetails({ path }) {
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Purchase Value</span>
             <span className="text-sm">
-              {/*new Intl.NumberFormat("en-ZA", {
-                style: "currency",
-                currency: "ZAR",
-              }).format(deviceDetails?.purchase_price)*/}
+              {(() => {
+                return handleCurrency(deviceDetails?.purchase_price);
+              })()}
             </span>
-            {`R ${deviceDetails?.purchase_price}`}
+            {/*`R ${deviceDetails?.purchase_price}`*/}
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Current Value</span>
             <span className="text-sm">
-              {/*new Intl.NumberFormat("en-ZA", {
-                style: "currency",
-                currency: "ZAR",
-              }).format(parseInt(deviceDetails?.value_price))*/}
+              {(() => {
+                return handleCurrency(deviceDetails?.value_price);
+              })()}
             </span>
-            {`R ${deviceDetails?.value_price}`}
+            {/*`R ${deviceDetails?.value_price}`*/}
           </div>
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Purchase Date</span>
-            <span className="text-sm">{purchaseDate}</span>
+            <span className="text-sm">
+              {" "}
+              {(() => {
+                return handleTimeStamp(deviceDetails?.purchase_date);
+              })()}
+            </span>
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
-            <span className="text-sm">Date Enrolled</span>
-            <span className="text-sm">{dateCreated}</span>
+            <span className="text-sm">Date Created</span>
+            <span className="text-sm">
+              {(() => {
+                return handleTimeStamp(deviceDetails?.created_at);
+              })()}
+            </span>
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
-            <span className="text-sm">Return / Upgrade Date</span>
+            <span className="text-sm">Date Issued</span>
+            <span className="text-sm">
+              {(() => {
+                return handleTimeStamp(deviceDetails?.date_issued);
+              })() || "None"}
+            </span>
+          </div>
+          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+            <span className="text-sm">Return Date</span>
             <span className="text-sm">
               {(function () {
-                return handleTimeStamp(deviceDetails?.loan_end_date);
+                return handleTimeStamp(deviceDetails?.return_date);
+              })() || "None"}
+            </span>
+          </div>
+          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+            <span className="text-sm">Upgrade Date</span>
+            <span className="text-sm">
+              {(function () {
+                return handleTimeStamp(deviceDetails?.next_upgrade_date);
               })() || "None"}
             </span>
           </div>
@@ -259,6 +283,7 @@ function DeviceDetails({ path }) {
 
       <Modal
         isOpen={openModal.isShown}
+        ariaHideApp={false}
         onRequestClose={() => {
           setOpenModal({ isShown: false });
         }}
