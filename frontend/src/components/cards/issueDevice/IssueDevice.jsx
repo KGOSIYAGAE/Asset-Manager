@@ -8,8 +8,9 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { assignDevice } from "../../../services/api/devices/Device.Api";
 import { generateUpgradeDate, getTodayDate } from "../../../utils/helperMethods";
+import SecondScreen from "../../../pages/secondScreen/SecondScreen";
 
-function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
+function IssueDevice({ onCanel, onSubmit, userData, deviceId, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
 
@@ -133,7 +134,9 @@ function IssueDevice({ onCanel, onSubmit, userData, setShowToast }) {
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          <SubmitButton text={"Submit"} onClick={handleAssignDevice} />
+          {selectedUser?.fullName ? <SecondScreen userId={selectedUser?.userId} deviceId={deviceId} /> : ""}
+
+          {/*<SubmitButton text={"Submit"} onClick={handleAssignDevice} />*/}
         </div>
       </div>
     </div>

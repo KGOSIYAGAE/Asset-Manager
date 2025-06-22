@@ -31,6 +31,8 @@ import StaffDetails from "./pages/users/staff/StaffDetails";
 import UserProfile from "./pages/users/UserProfile";
 import DevicesOnLoan from "./pages/devices/DevicesOnLoan";
 import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
+import SecondScreen from "./pages/secondScreen/SecondScreen";
+import FormPage from "./pages/formPage/FormPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -176,6 +178,10 @@ function App() {
       element: <Login />,
     },
     {
+      path: "/user-form/:userId/:deviceId",
+      element: <FormPage />,
+    },
+    {
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
       children: [
         {
@@ -242,6 +248,7 @@ function App() {
           path: "/users/students/add-student",
           element: <AddEditStudent path={"edit-student"} />,
         },
+
         { path: "/users/students/student-details/:student_no", element: <StudentDetails path={"student-details/"} />, errorElement: <Home /> },
       ],
     },

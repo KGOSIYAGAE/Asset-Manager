@@ -305,6 +305,7 @@ function DeviceDetails({ path }) {
               setOpenModal({ isShown: false });
             }}
             userData={[...staffState?.staffList, ...studentState?.studentsList]}
+            deviceId={deviceDetails?.id}
             setShowToast={setShowToast}
           />
         ) : openModal.type === "release" ? (
