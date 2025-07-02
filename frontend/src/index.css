@@ -88,7 +88,7 @@
 
   /*Student AOD Start*/
   .printable {
-    @apply w-full bg-white text-black text-[12px];
+    @apply w-full h-[1150px] bg-white text-black text-[12px];
   }
 
   .page-header {
@@ -183,17 +183,25 @@
   }
 
   .black-t-border {
-    border-top: rgb(191, 191, 191) 0.1svi solid;
+    border-top: rgb(191, 191, 191) 0.2svi solid;
     @apply border-black;
   }
 
   .black-l-border {
-    border-left: rgb(191, 191, 191) 0.1svi solid;
+    border-left: rgb(191, 191, 191) 0.2svi solid;
     @apply border-black;
   }
 
   .black-r-border {
-    border-right: rgb(191, 191, 191) 0.1svi solid;
+    border-right: rgb(191, 191, 191) 0.2svi solid;
     @apply border-black;
+  }
+
+  .signature-canva {
+    @apply rounded-md z-50;
+  }
+
+  .date-small-text {
+    font-size: 8px;
   }
 }

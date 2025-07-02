@@ -38,10 +38,10 @@ function FormPage() {
 
   return (
     <div className="w-screen h-svh flex itborder border-red-500 col-span-6 bg-white  px-10 overflow-y-scroll" id="print-file">
-      {userType && userType === "Staff" ? (
-        <StaffIssueForm handleOnPrint={() => {}} deviceId={deviceId} staff_no={userId} />
+      {userType && userType !== "Staff" ? (
+        <StudentAOD handleOnPrint={() => {}} deviceId={deviceId} student_no={userId} />
       ) : (
-        <StudentAOD handleOnPrint={() => {}} deviceDetails={null} student_no={userId} />
+        <StaffIssueForm handleOnPrint={() => {}} deviceId={deviceId} staff_no={userId} />
       )}
     </div>
   );

@@ -31,8 +31,8 @@ import StaffDetails from "./pages/users/staff/StaffDetails";
 import UserProfile from "./pages/users/UserProfile";
 import DevicesOnLoan from "./pages/devices/DevicesOnLoan";
 import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
-import SecondScreen from "./pages/secondScreen/SecondScreen";
 import FormPage from "./pages/formPage/FormPage";
+import { ToastProvider } from "./context/ToastContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

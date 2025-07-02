@@ -45,10 +45,6 @@ function Devices({ path }) {
     navigate(`/devices/device-details/${cellValues.row.id}`);
   };
 
-  const openIssueModal = () => {
-    setOpenModal({ isShown: true, type: "issue", data: null });
-  };
-
   //Import modal
   const ImportModal = () => {
     setOpenImportModal({ isShown: true, type: "issue", data: null });

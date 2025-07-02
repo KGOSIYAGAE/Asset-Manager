@@ -95,7 +95,19 @@ function DeviceDetails({ path }) {
     if (!staffState || !studentState) {
       console.log("No data");
     }
-  }, [deviceDetails?.created_at, deviceDetails?.user_id]);
+  }, [showToast]);
+
+  //handle post Message Response
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted") {
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
@@ -322,11 +334,11 @@ function DeviceDetails({ path }) {
           />
         ) : openModal.type === "Student" ? (
           <div className=" h-[1100px]  col-span-6 bg-white " id="print-file">
-            <StudentAOD handleOnPrint={handleOnPrint} deviceDetails={deviceDetails} student_no={deviceDetails?.user_id} />
+            <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.user_id} />
           </div>
         ) : (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <StaffIssueForm handleOnPrint={handleOnPrint} deviceDetails={deviceDetails} staff_no={deviceDetails?.user_id} />
+            <StaffIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.user_id} />
           </div>
         )}
       </Modal>

@@ -35,7 +35,7 @@ const getStaff = async (req, res) => {
       return res.status(200).json({ message: "Staff Id required", error: true });
     }
 
-    const get_staff_query = "SELECT * FROM staff WHERE id = $1";
+    const get_staff_query = `SELECT * FROM "staffDetails" WHERE id = $1`;
 
     const { rowCount, rows } = await query(get_staff_query, [id]);
 

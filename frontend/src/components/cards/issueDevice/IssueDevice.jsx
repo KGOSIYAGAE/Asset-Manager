@@ -8,7 +8,8 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { assignDevice } from "../../../services/api/devices/Device.Api";
 import { generateUpgradeDate, getTodayDate } from "../../../utils/helperMethods";
-import SecondScreen from "../../../pages/secondScreen/SecondScreen";
+import TextInput from "../../inputs/textInput/TextInput";
+import OpenFormVerification from "../../../pages/openFormVerification/OpenFormVerification";
 
 function IssueDevice({ onCanel, onSubmit, userData, deviceId, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -49,7 +50,7 @@ function IssueDevice({ onCanel, onSubmit, userData, deviceId, setShowToast }) {
     setSearchResultsData([...searchResults]);
   };
 
-  //Handle assign device
+  /*Handle assign device
   const handleAssignDevice = () => {
     if (!selectedUser.fullName) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
@@ -77,7 +78,7 @@ function IssueDevice({ onCanel, onSubmit, userData, deviceId, setShowToast }) {
     assignDevice(id, data, setShowToast);
 
     return onSubmit();
-  };
+  };*/
 
   useEffect(() => {
     if (userData) {
@@ -130,11 +131,19 @@ function IssueDevice({ onCanel, onSubmit, userData, deviceId, setShowToast }) {
             </div>
           </div>
         </div>
+        <div>{/*<TextInput label={"Ticket Number"} value={null} isDisabled={false} maxLength={12} setOnChange={null} />*/}</div>
+
         <div className="flex justify-end p-3 gap-8">
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          {selectedUser?.fullName ? <SecondScreen userId={selectedUser?.userId} deviceId={deviceId} /> : ""}
+          {selectedUser?.fullName ? (
+            <div onClick={() => onCanel()}>
+              <OpenFormVerification userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
+            </div>
+          ) : (
+            ""
+          )}
 
           {/*<SubmitButton text={"Submit"} onClick={handleAssignDevice} />*/}
         </div>

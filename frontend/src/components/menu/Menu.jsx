@@ -52,6 +52,12 @@ function Menu({ isMinimized }) {
               <Link to={"/devices/loaned-device"}>
                 <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
                   <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                  <span className="text-sm">Assign Device</span>
+                </div>
+              </Link>
+              <Link to={"/devices/loaned-device"}>
+                <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
+                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
                   <span className="text-sm">Loans</span>
                 </div>
               </Link>

@@ -49,6 +49,10 @@ app.use("/api/v1/asset-manager/positions", positionRouter);
 const deviceLogRouter = require("./Routes/deviceLogRoutes");
 app.use("/api/v1/asset-manager/device-logs", deviceLogRouter);
 
+//Device logs
+const signatureRouter = require("./Routes/signatureRoutes");
+app.use("/api/v1/asset-manager/signatures", signatureRouter);
+
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server running on port", process.env.PORT);
 });

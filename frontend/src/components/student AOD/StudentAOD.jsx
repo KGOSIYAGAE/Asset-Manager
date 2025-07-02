@@ -1,17 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { getMonthName, getTodayFullDate } from "../../utils/helperMethods";
 import { getStudent, getStudentDetails } from "../../services/api/students/Students.Api";
+import { getAllDeviceDetails } from "../../services/api/devices/Device.Api";
 
-function StudentAOD({ deviceDetails, handleOnPrint, student_no }) {
+function StudentAOD({ deviceId, handleOnPrint, student_no }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
   const [studentData, setStudentData] = useState();
+  const [deviceDetails, setDeviceDetails] = useState();
 
+  //Get Student data
   const getData = () => {
     if (student_no) {
       getStudentDetails(student_no, setStudentData);
     }
+  };
+
+  //Get device data based on device id
+  const setDetails = (deviceData) => {
+    setDeviceDetails(...deviceData);
+  };
+
+  const getDeviceDetails = () => {
+    if (!deviceId) {
+      return console.log("Selected device id not provided");
+    }
+    getAllDeviceDetails(deviceId, setDetails);
   };
 
   useEffect(() => {
@@ -20,6 +35,7 @@ function StudentAOD({ deviceDetails, handleOnPrint, student_no }) {
     setDay(day);
     setMonth(getMonthName(month));
     getData();
+    getDeviceDetails();
 
     //handleOnPrint();
   }, []);

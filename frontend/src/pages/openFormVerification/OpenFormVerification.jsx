@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SubmitButton from "../../components/buttons/SubmitButton";
 
-function SecondScreen({ userId, deviceId, w = 800, h = 600 }) {
+function OpenFormVerification({ userId, deviceId, setShowToast, w = 800, h = 600 }) {
   const [error, setError] = useState("");
 
   async function openOnSecondScreen() {
@@ -13,6 +13,7 @@ function SecondScreen({ userId, deviceId, w = 800, h = 600 }) {
         const { screens, currentScreen } = details;
 
         if (screens.length < 2) {
+          setShowToast({ isShow: true, type: "error", message: "Only one screen is detected, please connect second screen or Tablet." });
           throw new Error("Only one screen is detected.");
         }
 
@@ -27,7 +28,7 @@ function SecondScreen({ userId, deviceId, w = 800, h = 600 }) {
 
         const url = `${window.location.origin}/user-form/${userId}/${deviceId}`;
 
-        window.open(url, "_blank", `left=${left},top=${top},width=${target.width / 2},height=${target.height}`, `${target.label}`);
+        window.open(url, `childWindow`, `left=${left},top=${top},width=${target.width / 2},height=${target.height}`, `${target.label}`);
         return;
       }
 
@@ -43,10 +44,10 @@ function SecondScreen({ userId, deviceId, w = 800, h = 600 }) {
 
   return (
     <>
-      <SubmitButton text={"Sign Form"} onClick={openOnSecondScreen} />
+      <SubmitButton text={"Continue to verification"} onClick={openOnSecondScreen} />
       {error && <p style={{ color: "red" }}>{error}</p>}
     </>
   );
 }
 
-export default SecondScreen;
+export default OpenFormVerification;
