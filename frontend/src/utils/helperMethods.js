@@ -1,5 +1,7 @@
 //import { assignReleaseUser } from "../services/api/devices/Device.Api";
 
+import { assignDevice } from "../services/api/devices/Device.Api";
+
 //Generate upgrade date for permanent staff members laptops
 export const generateUpgradeDate = (startDate) => {
   const years = 3;
@@ -88,5 +90,44 @@ export const handleCurrency = (value) => {
       style: "currency",
       currency: "ZAR",
     }).format(parseInt(value));
+  }
+};
+
+export const handleFilter = (searchQuery, searchData) => {
+  const searchResults = [];
+
+  for (let i = 0; i < searchData.length; i++) {
+    if (searchData[i].name?.toString() && searchData[i].name?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].surname?.toString() && searchData[i].surname?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].staff_no?.toString() && searchData[i].staff_no?.toString().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].id_number?.toString() && searchData[i].id_number?.toString().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].student_number?.toString() && searchData[i].student_number?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].make?.toString() && searchData[i].make?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].model?.toString() && searchData[i].model?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].serial_no?.toString() && searchData[i].serial_no?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    } else if (searchData[i].asset_tag?.toString() && searchData[i].asset_tag?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+      searchResults.push(searchData[i]);
+    }
+  }
+
+  return [...searchResults];
+};
+
+//Get user type based on userID
+export const getUserType = (user_id, setUserType) => {
+  let userId = user_id?.toString();
+
+  if (userId?.length > 5) {
+    return setUserType("Student");
+  } else {
+    return setUserType("Staff");
   }
 };

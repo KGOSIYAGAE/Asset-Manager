@@ -97,7 +97,7 @@ function StaffDetails({ path }) {
           </div>
 
           <div className="flex justify-between p-2 item-hover">
-            <span className="text-sm">Registration Date</span>
+            <span className="text-sm">Start Date</span>
             <span className="text-sm">
               {(() => {
                 return handleTimeStamp(staffDetails?.start_date);
@@ -107,9 +107,11 @@ function StaffDetails({ path }) {
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">End Date</span>
             <span className="text-sm">
-              {(() => {
-                return handleTimeStamp(staffDetails?.end_date);
-              })()}
+              {staffDetails?.end_date
+                ? (() => {
+                    return handleTimeStamp(staffDetails?.end_date);
+                  })()
+                : "None"}
             </span>
           </div>
           <div className="w-full flex justify-end p-2 ">

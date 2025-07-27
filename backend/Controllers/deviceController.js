@@ -21,7 +21,7 @@ const getAllDevices = async (req, res) => {
         WHEN $1 = 'av_admin' THEN 'Audio Visual'
         WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
         ELSE device_type 
-      END`;
+      END ORDER BY created_at DESC`;
 
     const { rows } = await query(GET_ALL_QUERY, [userrole]);
 
@@ -36,7 +36,7 @@ const getAllDevices = async (req, res) => {
   }
 };
 
-//Get all devices
+//Get all devices due for upgrade
 const getDeviceDueUpgrade = async (req, res) => {
   try {
     const GET_ALL_QUERY = `SELECT * FROM "deviceUserDetails" WHERE next_upgrade_date < CURRENT_DATE AND category = 'Laptop'`;
@@ -129,7 +129,7 @@ const getDevicesAssigned = async (req, res) => {
 //Create device
 const createDevice = async (req, res) => {
   try {
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_id, purchaseValue, currentValue } = req.body;
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_id, device_type, purchaseValue, currentValue } = req.body;
 
     //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
 
@@ -163,6 +163,9 @@ const createDevice = async (req, res) => {
     if (!invoice_id) {
       return res.status(400).json({ message: "Invoice id is required!" });
     }
+    if (!device_type) {
+      return res.status(400).json({ message: "Device type is required!" });
+    }
     if (!purchaseValue) {
       return res.status(400).json({ message: "Purchase value is required!" });
     }
@@ -171,8 +174,8 @@ const createDevice = async (req, res) => {
     }
 
     const create_device_query =
-      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);";
-    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_id];
+      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id, device_type) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);";
+    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_id, device_type];
 
     const { rowCount } = await query(create_device_query, [...VALUES]);
 
@@ -312,7 +315,7 @@ const updateDevice = async (req, res) => {
 const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName, status, userId, date_issued, upgradeDate } = req.body;
+    const { fullName, status, userId, date_issued, return_date, upgradeDate } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
@@ -322,8 +325,8 @@ const assignDevice = async (req, res) => {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
-    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3, next_upgrade_date=$4 WHERE id=$5";
-    const VALUES = [status, userId, date_issued, upgradeDate];
+    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3,return_date=$4, next_upgrade_date=$5 WHERE id=$6";
+    const VALUES = [status, userId, date_issued, return_date, upgradeDate];
 
     const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
 
@@ -341,7 +344,40 @@ const assignDevice = async (req, res) => {
   }
 };
 
-//Assign device
+//Loan device
+const loanDevice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fullName, status, userId, date_issued, return_date } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Device Id not provided.", error: true });
+    }
+
+    if (!status || !userId || !date_issued || !return_date) {
+      return res.status(400).json({ message: "All fields must be provided.", error: true });
+    }
+
+    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3,return_date=$4 WHERE id=$5";
+    const VALUES = [status, userId, date_issued, return_date];
+
+    const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when loaning the device", error: true });
+    }
+
+    //Create new log
+    createNewLog("Assign", req.user, id, `Device successfully loaned to ${fullName}`);
+
+    return res.status(200).json({ rowCount, message: `Device successfully loaned to ${fullName}`, error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//release device
 const releaseDevice = async (req, res) => {
   try {
     const { id } = req.params;
@@ -351,8 +387,8 @@ const releaseDevice = async (req, res) => {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!fullName || !status || !userId || !return_date) {
-      return res.status(400).json({ message: "All fields must be provided.fff", error: true });
+    if (!fullName || !status || !userId) {
+      return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
     const getDeviceQuery = `SELECT * FROM "deviceUserDetails" WHERE id = $1`;
@@ -414,4 +450,17 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-module.exports = { getAllDevices, getDeviceDueUpgrade, getDevice, getDeviceDetails, getDevicesAssigned, createDevice, deleteDevice, updateDevice, bulkCreateDevice, assignDevice, releaseDevice };
+module.exports = {
+  getAllDevices,
+  getDeviceDueUpgrade,
+  getDevice,
+  getDeviceDetails,
+  getDevicesAssigned,
+  createDevice,
+  deleteDevice,
+  updateDevice,
+  bulkCreateDevice,
+  assignDevice,
+  loanDevice,
+  releaseDevice,
+};

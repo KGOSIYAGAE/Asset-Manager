@@ -18,6 +18,7 @@ import DueUpgradeLaptopsTable from "../tables/DueUpgradeLaptopsTable";
 import { devicesTableHeaders } from "../../utils/TableHeaders";
 import PieCategory from "../charts/pieChart/PieCategory";
 import { hasPermission } from "../../utils/getLoggedInUser";
+import DueReturnLaptopsTable from "../tables/DueReturnLaptopsTable";
 
 function AdminDashboard({ devices, students, deviceNumber, staffNumber, studentsNumber, devicesLogs, loanDueState, path }) {
   return (
@@ -124,6 +125,10 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
           {/* */}
           <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
             <DeviceLogTable deviceLogs={devicesLogs} label={"Latest Devices Logs"} />
+          </div>
+          {/* */}
+          <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
+            <DueReturnLaptopsTable label={"User Devices Due Return"} />
           </div>
           {/* */}
           <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">

@@ -50,6 +50,26 @@ const getStaff = async (req, res) => {
   }
 };
 
+//Get staff by id
+const getSupportAdmins = async (req, res) => {
+  try {
+    const userrole = "support_admin";
+
+    const get_staff_query = `SELECT * FROM "staffDetails" WHERE userrole = $1`;
+
+    const { rowCount, rows } = await query(get_staff_query, [userrole]);
+
+    if (rowCount <= 0) {
+      return res.status(200).json({ rowCount, message: "Staff matching userrole not found", error: false });
+    }
+
+    return res.status(200).json({ staffData: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Get staff by staff_no
 const getStaffDetails = async (req, res) => {
   try {
@@ -77,6 +97,7 @@ const getStaffDetails = async (req, res) => {
 //Create staff
 const createStaff = async (req, res) => {
   try {
+    console.log(req.body);
     const { name, surname, phone_number, email, staff_no, position_id, department_id, contract_type, isActive, start_date, endDate } = req.body;
 
     if (!name) {
@@ -109,9 +130,6 @@ const createStaff = async (req, res) => {
     if (!start_date) {
       return res.status(400).json({ message: "Start date is required", error: true });
     }
-    if (!endDate) {
-      return res.status(400).json({ message: "End date is required", error: true });
-    }
 
     const create_staff_query =
       "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, position_id, department_id, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
@@ -123,6 +141,7 @@ const createStaff = async (req, res) => {
     const { rowCount } = await query(create_staff_query, [...VALUES]);
 
     if (rowCount <= 0) {
+      console.log("errpr creating");
       return res.status(400).json({ message: "An error occured creating staff.", error: true });
     }
 
@@ -256,4 +275,4 @@ const deleteStaff = async (req, res) => {
   }
 };
 
-module.exports = { getAllStaff, getStaff, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff };
+module.exports = { getAllStaff, getStaff, getSupportAdmins, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff };

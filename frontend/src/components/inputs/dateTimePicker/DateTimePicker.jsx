@@ -8,12 +8,12 @@ function DateTimePicker({ label, value, setOnChange }) {
     setDate(handleTimeStamp(value));
   }, [value]);
   return (
-    <div className="text-input">
+    <div className="text-input ">
       <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
       <input
         type="date"
-        className="flex outline-none"
-        value={date ? date : value}
+        className="flex  outline-none "
+        value={date}
         onChange={(e) => {
           setOnChange(e.target.value);
         }}

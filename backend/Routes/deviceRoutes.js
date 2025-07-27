@@ -11,6 +11,7 @@ const {
   deleteDevice,
   bulkCreateDevice,
   assignDevice,
+  loanDevice,
   releaseDevice,
 } = require("../Controllers/deviceController");
 const requireAuth = require("../middleware/requireAuth");
@@ -22,7 +23,7 @@ router.use(requireAuth);
 //Get all devices
 router.get("/", getAllDevices);
 
-//Get all device due for return
+//Get all device due for upgrade
 router.get("/due-upgrade", getDeviceDueUpgrade);
 
 //Get all devices
@@ -43,10 +44,13 @@ router.post("/bulk-add-devices", bulkCreateDevice);
 //Update device
 router.put("/update-device/:id", updateDevice);
 
-//Update device
+//assign device
 router.put("/assign-device/:id", assignDevice);
 
-//Update device
+//loan device
+router.put("/loan-device/:id", loanDevice);
+
+//release device
 router.put("/release-device/:id", releaseDevice);
 
 //Delete device

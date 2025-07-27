@@ -14,30 +14,31 @@ function DeviceLogTable({ deviceLogs, label }) {
       <div className="w-full text-sm  rounded-sm">
         <table className="w-full bg-white ">
           <thead className=" bg-slate-100 sticky top-0 h-[40px]">
-            <th>#</th>
-            <th>Device Id</th>
-            <th>Action</th>
-            <th>Description</th>
-            <th>Created By</th>
-            <th>Created At</th>
+            <tr>
+              <th>#</th>
+              <th>Device Id</th>
+              <th>Action</th>
+              <th>Description</th>
+              <th>Created By</th>
+              <th>Created At</th>
+            </tr>
           </thead>
           <tbody className="">
-            {deviceLogs
-              ? deviceLogs.map((log, count) => (
-                  <tr className="hover:bg-slate-50">
-                    <td>
-                      {(() => {
-                        return count + 1;
-                      })()}
-                    </td>
-                    <td>{log.item_id}</td>
-                    <td>{log.action}</td>
-                    <td>{log.description}</td>
-                    <td>{log.created_by}</td>
-                    <td>{log.created_at}</td>
-                  </tr>
-                ))
-              : ""}
+            {deviceLogs &&
+              deviceLogs.map((log, count) => (
+                <tr key={log.id} className="hover:bg-slate-50">
+                  <td>
+                    {(() => {
+                      return count + 1;
+                    })()}
+                  </td>
+                  <td>{log.item_id}</td>
+                  <td>{log.action}</td>
+                  <td>{log.description}</td>
+                  <td>{log.created_by}</td>
+                  <td>{log.created_at}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

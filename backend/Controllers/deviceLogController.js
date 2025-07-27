@@ -41,9 +41,9 @@ const getAllLatestDevicesLogs = async (req, res) => {
 
     const { rowCount, rows } = await query(getAllLogs);
 
-    if (rowCount <= 0) {
+    /*if (rowCount <= 0) {
       return res.status(400).json({ message: "No logs found", error: true });
-    }
+    }*/
 
     return res.status(200).json({ rowCount, deviceLogList: rows, message: "Success", error: false });
   } catch (error) {
@@ -66,11 +66,9 @@ const getAlllogsForDevice = async (req, res) => {
 
     const { rowCount, rows } = await query(getAllLogs, [id]);
 
-    if (rowCount <= 0) {
+    /*if (rowCount <= 0) {
       return res.status(400).json({ message: "No logs found", error: true });
-    }
-
-    console.log(rows);
+    }*/
 
     return res.status(200).json({ rowCount, deviceLogList: rows, message: "Success", error: false });
   } catch (error) {

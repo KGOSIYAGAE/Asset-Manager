@@ -163,6 +163,23 @@ export const assignDevice = async (id, data, setShowToast) => {
   }
 };
 
+//Loan device API call
+export const createLoanDevice = async (id, data, setShowToast) => {
+  try {
+    const response = await axiosInstance.put("/devices/loan-device/" + id, data);
+
+    if (!response.data.error) {
+      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+    } else {
+      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+    }
+  }
+};
+
 //Assign device API call
 export const releaseDevice = async (id, data, setShowToast) => {
   try {

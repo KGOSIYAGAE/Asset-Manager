@@ -18,7 +18,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   const [loggedInUserDetails, setLoggedInUserDetails] = useState();
   const [staffData, setStaffData] = useState();
   const [deviceDetails, setDeviceDetails] = useState();
-  const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, data: null });
+  const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, user_id: null });
 
   const [ictStaffTrimmedDataURL, setIctStaffTrimmedDataURL] = useState(null);
   const [staffTrimmedDataURL, setStaffTrimmedDataURL] = useState(null);
@@ -74,6 +74,12 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
       status: "Assigned",
       date_issued: getTodayDate(),
       userId: staffData.staff_no,
+      return_date: (() => {
+        if (staffData.contract_type === "Permanent") {
+          return null;
+        }
+        return staffData.end_date;
+      })(),
       upgradeDate: (() => {
         if (staffData.staff_no.toString().length <= 5) {
           return generateUpgradeDate(getTodayDate());
@@ -82,15 +88,9 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
       })(),
     };
 
-    //console.log(data);
     await assignDevice(deviceDetails?.id, data, setShowToast);
 
     return postMessage(staffData?.name, staffData?.surname);
-
-    /* const win = window.open("", "childWindow");
-    if (win && !win.closed) {
-      return win.close();
-    }*/
   };
   //////////////////////////////////////////////////////
 
@@ -111,19 +111,19 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
       <div className="w-full flex justify-center">
         <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
       </div>
-      <div className="w-full flex flex-col gap-5 p-2">
+      <div className="w-full flex flex-col gap-4 ">
         {/*
         <div className=" flex col-span-2  ">
           <div className="w-1/5 text-sm font-semibold col-span-1 border  border-black p-1">TICKET NO</div>
           <div className="w-1/5 text-sm col-span-1 p-1  border  border-black black-t-border">{""}</div>
         </div>*/}
-        <div className="w-full bg-slate-100 flex flex-col justify-center items-center border border-black">
+        <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
           <span className="text-base font-bold">STAFF LAPTOP ISSUE FORM</span>
           <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
         </div>
 
         {/**/}
-        <div className="bg-slate-100 flex flex-col justify-center items-center border border-black">
+        <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
           <span className="text-base font-bold">DEVICE INFORMATION</span>
         </div>
         {/**/}
@@ -159,7 +159,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
         </div>
         {/**/}
         {/**/}
-        <div className="bg-slate-100 flex flex-col justify-center items-center border border-black">
+        <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
           <span className="text-base font-bold">STAFF INFORMATION</span>
         </div>
         {/**/}
@@ -185,21 +185,21 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
             <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">CONTACT NUMBER</div>
             <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.phone_number}</div>
           </div>
-          <div className="flex col-span-2  black-t-border ">
-            <div className="w-1/2 text-sm h-[100px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
+          <div className="h-[75px] flex col-span-2  black-t-border ">
+            <div className="w-1/2 text-sm h-[75px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
             <div className={`w-1/2  col-span-1 flex  ${staffData?.image_base64 || staffTrimmedDataURL ? "justify-start" : "items-center justify-center  p-2"}`}>
               {staffData?.image_base64 || staffTrimmedDataURL ? (
-                <div className="flex justify-between gap-5 p-2">
-                  <div className="flex flex-col items-center justify-center">
+                <div className="h-[70px] flex justify-between gap-5 ">
+                  <div className="flex flex-col items-center ">
                     <img alt="signature" src={staffTrimmedDataURL || staffData?.image_base64} className="w-[180px] " />
                     <span className="date-small-text ">{`${day} / ${month} / ${year}`}</span>
                   </div>
                   <button
                     onClick={() => {
-                      setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, data: "hello" });
+                      setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });
                     }}
                   >
-                    <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500">
+                    <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
                       <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
                     </div>
                   </button>
@@ -208,7 +208,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
                 <SubmitButton
                   text={"Add signature"}
                   onClick={() => {
-                    setOpenModal({ isShown: true, isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, data: "hello" });
+                    setOpenModal({ isShown: true, isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });
                   }}
                 />
               )}
@@ -217,7 +217,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
         </div>
         {/**/}
         {/**/}
-        <div className="bg-slate-100 flex flex-col justify-center items-center border border-black">
+        <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
           <span className="text-base font-bold">FOR OFFICE USE</span>
         </div>
         {/**/}
@@ -227,21 +227,21 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
             <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">ICT STAFF NAME & SURNAME</div>
             <div className="w-1/2  text-sm col-span-1 p-2">{loggedInUser?.fullName}</div>
           </div>
-          <div className="flex col-span-2  border border-black  ">
-            <div className="w-1/2 text-sm h-[100px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
+          <div className="h-[75px] flex col-span-2  border border-black  ">
+            <div className="w-1/2 text-sm h-[74px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
             <div className={`w-1/2  col-span-1 flex  ${ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64 ? "justify-start" : "items-center justify-center  p-2"}`}>
               {loggedInUserDetails?.image_base64 || ictStaffTrimmedDataURL ? (
-                <div className="flex justify-between gap-5 p-2">
-                  <div className="flex flex-col items-center justify-center">
+                <div className="h-[75px] flex justify-between gap-5 ">
+                  <div className="flex flex-col items-center justify-center ">
                     <img alt="signature" src={ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64} className="w-[180px] " />
                     <span className="date-small-text ">{`${day} / ${month} / ${year}`}</span>
                   </div>
                   <button
                     onClick={() => {
-                      setOpenModal({ isShown: true, isShown: true, trimmedDataURL: ictStaffTrimmedDataURL, setTrimmedDataURL: setIctStaffTrimmedDataURL, data: "hello" });
+                      setOpenModal({ isShown: true, isShown: true, trimmedDataURL: ictStaffTrimmedDataURL, setTrimmedDataURL: setIctStaffTrimmedDataURL, user_id: loggedInUserDetails?.staff_no });
                     }}
                   >
-                    <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500">
+                    <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
                       <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
                     </div>
                   </button>
@@ -250,7 +250,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
                 <SubmitButton
                   text={"Add signature"}
                   onClick={() => {
-                    setOpenModal({ isShown: true, trimmedDataURL: ictStaffTrimmedDataURL, setTrimmedDataURL: setIctStaffTrimmedDataURL, data: "hello" });
+                    setOpenModal({ isShown: true, isShown: true, trimmedDataURL: ictStaffTrimmedDataURL, setTrimmedDataURL: setIctStaffTrimmedDataURL, user_id: loggedInUserDetails?.staff_no });
                   }}
                 />
               )}
@@ -276,16 +276,21 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
           lablel={"Signature"}
           trimmedDataURL={openModal?.trimmedDataURL}
           setTrimmedDataURL={openModal?.setTrimmedDataURL}
-          user_id={staff_no}
+          user_id={openModal?.user_id}
           onClose={() => {
             setOpenModal({ isShown: false });
           }}
         />
       </Modal>
 
-      <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
+      <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
         {deviceDetails?.status === "Assigned" ? (
-          <button className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md" onClick={() => {}}>
+          <button
+            className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md"
+            onClick={() => {
+              handleOnPrint();
+            }}
+          >
             Print
           </button>
         ) : (
@@ -298,6 +303,9 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
             Done
           </button>
         )}
+      </div>
+      <div className="flex absolute bottom-0 ">
+        <img alt="banner" src="/public/page_banner.png" className="w-[800px] h-[50px]" />
       </div>
     </div>
   );

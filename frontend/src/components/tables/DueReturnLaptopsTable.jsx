@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import ExportExcelButton from "../buttons/ExportExcelButton";
 import { handleTimeStamp } from "../../utils/dateConverter";
-import { getAllDeviceLoanDue } from "../../services/api/devices/Device.Api";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
 import { useNavigate } from "react-router-dom";
-import { getDueUpgradeDevicesHelper } from "../../utils/devicesHelperMethods";
+import { getDueReturnDevicesHelper } from "../../utils/devicesHelperMethods";
 
-function DueUpgradeLaptopsTable({ devices, label }) {
+function DueReturnLaptopsTable({ label }) {
   const navigate = useNavigate();
+  const [returnDevices, setReturnDevices] = useState(null);
 
-  const [upgradeDevices, setUpgradeDevices] = useState(null);
+  const { devicesState } = useDeviceContext();
 
   //Handle view more
   const handleViewDevice = (id) => {
@@ -17,9 +17,9 @@ function DueUpgradeLaptopsTable({ devices, label }) {
   };
 
   useEffect(() => {
-    setUpgradeDevices(getDueUpgradeDevicesHelper(devices));
-  }, [devices]);
-
+    //run filter method
+    setReturnDevices(getDueReturnDevicesHelper(devicesState?.deviceList));
+  }, [devicesState]);
   return (
     <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
       <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
@@ -36,12 +36,12 @@ function DueUpgradeLaptopsTable({ devices, label }) {
             <th>Model</th>
             <th>User</th>
             <th>Date Issued</th>
-            <th>Upgrade Date</th>
+            <th>End Date</th>
             <th>Action</th>
           </thead>
           <tbody className="">
-            {upgradeDevices
-              ? upgradeDevices.map((device, count) => (
+            {returnDevices
+              ? returnDevices.map((device, count) => (
                   <tr className="hover:bg-slate-50" key={device.id}>
                     <td>
                       {(() => {
@@ -83,4 +83,4 @@ function DueUpgradeLaptopsTable({ devices, label }) {
   );
 }
 
-export default DueUpgradeLaptopsTable;
+export default DueReturnLaptopsTable;

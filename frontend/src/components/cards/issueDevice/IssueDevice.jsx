@@ -7,50 +7,143 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { assignDevice } from "../../../services/api/devices/Device.Api";
-import { generateUpgradeDate, getTodayDate } from "../../../utils/helperMethods";
+import { generateUpgradeDate, getTodayDate, getUserType } from "../../../utils/helperMethods";
 import TextInput from "../../inputs/textInput/TextInput";
 import OpenFormVerification from "../../../pages/openFormVerification/OpenFormVerification";
+import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelectInput";
+import { useStaffContext } from "../../../hooks/useStaffContext";
+import { useStudentsContext } from "../../../hooks/useStudentsContext";
 
-function IssueDevice({ onCanel, onSubmit, userData, deviceId, setShowToast }) {
+function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
-  const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
+  const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null }); //Get user type based on userID
+  const [userType, setUserType] = useState(null);
+  const [supportAdmins, setSupportAdmins] = useState(null);
+  const [supportTechnicians, setSupportTechnician] = useState(null);
 
-  const [searchValue, setSearchValue] = useState("");
-  const [searchResultsData, setSearchResultsData] = useState([]);
+  const [spuOBO, setSpuOBO] = useState(null);
+  const [selectedWitnesses, setSelectedWitnesses] = useState(null);
 
-  const [userType, setUserType] = useState("");
-  const [formType, setFormType] = useState("");
+  const { staffState } = useStaffContext();
+  const { studentState } = useStudentsContext();
 
-  const params = useParams();
-  const navigate = useNavigate();
-
-  //Toggle view users
-  const toggleUsers = () => {
-    if (showUsers.isShow) {
-      setShowUsers({ isShow: false });
-    } else {
-      setShowUsers({ isShow: true });
+  const toggleWitnessSelection = (id) => {
+    if (selectedWitnesses.includes(id)) {
+      setSelectedUser(selectedWitnesses.filter);
     }
   };
 
-  //Filter users
-  const handleFilterUsers = (searchQuery, data) => {
-    const searchResults = [];
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].name?.toString() && data[i].name?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(data[i]);
-      } else if (data[i].surname?.toString() && data[i].surname?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(data[i]);
-      } else if (data[i].staff_no?.toString() && data[i].staff_no?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(data[i]);
-      } else if (data[i].student_number?.toString() && data[i].student_number?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
-        searchResults.push(data[i]);
+  const getSupportAdmins = (staffState) => {
+    const admins = [];
+
+    for (let i = 0; i < staffState.staffList.length; i++) {
+      if (staffState.staffList[i].userrole === "support_admin") {
+        admins.push(staffState.staffList[i]);
       }
     }
-    setSearchResultsData([...searchResults]);
+
+    return admins;
   };
 
-  /*Handle assign device
+  const getSupportTechs = (staffState) => {
+    const technicians = [];
+
+    for (let i = 0; i < staffState.staffList.length; i++) {
+      if (staffState.staffList[i].userrole === "support_technician") {
+        technicians.push(staffState.staffList[i]);
+      }
+    }
+
+    return technicians;
+  };
+
+  useEffect(() => {
+    getUserType(selectedUser?.userId, setUserType);
+    setSupportAdmins(getSupportAdmins(staffState));
+    setSupportTechnician(getSupportTechs(staffState));
+  }, [selectedUser]);
+
+  return (
+    <div className="">
+      <div className="flex flex-col gap-2 -z-50">
+        <span className="font-semibold p-2">Assign User</span>
+
+        <UserSelectInput userData={[...staffState?.staffList, ...studentState?.studentsList]} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+
+        {/***/}
+        {userType && userType === "Student" ? (
+          <div className="flex flex-col gap-5">
+            <div>
+              <span className="w-fit text-zinc-500 bg-white">SPU OBO (Choose 1)</span>
+              <div className="flex flex-col">
+                {supportAdmins &&
+                  supportAdmins.map((admin) => (
+                    <div className="flex gap-2" key={admin.id}>
+                      <input
+                        type="radio"
+                        name="AccountStatus"
+                        id=""
+                        disabled={null}
+                        value={"Active"}
+                        onChange={(e) => {
+                          setSpuOBO(admin);
+                          console.log(admin);
+                        }}
+                      />
+                      <span className="text-sm text-zinc-600">{`${admin.name} ${admin.surname}`}</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+            <div>
+              <span className="w-fit text-zinc-500 bg-white">Witnesses (Choose 2)</span>
+              <div className="flex flex-col">
+                {supportTechnicians &&
+                  supportTechnicians.map((witness) => (
+                    <div className="flex gap-2" key={witness.id}>
+                      <input
+                        type="radio"
+                        name="AccountStatus"
+                        id=""
+                        disabled={null}
+                        value={"Active"}
+                        onChange={(e) => {
+                          setSpuOBO(witness);
+                          console.log(witness);
+                        }}
+                      />
+                      <span className="text-sm text-zinc-600">{`${witness.name} ${witness.surname}`}</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {/**/}
+
+        <div className="flex justify-end p-3 gap-8">
+          <button className="flex  rounded-sm p-3" onClick={onCanel}>
+            Cancel
+          </button>
+          {selectedUser?.fullName ? (
+            <div onClick={() => onCanel()}>
+              <OpenFormVerification userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default IssueDevice;
+
+/*Handle assign device
   const handleAssignDevice = () => {
     if (!selectedUser.fullName) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
@@ -79,77 +172,3 @@ function IssueDevice({ onCanel, onSubmit, userData, deviceId, setShowToast }) {
 
     return onSubmit();
   };*/
-
-  useEffect(() => {
-    if (userData) {
-      setSearchResultsData(userData);
-    }
-  }, [userData]);
-  return (
-    <div className="">
-      <div className="flex flex-col gap-2 -z-50">
-        <span className="font-semibold p-2">Assign User</span>
-
-        <div className="flex flex-col border-t-2 border-b-2 py-5 ">
-          <div
-            className="text-input col-span-2"
-            onClick={() => {
-              toggleUsers();
-            }}
-          >
-            <span className="w-fit text-zinc-500 -mt-5 bg-white">User</span>
-            <span>{selectedUser?.fullName ? `${selectedUser.fullName} - ${selectedUser.userId}` : "- Select User -"}</span>
-          </div>
-          <div className={`${showUsers.isShow ? "flex" : "hidden"} flex-col relative  bg-white border border-zinc-300 rounded-md p-2 text-sm`}>
-            <input
-              type="text"
-              name=""
-              className="border outline-none p-1"
-              placeholder="Search here ...."
-              value={searchValue}
-              onChange={(e) => {
-                handleFilterUsers(e.target.value, userData);
-                setSearchValue(e.target.value);
-              }}
-            />
-            <div className="flex flex-col h-[350px] border overflow-auto">
-              {searchResultsData?.map((item) => (
-                <span
-                  key={item.id}
-                  className="hover:bg-blue-100 p-1"
-                  onClick={() => {
-                    setSelectedUser({
-                      fullName: `${item.name} ${item.surname}`,
-                      userId: item.staff_no || item.student_number,
-                      userType: (item.staff_no ? "Staff" : "") || (item.student_number ? "Student" : ""),
-                    });
-
-                    toggleUsers();
-                  }}
-                >{`${item.name} ${item.surname} - ${item?.staff_no || item.student_number}`}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div>{/*<TextInput label={"Ticket Number"} value={null} isDisabled={false} maxLength={12} setOnChange={null} />*/}</div>
-
-        <div className="flex justify-end p-3 gap-8">
-          <button className="flex  rounded-sm p-3" onClick={onCanel}>
-            Cancel
-          </button>
-          {selectedUser?.fullName ? (
-            <div onClick={() => onCanel()}>
-              <OpenFormVerification userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
-            </div>
-          ) : (
-            ""
-          )}
-
-          {/*<SubmitButton text={"Submit"} onClick={handleAssignDevice} />*/}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default IssueDevice;

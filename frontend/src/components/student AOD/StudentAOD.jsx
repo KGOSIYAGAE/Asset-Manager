@@ -2,8 +2,24 @@ import React, { useEffect, useState } from "react";
 import { getMonthName, getTodayFullDate } from "../../utils/helperMethods";
 import { getStudent, getStudentDetails } from "../../services/api/students/Students.Api";
 import { getAllDeviceDetails } from "../../services/api/devices/Device.Api";
+import { FaRedo } from "react-icons/fa";
+import SubmitButton from "../buttons/SubmitButton";
+import { getUser } from "../../services/api/staff/Staff.Api";
+import Modal from "react-modal";
+import SiganturePad from "../cards/signaturePad/SiganturePad";
+import { getLoggedInUser } from "../../utils/getLoggedInUser";
 
 function StudentAOD({ deviceId, handleOnPrint, student_no }) {
+  const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, user_id: null });
+
+  const [ictStaffTrimmedDataURL, setIctStaffTrimmedDataURL] = useState(null);
+  const [studentTrimmedDataURL, setStudentTrimmedDataURL] = useState(null);
+  const [witness1TrimmedDataURL, setWitness1TrimmedDataURL] = useState(null);
+  const [witness2TrimmedDataURL, setWitness2TrimmedDataURL] = useState(null);
+
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [loggedInUserDetails, setLoggedInUserDetails] = useState();
+
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -17,9 +33,17 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
     }
   };
 
+  //Get Logged In User details
+  const getLoggedInUserDetails = () => {
+    if (loggedInUser?.id) {
+      getUser(loggedInUser?.id, setLoggedInUserDetails);
+    }
+  };
+
   //Get device data based on device id
   const setDetails = (deviceData) => {
     setDeviceDetails(...deviceData);
+    getLoggedInUserDetails();
   };
 
   const getDeviceDetails = () => {
@@ -36,13 +60,14 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
     setMonth(getMonthName(month));
     getData();
     getDeviceDetails();
+    setLoggedInUser(getLoggedInUser());
 
     //handleOnPrint();
   }, []);
 
   return (
-    <div className="printable ">
-      <div class="page-header">
+    <div className="printable h-[1200px]">
+      <div class="page-header ">
         <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
         <div class="page-address">
           <span class="address-heading">SOL PLAATJE UNIVERSITY</span>
@@ -59,7 +84,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
         <span class="body-title">ACKNOWLEDGEMENT OF DEBT</span>
       </div>
 
-      <div className="page-body">
+      <div className="page-body ">
         <div className="page-content">
           <span className=""> I, the undersigned,</span>
           <div class="content">
@@ -149,25 +174,180 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
         </div>
         {/*<br>*/}
       </div>
-      <div class="page-footer">
-        <div class="left">
-          <p class="boo">…………………………………………</p>
-          <p>Obo SPU</p>
-          <p class="boo">…………………………………………</p>
-          <p>Witness</p>
+      <div class="page-footer ">
+        <div className="w-full">
+          <div className=" flex justify-between ">
+            {/**/}
+            <div className="flex flex-col ">
+              <div className=" flex justify-between ">
+                <div className={` col-span-1 flex  ${ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64 ? "justify-start" : "items-center"}`}>
+                  {loggedInUserDetails?.image_base64 || ictStaffTrimmedDataURL ? (
+                    <div>
+                      <div className=" flex justify-between ">
+                        <div className="flex flex-col items-center justify-center ">
+                          <img alt="signature" src={ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64} className="w-[180px] " />
+                        </div>
+                        <button
+                          onClick={() => {
+                            console.log(loggedInUserDetails?.staff_no);
+                            setOpenModal({
+                              isShown: true,
+                              isShown: true,
+                              trimmedDataURL: ictStaffTrimmedDataURL,
+                              setTrimmedDataURL: setIctStaffTrimmedDataURL,
+                              user_id: loggedInUserDetails?.staff_no,
+                            });
+                          }}
+                        >
+                          <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
+                            <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
+                          </div>
+                        </button>
+                      </div>
+                      <div className="flex flex-col -mt-3">
+                        <span class="">.............................................................</span>
+                        <span class="">OBO SPU</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col">
+                      <div>
+                        <SubmitButton
+                          text={"Add signature"}
+                          onClick={() => {
+                            setOpenModal({
+                              isShown: true,
+                              isShown: true,
+                              trimmedDataURL: ictStaffTrimmedDataURL,
+                              setTrimmedDataURL: setIctStaffTrimmedDataURL,
+                              user_id: loggedInUserDetails?.staff_no,
+                            });
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-col ">
+                        <span class="">.............................................................</span>
+                        <span class="">OBO SPU</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/**/}
+            <div className="flex flex-col ">
+              <div className=" flex justify-between ">
+                <div className={` col-span-1 flex  ${studentTrimmedDataURL || studentData?.image_base64 ? "justify-start" : "items-center"}`}>
+                  {studentData?.image_base64 || studentTrimmedDataURL ? (
+                    <div>
+                      <div className=" flex justify-between ">
+                        <div className="flex flex-col items-center justify-center ">
+                          <img alt="signature" src={studentTrimmedDataURL || studentData?.image_base64} className="w-[180px] " />
+                        </div>
+                        <button
+                          onClick={() => {
+                            setOpenModal({
+                              isShown: true,
+                              isShown: true,
+                              trimmedDataURL: studentTrimmedDataURL,
+                              setTrimmedDataURL: setStudentTrimmedDataURL,
+                              user_id: studentData?.student_number,
+                            });
+                          }}
+                        >
+                          <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
+                            <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
+                          </div>
+                        </button>
+                      </div>
+                      <div className="flex flex-col -mt-3">
+                        <span class="">.............................................................</span>
+                        <span class="">Student</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col">
+                      <div>
+                        <SubmitButton
+                          text={"Add signature"}
+                          onClick={() => {
+                            console.log(studentData?.student_number);
+                            setOpenModal({
+                              isShown: true,
+                              isShown: true,
+                              trimmedDataURL: studentTrimmedDataURL,
+                              setTrimmedDataURL: setStudentTrimmedDataURL,
+                              user_id: studentData?.student_number,
+                            });
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-col ">
+                        <span class="">.............................................................</span>
+                        <span class="">Student</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/**/}
+          </div>
         </div>
-        <div class="right">
-          <p class="boo">…………………………………………</p>
-          <p>Student</p>
-          <p class="boo">…………………………………………</p>
-          <p>Witness</p>
+        <div className="w-full">
+          <div className=" flex justify-between ">
+            <span class="">…………………………………………</span>
+            <span class="">…………………………………………</span>
+          </div>
+          <div className=" flex justify-between ">
+            <span class="">Witness 1</span>
+            <span class="w-[192px] ">Witness 2</span>
+          </div>
         </div>
       </div>
+      <Modal
+        isOpen={openModal.isShown}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setOpenModal({ isShown: false });
+        }}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+        }}
+        contentLabel=""
+        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-auto"
+      >
+        <SiganturePad
+          lablel={"Signature"}
+          trimmedDataURL={openModal?.trimmedDataURL}
+          setTrimmedDataURL={openModal?.setTrimmedDataURL}
+          user_id={openModal?.user_id}
+          onClose={() => {
+            setOpenModal({ isShown: false });
+          }}
+        />
+      </Modal>
     </div>
   );
 }
 
 export default StudentAOD;
+
+/*
+<div class="">
+          <p class="">…………………………………………</p>
+          <p>Obo SPU</p>
+          <p class="">…………………………………………</p>
+          <p>Witness</p>
+        </div>
+        <div class="">
+          <p class="">…………………………………………</p>
+          <p>Student</p>
+          <p class="">…………………………………………</p>
+          <p>Witness</p>
+        </div>
+*/
+
 /*
 <div class="printable">
       <div class="page-header">

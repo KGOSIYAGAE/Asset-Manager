@@ -88,7 +88,18 @@
 
   /*Student AOD Start*/
   .printable {
-    @apply w-full h-[1150px] bg-white text-black text-[12px];
+    @apply w-full  bg-white text-black text-[12px] p-1;
+  }
+
+  @media print {
+    .noprint {
+      visibility: hidden;
+    }
+
+    .bg-on-print {
+      @apply bg-slate-300 !important;
+      print-color-adjust: exact;
+    }
   }
 
   .page-header {
@@ -96,7 +107,7 @@
   }
 
   .page-logo {
-    @apply w-28 h-28;
+    @apply w-[120px] h-[120px];
   }
   .page-address {
     @apply flex flex-col text-[10px];
@@ -114,7 +125,7 @@
   }
 
   .page-body {
-    @apply h-[710px];
+    @apply h-[910px];
   }
 
   .body-title {
@@ -137,7 +148,7 @@
     /*display: flex;
     border: 1px green solid;
     padding-top: 30px;*/
-    @apply flex mt-24;
+    @apply flex flex-col gap-5;
   }
 
   .left {

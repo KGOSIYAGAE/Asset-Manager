@@ -11,21 +11,26 @@ export const deviceStatus = [
   },
   {
     id: 3,
-    name: "Sold",
+    name: "Loaned",
     description: "",
   },
   {
     id: 4,
-    name: "Student-Return",
+    name: "Sold",
     description: "",
   },
   {
     id: 5,
-    name: "Maintenance",
+    name: "Student-Return",
     description: "",
   },
   {
     id: 6,
+    name: "Maintenance",
+    description: "",
+  },
+  {
+    id: 7,
     name: "Lost",
     description: "",
   },

@@ -52,7 +52,7 @@ function AddEditStudent({ path }) {
   const clearForm = () => {
     setName("");
     setSurname("");
-    setStudent_no("");
+    setStudentNumber("");
     setIdNumber("");
     setPhone_Number("");
     setEmail("");
@@ -124,12 +124,13 @@ function AddEditStudent({ path }) {
     setPhone_Number(studentData[0].phone_number);
     setEmail(studentData[0].email);
     setFaculty(studentData[0].faculty);
-    setCourse(studentData[0].course);
+    setCourse(studentData[0].course_name);
     setCourse_Id(studentData[0].course_id);
     setCourse_Code(studentData[0].course_code);
     setIsActive(studentData[0].acc_status);
     setLaptopDetails(studentData[0].laptop);
     setRegistration_Date(handleTimeStamp(studentData[0].registration_date));
+    console.log(handleTimeStamp(studentData[0].registration_date));
   };
 
   //Get User API Call

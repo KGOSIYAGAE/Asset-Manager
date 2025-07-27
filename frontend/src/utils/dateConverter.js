@@ -16,9 +16,7 @@ function parseDateString(dateString) {
 
 export const handleTimeStamp = (timestamp) => {
   if (timestamp) {
-    const localDate = new Date(timestamp).toLocaleDateString("en-ZA", {
-      timeZone: "Africa/Johannesburg",
-    });
+    const localDate = new Date(timestamp).toISOString().split("T")[0];
 
     return localDate;
   }

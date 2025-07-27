@@ -52,6 +52,20 @@ const createSignature = async (req, res) => {
       return res.status(400).json({ message: "Image Base 64 fomart is required", error: true });
     }
 
+    const check_userSignature = "SELECT * FROM signatures WHERE user_id = $1";
+
+    const { rows } = await query(check_userSignature, [user_id]);
+
+    console.log(user_id);
+
+    if (rows.length > 0) {
+      const updateSignature = "UPDATE signatures SET image_base64=$1 WHERE user_id=$2";
+      const VALUES = [image_base64];
+      const { rowCount } = await query(updateSignature, [...VALUES, user_id]);
+
+      return res.status(400).json({ message: "signature updated.", error: false });
+    }
+
     const create_signature_query = "INSERT INTO signatures (user_id,image_base64) VALUES ($1, $2)";
     const VALUES = [user_id, image_base64];
 

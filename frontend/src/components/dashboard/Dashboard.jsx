@@ -140,6 +140,10 @@ function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber,
             <OverdueLoan loanDueState={loanDueState} label={"Over Due Loans & Upgraded Due"} />
           </div>
           {/* */}
+          <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
+            <OverdueLoan loanDueState={loanDueState} label={"Over Due Loans & Upgraded Due"} />
+          </div>
+          {/* */}
           <div className="bg-white flex flex-col col-span-1 row-span-1 rounded-md shadow-lg border p-2">
             <StudentByFaculty students={students} />
           </div>

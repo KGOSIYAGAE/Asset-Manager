@@ -20,6 +20,8 @@ function SiganturePad({ lablel, trimmedDataURL, setTrimmedDataURL, user_id, onCl
 
     setUserSignature(user_id, image);
 
+    ///console.log(user_id);
+
     return onClose();
   };
 

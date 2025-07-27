@@ -33,6 +33,7 @@ import DevicesOnLoan from "./pages/devices/DevicesOnLoan";
 import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
 import FormPage from "./pages/formPage/FormPage";
 import { ToastProvider } from "./context/ToastContext";
+import DevicesDueReturnPage from "./pages/devices/DevicesDueReturnPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -214,6 +215,10 @@ function App() {
         {
           path: "/devices/device-due-upgrade",
           element: <DevicesDueUpgrade path={"device-due-upgrade"} />,
+        },
+        {
+          path: "/devices/device-due-return",
+          element: <DevicesDueReturnPage path={"device-due-return"} />,
         },
         //Account settings
         {

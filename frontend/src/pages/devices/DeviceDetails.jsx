@@ -18,7 +18,7 @@ import StudentAOD from "../../components/student AOD/StudentAOD";
 import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
 import DeviceLogTable from "../../components/tables/DeviceLogTable";
 import { hasPermission } from "../../utils/getLoggedInUser";
-import { handleCurrency } from "../../utils/helperMethods";
+import { getUserType, handleCurrency } from "../../utils/helperMethods";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -32,7 +32,7 @@ function DeviceDetails({ path }) {
   const [deviceLogs, setDeviceLogs] = useState();
   const params = useParams();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
 
   const [dateCreated, setDateCreated] = useState("");
   const [warrantyEndDate, setWarrantyEndDate] = useState("");
@@ -41,17 +41,6 @@ function DeviceDetails({ path }) {
 
   const navigate = useNavigate();
   let rowNumber = 0;
-
-  //Get user type based on userID
-  const getUserType = (user_id) => {
-    let userId = user_id?.toString();
-
-    if (userId?.length > 5) {
-      return setUserType("Student");
-    } else {
-      return setUserType("Staff");
-    }
-  };
 
   //On View more information on user
   const onViewMore = (user_id) => {
@@ -72,8 +61,17 @@ function DeviceDetails({ path }) {
     if (!id) {
       return console.log("Selected device id not provided");
     }
-    getAllDeviceLogs(id, setDeviceLogs);
+
     getAllDeviceDetails(id, setDetails);
+  };
+
+  const getDeviceLogs = () => {
+    const { id } = params;
+
+    if (!id) {
+      return console.log("Selected device id not provided");
+    }
+    getAllDeviceLogs(id, setDeviceLogs);
   };
 
   const handleOnPrint = () => {
@@ -89,8 +87,14 @@ function DeviceDetails({ path }) {
   };
 
   useEffect(() => {
+    getDeviceLogs();
+  }, []);
+
+  useEffect(() => {
     getDeviceDetails();
-    getUserType(deviceDetails?.user_id);
+
+    //Get user type based on userID
+    getUserType(deviceDetails?.user_id, setUserType);
 
     if (!staffState || !studentState) {
       console.log("No data");
@@ -118,7 +122,7 @@ function DeviceDetails({ path }) {
         <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
           <div className="flex justify-end">
             <div>
-              {deviceDetails?.status === "Assigned" ? (
+              {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
                 <SubmitButton
                   text={"Release User"}
                   onClick={() => {
@@ -257,12 +261,13 @@ function DeviceDetails({ path }) {
         </div>
 
         <div className="flex flex-col col-span-2 gap-5">
-          <div className="flex flex-col items-center justify-center w-2/5 h-2/5 border p-2 gap-4 rounded-md shadow-md">
-            <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="sm:w-[200px] md:w-[150px] sm:h-[150px] " />
+          <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 border  rounded-md shadow-md">
+            <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="h-[300px]" />
           </div>
-          {deviceDetails?.status === "Assigned" ? (
+          {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
             <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md">
-              <span className="heading-text">Assigned User</span>
+              {deviceDetails?.status === "Loaned" ? <span className="heading-text">Loaned User</span> : <span className="heading-text">Assigned User</span>}
+
               <div>
                 <div className="flex justify-between bg-zinc-50 p-2">
                   <span className="text-sm">Full name</span>
@@ -316,7 +321,6 @@ function DeviceDetails({ path }) {
               getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
-            userData={[...staffState?.staffList, ...studentState?.studentsList]}
             deviceId={deviceDetails?.id}
             setShowToast={setShowToast}
           />
@@ -329,7 +333,6 @@ function DeviceDetails({ path }) {
               getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
-            data={[...staffState?.staffList, ...studentState?.studentsList]}
             setShowToast={setShowToast}
           />
         ) : openModal.type === "Student" ? (
@@ -350,19 +353,22 @@ function DeviceDetails({ path }) {
           setShowToast({ isShow: false });
         }}
       />
-      {hasPermission("assign") && (
-        <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
-          <button
-            className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
-            onClick={() => {
-              setOpenModal({ isShown: true, type: userType, data: "hello" });
-            }}
-          >
-            <MdLocalPrintshop size={25} />
-          </button>
-          <button className="flex justify-center items-center bg-cyan-500 text-white p-2 rounded-md">Save PDF</button>
-        </div>
-      )}
+      {hasPermission("assign") &&
+        (deviceDetails?.status === "Assigned" ? (
+          <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
+            <button
+              className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
+              onClick={() => {
+                setOpenModal({ isShown: true, type: userType, data: "hello" });
+              }}
+            >
+              <MdLocalPrintshop size={25} />
+            </button>
+            <button className="flex justify-center items-center bg-cyan-500 text-white p-2 rounded-md">Save PDF</button>
+          </div>
+        ) : (
+          ""
+        ))}
     </div>
   );
 }
