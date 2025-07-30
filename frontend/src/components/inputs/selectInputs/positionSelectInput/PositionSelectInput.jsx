@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function PositionSelectInput({ label, positionId, options, optionName, isDisabled, setOnChange, onChoose }) {
+function PositionSelectInput({ value, label, positionId, options, optionName, isDisabled, setOnChange, onChoose }) {
   const fnc = (option, name) => {
     return <option key={option.id}>{option.title}</option>;
   };
@@ -11,14 +11,15 @@ function PositionSelectInput({ label, positionId, options, optionName, isDisable
     for (let i = 0; i < options?.length; i++) {
       if (options[i].title === position_title) {
         setInputValue(options[i].id);
+
         return options[i].id;
       }
     }
   };
 
-  const handleGetpositionTitle = (position_id) => {
+  const handleGetpositionTitle = (title) => {
     for (let i = 0; i < options?.length; i++) {
-      if (options[i].id === position_id) {
+      if (options[i].title === title) {
         setOnChange(options[i].title);
         return setInputValue(options[i].title);
       }
@@ -26,8 +27,9 @@ function PositionSelectInput({ label, positionId, options, optionName, isDisable
   };
 
   useEffect(() => {
-    handleGetpositionTitle(positionId);
-  }, [positionId, handleGetpositionTitle]);
+    onChoose(handleGetPositionId(value));
+    handleGetpositionTitle(value);
+  }, [value]);
 
   return (
     <div className="text-input col-span-2">

@@ -18,7 +18,7 @@ import AddEditDevice from "./components/forms/AddEditDevice";
 import DeviceDetails from "./pages/devices/DeviceDetails";
 import Login from "./pages/login/Login";
 import { useEffect, useState } from "react";
-import { getLoggedInUser } from "./utils/getLoggedInUser";
+import { getLoggedInUser, isTokenExpired } from "./utils/getLoggedInUser";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import { InvoiceContextProvider } from "./context/InvoicesContext";
 import { CourseContextProvider } from "./context/CoursesContext";
@@ -72,22 +72,6 @@ function App() {
         </div>
       </div>
     );
-  };
-
-  //Check if token has expired
-  const isTokenExpired = (token) => {
-    if (!token) {
-      return true;
-    }
-
-    try {
-      const decodedToken = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      return decodedToken.exp < currentTime;
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      return true;
-    }
   };
 
   const PrivateRoutes = ({ element: Element, allowedRoles }) => {

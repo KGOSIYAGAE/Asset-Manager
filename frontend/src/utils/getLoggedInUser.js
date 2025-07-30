@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 export const getLoggedInUser = () => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const user = {
@@ -9,6 +11,7 @@ export const getLoggedInUser = () => {
   return user;
 };
 
+//Cehck if user has permissions
 export const hasPermission = (permission) => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const userRole = currentUser?.role;
@@ -41,4 +44,20 @@ export const hasPermission = (permission) => {
   }
 
   return false;
+};
+
+//Check if token has expired
+export const isTokenExpired = (token) => {
+  if (!token) {
+    return true;
+  }
+
+  try {
+    const decodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    return decodedToken.exp < currentTime;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return true;
+  }
 };

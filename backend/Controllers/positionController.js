@@ -3,7 +3,7 @@ const { query } = require("../util/pg_dbConnection");
 //Get all positions
 const getAllPositions = async (req, res) => {
   try {
-    const allPositionsQuery = "SELECT * FROM positions";
+    const allPositionsQuery = "SELECT * FROM positions ORDER BY title ASC";
 
     const { rowCount, rows } = await query(allPositionsQuery);
 

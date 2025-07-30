@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 //Token method
 const createToken = (email) => {
-  return jwt.sign({ email }, process.env.SECRET, { expiresIn: "7200s" });
+  return jwt.sign({ email }, process.env.SECRET, { expiresIn: "3600s" });
 };
 
 //Password hashing

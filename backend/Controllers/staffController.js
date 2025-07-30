@@ -234,9 +234,6 @@ const updateStaff = async (req, res) => {
     if (!start_date) {
       return res.status(400).json({ message: "Start date is required", error: true });
     }
-    if (!endDate) {
-      return res.status(400).json({ message: "End date is required", error: true });
-    }
 
     const update_staff_query =
       "UPDATE staff SET name=$1, surname=$2, phone_number=$3, email=$4, staff_no=$5, contract_type=$6, acc_status=$7, position_id=$8, department_id=$9, start_date=$10, end_date=$11 WHERE id = $12";

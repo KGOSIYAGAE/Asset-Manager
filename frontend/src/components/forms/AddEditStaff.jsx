@@ -238,6 +238,7 @@ function AddEditStaff({ path }) {
             <PositionSelectInput
               label={"Position"}
               positionId={position_id}
+              value={position_name}
               options={positionState?.positionList}
               optionName={"title"}
               isDisabled={isDisabled}

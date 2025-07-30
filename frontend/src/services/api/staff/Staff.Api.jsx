@@ -20,7 +20,6 @@ export const getStaffData = async (staffDispatch) => {
 
 //Add staff API CALL
 export const addStaff = async (userData, setShowToast) => {
-  console.log(userData);
   try {
     const response = await axiosInstance.post("/staff/create-staff", userData);
 
@@ -53,6 +52,7 @@ export const updateStaff = async (id, userData, setShowToast) => {
     if (error.response.data & error.response.error) {
       return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
+      console.log(error);
       return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
     }
   }

@@ -32,4 +32,18 @@ axiosInstance.interceptors.request.use((config) => {
     return Promise.reject(error);
   };
 
+//Configure axios instance to automatically check for status if the token
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      sessionStorage.clear();
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;

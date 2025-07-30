@@ -19,60 +19,55 @@ import { devicesTableHeaders } from "../../utils/TableHeaders";
 import PieCategory from "../charts/pieChart/PieCategory";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import DueReturnLaptopsTable from "../tables/DueReturnLaptopsTable";
+import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 
 function AdminDashboard({ devices, students, deviceNumber, staffNumber, studentsNumber, devicesLogs, loanDueState, path }) {
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
       <div className="flex flex-col gap-5">
-        {" "}
         <div className="grid grid-cols-4 grid-rows-1 gap-5">
           {/* */}
-          <div className="h-[150px] bg-white flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
-            <span className="font-semibold text-sm">Staff Accounts</span>
-            <div className="flex flex-row justify-between items-end">
-              <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
-                <FaPeopleGroup size={30} className="text-blue-900" />
-              </div>
-              <span className="font-semibold text-4xl">{staffNumber}</span>
+          <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
+              <FaPeopleGroup size={25} className="text-blue-900" />
             </div>
-            <div className="flex justify-between">
-              <Link to={"/users/staff"}>
-                <span className="text-sm text-blue-900 underline cursor-pointer">View more</span>
-              </Link>
-            </div>
-          </div>
-          {/* */}
-          <div className="h-[150px] bg-white flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
-            <span className="font-semibold text-sm">Students Accounts</span>
-            <div className="flex flex-row justify-between items-end">
-              <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
-                <PiStudentFill size={30} className="text-blue-900" />
-              </div>
-              <span className="font-semibold text-4xl">{studentsNumber}</span>
-            </div>
-            <div className="flex justify-between">
-              <Link to={"/users/students"}>
-                <span className="text-sm text-blue-900 underline cursor-pointer">View more</span>
-              </Link>
-            </div>
-          </div>
-          {/* */}
-          <div className="h-[150px] bg-white flex flex-col col-span-1  rounded-md shadow-lg p-4 gap-4 border">
-            <span className="font-semibold text-sm">Number of Devices</span>
-            <div className="flex flex-row justify-between items-end">
-              <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
-                <MdDevices size={30} className="text-blue-900" />
-              </div>
-              <span className="font-semibold text-4xl">{deviceNumber}</span>
-            </div>
-            <div className="flex justify-between ">
-              <Link to={"/devices"}>
-                <span className="text-sm text-blue-900 underline cursor-pointer">View more</span>
-              </Link>
+            <div className="flex flex-col g">
+              <span className="text-sm text-zinc-500 ">Total Staff</span>
+              <span className="font-bold text-xl">{staffNumber}</span>
             </div>
           </div>
 
+          <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
+              <PiStudentFill size={25} className="text-blue-900" />
+            </div>
+            <div className="flex flex-col g">
+              <span className="text-sm text-zinc-500">Total Students</span>
+              <span className="font-bold text-xl">{studentsNumber}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
+              <MdDevices size={25} className="text-blue-900" />
+            </div>
+            <div className="flex flex-col g">
+              <span className="text-sm text-zinc-500">Total Devices</span>
+              <span className="font-bold text-xl">{deviceNumber}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
+              <HiOutlineWrenchScrewdriver size={25} className="text-blue-900" />
+            </div>
+            <div className="flex flex-col g">
+              <span className="text-sm text-zinc-500">Total Repairs</span>
+              <span className="font-bold text-xl">0</span>
+            </div>
+          </div>
           {/* */}
+
           <div className=""></div>
         </div>
         {/*////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
@@ -149,3 +144,61 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
 }
 
 export default AdminDashboard;
+
+{
+  /*
+          <div className="h-[150px] bg-white flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
+            <span className="font-semibold text-sm">Total Staff</span>
+            <div className="flex flex-row justify-between items-end">
+              <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
+                <FaPeopleGroup size={30} className="text-blue-900" />
+              </div>
+              <span className="font-semibold text-4xl">{staffNumber}</span>
+            </div>
+            <div className="flex justify-between">
+              <Link to={"/users/staff"}>
+                <span className="text-sm text-blue-900 underline cursor-pointer">View more</span>
+              </Link>
+            </div>
+          </div>
+          {/* */
+}
+
+{
+  /* 
+          <div className="h-[150px] bg-white flex flex-col col-span-1 rounded-md shadow-lg p-4 gap-4 border">
+            <span className="font-semibold text-sm">Students Accounts</span>
+            <div className="flex flex-row justify-between items-end">
+              <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
+                <PiStudentFill size={30} className="text-blue-900" />
+              </div>
+              <span className="font-semibold text-4xl">{studentsNumber}</span>
+            </div>
+            <div className="flex justify-between">
+              <Link to={"/users/students"}>
+                <span className="text-sm text-blue-900 underline cursor-pointer">View more</span>
+              </Link>
+            </div>
+          </div>
+          {/* */
+}
+
+{
+  /* 
+          <div className="h-[150px] bg-white flex flex-col col-span-1  rounded-md shadow-lg p-4 gap-4 border">
+            <span className="font-semibold text-sm">Number of Devices</span>
+            <div className="flex flex-row justify-between items-end">
+              <div className="w-[40px] h-[40px] flex rounded-md bg-zinc-200 p-1 border">
+                <MdDevices size={30} className="text-blue-900" />
+              </div>
+              <span className="font-semibold text-4xl">{deviceNumber}</span>
+            </div>
+            <div className="flex justify-between ">
+              <Link to={"/devices"}>
+                <span className="text-sm text-blue-900 underline cursor-pointer">View more</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* */
+}

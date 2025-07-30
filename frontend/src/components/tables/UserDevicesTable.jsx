@@ -12,9 +12,7 @@ function UserDevicesTable({ deviceList }) {
     navigate(`/devices/device-details/${id}`);
   };
 
-  useEffect(() => {
-    console.log();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
@@ -31,8 +29,10 @@ function UserDevicesTable({ deviceList }) {
             <th>Make</th>
             <th>Model</th>
             <th>Category</th>
+            <th>Status</th>
             <th>Date Issued</th>
-            <th>Loan End Date</th>
+            <th>Return date</th>
+            <th>Next upgrade date</th>
             <th>Action</th>
           </thead>
           <tbody className="">
@@ -49,6 +49,7 @@ function UserDevicesTable({ deviceList }) {
                     <td>{device.make}</td>
                     <td>{device.model}</td>
                     <td>{device.category}</td>
+                    <td>{device.status}</td>
                     <td>
                       {(() => {
                         return handleTimeStamp(device.date_issued);
@@ -56,7 +57,12 @@ function UserDevicesTable({ deviceList }) {
                     </td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.loan_end_date);
+                        return handleTimeStamp(device.return_date);
+                      })()}
+                    </td>
+                    <td>
+                      {(() => {
+                        return handleTimeStamp(device.next_upgrade_date);
                       })()}
                     </td>
                     <td>
