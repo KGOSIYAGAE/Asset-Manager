@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mui/x-charts": "^7.23.1",
+    "@mui/x-data-grid": "^8.9.1",
     "@mui/x-date-pickers": "^7.22.2",
     "@toast-ui/chart": "^4.6.1",
     "@toast-ui/react-chart": "^4.7.1",

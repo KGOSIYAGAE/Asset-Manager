@@ -71,9 +71,9 @@ function UserProfile({ path }) {
     setStaff_no(userDetails.staff_no);
     setPhone_Number(userDetails.phone_number);
     setEmail(userDetails.email);
-    setPosition_name(userDetails.position);
+    setPosition_name(userDetails.title);
     setPosition_id(userDetails.position_id);
-    setDepartment_name(userDetails.department);
+    setDepartment_name(userDetails.department_name);
     setDepartment_id(userDetails.department_id);
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
@@ -190,7 +190,7 @@ function UserProfile({ path }) {
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
       <span className="text-sm">
-        <b>Users /</b> {path}
+        <b>Users </b> {path}
       </span>
       <div className="flex justify-between">
         <span className="heading-text">Account Settings</span>
@@ -233,6 +233,7 @@ function UserProfile({ path }) {
               <PositionSelectInput
                 label={"Position"}
                 positionId={position_id}
+                value={position_name}
                 options={positionState?.positionList}
                 optionName={"title"}
                 isDisabled={isDisabled}

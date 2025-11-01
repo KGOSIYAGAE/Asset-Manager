@@ -118,7 +118,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
           <div className="w-1/5 text-sm col-span-1 p-1  border  border-black black-t-border">{""}</div>
         </div>*/}
         <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">STAFF LAPTOP ISSUE FORM</span>
+          <span className="text-base font-bold">STAFF DEVICE ISSUE FORM</span>
           <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
         </div>
 

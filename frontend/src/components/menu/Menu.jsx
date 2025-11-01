@@ -9,6 +9,7 @@ import { GiOrganigram } from "react-icons/gi";
 import { FaUsersGear } from "react-icons/fa6";
 import { CgInsights } from "react-icons/cg";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
+import { FaFileInvoice } from "react-icons/fa";
 
 function Menu({ isMinimized }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
@@ -141,6 +142,17 @@ function Menu({ isMinimized }) {
               </Link>
             </div>
           </div>
+          {/**/}
+
+          {/* */}
+          <Link to={"/home"}>
+            <div className="menu-items ">
+              <div className="bg-zinc-100 rounded-md p-2">
+                <FaFileInvoice size={18} className="" />
+              </div>
+              {isMinimized ? "" : <span className="">Vendors & Invoices</span>}
+            </div>
+          </Link>
           {/**/}
 
           {/*Organization Structure*/}

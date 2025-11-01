@@ -108,8 +108,11 @@ export const addDevice = async (deviceData, setShowToast) => {
 
 //bulk add devices api
 export const bulkAddDevice = async (devicesData, setShowToast, onClose) => {
+  console.log(devicesData.devices[0].warranty_end_date);
+
   try {
     const response = await axiosInstance.post("/devices/bulk-add-devices/", devicesData);
+
     if (response.data) {
       onClose();
       return setShowToast({ isShown: true, type: "success", message: response.data.message });

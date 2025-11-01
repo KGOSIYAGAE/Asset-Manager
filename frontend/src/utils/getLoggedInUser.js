@@ -21,7 +21,7 @@ export const hasPermission = (permission) => {
       can: ["create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign"],
     },
     support_technician: {
-      can: ["create", "edit", "view", "support-dash", "assign"],
+      can: ["create", "edit", "view", "support-tech-dash", "assign"],
     },
     networks_admin: {
       can: ["create", "edit", "delete", "view", "networks-dash", "view-logs", "bulk-create", "export", "assign"],

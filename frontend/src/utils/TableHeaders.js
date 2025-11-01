@@ -57,7 +57,7 @@ export const studentsTableHeaders = [
 export const devicesTableHeaders = [
   { field: "asset_tag", headerName: "Asset Tag", width: 100 },
   { field: "make", headerName: "Make", width: 100 },
-  { field: "model", headerName: "Model", width: 100 },
+  { field: "model", headerName: "Model", width: 130 },
   { field: "serial_no", headerName: "Serial Number", width: 120 },
   { field: "device_condition", headerName: "Condition", width: 110 },
   { field: "status", headerName: "Status", width: 100 },

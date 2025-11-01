@@ -10,7 +10,7 @@ const app = express();
 app.use(cors({ origin: "*" }));
 
 //Determines what size file can be bulk added.
-app.use(express.json({ limit: "100mb" }));
+app.use(express.json({ limit: "900mb" }));
 
 /*Update*/
 //Admin

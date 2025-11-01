@@ -222,6 +222,8 @@ const bulkCreateDevice = async (req, res) => {
       device.date_issued,
     ]);
 
+    console.log(VALUES);
+
     const bulk_create_device_query = format(
       "INSERT INTO devices (make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id, user_id, date_issued) VALUES %L",
       VALUES
@@ -316,6 +318,7 @@ const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
     const { fullName, status, userId, date_issued, return_date, upgradeDate } = req.body;
+    console.log(req.body);
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });

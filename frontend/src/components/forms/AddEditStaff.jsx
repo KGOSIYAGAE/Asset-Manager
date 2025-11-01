@@ -122,9 +122,9 @@ function AddEditStaff({ path }) {
 
     setError(null);
 
-    let end_date;
+    /*let end_date;
 
-    /*if (contract_type !== "Permanent") {
+    if (contract_type !== "Permanent") {
       end_date = endDate;
     } else {
       end_date = null;
@@ -141,7 +141,7 @@ function AddEditStaff({ path }) {
       contract_type,
       isActive,
       start_date,
-      endDate: end_date || null,
+      endDate: endDate || null,
     };
 
     if (formType === "add") {
