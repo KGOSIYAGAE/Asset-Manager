@@ -14,20 +14,17 @@ import DateTimePicker from "../inputs/dateTimePicker/DateTimePicker";
 import ToastMessage from "../toastMessage/ToastMessage";
 import { addStaff, getUser, updateStaff } from "../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
-import { getAllDepartments } from "../../services/api/departments/Departments.Api";
-import { useDepartmentContext } from "../../hooks/useDepartmentContext";
+
 import DepartmentSelectInput from "../inputs/selectInputs/departmentSelectInput/DepartmentSelectInput";
-import { getAllPositions } from "../../services/api/positions/Positions.Api";
-import { usePositionContext } from "../../hooks/usePositionsContext";
+
 import PositionSelectInput from "../inputs/selectInputs/positionSelectInput/PositionSelectInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
-import FacultySelectInpute from "../inputs/selectInputs/facultySelectInput/FacultySelectInpute";
+import { positionList } from "../../utils/positionsList";
+import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/FacultySelectInput";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
-  const { departmentState, departmentDispatch } = useDepartmentContext();
-  const { positionState, positionDispatch } = usePositionContext();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -37,11 +34,9 @@ function AddEditStaff({ path }) {
   const [staff_no, setStaff_no] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
-  const [faculty, setFaculty] = useState("");
+  const [faculty_name, setFaculty_name] = useState("");
   const [department_name, setDepartment_name] = useState("");
-  const [department_id, setDepartment_id] = useState(0);
   const [position_name, setPosition_name] = useState("");
-  const [position_id, setPosition_id] = useState(0);
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
   const [start_date, setStart_date] = useState("");
@@ -71,12 +66,9 @@ function AddEditStaff({ path }) {
     setStaff_no(userDetails.staff_no);
     setPhone_Number(userDetails.phone_number);
     setEmail(userDetails.email);
-    setPosition_name(userDetails.title);
-
-    setPosition_id(userDetails.position_id);
+    setFaculty_name(userDetails.faculty_name);
+    setPosition_name(userDetails.position_name);
     setDepartment_name(userDetails.department_name);
-
-    setDepartment_id(userDetails.department_id);
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
@@ -106,16 +98,20 @@ function AddEditStaff({ path }) {
       return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
     }
 
-    if (!department_id) {
-      return setShowToast({ isShown: true, type: "", message: "Department must be provided" });
-    }
-
-    if (!position_id) {
-      return setShowToast({ isShown: true, type: "", message: "Position must be provided" });
-    }
-
     if (!isActive) {
       return setShowToast({ isShown: true, type: "", message: "User status must be provided" });
+    }
+
+    if (!faculty_name) {
+      return setShowToast({ isShown: true, type: "", message: "Faculty must be selected" });
+    }
+
+    if (!department_name) {
+      return setShowToast({ isShown: true, type: "", message: "Department must be selected" });
+    }
+
+    if (!position_name) {
+      return setShowToast({ isShown: true, type: "", message: "Position must be selected" });
     }
 
     if (!start_date) {
@@ -138,8 +134,9 @@ function AddEditStaff({ path }) {
       staff_no,
       phone_number,
       email,
-      department_id,
-      position_id,
+      faculty_name,
+      department_name,
+      position_name,
       contract_type,
       isActive,
       start_date,
@@ -164,6 +161,7 @@ function AddEditStaff({ path }) {
     setStaff_no("");
     setPhone_Number("");
     setEmail("");
+    setFaculty_name("");
     setPosition_name("");
     setDepartment_name("");
     setContract_Type("");
@@ -189,8 +187,6 @@ function AddEditStaff({ path }) {
 
   useEffect(() => {
     getUserDetails();
-    getAllDepartments(departmentDispatch);
-    getAllPositions(positionDispatch);
   }, []);
 
   return (
@@ -224,24 +220,15 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <FacultySelectInpute label={"Faculty"} value={faculty} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setFaculty} />
+            <FacultySelectInput label={"Faculty"} value={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setFaculty_name} />
           </div>
 
           <div className="col-span-2">
-            <DepartmentSelectInput label={"Department"} value={department_name} faculty={faculty} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setDepartment_name} />
+            <DepartmentSelectInput label={"Department"} value={department_name} faculty={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setDepartment_name} />
           </div>
 
           <div className="col-span-2">
-            <PositionSelectInput
-              label={"Position"}
-              positionId={position_id}
-              value={position_name}
-              options={positionState?.positionList}
-              optionName={"title"}
-              isDisabled={isDisabled}
-              setOnChange={setPosition_name}
-              onChoose={setPosition_id}
-            />
+            <PositionSelectInput label={"Position"} value={position_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
           </div>
 
           <div className="col-span-2">

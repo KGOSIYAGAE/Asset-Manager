@@ -22,8 +22,6 @@ import { getLoggedInUser, isTokenExpired } from "./utils/getLoggedInUser";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import { InvoiceContextProvider } from "./context/InvoicesContext";
 import { CourseContextProvider } from "./context/CoursesContext";
-import { DepartmentContextProvider } from "./context/departmentsContext";
-import { PositionsContextProvider } from "./context/PositionsContext";
 import { LogsContextProvider } from "./context/LogsContext";
 import { LoanDueContextProvider } from "./context/LoanDueContext";
 import StudentDetails from "./pages/users/students/StudentDetails";
@@ -250,23 +248,19 @@ function App() {
   return (
     <LogsContextProvider>
       <SearchContextProvider>
-        <DepartmentContextProvider>
-          <PositionsContextProvider>
-            <InvoiceContextProvider>
-              <CourseContextProvider>
-                <LoanDueContextProvider>
-                  <DevicesContextProvider>
-                    <StudentsContextProvider>
-                      <StaffContextProvider>
-                        <RouterProvider router={router} />
-                      </StaffContextProvider>
-                    </StudentsContextProvider>
-                  </DevicesContextProvider>
-                </LoanDueContextProvider>
-              </CourseContextProvider>
-            </InvoiceContextProvider>
-          </PositionsContextProvider>
-        </DepartmentContextProvider>
+        <InvoiceContextProvider>
+          <CourseContextProvider>
+            <LoanDueContextProvider>
+              <DevicesContextProvider>
+                <StudentsContextProvider>
+                  <StaffContextProvider>
+                    <RouterProvider router={router} />
+                  </StaffContextProvider>
+                </StudentsContextProvider>
+              </DevicesContextProvider>
+            </LoanDueContextProvider>
+          </CourseContextProvider>
+        </InvoiceContextProvider>
       </SearchContextProvider>
     </LogsContextProvider>
   );

@@ -1,8 +1,5 @@
 export const employmentTypes = [
   {
-    id: 0,
-  },
-  {
     id: 1,
     name: "Permanent",
     description: "",

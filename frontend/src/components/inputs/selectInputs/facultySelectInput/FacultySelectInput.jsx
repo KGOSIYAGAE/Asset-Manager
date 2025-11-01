@@ -1,6 +1,6 @@
 import React from "react";
 
-function FacultySelectInpute({ label, value, departmentList, isDisabled, setOnChange }) {
+function FacultySelectInput({ label, value, departmentList, isDisabled, setOnChange }) {
   return (
     <div className="text-input col-span-2">
       <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
@@ -22,4 +22,4 @@ function FacultySelectInpute({ label, value, departmentList, isDisabled, setOnCh
   );
 }
 
-export default FacultySelectInpute;
+export default FacultySelectInput;

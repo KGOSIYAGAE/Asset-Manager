@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "../../components/inputs/textInput/TextInput";
-import { getAllDepartments } from "../../services/api/departments/Departments.Api";
-import { getAllPositions } from "../../services/api/positions/Positions.Api";
+
 import { useStaffContext } from "../../hooks/useStaffContext";
-import { useDepartmentContext } from "../../hooks/useDepartmentContext";
-import { usePositionContext } from "../../hooks/usePositionsContext";
+
 import { useNavigate, useParams } from "react-router-dom";
 import DepartmentSelectInput from "../../components/inputs/selectInputs/departmentSelectInput/DepartmentSelectInput";
 import PositionSelectInput from "../../components/inputs/selectInputs/positionSelectInput/PositionSelectInput";
@@ -20,11 +18,12 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { MdPerson } from "react-icons/md";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { changePassword } from "../../services/api/admin/Admin.Api";
+import { departmentsList } from "../../utils/departmentList";
+import { positionList } from "../../utils/positionsList";
+import FacultySelectInput from "../../components/inputs/selectInputs/facultySelectInput/FacultySelectInput";
 
 function UserProfile({ path }) {
   const { staffState } = useStaffContext();
-  const { departmentState, departmentDispatch } = useDepartmentContext();
-  const { positionState, positionDispatch } = usePositionContext();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -34,10 +33,9 @@ function UserProfile({ path }) {
   const [staff_no, setStaff_no] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
+  const [faculty_name, setFaculty_name] = useState("");
   const [department_name, setDepartment_name] = useState("");
-  const [department_id, setDepartment_id] = useState(0);
   const [position_name, setPosition_name] = useState("");
-  const [position_id, setPosition_id] = useState(0);
   const [contract_type, setContract_Type] = useState("");
   const [isActive, setIsActive] = useState("");
   const [start_date, setStart_date] = useState("");
@@ -71,10 +69,9 @@ function UserProfile({ path }) {
     setStaff_no(userDetails.staff_no);
     setPhone_Number(userDetails.phone_number);
     setEmail(userDetails.email);
-    setPosition_name(userDetails.title);
-    setPosition_id(userDetails.position_id);
+    setPosition_name(userDetails.position_name);
+    setFaculty_name(userDetails.faculty_name);
     setDepartment_name(userDetails.department_name);
-    setDepartment_id(userDetails.department_id);
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
@@ -104,11 +101,15 @@ function UserProfile({ path }) {
       return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
     }
 
-    if (!department_id) {
+    if (!faculty_name) {
+      return setShowToast({ isShown: true, type: "", message: "Faculty must be provided" });
+    }
+
+    if (!department_name) {
       return setShowToast({ isShown: true, type: "", message: "Department must be provided" });
     }
 
-    if (!position_id) {
+    if (!position_name) {
       return setShowToast({ isShown: true, type: "", message: "Position must be provided" });
     }
 
@@ -183,8 +184,6 @@ function UserProfile({ path }) {
 
   useEffect(() => {
     getUserDetails();
-    getAllDepartments(departmentDispatch);
-    getAllPositions(positionDispatch);
   }, []);
 
   return (
@@ -217,29 +216,15 @@ function UserProfile({ path }) {
             </div>
 
             <div className="col-span-2">
-              <DepartmentSelectInput
-                label={"Department"}
-                value={department_name}
-                departmentId={department_id}
-                options={departmentState?.departmentsList}
-                optionName={"department_name"}
-                isDisabled={isDisabled}
-                setOnChange={setDepartment_name}
-                onChoose={setDepartment_id}
-              />
+              <FacultySelectInput label={"Faculty"} value={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setFaculty_name} />
             </div>
 
             <div className="col-span-2">
-              <PositionSelectInput
-                label={"Position"}
-                positionId={position_id}
-                value={position_name}
-                options={positionState?.positionList}
-                optionName={"title"}
-                isDisabled={isDisabled}
-                setOnChange={setPosition_name}
-                onChoose={setPosition_id}
-              />
+              <DepartmentSelectInput label={"Department"} value={department_name} faculty={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setDepartment_name} />
+            </div>
+
+            <div className="col-span-2">
+              <PositionSelectInput label={"Position"} value={position_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
             </div>
 
             <div className="col-span-2">

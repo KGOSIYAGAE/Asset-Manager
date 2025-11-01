@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabled, setOnChange, onChoose, setCourseCode }) {
+function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabled, setOnChange }) {
   const [faculty_depts, setFaculty_deps] = useState([]);
 
   const showDepartment = () => {
     for (let i = 0; i < departmentList.length; i++) {
       if (departmentList[i].faculty === faculty) {
         setFaculty_deps(departmentList[i].departments);
+        setOnChange(value);
       }
     }
   };
