@@ -22,6 +22,7 @@ import { usePositionContext } from "../../hooks/usePositionsContext";
 import PositionSelectInput from "../inputs/selectInputs/positionSelectInput/PositionSelectInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
+import FacultySelectInpute from "../inputs/selectInputs/facultySelectInput/FacultySelectInpute";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -36,6 +37,7 @@ function AddEditStaff({ path }) {
   const [staff_no, setStaff_no] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
+  const [faculty, setFaculty] = useState("");
   const [department_name, setDepartment_name] = useState("");
   const [department_id, setDepartment_id] = useState(0);
   const [position_name, setPosition_name] = useState("");
@@ -222,16 +224,11 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <DepartmentSelectInput
-              label={"Department"}
-              value={department_name}
-              departmentId={department_id}
-              options={departmentState?.departmentsList}
-              optionName={"department_name"}
-              isDisabled={isDisabled}
-              setOnChange={setDepartment_name}
-              onChoose={setDepartment_id}
-            />
+            <FacultySelectInpute label={"Faculty"} value={faculty} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setFaculty} />
+          </div>
+
+          <div className="col-span-2">
+            <DepartmentSelectInput label={"Department"} value={department_name} faculty={faculty} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setDepartment_name} />
           </div>
 
           <div className="col-span-2">
