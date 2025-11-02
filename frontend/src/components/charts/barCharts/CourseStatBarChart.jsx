@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { facultyCourse } from "../../../utils/course";
+import { courseList } from "../../../utils/course";
 import { getCourseStatsByFaculty } from "../../../utils/analyticsMethods";
 
 function CourseStatBarChart({ students }) {
@@ -31,8 +31,8 @@ function CourseStatBarChart({ students }) {
       facultyNumber = 3;
     }
 
-    for (let i = 0; i < facultyCourse[facultyNumber].coursesOfferd.length; i++) {
-      courseCodes.push(facultyCourse[facultyNumber].coursesOfferd[i].course_code);
+    for (let i = 0; i < courseList[facultyNumber].courses.length; i++) {
+      courseCodes.push(courseList[facultyNumber].courses[i].course_code);
     }
 
     setXLables([...courseCodes]);

@@ -21,7 +21,6 @@ import { useEffect, useState } from "react";
 import { getLoggedInUser, isTokenExpired } from "./utils/getLoggedInUser";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import { InvoiceContextProvider } from "./context/InvoicesContext";
-import { CourseContextProvider } from "./context/CoursesContext";
 import { LogsContextProvider } from "./context/LogsContext";
 import { LoanDueContextProvider } from "./context/LoanDueContext";
 import StudentDetails from "./pages/users/students/StudentDetails";
@@ -249,17 +248,15 @@ function App() {
     <LogsContextProvider>
       <SearchContextProvider>
         <InvoiceContextProvider>
-          <CourseContextProvider>
-            <LoanDueContextProvider>
-              <DevicesContextProvider>
-                <StudentsContextProvider>
-                  <StaffContextProvider>
-                    <RouterProvider router={router} />
-                  </StaffContextProvider>
-                </StudentsContextProvider>
-              </DevicesContextProvider>
-            </LoanDueContextProvider>
-          </CourseContextProvider>
+          <LoanDueContextProvider>
+            <DevicesContextProvider>
+              <StudentsContextProvider>
+                <StaffContextProvider>
+                  <RouterProvider router={router} />
+                </StaffContextProvider>
+              </StudentsContextProvider>
+            </DevicesContextProvider>
+          </LoanDueContextProvider>
         </InvoiceContextProvider>
       </SearchContextProvider>
     </LogsContextProvider>
