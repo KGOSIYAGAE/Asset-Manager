@@ -10,7 +10,6 @@ function FacultySelectInput({ label, value, departmentList, isDisabled, setOnCha
         isDisabled={isDisabled}
         onChange={(e) => {
           setOnChange(e.target.value);
-          console.log(e.target.value);
         }}
       >
         <option></option>

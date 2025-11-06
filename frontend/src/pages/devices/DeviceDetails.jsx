@@ -33,7 +33,6 @@ function DeviceDetails({ path }) {
   const params = useParams();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
-
   const [dateCreated, setDateCreated] = useState("");
   const [warrantyEndDate, setWarrantyEndDate] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
@@ -145,9 +144,9 @@ function DeviceDetails({ path }) {
       )}
 
       <div className="grid grid-cols-5 grid-rows-2 gap-5">
-        <div className="col-span-3 row-span-1 border p-1 rounded-md shadow-md">
+        <div className="col-span-3 row-span-1 border p-1 rounded-md shadow-md bg-white">
           <span className="heading-text">Device Details</span>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Make</span>
             <span className="text-sm">{deviceDetails?.make}</span>
           </div>
@@ -155,7 +154,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Model</span>
             <span className="text-sm">{deviceDetails?.model}</span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Asset Tag</span>
             <span className="text-sm">{deviceDetails?.asset_tag}</span>
           </div>
@@ -163,7 +162,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Serial Number</span>
             <span className="text-sm">{deviceDetails?.serial_no}</span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Device Condition</span>
             <span className="text-sm">{deviceDetails?.device_condition}</span>
           </div>
@@ -171,7 +170,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Status</span>
             <span className="text-sm">{deviceDetails?.status}</span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Warranty End date</span>
             <span className="text-sm">
               {(() => {
@@ -183,15 +182,12 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Category</span>
             <span className="text-sm">{deviceDetails?.category}</span>
           </div>
-          <div className="flex flex-col justify-between bg-zinc-50 p-2 gap-3 item-hover">
-            <span className="text-sm">Specification</span>
-            <span className=" text-sm ">{deviceDetails?.specification}</span>
+          <div className="flex justify-between p-2 gap-3 item-hover">
+            <span className="w-6/12 text-sm">Specification</span>
+            <span className="w-6/12 text-sm text-right ">{deviceDetails?.specification}</span>
           </div>
+
           <div className="flex justify-between p-2 item-hover">
-            <span className="text-sm">Location</span>
-            <span className="text-sm">{deviceDetails?.location}</span>
-          </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Supplier</span>
             <span className="text-sm">{deviceDetails?.supplier_name}</span>
           </div>
@@ -199,7 +195,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Invoice</span>
             <span className="text-sm">{deviceDetails?.invoice_number}</span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Purchase Value</span>
             <span className="text-sm">
               {(() => {
@@ -208,7 +204,7 @@ function DeviceDetails({ path }) {
             </span>
             {/*`R ${deviceDetails?.purchase_price}`*/}
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Current Value</span>
             <span className="text-sm">
               {(() => {
@@ -217,16 +213,8 @@ function DeviceDetails({ path }) {
             </span>
             {/*`R ${deviceDetails?.value_price}`*/}
           </div>
-          <div className="flex justify-between  p-2 item-hover">
-            <span className="text-sm">Purchase Date</span>
-            <span className="text-sm">
-              {" "}
-              {(() => {
-                return handleTimeStamp(deviceDetails?.purchase_date);
-              })()}
-            </span>
-          </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Date Created</span>
             <span className="text-sm">
               {(() => {
@@ -234,7 +222,7 @@ function DeviceDetails({ path }) {
               })()}
             </span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Date Issued</span>
             <span className="text-sm">
               {(() => {
@@ -242,7 +230,7 @@ function DeviceDetails({ path }) {
               })() || "None"}
             </span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Return Date</span>
             <span className="text-sm">
               {(function () {
@@ -250,7 +238,7 @@ function DeviceDetails({ path }) {
               })() || "None"}
             </span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Upgrade Date</span>
             <span className="text-sm">
               {(function () {
@@ -261,15 +249,15 @@ function DeviceDetails({ path }) {
         </div>
 
         <div className="flex flex-col col-span-2 gap-5">
-          <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 border  rounded-md shadow-md">
-            <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="h-[300px]" />
+          <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 bg-white border  rounded-md shadow-md">
+            <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="h-[250px]" />
           </div>
           {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
-            <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md">
+            <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md bg-white">
               {deviceDetails?.status === "Loaned" ? <span className="heading-text">Loaned User</span> : <span className="heading-text">Assigned User</span>}
 
-              <div>
-                <div className="flex justify-between bg-zinc-50 p-2">
+              <div className="">
+                <div className="flex justify-between  p-2">
                   <span className="text-sm">Full name</span>
                   <span className="text-sm">{`${deviceDetails?.full_name}`}</span>
                 </div>

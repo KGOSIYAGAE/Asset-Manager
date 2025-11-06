@@ -129,7 +129,7 @@ const getDevicesAssigned = async (req, res) => {
 //Create device
 const createDevice = async (req, res) => {
   try {
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_id, device_type, purchaseValue, currentValue } = req.body;
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, supplier_name, invoice_no, device_type, purchaseValue, currentValue } = req.body;
 
     //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
 
@@ -160,7 +160,10 @@ const createDevice = async (req, res) => {
     if (!warranty_end_date) {
       return res.status(400).json({ message: "Warranty end date is required!" });
     }
-    if (!invoice_id) {
+    if (!supplier_name) {
+      return res.status(400).json({ message: "Supplier name is required!" });
+    }
+    if (!invoice_no) {
       return res.status(400).json({ message: "Invoice id is required!" });
     }
     if (!device_type) {
@@ -174,8 +177,8 @@ const createDevice = async (req, res) => {
     }
 
     const create_device_query =
-      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id, device_type) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);";
-    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_id, device_type];
+      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14);";
+    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, supplier_name, invoice_no, device_type];
 
     const { rowCount } = await query(create_device_query, [...VALUES]);
 

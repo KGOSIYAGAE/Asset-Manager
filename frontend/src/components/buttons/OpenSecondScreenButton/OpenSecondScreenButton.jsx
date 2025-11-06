@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import SubmitButton from "../../components/buttons/SubmitButton";
+import SubmitButton from "../SubmitButton";
 
-function OpenFormVerification({ userId, deviceId, setShowToast, w = 800, h = 600 }) {
+function OpenSecondScreenButton({ userId, deviceId, setShowToast, w = 800, h = 600 }) {
   const [error, setError] = useState("");
 
   async function openOnSecondScreen() {
@@ -50,4 +50,4 @@ function OpenFormVerification({ userId, deviceId, setShowToast, w = 800, h = 600
   );
 }
 
-export default OpenFormVerification;
+export default OpenSecondScreenButton;

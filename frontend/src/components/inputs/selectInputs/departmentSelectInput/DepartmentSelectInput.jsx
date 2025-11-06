@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabled, setOnChange }) {
+function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabled, setOnChange, setPositions }) {
   const [faculty_depts, setFaculty_deps] = useState([]);
 
   const showDepartment = () => {
@@ -8,6 +8,16 @@ function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabl
       if (departmentList[i].faculty === faculty) {
         setFaculty_deps(departmentList[i].departments);
         setOnChange(value);
+        //setPositions
+      }
+    }
+  };
+
+  const setSelecedPos = (pos) => {
+    for (let i = 0; i < faculty_depts.length; i++) {
+      if (faculty_depts[i].name === pos) {
+        setPositions(faculty_depts[i].positions);
+        console.log(faculty_depts[i].positions);
       }
     }
   };
@@ -25,7 +35,7 @@ function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabl
         isDisabled={isDisabled}
         onChange={(e) => {
           setOnChange(e.target.value);
-          console.log(e.target.value);
+          setSelecedPos(e.target.value);
         }}
       >
         {faculty_depts.map((item) => (

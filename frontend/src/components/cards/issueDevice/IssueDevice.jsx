@@ -9,10 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { assignDevice } from "../../../services/api/devices/Device.Api";
 import { generateUpgradeDate, getTodayDate, getUserType } from "../../../utils/helperMethods";
 import TextInput from "../../inputs/textInput/TextInput";
-import OpenFormVerification from "../../../pages/openFormVerification/OpenFormVerification";
+
 import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelectInput";
 import { useStaffContext } from "../../../hooks/useStaffContext";
 import { useStudentsContext } from "../../../hooks/useStudentsContext";
+import OpenSecondScreenButton from "../../buttons/OpenSecondScreenButton/OpenSecondScreenButton";
 
 function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -130,7 +131,7 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
           </button>
           {selectedUser?.fullName ? (
             <div onClick={() => onCanel()}>
-              <OpenFormVerification userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
+              <OpenSecondScreenButton userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
             </div>
           ) : (
             ""

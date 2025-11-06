@@ -95,16 +95,21 @@ const bulkCreateStudents = async (req, res) => {
     const VALUES = students.map((student) => [
       student.name,
       student.surname,
+      student.studentNumber,
       student.idNumber,
       student.phone_number,
       student.email,
-      student.studentNumber,
-      student.course_id,
+      student.faculty_name,
+      student.course_name,
+      student.course_code,
       student.isActive,
       student.registration_date,
     ]);
 
-    const bulk_create_students_query = format("INSERT INTO students (name, surname, id_number, phone_number, email, student_number, course_id, acc_status, registration_date) VALUES %L", VALUES);
+    const bulk_create_students_query = format(
+      "INSERT INTO students (name, surname, student_number, id_number, phone_number, email, faculty_name, course_name, course_code, acc_status, registration_date) VALUES %L",
+      VALUES
+    );
 
     const { rowCount } = await query(bulk_create_students_query);
 

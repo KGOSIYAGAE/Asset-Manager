@@ -79,7 +79,7 @@ const getStaffDetails = async (req, res) => {
       return res.status(200).json({ message: "Staff number required", error: true });
     }
 
-    const get_staff_query = `SELECT * FROM staff WHERE staff_no = $1`;
+    const get_staff_query = `SELECT * FROM "StaffDetails" WHERE staff_no = $1`;
 
     const { rowCount, rows } = await query(get_staff_query, [staff_no]);
 
@@ -165,21 +165,22 @@ const bulkCreateStaff = async (req, res) => {
     }
 
     const VALUES = staff.map((staff) => [
+      staff.staff_no,
       staff.name,
       staff.surname,
-      staff.phone_number,
-      staff.email,
-      staff.staff_no,
-      staff.contract_type,
-      staff.position_id,
-      staff.department_id,
-      staff.isActive,
       staff.start_date,
+      staff.email,
+      staff.phone_number,
+      staff.contract_type,
+      staff.position_name,
+      staff.faculty_name,
+      staff.department_name,
+      staff.isActive,
       staff.endDate,
     ]);
 
     const bulk_create_staff_query = format(
-      "INSERT INTO staff (name, surname, phone_number, email, staff_no, contract_type, position_id,department_id, acc_status, start_date, end_date) VALUES %L",
+      "INSERT INTO staff (staff_no,name, surname, start_date, email, phone_number, contract_type, position_name,faculty_name, department_name, acc_status, end_date) VALUES %L",
       VALUES
     );
 

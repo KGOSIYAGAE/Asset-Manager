@@ -110,6 +110,11 @@
   .page-logo {
     @apply w-[120px] h-[120px];
   }
+
+  .page-logo-staff {
+    @apply w-[180px] h-[180px];
+  }
+
   .page-address {
     @apply flex flex-col text-[10px];
   }

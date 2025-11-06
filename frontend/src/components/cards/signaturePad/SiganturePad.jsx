@@ -4,8 +4,9 @@ import CancelButton from "../../buttons/CancelButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import SignatureCanvas from "react-signature-canvas";
 import { setUserSignature } from "../../../services/api/signature/userSignatures";
+import { handleAssignDevice } from "../../../utils/HandleAssignDevice";
 
-function SiganturePad({ lablel, trimmedDataURL, setTrimmedDataURL, user_id, onClose }) {
+function SiganturePad({ lablel, user_id, staffData, deviceDetails, setShowToast }) {
   const signatureCanvasRef = useRef(null);
 
   //Clear signature
@@ -15,36 +16,22 @@ function SiganturePad({ lablel, trimmedDataURL, setTrimmedDataURL, user_id, onCl
 
   //Save signature
   const saveSignature = () => {
-    setTrimmedDataURL(signatureCanvasRef.current.toDataURL());
     const image = signatureCanvasRef.current.toDataURL();
 
     setUserSignature(user_id, image);
 
-    ///console.log(user_id);
-
-    return onClose();
+    return true;
   };
 
-  useEffect(() => {
-    if (trimmedDataURL) {
-      console.log("Update");
-    }
-  }, [trimmedDataURL]);
+  useEffect(() => {}, []);
 
   return (
     <div>
       <div className="flex flex-col p-2 gap-7">
         <div className="flex justify-between cursor-pointer">
           <span className="text-xl font-semibold">{lablel}</span>
-          <MdClose
-            size={25}
-            className="text-slate-500 hover:text-red-500"
-            onClick={() => {
-              onClose();
-            }}
-          />
         </div>
-        <div className="h-[150px] border-2 border-slate-400 rounded-md relative">
+        <div className="h-[180px] border-2 border-slate-400 rounded-md relative">
           <div className="w-full h-full flex flex-col items-center justify-center ">
             {<span className="text-gray-300 text-xl font-bold absolute">SIGN HERE</span>}
             <SignatureCanvas ref={signatureCanvasRef} penColor="black" canvasProps={{ width: 456, height: 146, className: "signature-canva" }} />
@@ -62,6 +49,8 @@ function SiganturePad({ lablel, trimmedDataURL, setTrimmedDataURL, user_id, onCl
               text={"Save"}
               onClick={() => {
                 saveSignature();
+
+                handleAssignDevice(staffData, ...deviceDetails, setShowToast);
               }}
             />
           </div>

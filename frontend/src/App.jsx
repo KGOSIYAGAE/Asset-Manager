@@ -28,9 +28,10 @@ import StaffDetails from "./pages/users/staff/StaffDetails";
 import UserProfile from "./pages/users/UserProfile";
 import DevicesOnLoan from "./pages/devices/DevicesOnLoan";
 import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
-import FormPage from "./pages/formPage/FormPage";
+
 import { ToastProvider } from "./context/ToastContext";
 import DevicesDueReturnPage from "./pages/devices/DevicesDueReturnPage";
+import SecondScreenPage from "./pages/formPage/SecondScreenPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -161,7 +162,7 @@ function App() {
     },
     {
       path: "/user-form/:userId/:deviceId",
-      element: <FormPage />,
+      element: <SecondScreenPage />,
     },
     {
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
