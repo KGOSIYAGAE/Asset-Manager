@@ -12,6 +12,8 @@ function StudentIssueVerification({ deviceId, student_no }) {
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
 
+  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+
   //Get Student data
   const getStudentData = () => {
     if (student_no) {
@@ -148,7 +150,7 @@ function StudentIssueVerification({ deviceId, student_no }) {
             <div>
               Signed at Kimberley on the: <span className="font-semibold">{day}</span> day of <span className="font-semibold">{month}</span> <span className="font-semibold">{year}</span>
             </div>
-            <SiganturePad lablel={"Student Signature"} />
+            <SiganturePad lablel={"Student Signature"} user_id={studentData?.student_number} userDetails={studentData} deviceDetails={deviceDetails} setShowToast={setShowToast} />
           </div>
         </div>
       </div>

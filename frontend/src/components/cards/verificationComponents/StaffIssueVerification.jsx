@@ -46,7 +46,7 @@ function StaffIssueVerification({ deviceId, staff_no }) {
           <span>Date: {getTodayDate()}</span>
         </div>
       </div>
-      <SiganturePad lablel={"Staff Signature"} user_id={staff_no} staffData={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast} />
+      <SiganturePad lablel={"Staff Signature"} user_id={staff_no} userDetails={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast} />
     </div>
   );
 }

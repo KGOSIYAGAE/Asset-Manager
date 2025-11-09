@@ -4,10 +4,12 @@ import CancelButton from "../../buttons/CancelButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import SignatureCanvas from "react-signature-canvas";
 import { setUserSignature } from "../../../services/api/signature/userSignatures";
-import { handleAssignDevice } from "../../../utils/HandleAssignDevice";
+import { handleAssignDeviceToStaff, handleAssignDeviceToStudent } from "../../../utils/HandleAssignDevice";
+import { getUserType } from "../../../utils/helperMethods";
 
-function SiganturePad({ lablel, user_id, staffData, deviceDetails, setShowToast }) {
+function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToast }) {
   const signatureCanvasRef = useRef(null);
+  const [userType, setUserType] = useState(null);
 
   //Clear signature
   const clearSignature = () => {
@@ -23,7 +25,22 @@ function SiganturePad({ lablel, user_id, staffData, deviceDetails, setShowToast 
     return true;
   };
 
-  useEffect(() => {}, []);
+  //Handle Assign suer
+
+  const handleAssign = async () => {
+    if (userType === "Staff") {
+      handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
+    } else {
+      console.log("student");
+      handleAssignDeviceToStudent(userDetails, deviceDetails, setShowToast);
+    }
+
+    return saveSignature();
+  };
+
+  useEffect(() => {
+    getUserType(user_id, setUserType);
+  }, [user_id]);
 
   return (
     <div>
@@ -48,9 +65,9 @@ function SiganturePad({ lablel, user_id, staffData, deviceDetails, setShowToast 
             <SubmitButton
               text={"Save"}
               onClick={() => {
-                saveSignature();
+                //handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
 
-                handleAssignDevice(staffData, ...deviceDetails, setShowToast);
+                handleAssign();
               }}
             />
           </div>

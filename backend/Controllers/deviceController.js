@@ -321,13 +321,12 @@ const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
     const { fullName, status, userId, date_issued, return_date, upgradeDate } = req.body;
-    console.log(req.body);
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!status || !userId || !date_issued || !upgradeDate) {
+    if (!status || !userId || !date_issued) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
