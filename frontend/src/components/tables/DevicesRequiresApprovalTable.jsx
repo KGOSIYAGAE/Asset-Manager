@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { handleTimeStamp } from "../../utils/dateConverter";
 import { useNavigate } from "react-router-dom";
-import { getLoanedDevicesHelper } from "../../utils/devicesHelperMethods";
+import { handleTimeStamp } from "../../utils/dateConverter";
+import { getRequiresApprovalDevices } from "../../utils/devicesHelperMethods";
 
-function OverdueLoanTable({ devices, label }) {
+function DevicesRequiresApprovalTable({ devices, label }) {
   const navigate = useNavigate();
   const [loanedDevices, setLoanedDevices] = useState(null);
 
@@ -13,11 +13,14 @@ function OverdueLoanTable({ devices, label }) {
   };
 
   useEffect(() => {
-    setLoanedDevices(getLoanedDevicesHelper(devices));
+    setLoanedDevices(getRequiresApprovalDevices(devices));
   }, [devices]);
 
   return (
     <div className="w-full text-sm  rounded-sm">
+      <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
+        <span className="heading-text ">{label}</span>
+      </div>
       <table className="w-full bg-white ">
         <thead className=" bg-slate-100 sticky top-0 h-[40px]">
           <th>#</th>
@@ -26,8 +29,8 @@ function OverdueLoanTable({ devices, label }) {
           <th>Make</th>
           <th>Model</th>
           <th>User</th>
+          <th>Status</th>
           <th>Date Issued</th>
-          <th>Expected Return Date</th>
           <th>Action</th>
         </thead>
         <tbody className="">
@@ -44,16 +47,13 @@ function OverdueLoanTable({ devices, label }) {
                   <td>{device.make}</td>
                   <td>{device.model}</td>
                   <td>{device.user_id}</td>
+                  <td>{device.status}</td>
                   <td>
                     {(() => {
                       return handleTimeStamp(device.date_issued);
                     })()}
                   </td>
-                  <td>
-                    {(() => {
-                      return handleTimeStamp(device.return_date);
-                    })()}
-                  </td>
+
                   <td>
                     <span
                       className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
@@ -61,7 +61,7 @@ function OverdueLoanTable({ devices, label }) {
                         handleViewDevice(device.id);
                       }}
                     >
-                      View more
+                      Approve
                     </span>
                   </td>
                 </tr>
@@ -73,4 +73,4 @@ function OverdueLoanTable({ devices, label }) {
   );
 }
 
-export default OverdueLoanTable;
+export default DevicesRequiresApprovalTable;

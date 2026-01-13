@@ -32,6 +32,7 @@ import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
 import { ToastProvider } from "./context/ToastContext";
 import DevicesDueReturnPage from "./pages/devices/DevicesDueReturnPage";
 import SecondScreenPage from "./pages/formPage/SecondScreenPage";
+import DeviceForApproval from "./pages/devices/DeviceForApproval";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -197,6 +198,10 @@ function App() {
         {
           path: "/devices/device-due-upgrade",
           element: <DevicesDueUpgrade path={"device-due-upgrade"} />,
+        },
+        {
+          path: "/devices/device-approval",
+          element: <DeviceForApproval path={"device-approval"} />,
         },
         {
           path: "/devices/device-due-return",

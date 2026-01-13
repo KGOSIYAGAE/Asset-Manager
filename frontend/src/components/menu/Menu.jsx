@@ -81,6 +81,12 @@ function Menu({ isMinimized }) {
                   <span className="text-sm">Return Due</span>
                 </div>
               </Link>
+              <Link to={"/devices/device-approval"}>
+                <div className="flex items-center gap-2 menu-items">
+                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                  <span className="text-sm">Device Approval</span>
+                </div>
+              </Link>
             </div>
           </div>
           {/**/}

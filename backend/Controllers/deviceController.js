@@ -54,6 +54,24 @@ const getDeviceDueUpgrade = async (req, res) => {
   }
 };
 
+//Get all devices that require approval
+const getDeviceForApproval = async (req, res) => {
+  try {
+    const GET_ALL_QUERY = `SELECT * FROM "deviceUserDetails" WHERE status = 'Approval required'`;
+
+    const { rows } = await query(GET_ALL_QUERY);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    return res.status(200).json({ deviceList: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Get device by id
 const getDevice = async (req, res) => {
   try {
@@ -458,6 +476,7 @@ const deleteDevice = async (req, res) => {
 module.exports = {
   getAllDevices,
   getDeviceDueUpgrade,
+  getDeviceForApproval,
   getDevice,
   getDeviceDetails,
   getDevicesAssigned,

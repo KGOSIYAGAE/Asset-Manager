@@ -128,6 +128,11 @@ function DeviceDetails({ path }) {
                     setOpenModal({ isShown: true, type: "release", data: "hello" });
                   }}
                 />
+              ) : deviceDetails?.status === "Approval required" ? (
+                <div className="flex gap-5">
+                  <SubmitButton text={"Reject"} onClick={() => {}} />
+                  <SubmitButton text={"Approve"} onClick={() => {}} />
+                </div>
               ) : (
                 <div className="flex gap-3">
                   <SubmitButton
@@ -166,10 +171,18 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Device Condition</span>
             <span className="text-sm">{deviceDetails?.device_condition}</span>
           </div>
+
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Status</span>
-            <span className="text-sm">{deviceDetails?.status}</span>
+            {deviceDetails?.status === "Available" ? (
+              <span className="text-sm bg-green-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+            ) : deviceDetails?.status === "Approval required" ? (
+              <span className="text-sm bg-yellow-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+            ) : (
+              <span className="text-sm bg-red-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+            )}
           </div>
+
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Warranty End date</span>
             <span className="text-sm">
@@ -250,7 +263,7 @@ function DeviceDetails({ path }) {
 
         <div className="flex flex-col col-span-2 gap-5">
           <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 bg-white border  rounded-md shadow-md">
-            <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="h-[250px]" />
+            <img src={`/src/assets/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="h-[250px]" />
           </div>
           {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
             <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md bg-white">

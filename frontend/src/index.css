@@ -27,8 +27,13 @@
   .login-heading {
     color: var(--primary-color);
   }
+
   .bg-primary {
     background-color: var(--primary-color);
+  }
+
+  .primary-color {
+    color: var(--primary-color);
   }
 
   .link-text {
@@ -46,6 +51,7 @@
   .primary-btn {
     @apply flex  text-sm items-center bg-blue-900 text-white py-2 px-5 gap-1 rounded-md hover:bg-blue-800;
   }
+
   .secondary-btn {
     @apply flex  items-center bg-gray-200 text-black py-2 px-5 gap-1 rounded-md hover:bg-gray-100;
   }
