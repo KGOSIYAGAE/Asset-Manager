@@ -37,14 +37,6 @@ app.use("/api/v1/asset-manager/courses", courseRouter);
 const staffRouter = require("./Routes/staffRoutes");
 app.use("/api/v1/asset-manager/staff", staffRouter);
 
-//Departments
-const departmentRouter = require("./Routes/departmentRoutes");
-app.use("/api/v1/asset-manager/departments", departmentRouter);
-
-//Positions
-const positionRouter = require("./Routes/positionRoutes");
-app.use("/api/v1/asset-manager/positions", positionRouter);
-
 //Device logs
 const deviceLogRouter = require("./Routes/deviceLogRoutes");
 app.use("/api/v1/asset-manager/device-logs", deviceLogRouter);

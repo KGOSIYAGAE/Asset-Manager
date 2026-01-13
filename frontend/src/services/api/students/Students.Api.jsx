@@ -21,8 +21,8 @@ export const getAllStudents = async (studentDispatch) => {
 export const getStudent = async (student_number, setFormData) => {
   try {
     const response = await axiosInstance.get("/students/" + student_number);
-    if (response.data && !response.data.error) {
-      return setFormData(response.data.studentData);
+    if (response.data.studentData && !response.data.error) {
+      return setFormData(...response.data.studentData);
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {

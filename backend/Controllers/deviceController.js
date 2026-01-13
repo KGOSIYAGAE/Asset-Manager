@@ -54,6 +54,24 @@ const getDeviceDueUpgrade = async (req, res) => {
   }
 };
 
+//Get all devices that require approval
+const getDeviceForApproval = async (req, res) => {
+  try {
+    const GET_ALL_QUERY = `SELECT * FROM "deviceUserDetails" WHERE status = 'Approval required'`;
+
+    const { rows } = await query(GET_ALL_QUERY);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    return res.status(200).json({ deviceList: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Get device by id
 const getDevice = async (req, res) => {
   try {
@@ -129,7 +147,7 @@ const getDevicesAssigned = async (req, res) => {
 //Create device
 const createDevice = async (req, res) => {
   try {
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_id, device_type, purchaseValue, currentValue } = req.body;
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, supplier_name, invoice_no, device_type, purchaseValue, currentValue } = req.body;
 
     //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
 
@@ -160,7 +178,10 @@ const createDevice = async (req, res) => {
     if (!warranty_end_date) {
       return res.status(400).json({ message: "Warranty end date is required!" });
     }
-    if (!invoice_id) {
+    if (!supplier_name) {
+      return res.status(400).json({ message: "Supplier name is required!" });
+    }
+    if (!invoice_no) {
       return res.status(400).json({ message: "Invoice id is required!" });
     }
     if (!device_type) {
@@ -174,8 +195,8 @@ const createDevice = async (req, res) => {
     }
 
     const create_device_query =
-      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id, device_type) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);";
-    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_id, device_type];
+      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14);";
+    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, supplier_name, invoice_no, device_type];
 
     const { rowCount } = await query(create_device_query, [...VALUES]);
 
@@ -318,13 +339,12 @@ const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
     const { fullName, status, userId, date_issued, return_date, upgradeDate } = req.body;
-    console.log(req.body);
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!status || !userId || !date_issued || !upgradeDate) {
+    if (!status || !userId || !date_issued) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
@@ -456,6 +476,7 @@ const deleteDevice = async (req, res) => {
 module.exports = {
   getAllDevices,
   getDeviceDueUpgrade,
+  getDeviceForApproval,
   getDevice,
   getDeviceDetails,
   getDevicesAssigned,

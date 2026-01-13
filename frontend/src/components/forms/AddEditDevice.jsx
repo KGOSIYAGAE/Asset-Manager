@@ -28,11 +28,11 @@ function AddEditDevice({ path }) {
   const [status, setStatus] = useState("Available"); //Available, Loaned, Assigned, Under Maintenance, Lost
   const [warranty_end_date, setWarranty_End_date] = useState("");
   const [invoice_no, setInvoice_no] = useState("");
+  const [supplier_name, setSupplier_name] = useState("");
   const [invoice_id, setInvoice_id] = useState(0);
   const [purchaseValue, setPurchaseValue] = useState("");
   const [currentValue, setCurrentValue] = useState("");
 
-  const [modelList, setModelList] = useState([]);
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [formType, setFormType] = useState("Add");
 
@@ -73,9 +73,8 @@ function AddEditDevice({ path }) {
     setDevice_Condition(deviceDetails[0].device_condition);
     setStatus(deviceDetails[0].status);
     setWarranty_End_date(handleTimeStamp(deviceDetails[0].warranty_end_date));
-
+    setSupplier_name(deviceDetails[0].supplier_name);
     setInvoice_no(deviceDetails[0].invoice_number);
-    setInvoice_id(deviceDetails[0].invoice_id);
     setPurchaseValue(deviceDetails[0].purchase_price);
     setCurrentValue(deviceDetails[0].value_price);
   };
@@ -109,7 +108,10 @@ function AddEditDevice({ path }) {
     if (!currentValue) {
       return setShowToast({ isShown: true, type: "error", message: "Device current value must be provided." });
     }
-    if (invoice_id <= 0) {
+    if (!supplier_name) {
+      return setShowToast({ isShown: true, type: "error", message: "Supplier name must be provided." });
+    }
+    if (!invoice_no) {
       return setShowToast({ isShown: true, type: "error", message: "Device invoice number must be provided." });
     }
     if (!spec) {
@@ -148,7 +150,8 @@ function AddEditDevice({ path }) {
       device_condition,
       status,
       warranty_end_date,
-      invoice_id,
+      supplier_name,
+      invoice_no,
       device_type: device_type(),
       purchaseValue,
       currentValue,
@@ -228,22 +231,14 @@ function AddEditDevice({ path }) {
             <TextInput label={"Current Value"} value={currentValue} isDisabled={false} maxLength={10} setOnChange={setCurrentValue} />
           </div>
 
-          {invoiceState ? (
-            <div className="col-span-2">
-              <InvoiceSelectInput
-                label={"Invoice Number"}
-                value={invoice_no}
-                invoiceId={invoice_id}
-                options={invoiceState?.invoiceList}
-                optionName={"invoice_number"}
-                isDisabled={false}
-                setOnChange={setInvoice_no}
-                onChoose={setInvoice_id}
-              />
-            </div>
-          ) : (
-            ""
-          )}
+          <div className="col-span-3">
+            <TextInput label={"Supplier Name"} value={supplier_name} isDisabled={false} maxLength={50} setOnChange={setSupplier_name} />
+          </div>
+
+          <div className="col-span-3">
+            <TextInput label={"Invoice Number"} value={invoice_no} isDisabled={false} maxLength={50} setOnChange={setInvoice_no} />
+          </div>
+
           <div className="col-span-8">
             <TextArea label={"Specification"} value={spec} isDisabled={false} setOnChange={setSpec} />
           </div>

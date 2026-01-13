@@ -38,7 +38,7 @@ function UserDevicesTable({ deviceList }) {
           <tbody className="">
             {deviceList
               ? deviceList.map((device, count) => (
-                  <tr className="hover:bg-slate-50">
+                  <tr key={device.id} className="hover:bg-slate-50">
                     <td>
                       {(() => {
                         return count + 1;

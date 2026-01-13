@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
-import { useParams } from "react-router-dom";
-import StudentAOD from "../../components/student AOD/StudentAOD";
 
-function FormPage() {
+import { useParams } from "react-router-dom";
+
+import StaffIssueVerification from "../../components/cards/verificationComponents/staffIssueVerification";
+import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";
+
+function SecondScreenPage() {
   const [userType, setUserType] = useState("");
   const params = useParams();
 
@@ -37,14 +39,17 @@ function FormPage() {
   }, []);
 
   return (
-    <div className="w-screen h-svh flex itborder border-red-500 col-span-6 bg-white  px-10 overflow-y-scroll" id="print-file">
-      {userType && userType !== "Staff" ? (
-        <StudentAOD handleOnPrint={() => {}} deviceId={deviceId} student_no={userId} />
-      ) : (
-        <StaffIssueForm handleOnPrint={() => {}} deviceId={deviceId} staff_no={userId} />
-      )}
+    <div className="w-screen flex  p-5 border overflow-auto" id="print-file">
+      {userType && userType !== "Staff" ? <StudentIssueVerification deviceId={deviceId} student_no={userId} /> : <StaffIssueVerification deviceId={deviceId} staff_no={userId} />}
     </div>
   );
 }
 
-export default FormPage;
+export default SecondScreenPage;
+
+/*
+
+<div className="w-screen h-svh flex itborder border-red-500 col-span-6 bg-white  px-10 overflow-y-scroll" id="print-file">
+ <StudentAOD handleOnPrint={() => {}} deviceId={deviceId} student_no={userId} />
+   <StaffIssueForm handleOnPrint={() => {}} deviceId={deviceId} staff_no={userId} />
+*/

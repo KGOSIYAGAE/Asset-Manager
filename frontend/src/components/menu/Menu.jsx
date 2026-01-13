@@ -5,16 +5,13 @@ import { MdDevices, MdDashboard } from "react-icons/md";
 import { FaPeopleGroup } from "react-icons/fa6";
 import LogoCard from "../cards/logoCard/LogoCard";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
-import { GiOrganigram } from "react-icons/gi";
 import { FaUsersGear } from "react-icons/fa6";
 import { CgInsights } from "react-icons/cg";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
-import { FaFileInvoice } from "react-icons/fa";
 
 function Menu({ isMinimized }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
   const [showSupportOption, setShowSupportOptions] = useState(false);
-  const [showOrganizationOption, setShowOrganizationOptions] = useState(false);
   const [showUserManagementOption, setShowUserManagementOptions] = useState(false);
   const [showReportOption, setShowReportOptions] = useState(false);
 
@@ -35,20 +32,22 @@ function Menu({ isMinimized }) {
 
           {/**/}
           <div className="flex flex-col gap-2 ">
-            <div
-              className="menu-items  justify-between "
-              onClick={() => {
-                showDeviceOption ? setShowDeviceOptions(false) : setShowDeviceOptions(true);
-              }}
-            >
-              <div className="flex items-center gap-3 ">
-                <div className="bg-zinc-100 rounded-md p-2">
-                  <MdDevices size={18} className="" />
+            <Link to={"/devices"}>
+              <div
+                className="menu-items  justify-between "
+                onClick={() => {
+                  showDeviceOption ? setShowDeviceOptions(false) : setShowDeviceOptions(true);
+                }}
+              >
+                <div className="flex items-center gap-3 ">
+                  <div className="bg-zinc-100 rounded-md p-2">
+                    <MdDevices size={18} className="" />
+                  </div>
+                  {isMinimized ? "" : <span className="">Devices</span>}
                 </div>
-                {isMinimized ? "" : <span className="">Devices</span>}
+                {isMinimized ? "" : <div className=" flex ">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>}
               </div>
-              {isMinimized ? "" : <div className=" flex ">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>}
-            </div>
+            </Link>
             {/**/}
 
             <div className={`${showDeviceOption ? "flex" : "hidden"} flex-col text-zinc-500 gap-3 pl-10`}>
@@ -80,6 +79,12 @@ function Menu({ isMinimized }) {
                 <div className="flex items-center gap-2 menu-items">
                   <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
                   <span className="text-sm">Return Due</span>
+                </div>
+              </Link>
+              <Link to={"/devices/device-approval"}>
+                <div className="flex items-center gap-2 menu-items">
+                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                  <span className="text-sm">Device Approval</span>
                 </div>
               </Link>
             </div>
@@ -138,51 +143,6 @@ function Menu({ isMinimized }) {
                 <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
                   <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
                   <span className="text-sm">Device History</span>
-                </div>
-              </Link>
-            </div>
-          </div>
-          {/**/}
-
-          {/* */}
-          <Link to={"/home"}>
-            <div className="menu-items ">
-              <div className="bg-zinc-100 rounded-md p-2">
-                <FaFileInvoice size={18} className="" />
-              </div>
-              {isMinimized ? "" : <span className="">Vendors & Invoices</span>}
-            </div>
-          </Link>
-          {/**/}
-
-          {/*Organization Structure*/}
-          <div className="flex flex-col gap-2">
-            <div
-              className="menu-items  justify-between "
-              onClick={() => {
-                showOrganizationOption ? setShowOrganizationOptions(false) : setShowOrganizationOptions(true);
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-zinc-100 rounded-md p-2">
-                  <GiOrganigram size={18} className="" />
-                </div>
-                {isMinimized ? "" : <span className="">Organization</span>}
-              </div>
-              {isMinimized ? "" : <div className=" flex ">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>}
-            </div>
-            {/**/}
-            <div className={`${showOrganizationOption ? "flex" : "hidden"} flex-col text-zinc-500 gap-3 pl-10`}>
-              <Link to={"/devices"}>
-                <div className="flex items-center gap-2 menu-items">
-                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
-                  <span className="text-sm">Departments</span>
-                </div>
-              </Link>
-              <Link to={"/devices/loaned-device"}>
-                <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
-                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
-                  <span className="text-sm">Faculties</span>
                 </div>
               </Link>
             </div>

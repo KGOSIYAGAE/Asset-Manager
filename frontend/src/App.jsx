@@ -21,9 +21,6 @@ import { useEffect, useState } from "react";
 import { getLoggedInUser, isTokenExpired } from "./utils/getLoggedInUser";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import { InvoiceContextProvider } from "./context/InvoicesContext";
-import { CourseContextProvider } from "./context/CoursesContext";
-import { DepartmentContextProvider } from "./context/departmentsContext";
-import { PositionsContextProvider } from "./context/PositionsContext";
 import { LogsContextProvider } from "./context/LogsContext";
 import { LoanDueContextProvider } from "./context/LoanDueContext";
 import StudentDetails from "./pages/users/students/StudentDetails";
@@ -31,9 +28,11 @@ import StaffDetails from "./pages/users/staff/StaffDetails";
 import UserProfile from "./pages/users/UserProfile";
 import DevicesOnLoan from "./pages/devices/DevicesOnLoan";
 import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
-import FormPage from "./pages/formPage/FormPage";
+
 import { ToastProvider } from "./context/ToastContext";
 import DevicesDueReturnPage from "./pages/devices/DevicesDueReturnPage";
+import SecondScreenPage from "./pages/formPage/SecondScreenPage";
+import DeviceForApproval from "./pages/devices/DeviceForApproval";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -164,7 +163,7 @@ function App() {
     },
     {
       path: "/user-form/:userId/:deviceId",
-      element: <FormPage />,
+      element: <SecondScreenPage />,
     },
     {
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
@@ -199,6 +198,10 @@ function App() {
         {
           path: "/devices/device-due-upgrade",
           element: <DevicesDueUpgrade path={"device-due-upgrade"} />,
+        },
+        {
+          path: "/devices/device-approval",
+          element: <DeviceForApproval path={"device-approval"} />,
         },
         {
           path: "/devices/device-due-return",
@@ -250,23 +253,17 @@ function App() {
   return (
     <LogsContextProvider>
       <SearchContextProvider>
-        <DepartmentContextProvider>
-          <PositionsContextProvider>
-            <InvoiceContextProvider>
-              <CourseContextProvider>
-                <LoanDueContextProvider>
-                  <DevicesContextProvider>
-                    <StudentsContextProvider>
-                      <StaffContextProvider>
-                        <RouterProvider router={router} />
-                      </StaffContextProvider>
-                    </StudentsContextProvider>
-                  </DevicesContextProvider>
-                </LoanDueContextProvider>
-              </CourseContextProvider>
-            </InvoiceContextProvider>
-          </PositionsContextProvider>
-        </DepartmentContextProvider>
+        <InvoiceContextProvider>
+          <LoanDueContextProvider>
+            <DevicesContextProvider>
+              <StudentsContextProvider>
+                <StaffContextProvider>
+                  <RouterProvider router={router} />
+                </StaffContextProvider>
+              </StudentsContextProvider>
+            </DevicesContextProvider>
+          </LoanDueContextProvider>
+        </InvoiceContextProvider>
       </SearchContextProvider>
     </LogsContextProvider>
   );

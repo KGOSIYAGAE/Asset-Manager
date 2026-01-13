@@ -83,7 +83,7 @@ function StudentDetails({ path }) {
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Faculty</span>
-            <span className="text-sm">{`${studentDetails?.faculty_name} - ${studentDetails?.faculty_abbreviation}`}</span>
+            <span className="text-sm">{`${studentDetails?.faculty_name}`}</span>
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 gap-3 item-hover">
             <span className="text-sm">Course Name</span>
@@ -93,10 +93,10 @@ function StudentDetails({ path }) {
             <span className="text-sm">Course Code</span>
             <span className="text-sm">{studentDetails?.course_code}</span>
           </div>
-          <div className="flex justify-between bg-zinc-50 p-2 item-hover">
+          {/*<div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Course Duration</span>
             <span className="text-sm">{studentDetails?.course_duration}</span>
-          </div>
+          </div>*/}
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Registration Date</span>
             <span className="text-sm">

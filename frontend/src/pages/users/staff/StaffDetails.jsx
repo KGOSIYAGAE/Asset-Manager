@@ -8,6 +8,7 @@ import { useDeviceContext } from "../../../hooks/useDevicesContext";
 import UserDevicesTable from "../../../components/tables/UserDevicesTable";
 import { getStaffDetails } from "../../../services/api/staff/Staff.Api";
 import { MdEdit } from "react-icons/md";
+import { FaRedo } from "react-icons/fa";
 
 function StaffDetails({ path }) {
   const [staffDetails, setStaffDetails] = useState();
@@ -84,12 +85,16 @@ function StaffDetails({ path }) {
             <span className="text-sm">{staffDetails?.userrole || "None"}</span>
           </div>
           <div className="flex justify-between p-2 item-hover">
+            <span className="text-sm">Faculty</span>
+            <span className="text-sm">{`${staffDetails?.faculty_name}`}</span>
+          </div>
+          <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Department</span>
             <span className="text-sm">{`${staffDetails?.department_name}`}</span>
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 gap-3 item-hover">
             <span className="text-sm">Position</span>
-            <span className=" text-sm ">{staffDetails?.title}</span>
+            <span className=" text-sm ">{staffDetails?.position_name}</span>
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Contract Type</span>
@@ -114,7 +119,29 @@ function StaffDetails({ path }) {
                 : "None"}
             </span>
           </div>
-          <div className="w-full flex justify-end p-2 ">
+          <div className="flex flex-col justify-between p-2 ">
+            <span className="text-sm">Signature</span>
+
+            {staffDetails?.image_base64 ? (
+              <div className="w-6/12 border rounded-md shadow-md p-2 flex items-center  ">
+                <img alt="signature" src={staffDetails?.image_base64} className="w-[180px] " />
+                <button
+                  onClick={() => {
+                    {
+                      /*setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });*/
+                    }
+                  }}
+                >
+                  <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
+                    <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
+                  </div>
+                </button>
+              </div>
+            ) : (
+              "None"
+            )}
+          </div>
+          <div className="w-full flex justify-end p-2 gap-2">
             <div
               className="w-[30px] flex items-center justify-center text-green-400 hover:text-green-500 bg-green-100 p-1 rounded-md border border-green-400 hover:border-green-500 cursor-pointer"
               onClick={() => handleEdit(staffDetails?.id)}

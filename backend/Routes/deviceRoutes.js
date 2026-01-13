@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllDevices,
   getDeviceDueUpgrade,
+  getDeviceForApproval,
   getDevice,
   getDeviceDetails,
   getDevicesAssigned,
@@ -25,6 +26,9 @@ router.get("/", getAllDevices);
 
 //Get all device due for upgrade
 router.get("/due-upgrade", getDeviceDueUpgrade);
+
+//Get all device due for upgrade
+router.get("/requires-approval", getDeviceForApproval);
 
 //Get all devices
 router.get("/:id", getDevice);

@@ -1,4 +1,4 @@
-import { facultyCourse } from "./course";
+import { courseList } from "./course";
 
 //Get All devices based on
 export const getDevicesStatsByMake = (devices) => {
@@ -246,10 +246,10 @@ export const getCourseStatsByFaculty = (students, facultyNumber) => {
 
   const facultyData = [nas_stats, edu_stats, ems_stats, hum_stats];
 
-  for (let j = 0; j < facultyCourse[facultyNumber]?.coursesOfferd.length; j++) {
+  for (let j = 0; j < courseList[facultyNumber]?.courses.length; j++) {
     count = 0;
     for (let i = 0; i < hum_stats.length; i++) {
-      if (facultyData[facultyNumber][i]?.course_code === facultyCourse[facultyNumber]?.coursesOfferd[j]?.course_code) {
+      if (facultyData[facultyNumber][i]?.course_code === courseList[facultyNumber]?.courses[j]?.course_code) {
         count++;
       }
     }

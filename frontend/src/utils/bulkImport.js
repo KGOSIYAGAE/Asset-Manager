@@ -49,14 +49,16 @@ export const bulkCreateStudents = (file, setShowToast, onClose) => {
       data.push({
         name: rows[i][0],
         surname: rows[i][1],
-        idNumber: rows[i][2],
-        phone_number: rows[i][3],
-        email: rows[i][4],
-        studentNumber: rows[i][5],
-        course_id: rows[i][6],
-        isActive: rows[i][7],
+        studentNumber: rows[i][2],
+        idNumber: rows[i][3],
+        phone_number: rows[i][4],
+        email: rows[i][5],
+        faculty_name: rows[i][6],
+        course_name: rows[i][7],
+        course_code: rows[i][8],
+        isActive: rows[i][9],
         registration_date: `${(() => {
-          return dateCorrection(rows[i][8]);
+          return dateCorrection(rows[i][10]);
         })()}`,
       });
     }
@@ -77,17 +79,18 @@ export const bulkCreateStaff = (file, setShowToast, onClose) => {
     let data = [];
     for (let i = 0; i < rows.length; i++) {
       data.push({
-        name: rows[i][0],
-        surname: rows[i][1],
-        phone_number: rows[i][2],
-        email: rows[i][3],
-        staff_no: rows[i][4],
-        contract_type: rows[i][5],
-        position_id: rows[i][6],
-        department_id: rows[i][7],
-        isActive: rows[i][8],
-        start_date: rows[i][9],
-        endDate: rows[i][10],
+        staff_no: rows[i][0],
+        name: rows[i][1],
+        surname: rows[i][2],
+        start_date: rows[i][3],
+        email: rows[i][4],
+        phone_number: rows[i][5],
+        contract_type: rows[i][6],
+        position_name: rows[i][7],
+        faculty_name: rows[i][8],
+        department_name: rows[i][9],
+        isActive: rows[i][10],
+        endDate: rows[i][11],
       });
     }
 

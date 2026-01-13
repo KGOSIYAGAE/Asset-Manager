@@ -23,8 +23,6 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   const [ictStaffTrimmedDataURL, setIctStaffTrimmedDataURL] = useState(null);
   const [staffTrimmedDataURL, setStaffTrimmedDataURL] = useState(null);
 
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
-
   const navigate = useNavigate();
 
   //Get Staff data
@@ -53,46 +51,6 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
     }
     getAllDeviceDetails(deviceId, setDetails);
   };
-
-  //Handle postMessage
-  const postMessage = (name, surname) => {
-    if (window.opener) {
-      window.opener.postMessage({ type: "form_submitted", payload: `Device issued to ${name} ${surname}` }, window.location.origin);
-    }
-
-    window.close();
-  };
-
-  //Handle assign device
-  const handleAssignDevice = async () => {
-    if (!staffData?.name) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
-    }
-
-    const data = {
-      fullName: `${staffData?.name} ${staffData?.surname}`,
-      status: "Assigned",
-      date_issued: getTodayDate(),
-      userId: staffData.staff_no,
-      return_date: (() => {
-        if (staffData.contract_type === "Permanent") {
-          return null;
-        }
-        return staffData.end_date;
-      })(),
-      upgradeDate: (() => {
-        if (staffData.staff_no.toString().length <= 5) {
-          return generateUpgradeDate(getTodayDate());
-        }
-        return null;
-      })(),
-    };
-
-    await assignDevice(deviceDetails?.id, data, setShowToast);
-
-    return postMessage(staffData?.name, staffData?.surname);
-  };
-  //////////////////////////////////////////////////////
 
   useEffect(() => {
     const { year, month, day } = getTodayFullDate();

@@ -12,6 +12,8 @@ function ImportFile({ type, setShowToast, onClose }) {
 
   //Read Excel file
   const handleUploadFile = (file) => {
+    console.log(type);
+
     if (type === "devices") {
       return bulkCreateDevices(file, setShowToast, onClose);
     }

@@ -6,7 +6,7 @@ const checkStudentExist = async (req, res) => {};
 //Get all students
 const getStudents = async (req, res) => {
   try {
-    const get_students_query = `SELECT * FROM "studentDetails"`;
+    const get_students_query = `SELECT * FROM students`;
 
     const { rowCount, rows } = await query(get_students_query);
 
@@ -30,7 +30,7 @@ const getStudentDetails = async (req, res) => {
       return res.status(400).json({ message: "Student Id must be provided.", error: true });
     }
 
-    const get_student_query = `SELECT * FROM "studentDetails" WHERE student_number = $1`;
+    const get_student_query = `SELECT * FROM students WHERE student_number = $1`;
 
     const { rowCount, rows } = await query(get_student_query, [student_no]);
 
@@ -52,9 +52,9 @@ const getStudentDetails = async (req, res) => {
 //Create student
 const createStudent = async (req, res) => {
   try {
-    const { name, surname, studentNumber, idNumber, phone_number, email, course_id, isActive, registration_date } = req.body;
+    const { name, surname, studentNumber, idNumber, phone_number, email, faculty_name, course, course_code, isActive, registration_date } = req.body;
 
-    if (!name || !surname || !studentNumber || !idNumber || !phone_number || !email || !course_id || !isActive || !registration_date) {
+    if (!name || !surname || !studentNumber || !idNumber || !phone_number || !email || !faculty_name || !course || !course_code || !isActive || !registration_date) {
       return res.status(400).json({ message: "All field must be provided", error: true });
     }
 
@@ -66,8 +66,9 @@ const createStudent = async (req, res) => {
       return res.status(400).json({ rows, message: "User mathcing student number already exists", error: true });
     }
 
-    const create_user_query = "INSERT INTO students (name, surname, id_number, phone_number, email, student_number, course_id, acc_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)";
-    const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, course_id, isActive, registration_date];
+    const create_user_query =
+      "INSERT INTO students (name, surname, id_number, phone_number, email, student_number, faculty_name, course_name, course_code , acc_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)";
+    const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, faculty_name, course, course_code, isActive, registration_date];
 
     const { rowCount } = await query(create_user_query, [...VALUES]);
 
@@ -94,16 +95,21 @@ const bulkCreateStudents = async (req, res) => {
     const VALUES = students.map((student) => [
       student.name,
       student.surname,
+      student.studentNumber,
       student.idNumber,
       student.phone_number,
       student.email,
-      student.studentNumber,
-      student.course_id,
+      student.faculty_name,
+      student.course_name,
+      student.course_code,
       student.isActive,
       student.registration_date,
     ]);
 
-    const bulk_create_students_query = format("INSERT INTO students (name, surname, id_number, phone_number, email, student_number, course_id, acc_status, registration_date) VALUES %L", VALUES);
+    const bulk_create_students_query = format(
+      "INSERT INTO students (name, surname, student_number, id_number, phone_number, email, faculty_name, course_name, course_code, acc_status, registration_date) VALUES %L",
+      VALUES
+    );
 
     const { rowCount } = await query(bulk_create_students_query);
 
@@ -127,15 +133,15 @@ const updateStudent = async (req, res) => {
       return res.status(400).json({ message: "Student number must be provided", error: true });
     }
 
-    const { name, surname, studentNumber, idNumber, phone_number, email, course_id, isActive, registration_date } = req.body;
+    const { name, surname, studentNumber, idNumber, phone_number, email, faculty_name, course, course_code, isActive, registration_date } = req.body;
 
-    if (!name || !surname || !studentNumber || !idNumber || !phone_number || !email || !course_id || !isActive || !registration_date) {
+    if (!name || !surname || !studentNumber || !idNumber || !phone_number || !email || !faculty_name || !course || !course_code || !isActive || !registration_date) {
       return res.status(400).json({ message: "All field must be provided", error: true });
     }
 
     const update_student_query =
-      "UPDATE students SET name=$1, surname=$2, id_number=$3, phone_number=$4, email=$5, student_number=$6, course_id=$7, acc_status=$8, registration_date=$9 WHERE student_number = $10";
-    const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, course_id, isActive, registration_date];
+      "UPDATE students SET name=$1, surname=$2, id_number=$3, phone_number=$4, email=$5, student_number=$6, faculty_name=$7, course_name=$8, course_code=$9, acc_status=$10, registration_date=$11 WHERE student_number = $12";
+    const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, faculty_name, course, course_code, isActive, registration_date];
 
     const { rowCount, rows } = await query(update_student_query, [...VALUES, student_no]);
 

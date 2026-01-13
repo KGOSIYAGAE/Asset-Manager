@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import SubmitButton from "../../components/buttons/SubmitButton";
+import SubmitButton from "../SubmitButton";
 
-function OpenFormVerification({ userId, deviceId, setShowToast, w = 800, h = 600 }) {
+function OpenSecondScreenButton({ userId, deviceId, setShowToast, w = 800, h = 600 }) {
   const [error, setError] = useState("");
 
   async function openOnSecondScreen() {
@@ -12,15 +12,15 @@ function OpenFormVerification({ userId, deviceId, setShowToast, w = 800, h = 600
 
         const { screens, currentScreen } = details;
 
-        if (screens.length < 2) {
+        /*if (screens.length < 2) {
           setShowToast({ isShow: true, type: "error", message: "Only one screen is detected, please connect second screen or Tablet." });
           throw new Error("Only one screen is detected.");
-        }
+        }*/
 
         // 2. Choose a screen that isn't the current one
         //console.log(screens[1]);
         //const target = screens.find((s) => s.id !== currentScreen.id) || screens[0];
-        const target = screens[1];
+        const target = screens[0];
 
         // 3. Center the popup on the selected screen
         const left = target.left;
@@ -50,4 +50,4 @@ function OpenFormVerification({ userId, deviceId, setShowToast, w = 800, h = 600
   );
 }
 
-export default OpenFormVerification;
+export default OpenSecondScreenButton;
