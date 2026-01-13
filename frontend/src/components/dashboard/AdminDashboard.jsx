@@ -77,8 +77,9 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
             <div className="border-b-2 rounded-t-md p-2">
               <span className="font-semibold text-sm">Devices by Condition</span>
             </div>
-            <div className="bg-white p-2">
-              <PieComponent devices={devices} />
+
+            <div className="p-2">
+              <PieComponentMake devices={devices} />
             </div>
           </div>
           {/* */}
@@ -95,8 +96,9 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
             <div className="border-b-2 rounded-t-md p-2">
               <span className="font-semibold text-sm">Devices by Make</span>
             </div>
-            <div className="p-2">
-              <PieComponentMake devices={devices} />
+
+            <div className="bg-white p-2">
+              <PieComponent devices={devices} />
             </div>
           </div>
           {/* */}
@@ -117,15 +119,15 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
               <PieCategory devices={devices} />
             </div>
           </div>
-          {/* */}
+          {/* *
           <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
             <DeviceLogTable deviceLogs={devicesLogs} label={"Latest Devices Logs"} />
           </div>
-          {/* */}
+          {/* *
           <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
             <DueReturnLaptopsTable label={"User Devices Due Return"} />
           </div>
-          {/* */}
+          {/* *
           <div className=" bg-white flex flex-col col-span-4 row-span-1 rounded-md shadow-lg border">
             <DueUpgradeLaptopsTable loanDueState={loanDueState} label={"User Devices Due Upgrade"} />
           </div>

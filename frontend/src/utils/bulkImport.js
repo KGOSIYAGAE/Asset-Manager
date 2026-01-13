@@ -2,6 +2,8 @@ import { bulkAddDevice } from "../services/api/devices/Device.Api";
 import readXlsxFile from "read-excel-file";
 import { bulkAddStudent } from "../services/api/students/Students.Api";
 import { bulkAddStaff } from "../services/api/staff/Staff.Api";
+import { toIsoDate } from "./dateConverter";
+import { GetDeviceType } from "./helperMethods";
 
 const dateCorrection = (wrongDate) => {
   const isoDate = new Date(wrongDate).toISOString().split("T")[0];
@@ -24,12 +26,19 @@ export const bulkCreateDevices = (file, setShowToast, onClose) => {
         assetTag: rows[i][5],
         serial_no: rows[i][6],
         spec: rows[i][7],
-        warranty_end_date: `${rows[i][8]}`,
-        purchaseValue: rows[i][9],
-        currentValue: rows[i][10],
-        invoice_id: rows[i][11],
-        user_id: rows[i][12],
-        date_issued: `${rows[i][13]}`,
+        device_type: rows[i][8],
+        warranty_end_date: toIsoDate(rows[i][9]),
+        purchaseValue: rows[i][10],
+        currentValue: rows[i][11],
+        supplier_name: rows[i][12],
+        invoice_no: rows[i][13],
+        user_id: rows[i][14],
+        date_issued: (() => {
+          if (rows[i][15]) {
+            return toIsoDate(rows[i][15]);
+          }
+          return null;
+        })(),
       });
     }
 
@@ -37,6 +46,7 @@ export const bulkCreateDevices = (file, setShowToast, onClose) => {
       devices: data,
     };
 
+    //console.log(devicesData);
     return bulkAddDevice(devicesData, setShowToast, onClose);
   });
 };

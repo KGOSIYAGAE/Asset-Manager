@@ -15,11 +15,11 @@ function Navbar({ onCloseMenu, notifications }) {
         <MdMenu size={25} className="menu-items" />
       </div>
       <div className="flex justify-center items-center gap-3">
-        <NotificationCard />
+        {/*<NotificationCard />*/}
         <ProfileCard />
-        <div className="menu-items">
+        {/*<div className="menu-items">
           <MdOutlineSettings size={25} className="" />
-        </div>
+        </div>*/}
       </div>
     </div>
   );

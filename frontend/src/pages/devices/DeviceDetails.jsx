@@ -19,6 +19,8 @@ import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
 import DeviceLogTable from "../../components/tables/DeviceLogTable";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import { getUserType, handleCurrency } from "../../utils/helperMethods";
+import RejectIssueCard from "../../components/cards/rejectIssue/RejectIssueCard";
+import ApproveIssue from "../../components/cards/approveIssue/ApproveIssue";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -27,7 +29,7 @@ function DeviceDetails({ path }) {
   //Force re-render
 
   const [isAssigned, setIsAssigned] = useState(false);
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState(null);
   const [deviceDetails, setDeviceDetails] = useState();
   const [deviceLogs, setDeviceLogs] = useState();
   const params = useParams();
@@ -98,7 +100,7 @@ function DeviceDetails({ path }) {
     if (!staffState || !studentState) {
       console.log("No data");
     }
-  }, [showToast]);
+  }, [deviceDetails]);
 
   //handle post Message Response
   useEffect(() => {
@@ -129,10 +131,22 @@ function DeviceDetails({ path }) {
                   }}
                 />
               ) : deviceDetails?.status === "Approval required" ? (
-                <div className="flex gap-5">
-                  <SubmitButton text={"Reject"} onClick={() => {}} />
-                  <SubmitButton text={"Approve"} onClick={() => {}} />
-                </div>
+                hasPermission("approve") && (
+                  <div className="flex gap-5">
+                    <SubmitButton
+                      text={"Reject"}
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "reject", data: "hello" });
+                      }}
+                    />
+                    <SubmitButton
+                      text={"Approve"}
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "approve", data: "hello" });
+                      }}
+                    />
+                  </div>
+                )
               ) : (
                 <div className="flex gap-3">
                   <SubmitButton
@@ -265,7 +279,7 @@ function DeviceDetails({ path }) {
           <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 bg-white border  rounded-md shadow-md">
             <img src={`/src/assets/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="h-[250px]" />
           </div>
-          {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
+          {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" || deviceDetails?.status === "Approval required" ? (
             <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md bg-white">
               {deviceDetails?.status === "Loaned" ? <span className="heading-text">Loaned User</span> : <span className="heading-text">Assigned User</span>}
 
@@ -340,9 +354,38 @@ function DeviceDetails({ path }) {
           <div className=" h-[1100px]  col-span-6 bg-white " id="print-file">
             <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.user_id} />
           </div>
-        ) : (
+        ) : openModal.type === "Staff" ? (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
             <StaffIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.user_id} />
+          </div>
+        ) : openModal.type === "reject" ? (
+          <div>
+            <RejectIssueCard
+              onCanel={() => {
+                setOpenModal({ isShown: false });
+              }}
+              onSubmit={() => {
+                getDeviceDetails();
+                setOpenModal({ isShown: false });
+              }}
+              setShowToast={setShowToast}
+              full_name={deviceDetails?.full_name}
+              laptopSerialNo={deviceDetails?.serial_no}
+            />
+          </div>
+        ) : (
+          <div>
+            <ApproveIssue
+              onCanel={() => {
+                setOpenModal({ isShown: false });
+              }}
+              onSubmit={() => {
+                getDeviceDetails();
+                setOpenModal({ isShown: false });
+              }}
+              setShowToast={setShowToast}
+              deviceUserDetails={deviceDetails}
+            />
           </div>
         )}
       </Modal>

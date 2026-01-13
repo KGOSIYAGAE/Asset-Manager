@@ -60,7 +60,7 @@ function DueReturnLaptopsTable({ label }) {
                     </td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.next_upgrade_date);
+                        return handleTimeStamp(device.return_date);
                       })()}
                     </td>
                     <td>

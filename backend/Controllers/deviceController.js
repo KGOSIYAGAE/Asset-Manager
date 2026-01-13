@@ -2,6 +2,27 @@ const { query } = require("../util/pg_dbConnection");
 const format = require("pg-format");
 const { createNewLog } = require("./deviceLogController");
 
+//Check Previous device status
+const checkDeviceStatus = async (id) => {
+  try {
+    if (!id) {
+      return res.status(400).json({ message: "Device id not provided", error: true });
+    }
+
+    const getDeviceQuery = "SELECT * FROM devices WHERE id = $1";
+
+    const { rows } = await query(getDeviceQuery, [id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Device matching the id not found", error: true });
+    }
+
+    return rows[0].status;
+  } catch (error) {
+    return console.log(error);
+  }
+};
+
 //Get all devices
 const getAllDevices = async (req, res) => {
   try {
@@ -22,6 +43,18 @@ const getAllDevices = async (req, res) => {
         WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
         ELSE device_type 
       END ORDER BY created_at DESC`;
+
+    /*  const GET_ALL_QUERY = `SELECT * FROM devices 
+     WHERE device_type = 
+      CASE 
+        WHEN $1 = 'support_admin' THEN 'Support' 
+        WHEN $1 = 'support_technician' THEN 'Support'
+        WHEN $1 = 'networks_admin' THEN 'Network'
+        WHEN $1 = 'networks_technician' THEN 'Network'
+        WHEN $1 = 'av_admin' THEN 'Audio Visual'
+        WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
+        ELSE device_type 
+      END ORDER BY created_at DESC`;*/
 
     const { rows } = await query(GET_ALL_QUERY, [userrole]);
 
@@ -234,11 +267,13 @@ const bulkCreateDevice = async (req, res) => {
       device.status,
       device.assetTag,
       device.serial_no,
+      device.device_type,
       device.spec,
       device.warranty_end_date,
       device.purchaseValue,
       device.currentValue,
-      device.invoice_id,
+      device.supplier_name,
+      device.invoice_no,
       device.user_id,
       device.date_issued,
     ]);
@@ -246,7 +281,7 @@ const bulkCreateDevice = async (req, res) => {
     console.log(VALUES);
 
     const bulk_create_device_query = format(
-      "INSERT INTO devices (make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, invoice_id, user_id, date_issued) VALUES %L",
+      "INSERT INTO devices (make, model, category, device_condition, status, asset_tag, serial_no, device_type, specification, warranty_end_date, purchase_price, value_price, invoice_number, supplier_name, user_id, date_issued) VALUES %L",
       VALUES
     );
 
@@ -275,7 +310,9 @@ const updateDevice = async (req, res) => {
       return res.status(400).json({ message: "Device Id is required!", error: true });
     }
 
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_id, purchaseValue, currentValue } = req.body;
+    console.log(req.body);
+
+    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue } = req.body;
 
     if (!assetTag) {
       return res.status(400).json({ message: "Asset Tag is required!", error: true });
@@ -304,8 +341,8 @@ const updateDevice = async (req, res) => {
     if (!warranty_end_date) {
       return res.status(400).json({ message: "Warranty end date is required!", error: true });
     }
-    if (!invoice_id) {
-      return res.status(400).json({ message: "Invoice id is required!", error: true });
+    if (!invoice_no) {
+      return res.status(400).json({ message: "Invoice number is required!", error: true });
     }
     if (!purchaseValue) {
       return res.status(400).json({ message: "Purchase value is required!", error: true });
@@ -315,8 +352,8 @@ const updateDevice = async (req, res) => {
     }
 
     const update_device_query =
-      "UPDATE devices SET make=$1, model=$2, category=$3, device_condition=$4, status=$5, asset_tag=$6, serial_no=$7, specification=$8, warranty_end_date=$9, purchase_price=$10, value_price=$11, invoice_id=$12 WHERE id =$13 ;";
-    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_id];
+      "UPDATE devices SET make=$1, model=$2, category=$3, device_condition=$4, status=$5, asset_tag=$6, serial_no=$7, specification=$8, warranty_end_date=$9, purchase_price=$10, value_price=$11, invoice_number=$12 WHERE id =$13 ;";
+    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_no];
 
     const { rowCount } = await query(update_device_query, [...VALUES, id]);
 
@@ -340,6 +377,8 @@ const assignDevice = async (req, res) => {
     const { id } = req.params;
     const { fullName, status, userId, date_issued, return_date, upgradeDate } = req.body;
 
+    const previousStatus = await checkDeviceStatus(id);
+
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
@@ -358,7 +397,14 @@ const assignDevice = async (req, res) => {
     }
 
     //Create new log
-    createNewLog("Assign", req.user, id, `Device successfully assigned to ${fullName}`);
+    if (status === "Approval required") {
+      createNewLog("Approval required", req.user, id, `Device assigning to ${fullName} requires approval.`);
+    } else if (previousStatus === "Approval required" && status === "Assigned") {
+      createNewLog("Approved", req.user, id, `Device assigning to ${fullName} has been approved.`);
+      createNewLog("Assign", req.user, id, `Device successfully assigned to ${fullName}`);
+    } else {
+      createNewLog("Assign", req.user, id, `Device successfully assigned to ${fullName}`);
+    }
 
     return res.status(200).json({ rowCount, message: `Device successfully assigned to ${fullName}`, error: false });
   } catch (error) {
@@ -410,6 +456,8 @@ const releaseDevice = async (req, res) => {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
+    const previousStatus = await checkDeviceStatus(id);
+
     if (!fullName || !status || !userId) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
@@ -434,7 +482,11 @@ const releaseDevice = async (req, res) => {
     }
 
     //Create new log
-    createNewLog("Release", req.user, id, `Device successfully released from ${rows[0].full_name} to ${fullName}`);
+    if (previousStatus === "Assigned") {
+      createNewLog("Release", req.user, id, `Device successfully released from ${rows[0].full_name} to ${fullName}`);
+    } else {
+      createNewLog("Rejected", req.user, id, `Device assigning to ${rows[0].full_name} has been rejected.`);
+    }
 
     return res.status(200).json({ rowCount, message: `Device successfully released from ${rows[0].full_name} to ${fullName}.`, error: false });
   } catch (error) {

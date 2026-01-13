@@ -9,6 +9,7 @@ import SiganturePad from "../cards/signaturePad/SiganturePad";
 import SubmitButton from "../buttons/SubmitButton";
 import { FaRedo } from "react-icons/fa";
 import { getUserSignature } from "../../services/api/signature/userSignatures";
+import { handleTimeStamp } from "../../utils/dateConverter";
 
 function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   const [year, setYear] = useState();
@@ -67,7 +68,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   return (
     <div className="printable ">
       <div className="w-full flex justify-center">
-        <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
+        <img src="\src\assets\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
       </div>
       <div className="w-full flex flex-col gap-4 ">
         {/*
@@ -145,31 +146,17 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
           </div>
           <div className="h-[75px] flex col-span-2  black-t-border ">
             <div className="w-1/2 text-sm h-[75px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
-            <div className={`w-1/2  col-span-1 flex  ${staffData?.image_base64 || staffTrimmedDataURL ? "justify-start" : "items-center justify-center  p-2"}`}>
-              {staffData?.image_base64 || staffTrimmedDataURL ? (
-                <div className="h-[70px] flex justify-between gap-5 ">
-                  <div className="flex flex-col items-center ">
-                    <img alt="signature" src={staffTrimmedDataURL || staffData?.image_base64} className="w-[180px] " />
-                    <span className="date-small-text ">{`${day} / ${month} / ${year}`}</span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });
-                    }}
-                  >
-                    <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
-                      <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
-                    </div>
-                  </button>
+            <div className={`w-1/2  col-span-1 flex items-center justify-center  p-2`}>
+              <div className="h-[70px] flex justify-between gap-5 ">
+                <div className="flex flex-col items-center ">
+                  <img alt="signature" src={staffData?.image_base64} className="w-[180px] " />
+                  <span className="date-small-text ">
+                    {(() => {
+                      return handleTimeStamp(staffData?.signature_date);
+                    })()}
+                  </span>
                 </div>
-              ) : (
-                <SubmitButton
-                  text={"Add signature"}
-                  onClick={() => {
-                    setOpenModal({ isShown: true, isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });
-                  }}
-                />
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -187,31 +174,13 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
           </div>
           <div className="h-[75px] flex col-span-2  border border-black  ">
             <div className="w-1/2 text-sm h-[74px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
-            <div className={`w-1/2  col-span-1 flex  ${ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64 ? "justify-start" : "items-center justify-center  p-2"}`}>
-              {loggedInUserDetails?.image_base64 || ictStaffTrimmedDataURL ? (
-                <div className="h-[75px] flex justify-between gap-5 ">
-                  <div className="flex flex-col items-center justify-center ">
-                    <img alt="signature" src={ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64} className="w-[180px] " />
-                    <span className="date-small-text ">{`${day} / ${month} / ${year}`}</span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setOpenModal({ isShown: true, isShown: true, trimmedDataURL: ictStaffTrimmedDataURL, setTrimmedDataURL: setIctStaffTrimmedDataURL, user_id: loggedInUserDetails?.staff_no });
-                    }}
-                  >
-                    <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
-                      <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
-                    </div>
-                  </button>
+            <div className={`w-1/2  col-span-1 flex  items-center justify-center  p-2`}>
+              <div className="h-[75px] flex justify-between gap-5 ">
+                <div className="flex flex-col items-center justify-center ">
+                  <img alt="signature" src={loggedInUserDetails?.image_base64} className="w-[180px] " />
+                  <span className="date-small-text ">{`${day} / ${month} / ${year}`}</span>
                 </div>
-              ) : (
-                <SubmitButton
-                  text={"Add signature"}
-                  onClick={() => {
-                    setOpenModal({ isShown: true, isShown: true, trimmedDataURL: ictStaffTrimmedDataURL, setTrimmedDataURL: setIctStaffTrimmedDataURL, user_id: loggedInUserDetails?.staff_no });
-                  }}
-                />
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -242,28 +211,17 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
       </Modal>
 
       <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
-        {deviceDetails?.status === "Assigned" ? (
-          <button
-            className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md"
-            onClick={() => {
-              handleOnPrint();
-            }}
-          >
-            Print
-          </button>
-        ) : (
-          <button
-            className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md"
-            onClick={() => {
-              handleAssignDevice();
-            }}
-          >
-            Done
-          </button>
-        )}
+        <button
+          className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md"
+          onClick={() => {
+            handleOnPrint();
+          }}
+        >
+          Print
+        </button>
       </div>
       <div className="flex absolute bottom-0 ">
-        <img alt="banner" src="/public/page_banner.png" className="w-[800px] h-[50px]" />
+        <img alt="banner" src="\src\assets\page_banner.png" className="w-[800px] h-[50px]" />
       </div>
     </div>
   );

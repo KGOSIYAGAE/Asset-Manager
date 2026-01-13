@@ -29,14 +29,13 @@ function AddEditDevice({ path }) {
   const [warranty_end_date, setWarranty_End_date] = useState("");
   const [invoice_no, setInvoice_no] = useState("");
   const [supplier_name, setSupplier_name] = useState("");
-  const [invoice_id, setInvoice_id] = useState(0);
+
   const [purchaseValue, setPurchaseValue] = useState("");
   const [currentValue, setCurrentValue] = useState("");
 
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [formType, setFormType] = useState("Add");
 
-  const { invoiceState, invoiceDispatch } = useInvoiceContext();
   const [deviceMufactures, setDeviceManufactures] = useState([]);
   const [deviceModels, setDeviceModels] = useState([]);
 
@@ -176,7 +175,6 @@ function AddEditDevice({ path }) {
   };
 
   useEffect(() => {
-    getAllInvoices(invoiceDispatch);
     getDeviceDetails();
   }, []);
 
@@ -205,7 +203,7 @@ function AddEditDevice({ path }) {
           </div>
 
           <div className="col-span-2">
-            <TextInput label={"Serial Number"} value={serial_no} isDisabled={false} maxLength={12} setOnChange={setSerial_no} />
+            <TextInput label={"Serial Number"} value={serial_no} isDisabled={false} maxLength={30} setOnChange={setSerial_no} />
           </div>
           <div className="col-span-2">
             <TextInput label={"Asset Tag"} value={assetTag} isDisabled={false} maxLength={6} setOnChange={setAssetTag} />

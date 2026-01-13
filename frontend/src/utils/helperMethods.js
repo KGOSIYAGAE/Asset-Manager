@@ -131,3 +131,40 @@ export const getUserType = (user_id, setUserType) => {
     return setUserType("Staff");
   }
 };
+
+//Filter for user by role !== none
+export const getSystemUsers = (usersList) => {
+  const list = [];
+
+  if (usersList) {
+    for (let i = 0; i < usersList.length; i++) {
+      if (usersList[i].userrole !== null) {
+        list.push(usersList[i]);
+      }
+    }
+  }
+
+  return list;
+};
+
+//Get and set device type based on logged in user
+export const GetDeviceType = () => {
+  const { role } = getLoggedInUser();
+
+  switch (role) {
+    case "support_admin":
+      return "Support";
+    case "support_technician":
+      return "Support";
+    case "networks_admin":
+      return "Network";
+    case "networks_technician":
+      return "Network";
+    case "av_admin":
+      return "Audio Visual";
+    case "av_technician":
+      return "Audio Visual";
+    default:
+      return null;
+  }
+};

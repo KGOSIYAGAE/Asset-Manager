@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 //import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
 import { generateUpgradeDate, getTodayDate } from "../../../utils/helperMethods";
 import { assignDevice, releaseDevice } from "../../../services/api/devices/Device.Api";
+import { handleReleaseDevice } from "../../../utils/HandleReleaseDevice";
 
 function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
@@ -16,7 +17,7 @@ function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
   const params = useParams();
 
   //Handle release device
-  const handleReleaseDevice = () => {
+  /*const handleReleaseDevice = (selectedUser, params, onSubmit, setShowToast) => {
     if (!selectedUser.fullName) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
@@ -38,7 +39,7 @@ function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
 
     releaseDevice(id, data, setShowToast);
     return onSubmit();
-  };
+  };*/
 
   useEffect(() => {
     setSelectedUser({
@@ -64,7 +65,7 @@ function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          <SubmitButton text={"Release"} onClick={handleReleaseDevice} />
+          <SubmitButton text={"Release"} onClick={() => handleReleaseDevice(selectedUser, params, onSubmit, setShowToast)} />
         </div>
       </div>
     </div>

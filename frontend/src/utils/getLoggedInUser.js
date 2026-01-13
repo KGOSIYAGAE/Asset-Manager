@@ -11,6 +11,25 @@ export const getLoggedInUser = () => {
   return user;
 };
 
+// List of roles
+export const rolesList = [
+  {
+    id: 0,
+    name: "support_admin",
+    can: `"create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign", "approve"`,
+  },
+  {
+    id: 1,
+    name: "support_technician",
+    can: `"create", "edit", "view", "support-tech-dash", "assign"`,
+  },
+  {
+    id: 2,
+    name: "support_intern",
+    can: `"view", "support-tech-dash", "assign"`,
+  },
+];
+
 //Cehck if user has permissions
 export const hasPermission = (permission) => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -18,10 +37,13 @@ export const hasPermission = (permission) => {
 
   const ROLES = {
     support_admin: {
-      can: ["create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign"],
+      can: ["create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign", "approve", "manage-roles"],
     },
     support_technician: {
       can: ["create", "edit", "view", "support-tech-dash", "assign"],
+    },
+    support_intern: {
+      can: ["view", "support-tech-dash", "assign"],
     },
     networks_admin: {
       can: ["create", "edit", "delete", "view", "networks-dash", "view-logs", "bulk-create", "export", "assign"],

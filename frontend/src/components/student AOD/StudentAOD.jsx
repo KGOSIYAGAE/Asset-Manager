@@ -27,7 +27,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
   const [deviceDetails, setDeviceDetails] = useState();
 
   //Get Student data
-  const getData = () => {
+  const getStduentData = () => {
     if (student_no) {
       getStudentDetails(student_no, setStudentData);
     }
@@ -58,17 +58,17 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
     setYear(year);
     setDay(day);
     setMonth(getMonthName(month));
-    getData();
+    getStduentData();
     getDeviceDetails();
     setLoggedInUser(getLoggedInUser());
 
     //handleOnPrint();
-  }, []);
+  }, [deviceDetails]);
 
   return (
-    <div className="printable h-[1200px]">
+    <div className="printable h-[1000px]">
       <div class="page-header ">
-        <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
+        <img src="\src\assets\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
         <div class="page-address">
           <span class="address-heading">SOL PLAATJE UNIVERSITY</span>
           <span class="address-text">Private Bag X 5008, Kimberly, 8300</span>
@@ -180,153 +180,73 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
             {/**/}
             <div className="flex flex-col ">
               <div className=" flex justify-between ">
-                <div className={` col-span-1 flex  ${ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64 ? "justify-start" : "items-center"}`}>
-                  {loggedInUserDetails?.image_base64 || ictStaffTrimmedDataURL ? (
-                    <div>
-                      <div className=" flex justify-between ">
-                        <div className="flex flex-col items-center justify-center ">
-                          <img alt="signature" src={ictStaffTrimmedDataURL || loggedInUserDetails?.image_base64} className="w-[180px] " />
-                        </div>
-                        <button
-                          onClick={() => {
-                            console.log(loggedInUserDetails?.staff_no);
-                            setOpenModal({
-                              isShown: true,
-                              isShown: true,
-                              trimmedDataURL: ictStaffTrimmedDataURL,
-                              setTrimmedDataURL: setIctStaffTrimmedDataURL,
-                              user_id: loggedInUserDetails?.staff_no,
-                            });
-                          }}
-                        >
-                          <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
-                            <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
-                          </div>
-                        </button>
-                      </div>
-                      <div className="flex flex-col -mt-3">
-                        <span class="">.............................................................</span>
-                        <span class="">OBO SPU</span>
+                <div className={` col-span-1 flex  items-center`}>
+                  <div>
+                    <div className=" flex justify-between ">
+                      <div className="flex flex-col items-center justify-center ">
+                        <img alt="signature" src={loggedInUserDetails?.image_base64} className="w-[160px] " />
                       </div>
                     </div>
-                  ) : (
-                    <div className="flex flex-col">
-                      <div>
-                        <SubmitButton
-                          text={"Add signature"}
-                          onClick={() => {
-                            setOpenModal({
-                              isShown: true,
-                              isShown: true,
-                              trimmedDataURL: ictStaffTrimmedDataURL,
-                              setTrimmedDataURL: setIctStaffTrimmedDataURL,
-                              user_id: loggedInUserDetails?.staff_no,
-                            });
-                          }}
-                        />
-                      </div>
-                      <div className="flex flex-col ">
-                        <span class="">.............................................................</span>
-                        <span class="">OBO SPU</span>
-                      </div>
+                    <div className="flex flex-col -mt-3">
+                      <span class="">.............................................................</span>
+                      <span class="">OBO SPU</span>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
             {/**/}
             <div className="flex flex-col ">
               <div className=" flex justify-between ">
-                <div className={` col-span-1 flex  ${studentTrimmedDataURL || studentData?.image_base64 ? "justify-start" : "items-center"}`}>
-                  {studentData?.image_base64 || studentTrimmedDataURL ? (
-                    <div>
-                      <div className=" flex justify-between ">
-                        <div className="flex flex-col items-center justify-center ">
-                          <img alt="signature" src={studentTrimmedDataURL || studentData?.image_base64} className="w-[180px] " />
-                        </div>
-                        <button
-                          onClick={() => {
-                            setOpenModal({
-                              isShown: true,
-                              isShown: true,
-                              trimmedDataURL: studentTrimmedDataURL,
-                              setTrimmedDataURL: setStudentTrimmedDataURL,
-                              user_id: studentData?.student_number,
-                            });
-                          }}
-                        >
-                          <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
-                            <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
-                          </div>
-                        </button>
-                      </div>
-                      <div className="flex flex-col -mt-3">
-                        <span class="">.............................................................</span>
-                        <span class="">Student</span>
+                <div className={` col-span-1 flex  items-center`}>
+                  <div>
+                    <div className=" flex justify-between ">
+                      <div className="flex flex-col items-center justify-center ">
+                        <img alt="signature" src={studentData?.image_base64} className="w-[160px] " />
                       </div>
                     </div>
-                  ) : (
-                    <div className="flex flex-col">
-                      <div>
-                        <SubmitButton
-                          text={"Add signature"}
-                          onClick={() => {
-                            console.log(studentData?.student_number);
-                            setOpenModal({
-                              isShown: true,
-                              isShown: true,
-                              trimmedDataURL: studentTrimmedDataURL,
-                              setTrimmedDataURL: setStudentTrimmedDataURL,
-                              user_id: studentData?.student_number,
-                            });
-                          }}
-                        />
-                      </div>
-                      <div className="flex flex-col ">
-                        <span class="">.............................................................</span>
-                        <span class="">Student</span>
-                      </div>
+                    <div className="flex flex-col -mt-3">
+                      <span class="">.............................................................</span>
+                      <span class="">Student</span>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
             {/**/}
           </div>
         </div>
-        <div className="w-full">
+        {/**/}
+        <div className="flex flex-col ">
           <div className=" flex justify-between ">
-            <span class="">…………………………………………</span>
-            <span class="">…………………………………………</span>
-          </div>
-          <div className=" flex justify-between ">
-            <span class="">Witness 1</span>
-            <span class="w-[192px] ">Witness 2</span>
+            <div className={` col-span-1 flex  items-center`}>
+              <div>
+                <div className=" flex justify-between ">
+                  <div className="flex flex-col items-center justify-center ">
+                    <img alt="signature" src={studentData?.image_base64} className="w-[160px] " />
+                  </div>
+                </div>
+                <div className="flex flex-col -mt-3">
+                  <span class="">.............................................................</span>
+                  <span class="">Witness 1</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        {/**/}
       </div>
-      <Modal
-        isOpen={openModal.isShown}
-        ariaHideApp={false}
-        onRequestClose={() => {
-          setOpenModal({ isShown: false });
-        }}
-        style={{
-          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
-        }}
-        contentLabel=""
-        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-auto"
-      >
-        <SiganturePad
-          lablel={"Signature"}
-          trimmedDataURL={openModal?.trimmedDataURL}
-          setTrimmedDataURL={openModal?.setTrimmedDataURL}
-          user_id={openModal?.user_id}
-          onClose={() => {
-            setOpenModal({ isShown: false });
+
+      <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+        <button
+          className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md"
+          onClick={() => {
+            handleOnPrint();
           }}
-        />
-      </Modal>
+        >
+          Print
+        </button>
+      </div>
     </div>
   );
 }

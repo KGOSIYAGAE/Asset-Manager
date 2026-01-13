@@ -63,10 +63,6 @@ function ProfileCard() {
         }}
       >
         <div className="flex flex-col p-2">
-          <div className="flex items-center  text-sm menu-items p-2 gap-2">
-            <FaRegUser className="" size={15} />
-            <span className="">Profile</span>
-          </div>
           <div
             className="flex items-center  text-sm menu-items p-2 gap-2"
             onClick={() => {
@@ -74,6 +70,10 @@ function ProfileCard() {
             }}
           >
             <SlWrench className="" size={15} />
+            <span className="">Profile</span>
+          </div>
+          <div className="flex items-center  text-sm menu-items p-2 gap-2">
+            <FaRegUser className="" size={15} />
             <span className="">Settings</span>
           </div>
           <div className="flex items-center  text-sm menu-items p-2 gap-2">

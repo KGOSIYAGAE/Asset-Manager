@@ -20,7 +20,7 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setSho
       return staffData.end_date;
     })(),
     upgradeDate: (() => {
-      if (staffData.staff_no.toString().length <= 5) {
+      if (staffData.staff_no.toString().length <= 5 && staffData.contract_type === "Permanent") {
         return generateUpgradeDate(getTodayDate());
       }
       return null;
@@ -51,5 +51,24 @@ export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails,
   await assignDevice(deviceDetails?.id, data, setShowToast);
 
   return postMessage(studentDetails?.name, studentDetails?.surname);
+};
+//////////////////////////////////////////////////////
+
+//Handle assign device to staff
+export const handleApproveDevice = async (deviceUserDetails, setShowToast) => {
+  if (!deviceUserDetails?.full_name) {
+    return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+  }
+
+  const data = {
+    fullName: `${deviceUserDetails?.full_name}`,
+    status: "Assigned",
+    date_issued: getTodayDate(),
+    userId: deviceUserDetails?.user_id,
+  };
+
+  await assignDevice(deviceUserDetails?.id, data, setShowToast);
+
+  return postMessage(deviceUserDetails?.full_name, "");
 };
 //////////////////////////////////////////////////////
