@@ -70,7 +70,7 @@ function Login() {
   return (
     <div className="w-screen h-svh flex items-center justify-center ">
       <div className="w-full h-svh">
-        <img src="/src/assets/library_2.jpg" alt="" className="w-full" />
+        <img src="/library_2.jpg" alt="" className="w-full" />
       </div>
       <div className="w-[150px] h-[150px] rounded-full absolute z-10 top-10 left-10 ">
         <img src="/src/assets/SPU 1.png" alt="" srcset="" />

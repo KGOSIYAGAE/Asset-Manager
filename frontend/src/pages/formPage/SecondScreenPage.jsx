@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
-
 import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";
 import StaffIssueVerification from "../../components/cards/verificationComponents/staffIssueVerification";
+
+//import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";
+//import StaffIssueVerification from "../../components/cards/verificationComponents/staffIssueVerification";
 
 /*import StaffIssueVerification from "../components/cards/verificationComponents/staffIssueVerification";
 import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";*/
