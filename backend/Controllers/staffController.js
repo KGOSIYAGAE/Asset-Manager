@@ -35,7 +35,7 @@ const getStaff = async (req, res) => {
       return res.status(200).json({ message: "Staff Id required", error: true });
     }
 
-    const get_staff_query = `SELECT * FROM staff WHERE id = $1`;
+    const get_staff_query = `SELECT * FROM "StaffDetails" WHERE id = $1`;
 
     const { rowCount, rows } = await query(get_staff_query, [id]);
 
@@ -197,7 +197,7 @@ const bulkCreateStaff = async (req, res) => {
   }
 };
 
-//Create staff
+//Update staff
 const updateStaff = async (req, res) => {
   try {
     const { id } = req.params;

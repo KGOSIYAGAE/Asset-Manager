@@ -32,18 +32,18 @@ function StaffIssueVerification({ deviceId, staff_no }) {
 
   return (
     <div className="flex flex-col gap-10 ">
-      <img src="\public\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo-staff" />
+      <img src="\src\assets\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo-staff" />
       <div className="flex flex-col gap-8">
         <span className=" font-bold text-2xl">Device Issuance Terms & Acknowledgment</span>
 
-        <span>
+        <span className="text-xl">
           I, <b>{`${staffData?.name} ${staffData?.surname}`}</b>, <b>staff number: {staffData?.staff_no}</b>, hereby acknowledge that the device I am collecting remains the property of the University.
           I agree to use it responsibly for academic or official purposes only, keep it secure, and report any loss, theft, or damage to ICT immediately. I understand that I may be held liable for any
           loss or damage caused by negligence and must return the device in good condition when requested or when my studies or employment end.{" "}
           <b>By signing below, I accept and agree to these terms and conditions.</b>
         </span>
         <div>
-          <span>Date: {getTodayDate()}</span>
+          <span className="text-xl">Date: {getTodayDate()}</span>
         </div>
       </div>
       <SiganturePad lablel={"Staff Signature"} user_id={staff_no} userDetails={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast} />

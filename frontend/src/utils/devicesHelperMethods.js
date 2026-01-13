@@ -57,6 +57,7 @@ export const getLoanedDevicesHelper = (devicesList) => {
       }
     }
   }
+  return list;
 };
 
 //Filter for devices by status = Approval required

@@ -9,12 +9,16 @@ import UserDevicesTable from "../../../components/tables/UserDevicesTable";
 import { getStaffDetails } from "../../../services/api/staff/Staff.Api";
 import { MdEdit } from "react-icons/md";
 import { FaRedo } from "react-icons/fa";
+import Modal from "react-modal";
+import SiganturePad from "../../../components/cards/signaturePad/SiganturePad";
 
 function StaffDetails({ path }) {
   const [staffDetails, setStaffDetails] = useState();
   const params = useParams();
   const { devicesState, devicesDispatch } = useDeviceContext();
   const navigate = useNavigate();
+
+  const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   //Handle Edit
   const handleEdit = (id) => {
@@ -129,6 +133,7 @@ function StaffDetails({ path }) {
                   onClick={() => {
                     {
                       /*setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });*/
+                      setOpenModal({ isShown: true, type: "release", data: "hello" });
                     }
                   }}
                 >
@@ -153,6 +158,22 @@ function StaffDetails({ path }) {
 
         <UserDevicesTable deviceList={devicesState?.deviceList} />
       </div>
+      <Modal
+        isOpen={openModal.isShown}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setOpenModal({ isShown: false });
+        }}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+        }}
+        contentLabel=""
+        className={`${
+          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+      >
+        <SiganturePad lablel={"Siganture"} user_id={staffDetails?.staff_no} />
+      </Modal>
     </div>
   );
 }

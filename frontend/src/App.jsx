@@ -33,6 +33,7 @@ import { ToastProvider } from "./context/ToastContext";
 import DevicesDueReturnPage from "./pages/devices/DevicesDueReturnPage";
 import SecondScreenPage from "./pages/formPage/SecondScreenPage";
 import DeviceForApproval from "./pages/devices/DeviceForApproval";
+import RolesAndPermissionsPage from "./pages/users/staff/RolesAndPermissionsPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -240,8 +241,11 @@ function App() {
           path: "/users/students/add-student",
           element: <AddEditStudent path={"edit-student"} />,
         },
-
         { path: "/users/students/student-details/:student_no", element: <StudentDetails path={"student-details/"} />, errorElement: <Home /> },
+
+        ,
+        //User Management
+        { path: "/users/roles-and-permissions", element: <RolesAndPermissionsPage path={"roles-and-permissions/"} />, errorElement: <Home /> },
       ],
     },
     {

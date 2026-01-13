@@ -48,10 +48,10 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToas
         <div className="flex justify-between cursor-pointer">
           <span className="text-xl font-semibold">{lablel}</span>
         </div>
-        <div className="h-[180px] border-2 border-slate-400 rounded-md relative">
+        <div className="h-[250px] border-2 border-slate-400 rounded-md relative">
           <div className="w-full h-full flex flex-col items-center justify-center ">
             {<span className="text-gray-300 text-xl font-bold absolute">SIGN HERE</span>}
-            <SignatureCanvas ref={signatureCanvasRef} penColor="black" canvasProps={{ width: 456, height: 146, className: "signature-canva" }} />
+            <SignatureCanvas ref={signatureCanvasRef} penColor="black" canvasProps={{ width: 720, height: 250, className: "signature-canva" }} />
           </div>
         </div>
 

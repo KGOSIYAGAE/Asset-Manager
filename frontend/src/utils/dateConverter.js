@@ -21,3 +21,7 @@ export const handleTimeStamp = (timestamp) => {
     return localDate;
   }
 };
+
+export const toIsoDate = (dateInput) => {
+  return new Date(dateInput).toISOString();
+};
