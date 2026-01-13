@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAllDevices } from "../../services/api/devices/Device.Api";
-import { useStaffContext } from "../../hooks/useStaffContext";
-import ExportExcelButton from "../../components/buttons/ExportExcelButton";
-import AddButton from "../../components/buttons/AddButton";
-import DevicesRequiresApprovalTable from "../../components/tables/devicesRequiresApprovalTable";
+
 import { Modal } from "@mui/material";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
+import DevicesRequiresApprovalTable from "../../components/tables/DevicesRequireApprovalTable";
 
 function DeviceForApproval({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
