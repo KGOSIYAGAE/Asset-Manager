@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";
-import StaffIssueVerification from "../../components/cards/verificationComponents/staffIssueVerification";
+import StaffIssueVirificationCard from "../../components/cards/verificationComponents/StaffIssueVirificationCard";
 
 //import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";
 //import StaffIssueVerification from "../../components/cards/verificationComponents/staffIssueVerification";
@@ -45,7 +45,7 @@ function SecondScreenPage() {
 
   return (
     <div className="w-screen flex  p-5 border overflow-auto" id="print-file">
-      {userType && userType !== "Staff" ? <StudentIssueVerification deviceId={deviceId} student_no={userId} /> : <StaffIssueVerification deviceId={deviceId} staff_no={userId} />}
+      {userType && userType !== "Staff" ? <StudentIssueVerification deviceId={deviceId} student_no={userId} /> : <StaffIssueVirificationCard deviceId={deviceId} staff_no={userId} />}
     </div>
   );
 }
