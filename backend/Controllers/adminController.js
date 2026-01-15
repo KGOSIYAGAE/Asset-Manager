@@ -186,6 +186,8 @@ const updateStaffRole = async (req, res) => {
 
     const { rowCount } = await query(update_staff_query, [...VALUES, staffNo]);
 
+    console.log(rowCount);
+
     if (rowCount <= 0) {
       return res.status(400).json({ message: "An error occured updating staff.", error: true });
     }

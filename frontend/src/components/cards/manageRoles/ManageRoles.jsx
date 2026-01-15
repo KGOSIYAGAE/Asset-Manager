@@ -28,6 +28,14 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
 
+    if (!selectedRole) {
+      return setShowToast({ isShow: true, type: "error", message: "Please select role." });
+    }
+
+    if (!tempPassword) {
+      return setShowToast({ isShow: true, type: "error", message: "Please provide temporary password." });
+    }
+
     const data = {
       staffNo: selectedUser.userId,
       userRole: selectedRole,

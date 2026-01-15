@@ -16,6 +16,7 @@ import InvoiceSelectInput from "../inputs/selectInputs/invoiceSelectInput/Invoic
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import CategorySelectInput from "../inputs/selectInputs/deviceCategorySelectInput/CategorySelectInput";
+import { GetDeviceType } from "../../utils/helperMethods";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState("");
@@ -117,28 +118,6 @@ function AddEditDevice({ path }) {
       return setShowToast({ isShown: true, type: "error", message: "Device specification must be provided." });
     }
 
-    //Get and set device type based on logged in user
-    const device_type = () => {
-      const { role } = getLoggedInUser();
-
-      switch (role) {
-        case "support_admin":
-          return "Support";
-        case "support_technician":
-          return "Support";
-        case "networks_admin":
-          return "Network";
-        case "networks_technician":
-          return "Network";
-        case "av_admin":
-          return "Audio Visual";
-        case "av_technician":
-          return "Audio Visual";
-        default:
-          return null;
-      }
-    };
-
     const deviceDetails = {
       assetTag,
       make,
@@ -151,7 +130,7 @@ function AddEditDevice({ path }) {
       warranty_end_date,
       supplier_name,
       invoice_no,
-      device_type: device_type(),
+      device_type: GetDeviceType(),
       purchaseValue,
       currentValue,
     };
