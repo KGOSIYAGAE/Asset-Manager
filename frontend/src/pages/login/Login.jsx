@@ -73,7 +73,7 @@ function Login() {
         <img src="/library_2.jpg" alt="" className="w-full" />
       </div>
       <div className="w-[150px] h-[150px] rounded-full absolute z-10 top-10 left-10 ">
-        <img src="/src/assets/SPU 1.png" alt="" srcset="" />
+        <img src="/SPU 1.png" alt="" srcset="" />
       </div>
       <div className="w-[400px] h-[350px] bg-white flex flex-col p-3 gap-10 rounded-md shadow-md absolute">
         <span className="font-bold text-md login-heading">SIGN IN</span>

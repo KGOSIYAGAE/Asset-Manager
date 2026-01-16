@@ -25,7 +25,7 @@ function RolesAndPermissionsPage({ path }) {
         Users/ <b> {path}</b>
       </span>
       {/* */}
-      <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
+      <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
         <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
           <span className="heading-text ">{""}</span>
           <div className="flex gap-2 ">
@@ -39,7 +39,7 @@ function RolesAndPermissionsPage({ path }) {
             )}
             <ExportExcelButton />
           </div>
-        </div>{" "}
+        </div>
         <RolesAndPermissionTable users={staffState?.staffList} label={"Roles And Permissions"} />
       </div>
       {/* */}
@@ -60,9 +60,10 @@ function RolesAndPermissionsPage({ path }) {
           onCanel={() => {
             setOpenModal({ isShown: false });
           }}
-          onSubmit={() => {
+          onSubmit={(message) => {
             getStaffData(staffDispatch);
             setOpenModal({ isShown: false });
+            setShowToast({ isShow: true, type: "success", message: message });
           }}
           userData={[...staffState?.staffList]}
           setShowToast={setShowToast}

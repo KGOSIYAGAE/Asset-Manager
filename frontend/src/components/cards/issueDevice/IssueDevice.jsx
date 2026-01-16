@@ -71,58 +71,6 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
 
         <UserSelectInput userData={[...staffState?.staffList, ...studentState?.studentsList]} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
 
-        {/***/}
-        {userType && userType === "Student" ? (
-          <div className="flex flex-col gap-5">
-            <div>
-              <span className="w-fit text-zinc-500 bg-white">SPU OBO (Choose 1)</span>
-              <div className="flex flex-col">
-                {supportAdmins &&
-                  supportAdmins.map((admin) => (
-                    <div className="flex gap-2" key={admin.id}>
-                      <input
-                        type="radio"
-                        name="AccountStatus"
-                        id=""
-                        disabled={null}
-                        value={"Active"}
-                        onChange={(e) => {
-                          setSpuOBO(admin);
-                          console.log(admin);
-                        }}
-                      />
-                      <span className="text-sm text-zinc-600">{`${admin.name} ${admin.surname}`}</span>
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div>
-              <span className="w-fit text-zinc-500 bg-white">Witnesses (Choose 2)</span>
-              <div className="flex flex-col">
-                {supportTechnicians &&
-                  supportTechnicians.map((witness) => (
-                    <div className="flex gap-2" key={witness.id}>
-                      <input
-                        type="radio"
-                        name="AccountStatus"
-                        id=""
-                        disabled={null}
-                        value={"Active"}
-                        onChange={(e) => {
-                          setSpuOBO(witness);
-                          console.log(witness);
-                        }}
-                      />
-                      <span className="text-sm text-zinc-600">{`${witness.name} ${witness.surname}`}</span>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
-
         {/**/}
 
         <div className="flex justify-end p-3 gap-8">

@@ -6,6 +6,7 @@ import { getSystemUsers } from "../../utils/helperMethods";
 function RolesAndPermissionTable({ users, label }) {
   const navigate = useNavigate();
   const [userAndAdmins, setUsersAndAdmins] = useState(null);
+  const [columnCount, setColumnCount] = useState(8);
 
   //Handle view more
   const handleViewDevice = (id) => {
@@ -31,33 +32,44 @@ function RolesAndPermissionTable({ users, label }) {
           <th>Access Role</th>
           <th>Action</th>
         </thead>
-        <tbody className="">
-          {userAndAdmins
-            ? userAndAdmins.map((systemUser, count) => (
-                <tr className="hover:bg-slate-50" key={systemUser.id}>
-                  <td>
-                    {(() => {
-                      return count + 1;
-                    })()}
-                  </td>
-                  <td>{systemUser.staff_no}</td>
-                  <td>{systemUser.name}</td>
-                  <td>{systemUser.surname}</td>
+        {userAndAdmins <= 0 ? (
+          <tbody>
+            <tr>
+              <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                <strong>No data available</strong>
+                <p>Create a new system user.</p>
+              </td>
+            </tr>
+          </tbody>
+        ) : (
+          <tbody className="">
+            {userAndAdmins
+              ? userAndAdmins.map((systemUser, count) => (
+                  <tr className="hover:bg-slate-50" key={systemUser.id}>
+                    <td>
+                      {(() => {
+                        return count + 1;
+                      })()}
+                    </td>
+                    <td>{systemUser.staff_no}</td>
+                    <td>{systemUser.name}</td>
+                    <td>{systemUser.surname}</td>
 
-                  <td>{systemUser.email}</td>
-                  <td>{systemUser.department_name}</td>
-                  <td>{systemUser.position_name}</td>
-                  <td>{systemUser.userrole}</td>
+                    <td>{systemUser.email}</td>
+                    <td>{systemUser.department_name}</td>
+                    <td>{systemUser.position_name}</td>
+                    <td>{systemUser.userrole}</td>
 
-                  <td>
-                    <span className="text-blue-500 hover:text-blue-600 underline cursor-pointer" onClick={() => {}}>
-                      Update
-                    </span>
-                  </td>
-                </tr>
-              ))
-            : ""}
-        </tbody>
+                    <td>
+                      <span className="text-blue-500 hover:text-blue-600 underline cursor-pointer" onClick={() => {}}>
+                        Update
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              : ""}
+          </tbody>
+        )}
       </table>
     </div>
   );

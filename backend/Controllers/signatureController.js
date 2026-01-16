@@ -40,6 +40,28 @@ const getUserSignatures = async (req, res) => {
   }
 };
 
+//get Issuer & Approver signatures
+const getIssuerAndApproverSignatures = async (req, res) => {
+  try {
+    const { device_id } = req.params;
+
+    if (!device_id) {
+      return res.status(400).json({ message: "Device ID required", error: true });
+    }
+
+    const get_sigantures_query = `SELECT * FROM "issuerApproverSignatures" WHERE item_id = $1 ORDER by requested_date DESC LIMIT 1`;
+
+    const { rows, rowCount } = await query(get_sigantures_query, [device_id]);
+
+    if (rowCount > 0) {
+      return res.status(200).json({ signatureList: rows, message: "Success", error: false });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //Create staff
 const createSignature = async (req, res) => {
   try {
@@ -80,4 +102,4 @@ const createSignature = async (req, res) => {
   }
 };
 
-module.exports = { getSignatures, getUserSignatures, createSignature };
+module.exports = { getSignatures, getUserSignatures, createSignature, getIssuerAndApproverSignatures };

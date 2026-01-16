@@ -277,7 +277,7 @@ function DeviceDetails({ path }) {
 
         <div className="flex flex-col col-span-2 gap-5">
           <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 bg-white border  rounded-md shadow-md">
-            <img src={`/src/assets/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="h-[250px]" />
+            <img src={`/${deviceDetails?.model}.png`} alt="" className="h-[250px]" />
           </div>
           {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" || deviceDetails?.status === "Approval required" ? (
             <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md bg-white">

@@ -68,7 +68,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   return (
     <div className="printable ">
       <div className="w-full flex justify-center">
-        <img src="\src\assets\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
+        <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
       </div>
       <div className="w-full flex flex-col gap-4 ">
         {/*
@@ -221,7 +221,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
         </button>
       </div>
       <div className="flex absolute bottom-0 ">
-        <img alt="banner" src="\src\assets\page_banner.png" className="w-[800px] h-[50px]" />
+        <img alt="banner" src="/page_banner.png" className="w-[800px] h-[50px]" />
       </div>
     </div>
   );

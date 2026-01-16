@@ -38,19 +38,21 @@ export const changePassword = async (email, oldPassword, newPassword, setShowToa
 };
 
 //Update student
-export const assignUserRole = async (data, setShowToast) => {
+export const assignUserRole = async (data) => {
   try {
     const response = await loginAxiosInstance.put("/update-role", data);
 
+    console.log(response);
+
     if (!response.data.error) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return response.data.message;
     }
   } catch (error) {
     if (error.response.data.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return error.response.data.message;
     } else {
       console.log(error.response.data);
-      return setShowToast({ isShown: true, type: "error", message: "An unxpected error occured, Please try again." });
+      return "An unxpected error occured, Please try again.";
     }
   }
 };

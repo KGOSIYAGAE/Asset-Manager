@@ -20,7 +20,7 @@ function OpenSecondScreenButton({ userId, deviceId, setShowToast, w = 800, h = 6
         // 2. Choose a screen that isn't the current one
         //console.log(screens[1]);
         //const target = screens.find((s) => s.id !== currentScreen.id) || screens[0];
-        const target = screens[1];
+        const target = screens[0];
 
         // 3. Center the popup on the selected screen
         const left = target.left;

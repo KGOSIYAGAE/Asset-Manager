@@ -32,7 +32,7 @@ function StaffIssueVirificationCard({ deviceId, staff_no }) {
 
   return (
     <div className="flex flex-col gap-10 ">
-      <img src="\src\assets\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo-staff" />
+      <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo-staff" />
       <div className="flex flex-col gap-8">
         <span className=" font-bold text-2xl">Device Issuance Terms & Acknowledgment</span>
 

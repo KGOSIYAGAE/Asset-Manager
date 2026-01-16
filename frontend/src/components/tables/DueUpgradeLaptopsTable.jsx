@@ -9,6 +9,7 @@ import { getDueUpgradeDevicesHelper } from "../../utils/devicesHelperMethods";
 function DueUpgradeLaptopsTable({ devices, label }) {
   const navigate = useNavigate();
 
+  const [columnCount, setColumnCount] = useState(8);
   const [upgradeDevices, setUpgradeDevices] = useState(null);
 
   //Handle view more
@@ -21,7 +22,7 @@ function DueUpgradeLaptopsTable({ devices, label }) {
   }, [devices]);
 
   return (
-    <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
+    <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
       <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
         <span className="heading-text ">{label}</span>
         <ExportExcelButton />
@@ -39,44 +40,54 @@ function DueUpgradeLaptopsTable({ devices, label }) {
             <th>Upgrade Date</th>
             <th>Action</th>
           </thead>
-          <tbody className="">
-            {upgradeDevices
-              ? upgradeDevices.map((device, count) => (
-                  <tr className="hover:bg-slate-50" key={device.id}>
-                    <td>
-                      {(() => {
-                        return count + 1;
-                      })()}
-                    </td>
-                    <td>{device.asset_tag}</td>
-                    <td>{device.serial_no}</td>
-                    <td>{device.make}</td>
-                    <td>{device.model}</td>
-                    <td>{device.user_id}</td>
-                    <td>
-                      {(() => {
-                        return handleTimeStamp(device.date_issued);
-                      })()}
-                    </td>
-                    <td>
-                      {(() => {
-                        return handleTimeStamp(device.next_upgrade_date);
-                      })()}
-                    </td>
-                    <td>
-                      <span
-                        className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
-                        onClick={() => {
-                          handleViewDevice(device.id);
-                        }}
-                      >
-                        View more
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              : ""}
-          </tbody>
+          {upgradeDevices <= 0 ? (
+            <tbody>
+              <tr>
+                <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                  <strong>No data available</strong>
+                </td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody className="">
+              {upgradeDevices
+                ? upgradeDevices.map((device, count) => (
+                    <tr className="hover:bg-slate-50" key={device.id}>
+                      <td>
+                        {(() => {
+                          return count + 1;
+                        })()}
+                      </td>
+                      <td>{device.asset_tag}</td>
+                      <td>{device.serial_no}</td>
+                      <td>{device.make}</td>
+                      <td>{device.model}</td>
+                      <td>{device.user_id}</td>
+                      <td>
+                        {(() => {
+                          return handleTimeStamp(device.date_issued);
+                        })()}
+                      </td>
+                      <td>
+                        {(() => {
+                          return handleTimeStamp(device.next_upgrade_date);
+                        })()}
+                      </td>
+                      <td>
+                        <span
+                          className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                          onClick={() => {
+                            handleViewDevice(device.id);
+                          }}
+                        >
+                          View more
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                : ""}
+            </tbody>
+          )}
         </table>
       </div>
     </div>

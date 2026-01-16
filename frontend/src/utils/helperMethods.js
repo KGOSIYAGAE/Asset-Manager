@@ -1,6 +1,7 @@
 //import { assignReleaseUser } from "../services/api/devices/Device.Api";
 
 import { assignDevice } from "../services/api/devices/Device.Api";
+import { getLoggedInUser } from "./getLoggedInUser";
 
 //Generate upgrade date for permanent staff members laptops
 export const generateUpgradeDate = (startDate) => {

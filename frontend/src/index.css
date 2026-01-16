@@ -98,21 +98,48 @@
     @apply w-full bg-white text-black text-[12px];
   }
 
+  /* 1. Screen Styles: Only show one copy on the monitor */
+  @media screen {
+    .printable-page:nth-child(n + 2),
+    .page-break {
+      display: none;
+    }
+  }
+
+  /* 2. Print Styles */
   @media print {
     @page {
       size: A4;
       margin: 4mm;
     }
+
+    /* Hide everything else (navbars, buttons) */
     .noprint {
-      visibility: hidden;
+      display: none !important;
+    }
+
+    .print-area {
+      display: block !important;
+    }
+
+    .printable-page {
+      display: block;
+      width: 100%;
+      min-height: 290mm; /* Helps keep the layout consistent on A4 */
+    }
+
+    .page-break {
+      display: block;
+      break-after: page; /* Tells printer: "Stop here, start new sheet" */
+      page-break-after: always; /* Support for older browsers */
     }
 
     .bg-on-print {
-      @apply bg-slate-300 !important;
+      background-color: #cbd5e1 !important; /* slate-300 */
       print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
     }
   }
-
   .page-header {
     @apply flex justify-between;
   }

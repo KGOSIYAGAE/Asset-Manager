@@ -5,7 +5,8 @@ import { getRequiresApprovalDevices } from "../../utils/devicesHelperMethods";
 
 function DevicesRequiresApprovalTable({ devices, label }) {
   const navigate = useNavigate();
-  const [loanedDevices, setLoanedDevices] = useState(null);
+  const [approvalDevices, setApprovalDevices] = useState(null);
+  const [columnCount, setColumnCount] = useState(8);
 
   //Handle view more
   const handleViewDevice = (id) => {
@@ -13,7 +14,7 @@ function DevicesRequiresApprovalTable({ devices, label }) {
   };
 
   useEffect(() => {
-    setLoanedDevices(getRequiresApprovalDevices(devices));
+    setApprovalDevices(getRequiresApprovalDevices(devices));
   }, [devices]);
 
   return (
@@ -33,41 +34,52 @@ function DevicesRequiresApprovalTable({ devices, label }) {
           <th>Date Issued</th>
           <th>Action</th>
         </thead>
-        <tbody className="">
-          {loanedDevices
-            ? loanedDevices.map((device, count) => (
-                <tr className="hover:bg-slate-50" key={device.id}>
-                  <td>
-                    {(() => {
-                      return count + 1;
-                    })()}
-                  </td>
-                  <td>{device.asset_tag}</td>
-                  <td>{device.serial_no}</td>
-                  <td>{device.make}</td>
-                  <td>{device.model}</td>
-                  <td>{device.user_id}</td>
-                  <td>{device.status}</td>
-                  <td>
-                    {(() => {
-                      return handleTimeStamp(device.date_issued);
-                    })()}
-                  </td>
 
-                  <td>
-                    <span
-                      className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
-                      onClick={() => {
-                        handleViewDevice(device.id);
-                      }}
-                    >
-                      Approve
-                    </span>
-                  </td>
-                </tr>
-              ))
-            : ""}
-        </tbody>
+        {approvalDevices <= 0 ? (
+          <tbody>
+            <tr>
+              <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                <strong>No data available</strong>
+              </td>
+            </tr>
+          </tbody>
+        ) : (
+          <tbody className="">
+            {approvalDevices
+              ? approvalDevices.map((device, count) => (
+                  <tr className="hover:bg-slate-50" key={device.id}>
+                    <td>
+                      {(() => {
+                        return count + 1;
+                      })()}
+                    </td>
+                    <td>{device.asset_tag}</td>
+                    <td>{device.serial_no}</td>
+                    <td>{device.make}</td>
+                    <td>{device.model}</td>
+                    <td>{device.user_id}</td>
+                    <td>{device.status}</td>
+                    <td>
+                      {(() => {
+                        return handleTimeStamp(device.date_issued);
+                      })()}
+                    </td>
+
+                    <td>
+                      <span
+                        className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                        onClick={() => {
+                          handleViewDevice(device.id);
+                        }}
+                      >
+                        Approve
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              : ""}
+          </tbody>
+        )}
       </table>
     </div>
   );

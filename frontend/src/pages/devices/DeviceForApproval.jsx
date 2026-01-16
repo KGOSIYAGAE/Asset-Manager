@@ -22,7 +22,7 @@ function DeviceForApproval({ path }) {
         Devices/ <b> {path}</b>
       </span>
       {/* */}
-      <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
+      <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
         <DevicesRequiresApprovalTable devices={devicesState?.deviceList} label={"Devices For Approval"} />
       </div>
       {/* */}
