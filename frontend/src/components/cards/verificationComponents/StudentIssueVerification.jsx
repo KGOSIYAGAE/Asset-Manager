@@ -47,7 +47,7 @@ function StudentIssueVerification({ deviceId, student_no }) {
     <div>
       <div className="printable h-[1200px]">
         <div class="page-header ">
-          <img src="\src\assets\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
+          <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
           <div class="page-address">
             <span class="address-heading">SOL PLAATJE UNIVERSITY</span>
             <span class="address-text">Private Bag X 5008, Kimberly, 8300</span>

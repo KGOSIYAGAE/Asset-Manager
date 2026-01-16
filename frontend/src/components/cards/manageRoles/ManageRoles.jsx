@@ -23,7 +23,7 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
   const [userAccessType, setUserAccessType] = useState(null);
 
   //Handle loan device
-  const handleAssignRole = () => {
+  const handleAssignRole = async () => {
     if (!selectedUser.fullName) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
@@ -42,8 +42,9 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
       tempPassword: tempPassword,
     };
 
-    assignUserRole(data, setShowToast);
-    return onSubmit();
+    const message = await assignUserRole(data, setShowToast);
+
+    return onSubmit(message);
   };
 
   //show user access

@@ -4,9 +4,12 @@ import { getAllLatestDevicesLogs } from "../../services/api/deviceLogs/DeviceLog
 import ExportExcelButton from "../buttons/ExportExcelButton";
 
 function DeviceLogTable({ deviceLogs, label }) {
+  const [columnCount, setColumnCount] = useState(6);
+
   useEffect(() => {}, []);
+
   return (
-    <div className="col-span-6 h-[345px] bg-white rounded-md shadow-md overflow-x-scroll">
+    <div className="col-span-6 h-[500px] bg-white rounded-md shadow-md overflow-x-scroll">
       <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
         <span className="heading-text ">{label}</span>
         <ExportExcelButton />
@@ -23,23 +26,33 @@ function DeviceLogTable({ deviceLogs, label }) {
               <th>Created At</th>
             </tr>
           </thead>
-          <tbody className="">
-            {deviceLogs &&
-              deviceLogs.map((log, count) => (
-                <tr key={log.id} className="hover:bg-slate-50">
-                  <td>
-                    {(() => {
-                      return count + 1;
-                    })()}
-                  </td>
-                  <td>{log.item_id}</td>
-                  <td>{log.action}</td>
-                  <td>{log.description}</td>
-                  <td>{log.created_by}</td>
-                  <td>{log.created_at}</td>
-                </tr>
-              ))}
-          </tbody>
+          {deviceLogs <= 0 ? (
+            <tbody>
+              <tr>
+                <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                  <strong>No data available</strong>
+                </td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody className="">
+              {deviceLogs &&
+                deviceLogs.map((log, count) => (
+                  <tr key={log.id} className="hover:bg-slate-50">
+                    <td>
+                      {(() => {
+                        return count + 1;
+                      })()}
+                    </td>
+                    <td>{log.item_id}</td>
+                    <td>{log.action}</td>
+                    <td>{log.description}</td>
+                    <td>{log.created_by}</td>
+                    <td>{log.created_at}</td>
+                  </tr>
+                ))}
+            </tbody>
+          )}
         </table>
       </div>
     </div>

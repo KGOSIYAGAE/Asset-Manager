@@ -148,7 +148,7 @@ export const ICT_DEVICES = [
         deviceModel: [
           {
             id: 0,
-            name: "Lenovo V15 G5 IRL",
+            name: "V15 G5 IRL",
             specification: '15.6" FHD, Intel Core i5, value model.',
           },
           {

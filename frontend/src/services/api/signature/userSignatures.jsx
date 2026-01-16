@@ -20,6 +20,26 @@ export const getUserSignature = async (user_id, setSignature) => {
   }
 };
 
+export const getIssureApproverSignature = async (device_id, setIssuerApproverSignature) => {
+  if (!device_id) {
+    return console.log("Staff number must be provided");
+  }
+
+  try {
+    const response = await axiosInstance.get("/signatures/issuer-approver-signature/" + device_id);
+
+    if (response.data && response.data.signatureList) {
+      return setIssuerApproverSignature(response.data.signatureList[0]);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again.");
+    }
+  }
+};
+
 export const setUserSignature = async (user_id, image_base64) => {
   if (!user_id) {
     console.log(user_id);

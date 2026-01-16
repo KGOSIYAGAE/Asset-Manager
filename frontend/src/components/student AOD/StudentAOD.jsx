@@ -8,6 +8,7 @@ import { getUser } from "../../services/api/staff/Staff.Api";
 import Modal from "react-modal";
 import SiganturePad from "../cards/signaturePad/SiganturePad";
 import { getLoggedInUser } from "../../utils/getLoggedInUser";
+import { getIssureApproverSignature } from "../../services/api/signature/userSignatures";
 
 function StudentAOD({ deviceId, handleOnPrint, student_no }) {
   const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, user_id: null });
@@ -25,6 +26,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
   const [day, setDay] = useState();
   const [studentData, setStudentData] = useState();
   const [deviceDetails, setDeviceDetails] = useState();
+  const [issuerApproverSignatures, setIssuerApproverSignature] = useState(null);
 
   //Get Student data
   const getStduentData = () => {
@@ -54,6 +56,10 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
   };
 
   useEffect(() => {
+    getIssureApproverSignature(deviceId, setIssuerApproverSignature);
+  }, [deviceId]);
+
+  useEffect(() => {
     const { year, month, day } = getTodayFullDate();
     setYear(year);
     setDay(day);
@@ -68,7 +74,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
   return (
     <div className="printable h-[1000px]">
       <div class="page-header ">
-        <img src="\src\assets\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
+        <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
         <div class="page-address">
           <span class="address-heading">SOL PLAATJE UNIVERSITY</span>
           <span class="address-text">Private Bag X 5008, Kimberly, 8300</span>
@@ -169,7 +175,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
             </ol>
           </div>
           <div>
-            Signed at Kimberley on the: <span className="font-semibold">{day}</span> day of <span className="font-semibold">{month}</span> <span className="font-semibold">{year}</span>
+            Signed at <b>Kimberley</b> on the: <span className="font-semibold">{day}</span> day of <span className="font-semibold">{month}</span> <span className="font-semibold">{year}</span>
           </div>
         </div>
         {/*<br>*/}
@@ -184,7 +190,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
                   <div>
                     <div className=" flex justify-between ">
                       <div className="flex flex-col items-center justify-center ">
-                        <img alt="signature" src={loggedInUserDetails?.image_base64} className="w-[160px] " />
+                        <img alt="signature" src={issuerApproverSignatures?.approver_siganture} className="w-[160px] " />
                       </div>
                     </div>
                     <div className="flex flex-col -mt-3">
@@ -223,12 +229,12 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
               <div>
                 <div className=" flex justify-between ">
                   <div className="flex flex-col items-center justify-center ">
-                    <img alt="signature" src={studentData?.image_base64} className="w-[160px] " />
+                    <img alt="signature" src={issuerApproverSignatures?.requestor_siganture} className="w-[160px] " />
                   </div>
                 </div>
                 <div className="flex flex-col -mt-3">
                   <span class="">.............................................................</span>
-                  <span class="">Witness 1</span>
+                  <span class="">Witness</span>
                 </div>
               </div>
             </div>
