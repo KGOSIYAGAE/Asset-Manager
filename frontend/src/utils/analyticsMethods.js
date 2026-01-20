@@ -1,4 +1,4 @@
-import { courseList } from "./course";
+import { courseList, facultiesDataList } from "./course";
 
 //Get All devices based on
 export const getDevicesStatsByMake = (devices) => {
@@ -210,25 +210,26 @@ export const getHPStatsByModel = (devices) => {
 //Get Faculty Stats
 
 export const getFacultyStats = (students) => {
+  console.log(students);
   let edu_stats = [];
   let ems_stats = [];
   let nas_stats = [];
   let hum_stats = [];
 
   for (let i = 0; i < students?.length; i++) {
-    if (students[i].faculty_abbreviation === "EDU") {
+    if (students[i].faculty_name === "Education") {
       edu_stats.push(students[i]);
     }
 
-    if (students[i].faculty_abbreviation === "EMS") {
+    if (students[i].faculty_name === "Economic and Management Sciences") {
       ems_stats.push(students[i]);
     }
 
-    if (students[i].faculty_abbreviation === "NAS") {
+    if (students[i].faculty_name === "Natural and Applied Sciences") {
       nas_stats.push(students[i]);
     }
 
-    if (students[i].faculty_abbreviation === "HUM") {
+    if (students[i].faculty_name === "Humanities") {
       hum_stats.push(students[i]);
     }
   }
@@ -246,10 +247,10 @@ export const getCourseStatsByFaculty = (students, facultyNumber) => {
 
   const facultyData = [nas_stats, edu_stats, ems_stats, hum_stats];
 
-  for (let j = 0; j < courseList[facultyNumber]?.courses.length; j++) {
+  for (let j = 0; j < facultiesDataList[facultyNumber]?.courses.length; j++) {
     count = 0;
     for (let i = 0; i < hum_stats.length; i++) {
-      if (facultyData[facultyNumber][i]?.course_code === courseList[facultyNumber]?.courses[j]?.course_code) {
+      if (facultyData[facultyNumber][i]?.course_code === facultiesDataList[facultyNumber]?.courses[j]?.course_code) {
         count++;
       }
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabled, setOnChange, setPositions }) {
+function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabled, setOnChange, setPositionList }) {
   const [faculty_depts, setFaculty_deps] = useState([]);
 
   const showDepartment = () => {
@@ -8,6 +8,7 @@ function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabl
       if (departmentList[i].faculty === faculty) {
         setFaculty_deps(departmentList[i].departments);
         setOnChange(value);
+        console.log(departmentList[i].departments);
         //setPositions
       }
     }
@@ -16,8 +17,7 @@ function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabl
   const setSelecedPos = (pos) => {
     for (let i = 0; i < faculty_depts.length; i++) {
       if (faculty_depts[i].name === pos) {
-        setPositions(faculty_depts[i].positions);
-        console.log(faculty_depts[i].positions);
+        setPositionList(faculty_depts[i].positions);
       }
     }
   };

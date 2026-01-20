@@ -1,10 +1,10 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-import { courseList } from "../../utils/course";
+import { courseList, facultiesDataList } from "../../utils/course";
 
 import { useStudentsContext } from "../../hooks/useStudentsContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TextInput from "../inputs/textInput/TextInput";
 import SelectInput from "../inputs/selectInputs/selectInput/SelectInput";
 import FormLaptopDetails from "../cards/formLaptopDetails/FormLaptopDetails";
@@ -22,6 +22,9 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/FacultySelectInput";
 import { departmentsList } from "../../utils/departmentList";
+import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
+import Modal from "react-modal";
+import StudentFacultySelectInput from "../inputs/selectInputs/studentFacultySelectInput/studentFacultySelectInput";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
@@ -32,17 +35,23 @@ function AddEditStudent({ path }) {
   const [idNumber, setIdNumber] = useState("");
   const [phone_number, setPhone_Number] = useState("");
   const [email, setEmail] = useState("");
-  const [faculty_name, setFaculty_name] = useState("");
+  const [faculty_name, setFaculty_name] = useState(null);
   const [course_code, setCourse_Code] = useState("");
   const [course, setCourse] = useState("");
   const [isActive, setIsActive] = useState("");
   const [laptopDetails, setLaptopDetails] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const [registration_date, setRegistration_Date] = useState("");
-  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
+  const [courseList, setCourseList] = useState(null);
+
   const [formType, setFormType] = useState("add");
 
+  const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
+
   const params = useParams();
+
+  const navigate = useNavigate();
 
   //Form clear
   const clearForm = () => {
@@ -91,7 +100,7 @@ function AddEditStudent({ path }) {
       studentNumber,
       idNumber,
       phone_number,
-      faculty_name,
+      faculty_name: faculty_name,
       course,
       course_code,
       email,
@@ -100,11 +109,9 @@ function AddEditStudent({ path }) {
     };
 
     if (formType === "add") {
-      console.log("add");
       addStudent(studentData, setShowToast);
       clearForm();
     } else {
-      console.log("update");
       const { student_no } = params;
       if (student_no) {
         updateStudent(student_no, studentData, setShowToast);
@@ -141,6 +148,27 @@ function AddEditStudent({ path }) {
   const handleUserstatus = (results) => {
     setIsActive(results);
   };
+
+  //Navigate to student profile
+  const viewStudentProfile = () => {
+    const { student_no } = params;
+    if (student_no) {
+      return navigate(`/users/students/student-details/${student_no}`);
+    }
+  };
+
+  //handle post Message Response
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted") {
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        return viewStudentProfile();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   useEffect(() => {
     getSelectedUser();
@@ -181,10 +209,17 @@ function AddEditStudent({ path }) {
           </div>
 
           <div className="col-span-2">
-            <FacultySelectInput label={"Faculty"} value={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setFaculty_name} />
+            <StudentFacultySelectInput
+              label={"Faculty"}
+              value={faculty_name}
+              facultiesDataList={facultiesDataList}
+              isDisabled={isDisabled}
+              setOnChange={setFaculty_name}
+              setCourseList={setCourseList}
+            />
           </div>
 
-          <CourseSelctInput label={"Course"} value={course} faculty={faculty_name} courseList={courseList} isDisabled={isDisabled} setOnChange={setCourse} setCourseCode={setCourse_Code} />
+          <CourseSelctInput label={"Course"} value={course} courseList={courseList} isDisabled={isDisabled} setOnChange={setCourse} setCourseCode={setCourse_Code} />
 
           <div className=" col-span-2">
             <TextInput label={"Course Code"} value={course_code} isDisabled={true} setOnChange={() => {}} />
@@ -199,7 +234,15 @@ function AddEditStudent({ path }) {
           </div>
 
           <div className="col-span-4">
-            <FormLaptopDetails laptopDetails={laptopDetails} />
+            {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
+            <span
+              className="link-text"
+              onClick={() => {
+                setOpenModal({ isShown: true });
+              }}
+            >
+              Assign Laptop
+            </span>
           </div>
         </div>
         <div className="flex justify-end">
@@ -208,6 +251,33 @@ function AddEditStudent({ path }) {
             <CancelButton />
           </div>
         </div>
+
+        <Modal
+          isOpen={openModal.isShown}
+          ariaHideApp={false}
+          onRequestClose={() => {
+            setOpenModal({ isShown: false });
+          }}
+          style={{
+            overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+          }}
+          contentLabel=""
+          className={`${
+            openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+          } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+        >
+          <AssignDeviceToUser
+            onCanel={() => {
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={() => {
+              //getDeviceDetails();
+              setOpenModal({ isShown: false });
+            }}
+            StudentNo={studentNumber}
+            setShowToast={setShowToast}
+          />
+        </Modal>
 
         <ToastMessage
           isShown={showToast.isShown}

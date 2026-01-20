@@ -6,8 +6,11 @@ import { toIsoDate } from "./dateConverter";
 import { GetDeviceType } from "./helperMethods";
 
 const dateCorrection = (wrongDate) => {
+  if (!wrongDate) {
+    return null;
+  }
+
   const isoDate = new Date(wrongDate).toISOString().split("T")[0];
-  console.log(isoDate);
 
   return isoDate;
 };
@@ -57,19 +60,22 @@ export const bulkCreateStudents = (file, setShowToast, onClose) => {
     let data = [];
     for (let i = 0; i < rows.length; i++) {
       data.push({
-        name: rows[i][0],
-        surname: rows[i][1],
+        surname: rows[i][0],
+        name: rows[i][1],
         studentNumber: rows[i][2],
         idNumber: rows[i][3],
         phone_number: rows[i][4],
         email: rows[i][5],
         faculty_name: rows[i][6],
-        course_name: rows[i][7],
-        course_code: rows[i][8],
+        course_code: rows[i][7],
+        course_name: rows[i][8],
         isActive: rows[i][9],
-        registration_date: `${(() => {
-          return dateCorrection(rows[i][10]);
-        })()}`,
+        registration_date: (() => {
+          if (rows[i][10]) {
+            return toIsoDate(rows[i][10]);
+          }
+          return null;
+        })(),
       });
     }
 
