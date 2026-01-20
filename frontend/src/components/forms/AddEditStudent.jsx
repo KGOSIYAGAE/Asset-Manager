@@ -24,7 +24,7 @@ import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/Facult
 import { departmentsList } from "../../utils/departmentList";
 import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
 import Modal from "react-modal";
-import StudentFacultySelectInput from "../inputs/selectInputs/studentFacultySelectInput/studentFacultySelectInput";
+import StudentFacultySelectInput from "../inputs/selectInputs/studentFacultySelectInput/StudentFacultySelectInput";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
