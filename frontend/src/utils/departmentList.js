@@ -3,8 +3,9 @@ export const departmentsList = [
     faculty: "Executive Management",
     type: "Executive",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Office of the Vice-Chancellor",
         description: "Strategic leadership and overall university governance.",
         positions: [
@@ -21,7 +22,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 1,
+        id: 2,
         name: "Registrar's Office",
         description: "Manages academic administration, examinations, and student records.",
         positions: [
@@ -38,7 +39,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 2,
+        id: 3,
         name: "Institutional Planning and Quality Assurance",
         description: "Leads strategic planning, data analytics, and academic quality monitoring.",
         positions: [
@@ -59,8 +60,9 @@ export const departmentsList = [
     faculty: "NAS",
     type: "Academic",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Mathematics and Statistics",
         description: "Mathematical theory, applied mathematics, and statistics.",
         positions: [
@@ -80,7 +82,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 1,
+        id: 2,
         name: "Computer Science",
         description: "Software engineering, programming, and data science.",
         positions: [
@@ -98,7 +100,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 2,
+        id: 3,
         name: "Physics",
         description: "Matter, energy, and physical sciences.",
         positions: [
@@ -115,7 +117,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 3,
+        id: 4,
         name: "Chemistry",
         description: "Chemical reactions, materials, and molecular research.",
         positions: [
@@ -132,7 +134,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 4,
+        id: 5,
         name: "Biological Sciences",
         description: "Life sciences, genetics, and environmental biology.",
         positions: [
@@ -149,7 +151,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 5,
+        id: 6,
         name: "Geography and Environmental Science",
         description: "Earth systems, GIS, and climate studies.",
         positions: [
@@ -171,8 +173,9 @@ export const departmentsList = [
     faculty: "EDU",
     type: "Academic",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Educational Studies",
         description: "Education theory, leadership, and management.",
         positions: [
@@ -190,7 +193,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 1,
+        id: 2,
         name: "Foundation Phase Teaching",
         description: "Teaching methodologies for early childhood and primary education.",
         positions: [
@@ -206,7 +209,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 2,
+        id: 3,
         name: "Language and Social Sciences Education",
         description: "Languages, history, and social science education.",
         positions: [
@@ -222,7 +225,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 3,
+        id: 4,
         name: "Mathematics, Science and Technology Education",
         description: "STEM-focused teaching and learning development.",
         positions: [
@@ -243,8 +246,9 @@ export const departmentsList = [
     faculty: "EMS",
     type: "Academic",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Accounting",
         description: "Financial and management accounting education and research.",
         positions: [
@@ -260,7 +264,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 1,
+        id: 2,
         name: "Economics",
         description: "Economic theory, econometrics, and applied economics.",
         positions: [
@@ -276,7 +280,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 2,
+        id: 3,
         name: "Business Management",
         description: "Leadership, entrepreneurship, and organizational management.",
         positions: [
@@ -291,7 +295,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 3,
+        id: 4,
         name: "Public Administration",
         description: "Governance, public policy, and administrative systems.",
         positions: [
@@ -311,8 +315,9 @@ export const departmentsList = [
     faculty: "HUM",
     type: "Academic",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Languages and Communication",
         description: "Linguistics, translation, and media communication.",
         positions: [
@@ -328,7 +333,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 1,
+        id: 2,
         name: "Psychology",
         description: "Human behavior, cognitive science, and counselling.",
         positions: [
@@ -345,7 +350,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 2,
+        id: 3,
         name: "Sociology and Anthropology",
         description: "Social theory, human culture, and society.",
         positions: [
@@ -361,7 +366,7 @@ export const departmentsList = [
         ],
       },
       {
-        id: 3,
+        id: 4,
         name: "History and Heritage Studies",
         description: "Historical research, heritage preservation, and cultural studies.",
         positions: [
@@ -381,8 +386,9 @@ export const departmentsList = [
     faculty: "ICT",
     type: "Administrative",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Information and Communication Technology",
         description: "Digital infrastructure, systems support, and information management.",
         positions: [
@@ -405,8 +411,9 @@ export const departmentsList = [
     faculty: "Finance",
     type: "Administrative",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Finance Department",
         description: "Manages university finances, budgeting, and reporting.",
         positions: [
@@ -428,8 +435,9 @@ export const departmentsList = [
     faculty: "Human Resources",
     type: "Administrative",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Human Resources Department",
         description: "Employee recruitment, training, and welfare management.",
         positions: [
@@ -450,8 +458,9 @@ export const departmentsList = [
     faculty: "Library",
     type: "Administrative",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Library and Information Services",
         description: "Manages library resources and academic information access.",
         positions: [
@@ -472,8 +481,9 @@ export const departmentsList = [
     faculty: "Marketing and Communications",
     type: "Administrative",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Marketing and Communications",
         description: "Promotes university image, branding, and stakeholder communication.",
         positions: [
@@ -494,33 +504,34 @@ export const departmentsList = [
     faculty: "Student Affairs",
     type: "Administrative",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Student Support Services",
         description: "Supports student welfare, engagement, and development.",
         positions: [
-          { id: 0, title: "Director: Student Affairs" },
-          { id: 1, title: "Senior Manager" },
-          { id: 2, title: "Manager" },
-          { id: 3, title: "Student Counsellor" },
-          { id: 4, title: "Career Development Officer" },
-          { id: 5, title: "Peer Mentor" },
-          { id: 6, title: "Student Affairs Officer" },
-          { id: 7, title: "Administrator" },
-          { id: 8, title: "Intern" },
+          { id: 1, title: "Director: Student Affairs" },
+          { id: 2, title: "Senior Manager" },
+          { id: 3, title: "Manager" },
+          { id: 4, title: "Student Counsellor" },
+          { id: 5, title: "Career Development Officer" },
+          { id: 6, title: "Peer Mentor" },
+          { id: 7, title: "Student Affairs Officer" },
+          { id: 8, title: "Administrator" },
+          { id: 9, title: "Intern" },
         ],
       },
       {
-        id: 1,
+        id: 2,
         name: "Residences and Accommodation",
         description: "Manages student housing and residential life.",
         positions: [
-          { id: 0, title: "Residence Warden" },
-          { id: 1, title: "Senior Manager" },
-          { id: 2, title: "Residence Manager" },
-          { id: 3, title: "Residence Assistant" },
-          { id: 4, title: "Administrator" },
-          { id: 5, title: "Intern" },
+          { id: 1, title: "Residence Warden" },
+          { id: 2, title: "Senior Manager" },
+          { id: 3, title: "Residence Manager" },
+          { id: 4, title: "Residence Assistant" },
+          { id: 5, title: "Administrator" },
+          { id: 6, title: "Intern" },
         ],
       },
     ],
@@ -529,19 +540,20 @@ export const departmentsList = [
     faculty: "Legal and Compliance",
     type: "Administrative",
     departments: [
+      { id: 0, name: "" },
       {
-        id: 0,
+        id: 1,
         name: "Legal and Compliance Services",
         description: "Ensures institutional legal compliance and governance.",
         positions: [
-          { id: 0, title: "Director: Legal and Compliance" },
-          { id: 1, title: "Senior Manager" },
-          { id: 2, title: "Manager" },
-          { id: 3, title: "Legal Advisor" },
-          { id: 4, title: "Compliance Officer" },
-          { id: 5, title: "Internal Auditor" },
-          { id: 6, title: "Administrator" },
-          { id: 7, title: "Intern" },
+          { id: 1, title: "Director: Legal and Compliance" },
+          { id: 2, title: "Senior Manager" },
+          { id: 3, title: "Manager" },
+          { id: 4, title: "Legal Advisor" },
+          { id: 5, title: "Compliance Officer" },
+          { id: 6, title: "Internal Auditor" },
+          { id: 7, title: "Administrator" },
+          { id: 8, title: "Intern" },
         ],
       },
     ],

@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from "react";
 
-function CourseSelctInput({ label, value, faculty, courseList, isDisabled, setOnChange, setCourseCode }) {
-  const [courses, setCourses] = useState([]);
-
-  const showCourse = () => {
-    for (let i = 0; i < courseList.length; i++) {
-      if (courseList[i].faculty_name === faculty) {
-        setCourses(courseList[i].courses);
+function CourseSelctInput({ label, value, courseList, isDisabled, setOnChange, setCourseCode }) {
+  const handleSetCourseCode = (selected_course) => {
+    for (let i = 0; i < courseList?.length; i++) {
+      if (courseList[i]?.course_name === selected_course) {
+        setCourseCode(courseList[i]?.course_code);
       }
     }
   };
 
-  const handleSetCourseCode = (code) => {
-    for (let i = 0; i < courses.length; i++) {
-      if (courses[i].course_name === value) {
-        setCourseCode(courses[i].course_code);
+  const handleSetCourse = (value) => {
+    for (let i = 0; i < courseList?.length; i++) {
+      if (courseList[i]?.course_name === value) {
       }
     }
   };
 
   useEffect(() => {
-    showCourse();
-    handleSetCourseCode();
-  }, [faculty, value]);
+    handleSetCourse(value);
+  }, [value, courseList]);
 
   return (
     <div className="text-input col-span-2">
@@ -33,11 +29,11 @@ function CourseSelctInput({ label, value, faculty, courseList, isDisabled, setOn
         value={value}
         onChange={(e) => {
           setOnChange(e.target.value);
+          handleSetCourseCode(e.target.value);
         }}
       >
-        {courses.map((item) => (
-          <option key={item.id}>{item.course_name}</option>
-        ))}
+        <option></option>
+        {courseList && courseList.map((item) => <option key={item.id}>{item.course_name}</option>)}
       </select>
     </div>
   );

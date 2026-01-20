@@ -20,7 +20,7 @@ import DepartmentSelectInput from "../inputs/selectInputs/departmentSelectInput/
 import PositionSelectInput from "../inputs/selectInputs/positionSelectInput/PositionSelectInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
-import { positionList } from "../../utils/positionsList";
+//import { positionList } from "../../utils/positionsList";
 import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/FacultySelectInput";
 
 function AddEditStaff({ path }) {
@@ -48,6 +48,7 @@ function AddEditStaff({ path }) {
     model: null,
     serial_no: null,
   });
+  const [positionList, setPositionList] = useState(null);
 
   const [formType, setFormType] = useState("add");
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
@@ -224,7 +225,15 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <DepartmentSelectInput label={"Department"} value={department_name} faculty={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setDepartment_name} />
+            <DepartmentSelectInput
+              label={"Department"}
+              value={department_name}
+              faculty={faculty_name}
+              departmentList={departmentsList}
+              isDisabled={isDisabled}
+              setOnChange={setDepartment_name}
+              setPositionList={setPositionList}
+            />
           </div>
 
           <div className="col-span-2">

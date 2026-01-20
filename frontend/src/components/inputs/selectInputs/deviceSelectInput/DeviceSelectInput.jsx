@@ -4,11 +4,11 @@ import { handleFilter } from "../../../../utils/helperMethods";
 import { useDeviceContext } from "../../../../hooks/useDevicesContext";
 import { getAvailableDevicesHelper } from "../../../../utils/devicesHelperMethods";
 
-function DeviceSelectInput({ selectedDevice, setSelectedDevice }) {
+function DeviceSelectInput({ userId, selectedDevice, setSelectedDevice }) {
   const [showDevices, setShowDevices] = useState({ isShow: false });
   const [availableDevices, setAvailableDevices] = useState(null);
 
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(null);
   const [searchResultsData, setSearchResultsData] = useState([]);
 
   const params = useParams();
@@ -27,8 +27,8 @@ function DeviceSelectInput({ selectedDevice, setSelectedDevice }) {
   };
 
   useEffect(() => {
-    setAvailableDevices(getAvailableDevicesHelper(devicesState?.deviceList));
-  }, [devicesState]);
+    setAvailableDevices(devicesState?.deviceList);
+  }, [userId]);
 
   return (
     <div className="flex flex-col border-b-2 py-5 ">
