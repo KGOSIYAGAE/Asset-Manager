@@ -79,7 +79,7 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
           </button>
           {selectedUser?.fullName ? (
             <div onClick={() => onCanel()}>
-              <OpenSecondScreenButton userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
+              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
             </div>
           ) : (
             ""

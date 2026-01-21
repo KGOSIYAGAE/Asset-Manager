@@ -162,8 +162,8 @@ const changePassword = async (req, res) => {
   }
 };
 
-//Update staff role
-const updateStaffRole = async (req, res) => {
+//Assign staff role
+const assignStaffRole = async (req, res) => {
   try {
     const { staffNo, userRole, tempPassword } = req.body;
 
@@ -175,7 +175,7 @@ const updateStaffRole = async (req, res) => {
       return res.status(400).json({ message: "User Role required", error: true });
     }
 
-    if (!tempPassword) {
+    if (tempPassword == null) {
       return res.status(400).json({ message: "Temporary Password required", error: true });
     }
 
@@ -199,4 +199,35 @@ const updateStaffRole = async (req, res) => {
   }
 };
 
-module.exports = { login, signUp, changePassword, updateStaffRole };
+//Update staff role
+const updateStaffRole = async (req, res) => {
+  try {
+    const { staffNo, userRole } = req.body;
+
+    if (!staffNo) {
+      return res.status(400).json({ message: "User Staff Number required", error: true });
+    }
+
+    if (!userRole) {
+      return res.status(400).json({ message: "User Role required", error: true });
+    }
+
+    const update_staff_query = "UPDATE staff SET userrole = $1 WHERE staff_no = $2";
+    const VALUES = [userRole];
+
+    const { rowCount } = await query(update_staff_query, [...VALUES, staffNo]);
+
+    console.log(rowCount);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured updating staff.", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Role successfully updated", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+module.exports = { login, signUp, changePassword, assignStaffRole, updateStaffRole };

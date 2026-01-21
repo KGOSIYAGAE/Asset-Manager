@@ -1,30 +1,23 @@
 import React, { useEffect, useState } from "react";
 import SubmitButton from "../../buttons/SubmitButton";
-import SearchInput from "../../inputs/searchInput/SearchInput";
-import ToastMessage from "../../toastMessage/ToastMessage";
-import { TiArrowSortedDown } from "react-icons/ti";
-import { useParams } from "react-router-dom";
-import axiosInstance from "../../../utils/axiosInstance";
-import { useNavigate } from "react-router-dom";
+
 //import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
 import { getTodayDate } from "../../../utils/helperMethods";
 import { assignDevice, createLoanDevice, releaseDevice } from "../../../services/api/devices/Device.Api";
 import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelectInput";
-import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
-import DateTimePicker from "../../inputs/dateTimePicker/DateTimePicker";
+
 import { rolesList } from "../../../utils/getLoggedInUser";
 import TextInput from "../../inputs/textInput/TextInput";
-import { assignUserRole } from "../../../services/api/admin/Admin.Api";
+import { assignUserRole, updateUserRole } from "../../../services/api/admin/Admin.Api";
 
 function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
   const [selectedRole, setSelectedRole] = useState(null);
-  const [tempPassword, setTempPassword] = useState(null);
   const [userAccessType, setUserAccessType] = useState(null);
 
   //Handle loan device
-  const handleAssignRole = async () => {
-    if (!selectedUser.fullName) {
+  const handleUpdateRole = async () => {
+    if (!userData.name) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
 
@@ -32,17 +25,12 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
       return setShowToast({ isShow: true, type: "error", message: "Please select role." });
     }
 
-    if (!tempPassword) {
-      return setShowToast({ isShow: true, type: "error", message: "Please provide temporary password." });
-    }
-
     const data = {
-      staffNo: selectedUser.userId,
+      staffNo: userData.staff_no,
       userRole: selectedRole,
-      tempPassword: tempPassword,
     };
 
-    const message = await assignUserRole(data, setShowToast);
+    const message = await updateUserRole(data, setShowToast);
 
     return onSubmit(message);
   };
@@ -68,9 +56,11 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
     <div>
       <span className="font-semibold p-2">Assign Role</span>
 
-      <div className="flex flex-col  -z-50">
+      <div className="flex flex-col  gap-5 mt-5 -z-50">
         {/** */}
-        <UserSelectInput userData={userData} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+        <div className="col-span-2">
+          <TextInput label={"User"} value={`${userData?.name} ${userData?.surname}`} isDisabled={false} maxLength={30} setOnChange={null} />
+        </div>
         {/** */}
         <div className="flex flex-col gap-5">
           <div className="flex flex-col border rounded-md p-2 overflow-auto">
@@ -89,9 +79,7 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
               ))}
             </select>
           </div>
-          <div className="col-span-2">
-            <TextInput label={"Temporary Password"} value={tempPassword} isDisabled={false} maxLength={30} setOnChange={setTempPassword} />
-          </div>
+
           <span>The user will have the following access:- {userAccessType && userAccessType}</span>
         </div>
       </div>
@@ -101,7 +89,7 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
         <button className="flex  rounded-sm p-3" onClick={onCanel}>
           Cancel
         </button>
-        <SubmitButton text={"Submit"} onClick={handleAssignRole} />
+        <SubmitButton text={"Submit"} onClick={handleUpdateRole} />
       </div>
     </div>
   );

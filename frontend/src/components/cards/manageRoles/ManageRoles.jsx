@@ -17,7 +17,7 @@ import TextInput from "../../inputs/textInput/TextInput";
 import { assignUserRole } from "../../../services/api/admin/Admin.Api";
 
 function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
-  const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
+  const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, password: null, userType: null, location: null });
   const [selectedRole, setSelectedRole] = useState(null);
   const [tempPassword, setTempPassword] = useState(null);
   const [userAccessType, setUserAccessType] = useState(null);
@@ -42,6 +42,7 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
       tempPassword: tempPassword,
     };
 
+    console.log(selectedUser);
     const message = await assignUserRole(data, setShowToast);
 
     return onSubmit(message);

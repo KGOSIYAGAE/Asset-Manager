@@ -11,6 +11,9 @@ import { MdEdit } from "react-icons/md";
 import { FaRedo } from "react-icons/fa";
 import Modal from "react-modal";
 import SiganturePad from "../../../components/cards/signaturePad/SiganturePad";
+import OpenSecondScreenButton from "../../../components/buttons/OpenSecondScreenButton/OpenSecondScreenButton";
+import UserCaptureSignature from "../../../components/cards/signaturePad/UserCaptureSignature";
+import ToastMessage from "../../../components/toastMessage/ToastMessage";
 
 function StaffDetails({ path }) {
   const [staffDetails, setStaffDetails] = useState();
@@ -19,6 +22,7 @@ function StaffDetails({ path }) {
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
+  const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
 
   //Handle Edit
   const handleEdit = (id) => {
@@ -45,6 +49,19 @@ function StaffDetails({ path }) {
 
   useEffect(() => {
     geDetails();
+  }, []);
+
+  //handle post Message Response
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted_signature") {
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        geDetails();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   return (
@@ -127,23 +144,26 @@ function StaffDetails({ path }) {
             <span className="text-sm">Signature</span>
 
             {staffDetails?.image_base64 ? (
-              <div className="w-6/12 border rounded-md shadow-md p-2 flex items-center  ">
-                <img alt="signature" src={staffDetails?.image_base64} className="w-[180px] " />
-                <button
-                  onClick={() => {
-                    {
-                      /*setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });*/
-                      setOpenModal({ isShown: true, type: "release", data: "hello" });
-                    }
-                  }}
-                >
-                  <div className="bg-slate-100 rounded-md 0 p-1 text-gray-500 border border-gray-500 noprint">
-                    <FaRedo className={` hover:rotate-180 transition-all duration-300`} size={12} />
-                  </div>
-                </button>
+              <div className="flex flex-col gap-5">
+                <div className="w-6/12  rounded-md shadow-md p-2 flex items-center  ">
+                  <img alt="signature" src={staffDetails?.image_base64} className="w-[180px] " />
+                  <button
+                    onClick={() => {
+                      {
+                        /*setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });*/
+                        setOpenModal({ isShown: true, type: "release", data: "hello" });
+                      }
+                    }}
+                  ></button>
+                </div>
+                <div onClick={() => onCanel()}>
+                  <OpenSecondScreenButton btnLable={"Update Signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
+                </div>
               </div>
             ) : (
-              "None"
+              <div onClick={() => onCanel()}>
+                <OpenSecondScreenButton btnLable={"Capture signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
+              </div>
             )}
           </div>
           <div className="w-full flex justify-end p-2 gap-2">
@@ -172,8 +192,16 @@ function StaffDetails({ path }) {
           openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
-        <SiganturePad lablel={"Siganture"} user_id={staffDetails?.staff_no} />
+        <UserCaptureSignature lablel={"Capture User Signature"} user_id={staffDetails?.staff_no} />
       </Modal>
+      <ToastMessage
+        isShown={showToast.isShow}
+        type={showToast.type}
+        message={showToast.message}
+        onClose={() => {
+          setShowToast({ isShow: false });
+        }}
+      />
     </div>
   );
 }

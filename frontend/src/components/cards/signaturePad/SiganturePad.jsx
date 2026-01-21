@@ -31,7 +31,6 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToas
     if (userType === "Staff") {
       handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
     } else {
-      console.log("student");
       handleAssignDeviceToStudent(userDetails, deviceDetails, setShowToast);
     }
 
