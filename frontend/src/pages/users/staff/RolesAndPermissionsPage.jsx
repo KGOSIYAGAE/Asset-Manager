@@ -8,12 +8,20 @@ import { useStaffContext } from "../../../hooks/useStaffContext";
 import { hasPermission } from "../../../utils/getLoggedInUser";
 import RolesAndPermissionTable from "../../../components/tables/RolesAndPermissionTable";
 import ManageRoles from "../../../components/cards/manageRoles/ManageRoles";
+import UpdateRoles from "../../../components/cards/manageRoles/UpdateRoles";
 
 function RolesAndPermissionsPage({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  const [viewedUser, setViewedUser] = useState(null);
 
   const { staffState, staffDispatch } = useStaffContext();
+
+  const handleUpdateRole = (systemUser) => {
+    setOpenModal({ isShown: true, type: "update-role", data: "hello" });
+
+    setViewedUser(systemUser);
+  };
 
   useEffect(() => {
     getStaffData(staffDispatch);
@@ -40,7 +48,7 @@ function RolesAndPermissionsPage({ path }) {
             <ExportExcelButton />
           </div>
         </div>
-        <RolesAndPermissionTable users={staffState?.staffList} label={"Roles And Permissions"} />
+        <RolesAndPermissionTable users={staffState?.staffList} label={"Roles And Permissions"} handleUpdateRole={handleUpdateRole} />
       </div>
       {/* */}
       <Modal
@@ -56,18 +64,33 @@ function RolesAndPermissionsPage({ path }) {
           openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
-        <ManageRoles
-          onCanel={() => {
-            setOpenModal({ isShown: false });
-          }}
-          onSubmit={(message) => {
-            getStaffData(staffDispatch);
-            setOpenModal({ isShown: false });
-            setShowToast({ isShow: true, type: "success", message: message });
-          }}
-          userData={[...staffState?.staffList]}
-          setShowToast={setShowToast}
-        />
+        {openModal.type && openModal.type === "assign-role" ? (
+          <ManageRoles
+            onCanel={() => {
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={(message) => {
+              getStaffData(staffDispatch);
+              setOpenModal({ isShown: false });
+              setShowToast({ isShow: true, type: "success", message: message });
+            }}
+            userData={[...staffState?.staffList]}
+            setShowToast={setShowToast}
+          />
+        ) : (
+          <UpdateRoles
+            onCanel={() => {
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={(message) => {
+              getStaffData(staffDispatch);
+              setOpenModal({ isShown: false });
+              setShowToast({ isShow: true, type: "success", message: message });
+            }}
+            userData={viewedUser}
+            setShowToast={setShowToast}
+          />
+        )}
       </Modal>
       <ToastMessage
         isShown={showToast.isShow}

@@ -3,7 +3,7 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { useNavigate } from "react-router-dom";
 import { getSystemUsers } from "../../utils/helperMethods";
 
-function RolesAndPermissionTable({ users, label }) {
+function RolesAndPermissionTable({ users, label, handleUpdateRole }) {
   const navigate = useNavigate();
   const [userAndAdmins, setUsersAndAdmins] = useState(null);
   const [columnCount, setColumnCount] = useState(8);
@@ -61,7 +61,12 @@ function RolesAndPermissionTable({ users, label }) {
                     <td>{systemUser.userrole}</td>
 
                     <td>
-                      <span className="text-blue-500 hover:text-blue-600 underline cursor-pointer" onClick={() => {}}>
+                      <span
+                        className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                        onClick={() => {
+                          handleUpdateRole(systemUser);
+                        }}
+                      >
                         Update
                       </span>
                     </td>

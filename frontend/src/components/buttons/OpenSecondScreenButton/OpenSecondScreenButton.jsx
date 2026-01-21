@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SubmitButton from "../SubmitButton";
 
-function OpenSecondScreenButton({ userId, deviceId, setShowToast, w = 800, h = 600 }) {
+function OpenSecondScreenButton({ btnLable, userId, deviceId, setShowToast, w = 800, h = 600 }) {
   const [error, setError] = useState("");
 
   async function openOnSecondScreen() {
@@ -25,8 +25,15 @@ function OpenSecondScreenButton({ userId, deviceId, setShowToast, w = 800, h = 6
         // 3. Center the popup on the selected screen
         const left = target.left;
         const top = target.top;
+        var url = "";
 
-        const url = `${window.location.origin}/user-form/${userId}/${deviceId}`;
+        if (deviceId) {
+          url = `${window.location.origin}/user-form/${userId}/${deviceId}`;
+        } else {
+          url = `${window.location.origin}/user-form/${userId}`;
+        }
+
+        //const url = `${window.location.origin}/user-form/${userId}/${deviceId}`;
 
         window.open(url, `childWindow`, `left=${left},top=${top},width=${target.width},height=${target.height}`, `${target.label}`);
         return;
@@ -44,7 +51,7 @@ function OpenSecondScreenButton({ userId, deviceId, setShowToast, w = 800, h = 6
 
   return (
     <>
-      <SubmitButton text={"Continue to verification"} onClick={openOnSecondScreen} />
+      <SubmitButton text={btnLable} onClick={openOnSecondScreen} />
       {error && <p style={{ color: "red" }}>{error}</p>}
     </>
   );

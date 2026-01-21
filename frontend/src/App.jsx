@@ -167,6 +167,10 @@ function App() {
       element: <SecondScreenPage />,
     },
     {
+      path: "/user-form/:userId",
+      element: <SecondScreenPage />,
+    },
+    {
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
       children: [
         {

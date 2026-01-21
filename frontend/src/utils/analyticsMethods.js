@@ -210,7 +210,6 @@ export const getHPStatsByModel = (devices) => {
 //Get Faculty Stats
 
 export const getFacultyStats = (students) => {
-  console.log(students);
   let edu_stats = [];
   let ems_stats = [];
   let nas_stats = [];
