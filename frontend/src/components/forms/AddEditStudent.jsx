@@ -61,7 +61,7 @@ function AddEditStudent({ path }) {
     setIdNumber("");
     setPhone_Number("");
     setEmail("");
-    setFaculty("");
+    setFaculty_name("");
     setCourse("");
     setCourse_Code("");
     setIsActive("");
@@ -110,11 +110,20 @@ function AddEditStudent({ path }) {
 
     if (formType === "add") {
       addStudent(studentData, setShowToast);
+
+      setTimeout(() => {
+        navigate(`/users/students`);
+      }, 3000);
+
       clearForm();
     } else {
       const { student_no } = params;
       if (student_no) {
         updateStudent(student_no, studentData, setShowToast);
+
+        setTimeout(() => {
+          navigate(`/users/students`);
+        }, 3000);
       }
     }
   };
@@ -252,7 +261,11 @@ function AddEditStudent({ path }) {
         <div className="flex justify-end">
           <div className="flex gap-5">
             {formType === "add" ? hasPermission("create") && <SubmitButton text={"Submit"} onClick={handleSubmit} /> : hasPermission("edit") && <SubmitButton text={"Update"} onClick={handleSubmit} />}
-            <CancelButton />
+            <CancelButton
+              onClick={() => {
+                navigate(`/users/students`);
+              }}
+            />
           </div>
         </div>
 

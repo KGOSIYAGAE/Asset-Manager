@@ -8,7 +8,6 @@ function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabl
       if (departmentList[i].faculty === faculty) {
         setFaculty_deps(departmentList[i].departments);
         setOnChange(value);
-        console.log(departmentList[i].departments);
         //setPositions
       }
     }
