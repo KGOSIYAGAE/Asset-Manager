@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getStudentDetails } from "../../../services/api/students/Students.Api";
-import { handleTimeStamp } from "../../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../../utils/dateConverter";
 import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
 import { getAllUserDevices } from "../../../services/api/devices/Device.Api";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
@@ -101,7 +101,7 @@ function StudentDetails({ path }) {
             <span className="text-sm">Registration Date</span>
             <span className="text-sm">
               {(() => {
-                return handleTimeStamp(studentDetails?.registration_date);
+                return handleTimeStampToText(studentDetails?.registration_date);
               })()}
             </span>
           </div>

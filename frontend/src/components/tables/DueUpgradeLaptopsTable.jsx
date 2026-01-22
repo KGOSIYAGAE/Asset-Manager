@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ExportExcelButton from "../buttons/ExportExcelButton";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { getAllDeviceLoanDue } from "../../services/api/devices/Device.Api";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
 import { useNavigate } from "react-router-dom";
@@ -65,12 +65,12 @@ function DueUpgradeLaptopsTable({ devices, label }) {
                       <td>{device.user_id}</td>
                       <td>
                         {(() => {
-                          return handleTimeStamp(device.date_issued);
+                          return handleTimeStampToText(device.date_issued);
                         })()}
                       </td>
                       <td>
                         {(() => {
-                          return handleTimeStamp(device.next_upgrade_date);
+                          return handleTimeStampToText(device.next_upgrade_date);
                         })()}
                       </td>
                       <td>
