@@ -14,7 +14,7 @@ import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import CancelButton from "../../components/buttons/CancelButton";
 import { getUser, updateStaff } from "../../services/api/staff/Staff.Api";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { MdPerson } from "react-icons/md";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { changePassword } from "../../services/api/admin/Admin.Api";
@@ -75,8 +75,8 @@ function UserProfile({ path }) {
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
-    setStart_date(handleTimeStamp(userDetails.start_date));
-    setEndDate(handleTimeStamp(userDetails.end_date));
+    setStart_date(handleTimeStampToText(userDetails.start_date));
+    setEndDate(handleTimeStampToText(userDetails.end_date));
   };
 
   //Handle Submit / Update

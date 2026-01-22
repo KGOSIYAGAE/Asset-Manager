@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import ExportExcelButton from "../buttons/ExportExcelButton";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import { useNavigate } from "react-router-dom";
 
@@ -52,17 +52,17 @@ function UserDevicesTable({ deviceList }) {
                     <td>{device.status}</td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.date_issued);
+                        return handleTimeStampToText(device.date_issued);
                       })()}
                     </td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.return_date);
+                        return handleTimeStampToText(device.return_date);
                       })()}
                     </td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.next_upgrade_date);
+                        return handleTimeStampToText(device.next_upgrade_date);
                       })()}
                     </td>
                     <td>

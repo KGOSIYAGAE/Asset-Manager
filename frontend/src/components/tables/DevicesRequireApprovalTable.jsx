@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { getRequiresApprovalDevices } from "../../utils/devicesHelperMethods";
 
 function DevicesRequiresApprovalTable({ devices, label }) {
@@ -61,7 +61,7 @@ function DevicesRequiresApprovalTable({ devices, label }) {
                     <td>{device.status}</td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.date_issued);
+                        return handleTimeStampToText(device.date_issued);
                       })()}
                     </td>
 

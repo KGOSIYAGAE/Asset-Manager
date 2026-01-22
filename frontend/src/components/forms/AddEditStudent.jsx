@@ -18,7 +18,7 @@ import { addStudent, getStudent, updateStudent } from "../../services/api/studen
 import { getAllCourses } from "../../services/api/courses/course.Api";
 import OptionsSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
 import CourseSelctInput from "../inputs/selectInputs/CourseSelctInput/CourseSelctInput";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { addOneDay, handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/FacultySelectInput";
 import { departmentsList } from "../../utils/departmentList";
@@ -133,7 +133,11 @@ function AddEditStudent({ path }) {
     setCourse_Code(studentData.course_code);
     setIsActive(studentData.acc_status);
     setLaptopDetails(studentData.laptop);
-    setRegistration_Date(handleTimeStamp(studentData.registration_date));
+    //console.log(handleTimeStampToText(studentData.registration_date));
+    //setRegistration_Date(studentData.registration_date);
+    setRegistration_Date(addOneDay(studentData.registration_date));
+    //console.log(studentData.registration_date);
+    //console.log(registration_date);
   };
 
   //Get User API Call

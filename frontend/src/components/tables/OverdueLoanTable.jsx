@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { useNavigate } from "react-router-dom";
 import { getLoanedDevicesHelper } from "../../utils/devicesHelperMethods";
 
@@ -56,12 +56,12 @@ function OverdueLoanTable({ devices, label }) {
                     <td>{device.user_id}</td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.date_issued);
+                        return handleTimeStampToText(device.date_issued);
                       })()}
                     </td>
                     <td>
                       {(() => {
-                        return handleTimeStamp(device.return_date);
+                        return handleTimeStampToText(device.return_date);
                       })()}
                     </td>
                     <td>

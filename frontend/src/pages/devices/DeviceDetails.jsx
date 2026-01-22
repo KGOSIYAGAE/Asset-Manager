@@ -11,7 +11,7 @@ import { useStaffContext } from "../../hooks/useStaffContext";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import ReleaseUser from "../../components/cards/releaseUser/ReleaseUser";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
 import { MdLocalPrintshop } from "react-icons/md";
 import StudentAOD from "../../components/student AOD/StudentAOD";
@@ -201,7 +201,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Warranty End date</span>
             <span className="text-sm">
               {(() => {
-                return handleTimeStamp(deviceDetails?.warranty_end_date);
+                return handleTimeStampToText(deviceDetails?.warranty_end_date);
               })()}
             </span>
           </div>
@@ -245,7 +245,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Date Created</span>
             <span className="text-sm">
               {(() => {
-                return handleTimeStamp(deviceDetails?.created_at);
+                return handleTimeStampToText(deviceDetails?.created_at);
               })()}
             </span>
           </div>
@@ -253,7 +253,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Date Issued</span>
             <span className="text-sm">
               {(() => {
-                return handleTimeStamp(deviceDetails?.date_issued);
+                return handleTimeStampToText(deviceDetails?.date_issued);
               })() || "None"}
             </span>
           </div>
@@ -261,7 +261,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Return Date</span>
             <span className="text-sm">
               {(function () {
-                return handleTimeStamp(deviceDetails?.return_date);
+                return handleTimeStampToText(deviceDetails?.return_date);
               })() || "None"}
             </span>
           </div>
@@ -269,7 +269,7 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Upgrade Date</span>
             <span className="text-sm">
               {(function () {
-                return handleTimeStamp(deviceDetails?.next_upgrade_date);
+                return handleTimeStampToText(deviceDetails?.next_upgrade_date);
               })() || "None"}
             </span>
           </div>
