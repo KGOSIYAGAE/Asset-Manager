@@ -6,7 +6,7 @@ import CancelButton from "../../buttons/CancelButton";
 import ToastMessage from "../../toastMessage/ToastMessage";
 import { bulkCreateDevices, bulkCreateStaff, bulkCreateStudents } from "../../../utils/bulkImport";
 
-function ImportFile({ type, setShowToast, onClose }) {
+function ImportFile({ type, setShowToast, onClose, onSubmit }) {
   const [isDrag, setIsDrag] = useState(false);
   const [file, setFiles] = useState([]);
 
@@ -23,7 +23,8 @@ function ImportFile({ type, setShowToast, onClose }) {
     }
 
     if (type === "students") {
-      return bulkCreateStudents(file, setShowToast, onClose);
+      bulkCreateStudents(file, setShowToast, onClose);
+      return onSubmit();
     }
   };
 
@@ -93,7 +94,7 @@ function ImportFile({ type, setShowToast, onClose }) {
           }}
         >
           <div className="w-full h-full flex flex-col items-center justify-center ">
-            <img src="\public\upload-file.png" className="w-[80px]" alt="" />
+            <img src="\upload-file.png" className="w-[80px]" alt="" />
             <div className="flex gap-1">
               <input type="file" name="" id="browseFile" className="" hidden accept=".xls, xlsx" onChange={(event) => handleSelectFile(event)} />
               <span>Drag and Drop file here or</span>
@@ -113,14 +114,11 @@ function ImportFile({ type, setShowToast, onClose }) {
             <div className="flex flex-col gap-2">
               <div className="flex items-center">
                 <div className="w-[250px] flex items-center bg-white rounded-md  gap-3 p-2">
-                  <img src="\public\excel-48.png" alt="" className="w-[30px]" />
+                  <img src="\excel-48.png" alt="" className="w-[30px]" />
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold">{file[0]?.name}</span>
-                    {file[0]?.size > 250000 ? (
-                      <span className="text-sm text-red-500">File must be less than 25 MB</span>
-                    ) : (
-                      <span className="text-sm text-slate-400">{file[0] ? getFileSize(file[0].size) : ""}</span>
-                    )}
+
+                    <span className="text-sm text-slate-400">{file[0] ? getFileSize(file[0].size) : ""}</span>
                   </div>
                 </div>
               </div>

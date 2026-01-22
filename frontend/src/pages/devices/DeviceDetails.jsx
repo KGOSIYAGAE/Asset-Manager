@@ -397,7 +397,7 @@ function DeviceDetails({ path }) {
           setShowToast({ isShow: false });
         }}
       />
-      {hasPermission("assign") &&
+      {hasPermission("print") &&
         (deviceDetails?.status === "Assigned" ? (
           <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
             <button

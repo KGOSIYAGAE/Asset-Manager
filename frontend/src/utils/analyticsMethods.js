@@ -156,14 +156,19 @@ export const getDevicesConditionSummary = (devices) => {
 
 //Get lenovo laptops by model
 export const getLenovoStatsByModel = (devices) => {
-  let lenovo_E16 = 0; //Lenovo ThinkPads E16
+  let lenovo_E16_gen2 = 0; //Lenovo ThinkPads E16 Gen2
+  let lenovo_E16_gen3 = 0; //Lenovo ThinkPads E16 Gen3
   let lenovo_V15 = 0; //Lenovo V15
 
   const { LENOVO_LAPTOPS } = getDevicesStatsByMake(devices);
 
   for (let i = 0; i < LENOVO_LAPTOPS?.length; i++) {
-    if (LENOVO_LAPTOPS[i].model === "ThinkPad E16") {
-      lenovo_E16 += 1;
+    if (LENOVO_LAPTOPS[i].model === "ThinkPad E16 Gen 2") {
+      lenovo_E16_gen2 += 1;
+    }
+
+    if (LENOVO_LAPTOPS[i].model === "ThinkPad E16 Gen 3") {
+      lenovo_E16_gen3 += 1;
     }
 
     if (LENOVO_LAPTOPS[i].model === "V15 G5 IRL") {
@@ -171,7 +176,7 @@ export const getLenovoStatsByModel = (devices) => {
     }
   }
 
-  return [lenovo_E16, lenovo_V15];
+  return [lenovo_E16_gen2, lenovo_E16_gen3, lenovo_V15];
 };
 ////////////////////////////////////////////////////////
 
@@ -207,7 +212,7 @@ export const getHPStatsByModel = (devices) => {
 };
 ////////////////////////////////////////////////////////
 
-//Get Faculty Stats
+//Get all Faculty Students Stats
 
 export const getFacultyStats = (students) => {
   let edu_stats = [];
@@ -234,6 +239,36 @@ export const getFacultyStats = (students) => {
   }
 
   return { edu_stats, ems_stats, nas_stats, hum_stats };
+};
+////////////////////////////////////////////////////////
+
+//Get all Faculty Students Stats
+
+export const getFacultyStatsActiveStudents = (students) => {
+  let edu_active = [];
+  let ems_active = [];
+  let nas_active = [];
+  let hum_active = [];
+
+  for (let i = 0; i < students?.length; i++) {
+    if (students[i].faculty_name === "Education" && students[i].acc_status === "Active") {
+      edu_active.push(students[i]);
+    }
+
+    if (students[i].faculty_name === "Economic and Management Sciences" && students[i].acc_status === "Active") {
+      ems_active.push(students[i]);
+    }
+
+    if (students[i].faculty_name === "Natural and Applied Sciences" && students[i].acc_status === "Active") {
+      nas_active.push(students[i]);
+    }
+
+    if (students[i].faculty_name === "Humanities" && students[i].acc_status === "Active") {
+      hum_active.push(students[i]);
+    }
+  }
+
+  return { edu_active, ems_active, nas_active, hum_active };
 };
 ////////////////////////////////////////////////////////
 
