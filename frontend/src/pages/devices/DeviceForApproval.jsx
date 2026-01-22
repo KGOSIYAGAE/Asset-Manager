@@ -5,15 +5,21 @@ import { Modal } from "@mui/material";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
 import DevicesRequiresApprovalTable from "../../components/tables/DevicesRequireApprovalTable";
+import SearchInput from "../../components/inputs/searchInput/SearchInput";
+import { useSearchContext } from "../../hooks/useSearchContext";
+import { getRequiresApprovalDevices } from "../../utils/devicesHelperMethods";
 
 function DeviceForApproval({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  const [approvalDevices, setApprovalDevices] = useState(null);
 
   const { devicesState, devicesDispatch } = useDeviceContext();
+  const { searchState, searchDispatch } = useSearchContext();
 
   useEffect(() => {
     getAllDevices(devicesDispatch);
+    setApprovalDevices(getRequiresApprovalDevices(devicesState?.deviceList));
   }, []);
 
   return (
@@ -23,7 +29,12 @@ function DeviceForApproval({ path }) {
       </span>
       {/* */}
       <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
-        <DevicesRequiresApprovalTable devices={devicesState?.deviceList} label={"Devices For Approval"} />
+        <div className=" flex  justify-between ">
+          <span className="heading-text ">Devices For Approval</span>
+          <SearchInput searchData={approvalDevices} dataType={"devices"} />
+        </div>
+
+        <DevicesRequiresApprovalTable devices={searchState.searchResults ? searchState.searchResults : approvalDevices} label={"Devices For Approval"} />
       </div>
       {/* */}
 
