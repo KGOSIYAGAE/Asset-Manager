@@ -6,7 +6,7 @@ const checkStudentExist = async (req, res) => {};
 //Get all students
 const getStudents = async (req, res) => {
   try {
-    const get_students_query = `SELECT * FROM "studentDetails"`;
+    const get_students_query = `SELECT * FROM "studentDetails" ORDER BY created_at DESC`;
 
     const { rowCount, rows } = await query(get_students_query);
 
@@ -108,7 +108,7 @@ const bulkCreateStudents = async (req, res) => {
 
     const bulk_create_students_query = format(
       "INSERT INTO students (name, surname, student_number, id_number, phone_number, email, faculty_name, course_name, course_code, acc_status, registration_date) VALUES %L",
-      VALUES
+      VALUES,
     );
 
     const { rowCount } = await query(bulk_create_students_query);

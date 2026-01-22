@@ -72,7 +72,7 @@ function AddEditDevice({ path }) {
     setCategory(deviceDetails[0].category);
     setDevice_Condition(deviceDetails[0].device_condition);
     setStatus(deviceDetails[0].status);
-    setWarranty_End_date(deviceDetails[0].warranty_end_date);
+    setWarranty_End_date(handleTimeStamp(deviceDetails[0].warranty_end_date));
     setSupplier_name(deviceDetails[0].supplier_name);
     setInvoice_no(deviceDetails[0].invoice_number);
     setPurchaseValue(deviceDetails[0].purchase_price);

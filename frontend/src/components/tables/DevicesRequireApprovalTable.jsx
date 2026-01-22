@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { getRequiresApprovalDevices } from "../../utils/devicesHelperMethods";
+import SearchInput from "../inputs/searchInput/SearchInput";
+import { useSearchContext } from "../../hooks/useSearchContext";
 
 function DevicesRequiresApprovalTable({ devices, label }) {
   const navigate = useNavigate();
-  const [approvalDevices, setApprovalDevices] = useState(null);
+
   const [columnCount, setColumnCount] = useState(8);
 
   //Handle view more
@@ -13,15 +15,11 @@ function DevicesRequiresApprovalTable({ devices, label }) {
     navigate(`/devices/device-details/${id}`);
   };
 
-  useEffect(() => {
-    setApprovalDevices(getRequiresApprovalDevices(devices));
-  }, [devices]);
+  useEffect(() => {}, [devices]);
 
   return (
-    <div className="w-full text-sm  rounded-sm">
-      <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
-        <span className="heading-text ">{label}</span>
-      </div>
+    <div className="w-full text-sm  rounded-md ">
+      <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white"></div>
       <table className="w-full bg-white ">
         <thead className=" bg-slate-100 sticky top-0 h-[40px]">
           <th>#</th>
@@ -35,7 +33,7 @@ function DevicesRequiresApprovalTable({ devices, label }) {
           <th>Action</th>
         </thead>
 
-        {approvalDevices <= 0 ? (
+        {devices <= 0 ? (
           <tbody>
             <tr>
               <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
@@ -45,8 +43,8 @@ function DevicesRequiresApprovalTable({ devices, label }) {
           </tbody>
         ) : (
           <tbody className="">
-            {approvalDevices
-              ? approvalDevices.map((device, count) => (
+            {devices
+              ? devices.map((device, count) => (
                   <tr className="hover:bg-slate-50" key={device.id}>
                     <td>
                       {(() => {
