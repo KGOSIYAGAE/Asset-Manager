@@ -103,6 +103,9 @@ function Devices({ path }) {
           <ImportFile
             type={"devices"}
             setShowToast={setShowToast}
+            onSubmit={() => {
+              getAllDevices(devicesDispatch);
+            }}
             onClose={() => {
               setOpenImportModal({ isShown: false });
             }}

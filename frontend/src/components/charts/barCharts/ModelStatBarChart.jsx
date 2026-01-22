@@ -16,7 +16,7 @@ function ModelStatBarChart({ devices }) {
   }, [devices]);
 
   const values = [...lenovoStats, ...hpStats];
-  const xLabels = ["ThinkPad E16", "Lenovo V15", "HP 255 G8", "HP 255 G9", "HP 455 G8", "HP 455 G9", "HP 455 G10"];
+  const xLabels = ["E16 Gen 2", "E16 Gen 3", "Lenovo V15", "HP 255 G8", "HP 255 G9", "HP 455 G8", "HP 455 G9", "HP 455 G10"];
 
   const otherSetting = {
     xAxis: [{ label: "Laptops" }],

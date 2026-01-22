@@ -181,10 +181,10 @@ const assignStaffRole = async (req, res) => {
 
     const hashedPassword = await hashPassword(tempPassword);
 
-    const update_staff_query = "UPDATE staff SET userrole = $1, hash_password = $2 WHERE staff_no = $3";
+    const assign_staff_query = "UPDATE staff SET userrole = $1, hash_password = $2 WHERE staff_no = $3";
     const VALUES = [userRole, hashedPassword];
 
-    const { rowCount } = await query(update_staff_query, [...VALUES, staffNo]);
+    const { rowCount } = await query(assign_staff_query, [...VALUES, staffNo]);
 
     console.log(rowCount);
 

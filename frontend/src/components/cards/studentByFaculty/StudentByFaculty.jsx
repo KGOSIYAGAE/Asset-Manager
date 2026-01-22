@@ -1,34 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { getPercentage } from "../../../utils/getValueInPercentage";
-import { getCourseStatsByFaculty, getFacultyStats } from "../../../utils/analyticsMethods";
+import { getCourseStatsByFaculty, getFacultyStats, getFacultyStatsActiveStudents } from "../../../utils/analyticsMethods";
 
 function StudentByFaculty({ students }) {
   const [edu, setEdu] = useState({
     color: "",
     value: 0,
     percentage: 0,
+    active: 0,
   });
   const [nas, setNas] = useState({
     color: "",
     value: 0,
     percentage: 0,
+    active: 0,
   });
 
   const [ems, setEms] = useState({
     color: "",
     value: 0,
     percentage: 0,
+    active: 0,
   });
   const [hum, setHum] = useState({
     color: "",
     value: 0,
     percentage: 0,
+    active: 0,
   });
 
   const getFacutlyDetails = () => {
     //console.log(students);
 
     const { edu_stats, ems_stats, nas_stats, hum_stats } = getFacultyStats(students);
+    const { edu_active, ems_active, nas_active, hum_active } = getFacultyStatsActiveStudents(students);
 
     getCourseStatsByFaculty(students);
 
@@ -36,21 +41,25 @@ function StudentByFaculty({ students }) {
       color: "#eab308",
       value: edu_stats?.length,
       percentage: getPercentage(edu_stats?.length, students?.length),
+      active: edu_active?.length,
     });
     setHum({
       color: "#f97316",
       value: hum_stats?.length,
       percentage: getPercentage(hum_stats?.length, students?.length),
+      active: hum_active?.length,
     });
     setNas({
       color: "#15803d ",
       value: nas_stats?.length,
       percentage: getPercentage(nas_stats?.length, students?.length),
+      active: nas_active?.length,
     });
     setEms({
       color: " #2563eb ",
       value: ems_stats?.length,
       percentage: getPercentage(ems_stats?.length, students?.length),
+      active: ems_active?.length,
     });
   };
 
@@ -83,7 +92,10 @@ function StudentByFaculty({ students }) {
             <span className="text-sm text-slate-600">EDU</span>
             <span>({Math.round(edu.percentage)}%)</span>
           </div>
-          <span className="text-2xl font-bold">{edu.value}</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-2xl font-bold">{edu.value}</span>
+            <span className="text-sm">{edu.active + " Issued Laptops"}</span>
+          </div>
         </div>
         {/***/}
         <div className="flex flex-col items-end col-span-2 p-2 gap-5 border-t border-r border-b">
@@ -92,7 +104,10 @@ function StudentByFaculty({ students }) {
             <span className="text-sm text-slate-600">NAS</span>
             <span>({Math.round(nas.percentage)}%)</span>
           </div>
-          <span className="text-2xl font-semibold">{nas.value}</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-2xl font-bold">{nas.value}</span>
+            <span className="text-sm">{nas.active + " Issued Laptops"}</span>
+          </div>
         </div>
         {/***/}
         <div className="flex flex-col col-span-2 p-2 gap-5 border-l border-r border-b">
@@ -101,7 +116,10 @@ function StudentByFaculty({ students }) {
             <span className="text-sm text-slate-600">EMS</span>
             <span>({Math.round(ems.percentage)}%)</span>
           </div>
-          <span className="text-2xl font-bold">{ems.value}</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-2xl font-bold">{ems.value}</span>
+            <span className="text-sm">{ems.active + " Issued Laptops"}</span>
+          </div>
         </div>
         {/***/}
         <div className="flex flex-col items-end col-span-2 p-2 gap-5 border-r border-b">
@@ -110,7 +128,10 @@ function StudentByFaculty({ students }) {
             <span className="text-sm text-slate-600">HUM</span>
             <span>({Math.round(hum.percentage)}%)</span>
           </div>
-          <span className="text-2xl font-bold">{hum.value}</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-2xl font-bold">{hum.value}</span>
+            <span className="text-sm">{hum.active + " Issued Laptops"}</span>
+          </div>
         </div>
       </div>
     </div>

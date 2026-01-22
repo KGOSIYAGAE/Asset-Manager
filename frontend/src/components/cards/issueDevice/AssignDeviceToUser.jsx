@@ -41,7 +41,7 @@ function AssignDeviceToUser({ onCanel, onSubmit, StudentNo, setShowToast }) {
           </button>
           {selectedDevice?.id ? (
             <div onClick={() => onCanel()}>
-              <OpenSecondScreenButton userId={StudentNo} deviceId={selectedDevice?.id} setShowToast={setShowToast} />
+              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={StudentNo} deviceId={selectedDevice?.id} setShowToast={setShowToast} />
             </div>
           ) : (
             ""

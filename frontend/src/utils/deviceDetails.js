@@ -153,11 +153,16 @@ export const ICT_DEVICES = [
           },
           {
             id: 1,
-            name: "ThinkPad E16",
+            name: "ThinkPad E16 Gen 2",
             specification: '16" FHD, Ryzen 5/7, business-grade.',
           },
           {
             id: 2,
+            name: "ThinkPad E16 Gen 3",
+            specification: '16" FHD display, AMD Ryzen 5/7 (8000-series), DDR5 memory, enhanced performance and efficiency.',
+          },
+          {
+            id: 3,
             name: "Lenovo L14",
             specification: '14" FHD, Intel 12th Gen, compact and secure.',
           },

@@ -132,7 +132,7 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
             <DueUpgradeLaptopsTable loanDueState={loanDueState} label={"User Devices Due Upgrade"} />
           </div>
           {/* */}
-          <div className="bg-white flex flex-col col-span-1 row-span-1 rounded-md shadow-lg border p-2">
+          <div className="bg-white flex flex-col col-span-2 row-span-1 rounded-md shadow-lg border p-2">
             <StudentByFaculty students={students} />
           </div>
           {/* */}

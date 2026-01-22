@@ -21,7 +21,7 @@ export const rolesList = [
   {
     id: 1,
     name: "support_technician",
-    can: `"create", "edit", "view", "support-tech-dash", "assign"`,
+    can: `"create", "edit", "view", "support-tech-dash", "assign", "print`,
   },
   {
     id: 2,
@@ -37,10 +37,10 @@ export const hasPermission = (permission) => {
 
   const ROLES = {
     support_admin: {
-      can: ["create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign", "approve", "manage-roles"],
+      can: ["create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign", "approve", "manage-roles", "print"],
     },
     support_technician: {
-      can: ["create", "edit", "view", "support-tech-dash", "assign"],
+      can: ["create", "edit", "view", "support-tech-dash", "assign", "print"],
     },
     support_intern: {
       can: ["view", "support-tech-dash", "assign"],
