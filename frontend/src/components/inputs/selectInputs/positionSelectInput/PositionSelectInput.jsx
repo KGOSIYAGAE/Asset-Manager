@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-function PositionSelectInput({ value, label, positionsList, isDisabled, setOnChange }) {
-  const showPosition = () => {
-    console.log(positionsList);
-    for (let i = 0; i < positionsList?.length; i++) {
-      /*if (positionsList[i].faculty === faculty) {
-        setFaculty_deps(positionsList[i].departments);
-        setOnChange(value);
-        console.log(positionsList[i].departments);
-        //setPositions
-      }*/
-    }
-  };
-
-  useEffect(() => {
-    showPosition();
-  }, []);
+function PositionSelectInput({ value, department_name, label, positionsList, isDisabled, setOnChange }) {
+  /* const handleSetPositionsList = (selectedDepartement) => {
+      for (let i = 0; i < positionsList?.length; i++) {
+        if (positionsList[i].name === selectedDepartement) {
+          setPositionList(departmentList[i].positions);
+        }
+      }
+    };
+  
+    useEffect(() => {
+      handleSetPositionsList(value);
+    }, [departmentList]);*/
 
   return (
     <div className="text-input col-span-2">

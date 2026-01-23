@@ -1,4 +1,4 @@
-import { handleTimeStamp } from "./dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "./dateConverter";
 
 //Staff TableHeaders
 export const staffTableHeaders = [
@@ -46,7 +46,7 @@ export const studentsTableHeaders = [
     width: 140,
     valueGetter: (value) => {
       if (value) {
-        return handleTimeStamp(value);
+        return handleTimeStampToText(value);
       }
     },
   },

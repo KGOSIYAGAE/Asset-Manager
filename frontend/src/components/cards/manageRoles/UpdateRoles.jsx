@@ -21,10 +21,6 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
     }
 
-    if (!selectedRole) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select role." });
-    }
-
     const data = {
       staffNo: userData.staff_no,
       userRole: selectedRole,
@@ -73,7 +69,7 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
                 showUserAccess(e.target.value);
               }}
             >
-              x<option>----- Select Role -----</option>
+              <option>None</option>
               {rolesList.map((role) => (
                 <option key={role.id}>{role.name}</option>
               ))}

@@ -18,7 +18,7 @@ import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverte
 import { MdPerson } from "react-icons/md";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { changePassword } from "../../services/api/admin/Admin.Api";
-import { departmentsList } from "../../utils/departmentList";
+import { departmentEntitiesList, departmentsList } from "../../utils/departmentList";
 import { positionList } from "../../utils/positionsList";
 import FacultySelectInput from "../../components/inputs/selectInputs/facultySelectInput/FacultySelectInput";
 
@@ -47,6 +47,9 @@ function UserProfile({ path }) {
     model: null,
     serial_no: null,
   });
+
+  const [departmentList, setDepartmentList] = useState(null);
+  const [positionList, setPositionList] = useState(null);
 
   const [oldPassowrd, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -137,12 +140,13 @@ function UserProfile({ path }) {
       staff_no,
       phone_number,
       email,
-      department_id,
-      position_id,
+      faculty_name,
+      department_name,
+      position_name,
       contract_type,
       isActive,
       start_date,
-      endDate: end_date || null,
+      endDate: endDate || null,
     };
 
     if (formType === "add") {
@@ -216,15 +220,29 @@ function UserProfile({ path }) {
             </div>
 
             <div className="col-span-2">
-              <FacultySelectInput label={"Faculty"} value={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setFaculty_name} />
+              <FacultySelectInput
+                label={"Faculty"}
+                value={faculty_name}
+                departmentEntitiesList={departmentEntitiesList}
+                isDisabled={isDisabled}
+                setOnChange={setFaculty_name}
+                setDepartmentList={setDepartmentList}
+              />
             </div>
 
             <div className="col-span-2">
-              <DepartmentSelectInput label={"Department"} value={department_name} faculty={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setDepartment_name} />
+              <DepartmentSelectInput
+                label={"Department"}
+                value={department_name}
+                departmentList={departmentList}
+                isDisabled={isDisabled}
+                setOnChange={setDepartment_name}
+                setPositionList={setPositionList}
+              />
             </div>
 
             <div className="col-span-2">
-              <PositionSelectInput label={"Position"} value={position_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
+              <PositionSelectInput label={"Position"} value={position_name} department_name={department_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
             </div>
 
             <div className="col-span-2">

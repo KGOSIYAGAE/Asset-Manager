@@ -1,29 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabled, setOnChange, setPositionList }) {
-  const [faculty_depts, setFaculty_deps] = useState([]);
-
-  const showDepartment = () => {
-    for (let i = 0; i < departmentList.length; i++) {
-      if (departmentList[i].faculty === faculty) {
-        setFaculty_deps(departmentList[i].departments);
-        setOnChange(value);
-        //setPositions
-      }
-    }
-  };
-
-  const setSelecedPos = (pos) => {
-    for (let i = 0; i < faculty_depts.length; i++) {
-      if (faculty_depts[i].name === pos) {
-        setPositionList(faculty_depts[i].positions);
+function DepartmentSelectInput({ label, value, departmentList, isDisabled, setOnChange, setPositionList }) {
+  const handleSetPositionsList = (selectedDepartement) => {
+    for (let i = 0; i < departmentList?.length; i++) {
+      if (departmentList[i].name === selectedDepartement) {
+        setPositionList(departmentList[i].positions);
       }
     }
   };
 
   useEffect(() => {
-    showDepartment();
-  }, [faculty]);
+    handleSetPositionsList(value);
+  }, [departmentList]);
 
   return (
     <div className="text-input col-span-2">
@@ -34,10 +22,11 @@ function DepartmentSelectInput({ label, value, faculty, departmentList, isDisabl
         isDisabled={isDisabled}
         onChange={(e) => {
           setOnChange(e.target.value);
-          setSelecedPos(e.target.value);
+          handleSetPositionsList(e.target.value);
         }}
       >
-        {faculty_depts.map((item) => (
+        <option></option>
+        {departmentList?.map((item) => (
           <option key={item.id}>{item.name}</option>
         ))}
       </select>

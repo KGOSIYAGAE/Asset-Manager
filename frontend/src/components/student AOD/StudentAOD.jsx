@@ -121,7 +121,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
           <span>
             do hereby acknowledge myself to be truly and lawfully indebted unto and in favour of Sol Plaatje University (hereinafter referred to as ‘SPU’) in the sum of <b>R</b>
             <span class="laptopValue content-data">{deviceDetails?.purchase_price}</span> being in respect of a laptop, Model:{" "}
-            <span class="laptopModel content-data">{`${deviceDetails?.make} ${deviceDetails?.model}`}</span>
+            <span class="laptopModel content-data">{`${deviceDetails?.make} ${deviceDetails?.model} `}</span>
             with Serial No: <span class="laptopSerialNo content-data">{deviceDetails?.serial_no}</span> provided to me by SPU to be used as a student laptop.
           </span>
           {/*<br>*/}
