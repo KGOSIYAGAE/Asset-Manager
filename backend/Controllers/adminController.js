@@ -45,6 +45,10 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Password incorrect", error: true });
     }
 
+    if (!rows[0].userrole) {
+      return res.status(403).json({ message: "Your access has been revoked, contact system administrator", error: true });
+    }
+
     const token = createToken(email);
 
     return res.status(200).json({
@@ -206,10 +210,6 @@ const updateStaffRole = async (req, res) => {
 
     if (!staffNo) {
       return res.status(400).json({ message: "User Staff Number required", error: true });
-    }
-
-    if (!userRole) {
-      return res.status(400).json({ message: "User Role required", error: true });
     }
 
     const update_staff_query = "UPDATE staff SET userrole = $1 WHERE staff_no = $2";

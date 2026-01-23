@@ -1,4 +1,7 @@
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { navigateTo } from "./navigate";
+//const navigate = useNavigate();
 
 export const getLoggedInUser = () => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -58,6 +61,12 @@ export const hasPermission = (permission) => {
       can: ["view"],
     },
   };
+
+  if (!userRole) {
+    console.log("You do not have access to the system");
+
+    return navigateTo("/No-Access");
+  }
 
   const permissions = ROLES[userRole].can;
 

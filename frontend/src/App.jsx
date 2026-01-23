@@ -34,6 +34,8 @@ import DevicesDueReturnPage from "./pages/devices/DevicesDueReturnPage";
 import SecondScreenPage from "./pages/formPage/SecondScreenPage";
 import DeviceForApproval from "./pages/devices/DeviceForApproval";
 import RolesAndPermissionsPage from "./pages/users/staff/RolesAndPermissionsPage";
+import NoAccess from "./pages/noAcess/NoAccess";
+import { setNavigate } from "./utils/navigate";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -81,7 +83,13 @@ function App() {
       const user = getLoggedInUser();
 
       //Check if user is authorized to access private protected routes
+      if (!user.role) {
+        sessionStorage.clear();
+        return navigate("/No-Access", { replace: true });
+      }
+
       if (!user.token) {
+        sessionStorage.clear();
         return navigate("/", { replace: true });
       }
 
@@ -251,6 +259,10 @@ function App() {
         //User Management
         { path: "/users/roles-and-permissions", element: <RolesAndPermissionsPage path={"roles-and-permissions/"} />, errorElement: <Home /> },
       ],
+    },
+    {
+      path: "/No-Access",
+      element: <NoAccess />,
     },
     {
       path: "*",

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import loginAxiosInstance from "../../utils/loginAxiosInstance";
 import { checkInternetConnection } from "../../utils/systemChecks";
 import LoginEmailInput from "../../components/inputs/loginEmailInput/LoginEmailInput";
+import { setNavigate } from "../../utils/navigate";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -65,7 +66,25 @@ function Login() {
   useEffect(() => {
     //checkInternetConnection(isOnline, setShowToast);
     toggleIsDisbaled();
+    setNavigate(navigate);
   }, [password]);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (event) => {
+      // Check if the key pressed was 'Enter'
+      if (event.key === "Enter") {
+        if (email || password) onLogin(email, password);
+      }
+    };
+
+    // Add listener when component mounts
+    window.addEventListener("keydown", handleGlobalKeyDown);
+
+    // Clean up: Remove listener when component unmounts
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, [email, password]);
 
   return (
     <div className="w-screen h-svh flex items-center justify-center ">

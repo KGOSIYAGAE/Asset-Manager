@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { departmentsList } from "../../utils/departmentList";
+import { departmentEntitiesList } from "../../utils/departmentList";
 import { employmentTypes } from "../../utils/employmentTypeList";
 import { useStaffContext } from "../../hooks/useStaffContext";
 import { addYears } from "date-fns";
@@ -48,6 +48,8 @@ function AddEditStaff({ path }) {
     model: null,
     serial_no: null,
   });
+
+  const [departmentList, setDepartmentList] = useState(null);
   const [positionList, setPositionList] = useState(null);
 
   const [formType, setFormType] = useState("add");
@@ -221,15 +223,21 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <FacultySelectInput label={"Faculty"} value={faculty_name} departmentList={departmentsList} isDisabled={isDisabled} setOnChange={setFaculty_name} />
+            <FacultySelectInput
+              label={"Faculty"}
+              value={faculty_name}
+              departmentEntitiesList={departmentEntitiesList}
+              isDisabled={isDisabled}
+              setOnChange={setFaculty_name}
+              setDepartmentList={setDepartmentList}
+            />
           </div>
 
           <div className="col-span-2">
             <DepartmentSelectInput
               label={"Department"}
               value={department_name}
-              faculty={faculty_name}
-              departmentList={departmentsList}
+              departmentList={departmentList}
               isDisabled={isDisabled}
               setOnChange={setDepartment_name}
               setPositionList={setPositionList}
@@ -237,7 +245,7 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <PositionSelectInput label={"Position"} value={position_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
+            <PositionSelectInput label={"Position"} value={position_name} department_name={department_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
           </div>
 
           <div className="col-span-2">
