@@ -35,6 +35,8 @@ function SearchInput({ searchData, dataType }) {
           searchResults.push(searchData[i]);
         } else if (searchData[i].asset_tag?.toString() && searchData[i].asset_tag?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
+        } else if (searchData[i].user_id?.toString() && searchData[i].user_id?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
+          searchResults.push(searchData[i]);
         }
 
         /*else if (searchData[i].userId?.toString() && searchData[i].userId?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {

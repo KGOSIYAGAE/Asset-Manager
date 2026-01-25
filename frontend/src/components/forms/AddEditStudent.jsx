@@ -143,8 +143,8 @@ function AddEditStudent({ path }) {
     setIsActive(studentData.acc_status);
     setLaptopDetails(studentData.laptop);
     //console.log(handleTimeStampToText(studentData.registration_date));
-    //setRegistration_Date(studentData.registration_date);
-    setRegistration_Date(addOneDay(studentData.registration_date));
+    setRegistration_Date(studentData.registration_date);
+    //setRegistration_Date(addOneDay(studentData.registration_date));
     //console.log(studentData.registration_date);
     //console.log(registration_date);
   };
