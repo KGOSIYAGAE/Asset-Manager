@@ -19,9 +19,8 @@ function DevicesRequiresApprovalTable({ devices, label }) {
 
   return (
     <div className="w-full text-sm  rounded-md ">
-      <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white"></div>
       <table className="w-full bg-white ">
-        <thead className=" bg-slate-100 sticky top-0 h-[40px]">
+        <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
           <th>#</th>
           <th>Asset Tag</th>
           <th>Serial Number</th>

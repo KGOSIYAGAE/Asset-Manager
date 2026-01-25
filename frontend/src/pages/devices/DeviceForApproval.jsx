@@ -27,16 +27,17 @@ function DeviceForApproval({ path }) {
       <span className="text-sm ">
         Devices/ <b> {path}</b>
       </span>
-      {/* */}
-      <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
-        <div className=" flex  justify-between ">
+      <div className="flex flex-col overflow-scroll  bg-white rounded-md shadow-md ">
+        <div className="  bg-white  flex  justify-between sticky top-0  p-5">
           <span className="heading-text ">Devices For Approval</span>
           <SearchInput searchData={approvalDevices} dataType={"devices"} />
         </div>
-
-        <DevicesRequiresApprovalTable devices={searchState.searchResults ? searchState.searchResults : approvalDevices} label={"Devices For Approval"} />
+        {/* */}
+        <div className="col-span-6 p-5">
+          <DevicesRequiresApprovalTable devices={searchState.searchResults ? searchState.searchResults : approvalDevices} label={"Devices For Approval"} />
+        </div>
+        {/* */}
       </div>
-      {/* */}
 
       <ToastMessage
         isShown={showToast.isShow}

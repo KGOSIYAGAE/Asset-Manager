@@ -65,7 +65,7 @@ export const facultiesDataList = [
     courses: [
       { id: 0, course_name: "Dip IN INFO AND COMM TECH APP DEV", course_code: "ICT602" },
       { id: 1, course_name: "DIPLOMA IN AGRICULTURE", course_code: "AGR600" },
-      { id: 2, course_name: "BSc IN DATA SCIENCE", course_code: "BSC702" },
+      { id: 2, course_name: "BSc IN DATA SCIENCE", course_code: "DSC702" },
       { id: 3, course_name: "BSc MATHEMATICAL AND COMPUTER SCIENCES", course_code: "BSC706" },
       { id: 4, course_name: "BSc BIOLOGICAL SCIENCES", course_code: "BSC708" },
       { id: 5, course_name: "BSc BIOLOGICAL SCIENCES", course_code: "BSC708" },
@@ -86,7 +86,7 @@ export const facultiesDataList = [
       { id: 0, course_name: "BEd FOUNDATION PHASE TEACHING", course_code: "EDU720" },
       { id: 1, course_name: "BEd LANG MATHS NATURAL SCIENCES & TECH", course_code: "EDU723" },
       { id: 2, course_name: "BED LANG SOCIAL SCIENCES & LIFE SKILLS", course_code: "EDU724" },
-      { id: 3, course_name: "BED LIFE SCIENCE NATURAL SCIENCE TEACH", course_code: "EDU731" },
+      { id: 3, course_name: "BED LIFE SCIENCE NATURAL SCIENCE TEACH", course_code: "EDU740" },
       { id: 4, course_name: "BEd LANGUAGES AND HISTORY TEACHING", course_code: "EDU734" },
       { id: 5, course_name: "BED HISTORY SOCIAL SCIENCE & LANG TEACH", course_code: "EDU735" },
       { id: 6, course_name: "BEd TEACH OF ACC ECO BUS SC MANAGEMENT", course_code: "EDU738" },

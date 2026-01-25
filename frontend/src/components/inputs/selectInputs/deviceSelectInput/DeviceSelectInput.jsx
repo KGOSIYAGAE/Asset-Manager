@@ -9,7 +9,7 @@ function DeviceSelectInput({ userId, selectedDevice, setSelectedDevice }) {
   const [availableDevices, setAvailableDevices] = useState(null);
 
   const [searchValue, setSearchValue] = useState(null);
-  const [searchResultsData, setSearchResultsData] = useState([]);
+  const [searchResultsData, setSearchResultsData] = useState(null);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ function DeviceSelectInput({ userId, selectedDevice, setSelectedDevice }) {
   const toggleDevices = () => {
     if (showDevices.isShow) {
       setShowDevices({ isShow: false });
+      setSearchResultsData(null);
     } else {
       setSearchResultsData(availableDevices);
       setShowDevices({ isShow: true });
