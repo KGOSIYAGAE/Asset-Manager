@@ -13,11 +13,12 @@ import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelec
 import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
 import DateTimePicker from "../../inputs/dateTimePicker/DateTimePicker";
 
-function CreateNewLoan({ onCanel, onSubmit, userData, setShowToast }) {
+function CreateNewLoan({ onCanel, onSubmit, staffList, studentList, setShowToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
   const [selectedDevice, setSelectedDevice] = useState({ id: null, make: null, model: null, serial_no: null, asset_tag: null });
   const [startDate, setStartDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   const [formType, setFormType] = useState("");
 
@@ -53,9 +54,7 @@ function CreateNewLoan({ onCanel, onSubmit, userData, setShowToast }) {
   };
 
   useEffect(() => {
-    if (userData) {
-      //setSearchResultsData(userData);
-    }
+    setUserData([...staffList, ...studentList]);
   }, []);
   return (
     <div>

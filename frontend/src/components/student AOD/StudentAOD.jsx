@@ -69,7 +69,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
     setLoggedInUser(getLoggedInUser());
 
     //handleOnPrint();
-  }, [deviceDetails]);
+  }, [deviceId]);
 
   return (
     <div className="printable h-[1000px]">

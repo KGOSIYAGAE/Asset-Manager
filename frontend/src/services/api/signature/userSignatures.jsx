@@ -6,7 +6,7 @@ export const getUserSignature = async (user_id, setSignature) => {
   }
 
   try {
-    const response = await axiosInstance.get("/signatures/" + user_id);
+    const response = await axiosInstance.get("/signatures/" + user_id, { showSpinner: true });
 
     if (response.data && response.data.signatureList) {
       return setSignature(response.data.signatureList[0].image_base64);
@@ -26,7 +26,7 @@ export const getIssureApproverSignature = async (device_id, setIssuerApproverSig
   }
 
   try {
-    const response = await axiosInstance.get("/signatures/issuer-approver-signature/" + device_id);
+    const response = await axiosInstance.get("/signatures/issuer-approver-signature/" + device_id, { showSpinner: true });
 
     if (response.data && response.data.signatureList) {
       return setIssuerApproverSignature(response.data.signatureList[0]);
@@ -56,7 +56,7 @@ export const setUserSignature = async (user_id, image_base64, setShowToast) => {
   };
 
   try {
-    const response = await axiosInstance.post("/signatures/create-signature", data);
+    const response = await axiosInstance.post("/signatures/create-signature", data, { showSpinner: true });
     if (response.data) {
       return console.log(response.data.message);
     }

@@ -11,16 +11,20 @@ import { useDeviceContext } from "../../hooks/useDevicesContext";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import AddButton from "../../components/buttons/AddButton";
 import ExportExcelButton from "../../components/buttons/ExportExcelButton";
+import { getAllStudents } from "../../services/api/students/Students.Api";
+import { getStaffData } from "../../services/api/staff/Staff.Api";
 
 function DevicesOnLoan({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
 
-  const { staffState } = useStaffContext();
-  const { studentState } = useStudentsContext();
+  const { staffState, staffDispatch } = useStaffContext();
+  const { studentState, studentDispatch } = useStudentsContext();
   const { devicesState, devicesDispatch } = useDeviceContext();
 
   useEffect(() => {
+    getAllStudents(studentDispatch);
+    getStaffData(staffDispatch);
     getAllDevices(devicesDispatch);
   }, []);
 
@@ -69,7 +73,8 @@ function DevicesOnLoan({ path }) {
             getAllDevices(devicesDispatch);
             setOpenModal({ isShown: false });
           }}
-          userData={[...staffState?.staffList, ...studentState?.studentsList]}
+          staffList={staffState?.staffList}
+          studentList={studentState?.studentsList}
           setShowToast={setShowToast}
         />
       </Modal>

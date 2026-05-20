@@ -11,7 +11,7 @@ import { FaRedo } from "react-icons/fa";
 import { getUserSignature } from "../../services/api/signature/userSignatures";
 import { handleTimeStamp } from "../../utils/dateConverter";
 
-function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
+function LoanIssueForm({ handleOnPrint, deviceId, staff_no }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -77,7 +77,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
           <div className="w-1/5 text-sm col-span-1 p-1  border  border-black black-t-border">{""}</div>
         </div>*/}
         <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">STAFF DEVICE ISSUE FORM</span>
+          <span className="text-base font-bold">DEVICE LOAN ISSUE FORM</span>
           <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
         </div>
 
@@ -119,7 +119,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
         {/**/}
         {/**/}
         <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">STAFF INFORMATION</span>
+          <span className="text-base font-bold">USER INFORMATION</span>
         </div>
         {/**/}
         {/**/}
@@ -227,4 +227,4 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   );
 }
 
-export default StaffIssueForm;
+export default LoanIssueForm;

@@ -36,6 +36,7 @@ import DeviceForApproval from "./pages/devices/DeviceForApproval";
 import RolesAndPermissionsPage from "./pages/users/staff/RolesAndPermissionsPage";
 import NoAccess from "./pages/noAcess/NoAccess";
 import { setNavigate } from "./utils/navigate";
+import { LoadingContextProvider } from "./context/LoadingContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -271,21 +272,23 @@ function App() {
   ]);
 
   return (
-    <LogsContextProvider>
-      <SearchContextProvider>
-        <InvoiceContextProvider>
-          <LoanDueContextProvider>
-            <DevicesContextProvider>
-              <StudentsContextProvider>
-                <StaffContextProvider>
-                  <RouterProvider router={router} />
-                </StaffContextProvider>
-              </StudentsContextProvider>
-            </DevicesContextProvider>
-          </LoanDueContextProvider>
-        </InvoiceContextProvider>
-      </SearchContextProvider>
-    </LogsContextProvider>
+    <LoadingContextProvider>
+      <LogsContextProvider>
+        <SearchContextProvider>
+          <InvoiceContextProvider>
+            <LoanDueContextProvider>
+              <DevicesContextProvider>
+                <StudentsContextProvider>
+                  <StaffContextProvider>
+                    <RouterProvider router={router} />
+                  </StaffContextProvider>
+                </StudentsContextProvider>
+              </DevicesContextProvider>
+            </LoanDueContextProvider>
+          </InvoiceContextProvider>
+        </SearchContextProvider>
+      </LogsContextProvider>
+    </LoadingContextProvider>
   );
 }
 

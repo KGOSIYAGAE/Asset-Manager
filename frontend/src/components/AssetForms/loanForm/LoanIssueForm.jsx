@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { generateUpgradeDate, getMonthName, getTodayDate, getTodayFullDate } from "../../utils/helperMethods";
-import { getLoggedInUser } from "../../utils/getLoggedInUser";
-import { getStaffDetails, getUser } from "../../services/api/staff/Staff.Api";
+import { generateUpgradeDate, getMonthName, getTodayDate, getTodayFullDate } from "../../../utils/helperMethods";
+import { getLoggedInUser } from "../../../utils/getLoggedInUser";
+import { getStaffDetails, getUser } from "../../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
-import { assignDevice, getAllDeviceDetails } from "../../services/api/devices/Device.Api";
+import { assignDevice, getAllDeviceDetails } from "../../../services/api/devices/Device.Api";
 import Modal from "react-modal";
-import SiganturePad from "../cards/signaturePad/SiganturePad";
-import SubmitButton from "../buttons/SubmitButton";
+import SiganturePad from "../../cards/signaturePad/SiganturePad";
+import SubmitButton from "../../buttons/SubmitButton";
 import { FaRedo } from "react-icons/fa";
-import { getUserSignature } from "../../services/api/signature/userSignatures";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { getUserSignature } from "../../../services/api/signature/userSignatures";
+import { handleTimeStamp } from "../../../utils/dateConverter";
 
-function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
+function LoanIssueForm({ handleOnPrint, deviceId, staff_no }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -77,7 +77,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
           <div className="w-1/5 text-sm col-span-1 p-1  border  border-black black-t-border">{""}</div>
         </div>*/}
         <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">STAFF DEVICE ISSUE FORM</span>
+          <span className="text-base font-bold">DEVICE LOAN ISSUE FORM</span>
           <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
         </div>
 
@@ -184,6 +184,23 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
             </div>
           </div>
         </div>
+        <div>
+          <div className="flex col-span-2 black-t-border black-l-border black-r-border">
+            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">ICT STAFF NAME & SURNAME</div>
+            <div className="w-1/2  text-sm col-span-1 p-2">{loggedInUser?.fullName}</div>
+          </div>
+          <div className="h-[75px] flex col-span-2  border border-black  ">
+            <div className="w-1/2 text-sm h-[74px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
+            <div className={`w-1/2  col-span-1 flex  items-center justify-center  p-2`}>
+              <div className="h-[75px] flex justify-between gap-5 ">
+                <div className="flex flex-col items-center justify-center ">
+                  <img alt="signature" src={loggedInUserDetails?.image_base64} className="w-[180px] " />
+                  <span className="date-small-text ">{`${day} / ${month} / ${year}`}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/**/}
       </div>
@@ -227,4 +244,4 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   );
 }
 
-export default StaffIssueForm;
+export default LoanIssueForm;

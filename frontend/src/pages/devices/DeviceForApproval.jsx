@@ -19,8 +19,11 @@ function DeviceForApproval({ path }) {
 
   useEffect(() => {
     getAllDevices(devicesDispatch);
-    setApprovalDevices(getRequiresApprovalDevices(devicesState?.deviceList));
   }, []);
+
+  useEffect(() => {
+    setApprovalDevices(getRequiresApprovalDevices(devicesState?.deviceList));
+  }, [devicesState]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
@@ -34,7 +37,7 @@ function DeviceForApproval({ path }) {
         </div>
         {/* */}
         <div className="col-span-6 p-5">
-          <DevicesRequiresApprovalTable devices={searchState.searchResults ? searchState.searchResults : approvalDevices} label={"Devices For Approval"} />
+          <DevicesRequiresApprovalTable devices={searchState?.searchResults ? searchState?.searchResults : approvalDevices} label={"Devices For Approval"} />
         </div>
         {/* */}
       </div>

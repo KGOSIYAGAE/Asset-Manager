@@ -21,6 +21,7 @@ import { hasPermission } from "../../utils/getLoggedInUser";
 import { getUserType, handleCurrency } from "../../utils/helperMethods";
 import RejectIssueCard from "../../components/cards/rejectIssue/RejectIssueCard";
 import ApproveIssue from "../../components/cards/approveIssue/ApproveIssue";
+import LoanIssueForm from "../../components/LoanForms/LoanIssueForm";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -30,6 +31,7 @@ function DeviceDetails({ path }) {
 
   const [isAssigned, setIsAssigned] = useState(false);
   const [userType, setUserType] = useState(null);
+  const [formType, setFormType] = useState(null);
   const [deviceDetails, setDeviceDetails] = useState();
   const [deviceLogs, setDeviceLogs] = useState();
   const params = useParams();
@@ -87,8 +89,24 @@ function DeviceDetails({ path }) {
     window.location.reload();
   };
 
+  ///Get set form type
+  const handleSetFormType = (userType, laptopStatus) => {
+    console.log(userType);
+
+    if (userType === "Staff" && laptopStatus === "Assigned") {
+      return setFormType("Staff-Issue");
+    }
+
+    if (userType === "Student" && laptopStatus === "Assigned") {
+      return setFormType("Student-Issue");
+    }
+
+    return setFormType("Loan-Issue");
+  };
+
   useEffect(() => {
     getDeviceLogs();
+    getDeviceDetails();
   }, []);
 
   useEffect(() => {
@@ -97,16 +115,20 @@ function DeviceDetails({ path }) {
     //Get user type based on userID
     getUserType(deviceDetails?.user_id, setUserType);
 
+    //
+    handleSetFormType(userType, deviceDetails?.status);
+
     if (!staffState || !studentState) {
       console.log("No data");
     }
-  }, [deviceDetails]);
+  }, [userType]);
 
   //handle post Message Response
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data.type === "form_submitted") {
         setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        getDeviceDetails();
       }
     };
 
@@ -350,13 +372,17 @@ function DeviceDetails({ path }) {
             }}
             setShowToast={setShowToast}
           />
-        ) : openModal.type === "Student" ? (
+        ) : openModal.type === "Student-Issue" ? (
           <div className=" h-[1100px]  col-span-6 bg-white " id="print-file">
             <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.user_id} />
           </div>
-        ) : openModal.type === "Staff" ? (
+        ) : openModal.type === "Staff-Issue" ? (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
             <StaffIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.user_id} />
+          </div>
+        ) : openModal.type === "Loan-Issue" ? (
+          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
+            <LoanIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.user_id} />
           </div>
         ) : openModal.type === "reject" ? (
           <div>
@@ -398,12 +424,12 @@ function DeviceDetails({ path }) {
         }}
       />
       {hasPermission("print") &&
-        (deviceDetails?.status === "Assigned" ? (
+        (deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
           <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
             <button
               className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
               onClick={() => {
-                setOpenModal({ isShown: true, type: userType, data: "hello" });
+                setOpenModal({ isShown: true, type: formType, data: "hello" });
               }}
             >
               <MdLocalPrintshop size={25} />

@@ -12,4 +12,22 @@ const loginAxiosInstance = axios.create({
   },
 });
 
+/*Loading spinner Logic
+const {showSpinner, hideSpinner} =useLoading()
+
+
+loginAxiosInstance.interceptors.request.use((config) => {
+  //const accessToken = localStorage.getItem("token");
+  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  const accessToken = currentUser.token;
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+}),
+  (error) => {
+    return Promise.reject(error);
+  };*/
+
 export default loginAxiosInstance;

@@ -16,6 +16,7 @@ import { useLogsContext } from "../../hooks/useLogsContext";
 import { useLoanDueContext } from "../../hooks/useLoanDueContext";
 import AdminDashboard from "../../components/dashboard/AdminDashboard";
 import UserDashCard from "../../components/cards/userDashCard/UserDashCard";
+import { useLoadingContext } from "../../hooks/useLoadingContext";
 
 function Home() {
   const { devicesState, devicesDispatch } = useDeviceContext();
@@ -25,6 +26,10 @@ function Home() {
   const { loanDueState, loanDueDispatch } = useLoanDueContext();
 
   const [currentUser, setCurrentUser] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+
+  const { showSpinner, hideSpinner } = useLoadingContext();
 
   useEffect(() => {
     getAllDevices(devicesDispatch);

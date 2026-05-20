@@ -3,15 +3,13 @@ import axiosInstance from "../../../utils/axiosInstance";
 //Get All devices
 export const getAllDevices = async (devicesDispatch) => {
   try {
-    const response = await axiosInstance.get("/devices/");
+    const response = await axiosInstance.get("/devices/", { showSpinner: true });
 
     if (response.data.deviceList) {
       devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
     }
   } catch (error) {
-    if (error.response.data.errorStatus === 401 && error.response.data.error) {
-      return console.log("Authorization required, please login");
-    } else if (error.response && error.response.data.error) {
+    if (error.response && error.response.data.error) {
       return console.log(error.response.data);
     } else {
       return console.log("An unexpected error occured, please try again");
@@ -22,15 +20,13 @@ export const getAllDevices = async (devicesDispatch) => {
 //Get All device due for return
 export const getAllDeviceLoanDue = async (loanDueDispatch) => {
   try {
-    const response = await axiosInstance.get("/devices/due-upgrade");
+    const response = await axiosInstance.get("/devices/due-upgrade", { showSpinner: true });
 
     if (response.data.deviceList) {
       return loanDueDispatch({ type: "SET_LOANSDUE", payload: response.data.deviceList });
     }
   } catch (error) {
-    if (error.response.data.errorStatus === 401 && error.response.data.error) {
-      return console.log("Authorization required, please login");
-    } else if (error.response && error.response.data.error) {
+    if (error.response && error.response.data.error) {
       return console.log(error.response.data);
     } else {
       return console.log("An unexpected error occured, please try again");
@@ -41,15 +37,13 @@ export const getAllDeviceLoanDue = async (loanDueDispatch) => {
 //Get All device requires approval
 export const getAllDeviceForApproval = async (loanDueDispatch) => {
   try {
-    const response = await axiosInstance.get("/devices/requires-approval");
+    const response = await axiosInstance.get("/devices/requires-approval", { showSpinner: true });
 
     if (response.data.deviceList) {
       return loanDueDispatch({ type: "SET_LOANSDUE", payload: response.data.deviceList });
     }
   } catch (error) {
-    if (error.response.data.errorStatus === 401 && error.response.data.error) {
-      return console.log("Authorization required, please login");
-    } else if (error.response && error.response.data.error) {
+    if (error.response && error.response.data.error) {
       return console.log(error.response.data);
     } else {
       return console.log("An unexpected error occured, please try again");
@@ -60,7 +54,7 @@ export const getAllDeviceForApproval = async (loanDueDispatch) => {
 //Hanlde get device
 export const getDevice = async (id, setFormData) => {
   try {
-    const response = await axiosInstance.get("/devices/" + id);
+    const response = await axiosInstance.get("/devices/" + id, { showSpinner: true });
 
     if (response.data) {
       return setFormData(response.data.deviceDetails);
@@ -77,7 +71,7 @@ export const getDevice = async (id, setFormData) => {
 //Hanlde get device
 export const getAllDeviceDetails = async (id, setFormData) => {
   try {
-    const response = await axiosInstance.get("/devices/device-details/" + id);
+    const response = await axiosInstance.get("/devices/device-details/" + id, { showSpinner: true });
 
     if (response.data) {
       return setFormData(response.data.deviceDetails);
@@ -94,7 +88,7 @@ export const getAllDeviceDetails = async (id, setFormData) => {
 //Hanlde get user device
 export const getAllUserDevices = async (user_id, devicesDispatch) => {
   try {
-    const response = await axiosInstance.get("/devices/user-devices/" + user_id);
+    const response = await axiosInstance.get("/devices/user-devices/" + user_id, { showSpinner: true });
 
     if (response.data) {
       return devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
@@ -111,7 +105,7 @@ export const getAllUserDevices = async (user_id, devicesDispatch) => {
 //add device api
 export const addDevice = async (deviceData, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/devices/add-device/", deviceData);
+    const response = await axiosInstance.post("/devices/add-device/", deviceData, { showSpinner: true });
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
@@ -130,7 +124,7 @@ export const bulkAddDevice = async (devicesData, setShowToast, onClose) => {
   console.log(devicesData.devices[0].warranty_end_date);
 
   try {
-    const response = await axiosInstance.post("/devices/bulk-add-devices/", devicesData);
+    const response = await axiosInstance.post("/devices/bulk-add-devices/", devicesData, { showSpinner: true });
 
     if (response.data) {
       onClose();
@@ -154,7 +148,7 @@ export const updateDevice = async (id, deviceDetails, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Device id must be provided" });
     }
 
-    const response = await axiosInstance.put("/devices/update-device/" + id, deviceDetails);
+    const response = await axiosInstance.put("/devices/update-device/" + id, deviceDetails, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -171,7 +165,7 @@ export const updateDevice = async (id, deviceDetails, setShowToast) => {
 //Assign device API call
 export const assignDevice = async (id, data, setShowToast) => {
   try {
-    const response = await axiosInstance.put("/devices/assign-device/" + id, data);
+    const response = await axiosInstance.put("/devices/assign-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -205,7 +199,7 @@ export const createLoanDevice = async (id, data, setShowToast) => {
 //Assign device API call
 export const releaseDevice = async (id, data, setShowToast) => {
   try {
-    const response = await axiosInstance.put("/devices/release-device/" + id, data);
+    const response = await axiosInstance.put("/devices/release-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -226,7 +220,7 @@ export const deleteDevice = async (id, setShowToast) => {
       return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
     }
 
-    const response = await axiosInstance.delete("/devices/delete-device/" + id);
+    const response = await axiosInstance.delete("/devices/delete-device/" + id, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });

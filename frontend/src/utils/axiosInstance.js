@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { LoadingService } from "./loadingService";
 
 //Loacal HOST
 //const BASE_URL = "http://localhost:3000/api/v1/asset-manager";
@@ -18,7 +19,7 @@ const axiosInstance = axios.create({
   },
 });
 
-axiosInstance.interceptors.request.use((config) => {
+(axiosInstance.interceptors.request.use((config) => {
   //const accessToken = localStorage.getItem("token");
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const accessToken = currentUser.token;
@@ -26,15 +27,24 @@ axiosInstance.interceptors.request.use((config) => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
+
+  if (config.showSpinner) {
+    LoadingService.show();
+  }
+
   return config;
 }),
   (error) => {
     return Promise.reject(error);
-  };
+  });
 
 //Configure axios instance to automatically check for status if the token
 axiosInstance.interceptors.response.use(
   (response) => {
+    if (response.config.showSpinner) {
+      LoadingService.hide();
+    }
+
     return response;
   },
   (error) => {
@@ -43,7 +53,7 @@ axiosInstance.interceptors.response.use(
       window.location.href = "/";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;
