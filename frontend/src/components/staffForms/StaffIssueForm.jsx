@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { generateUpgradeDate, getMonthName, getTodayDate, getTodayFullDate } from "../../utils/helperMethods";
-import { getLoggedInUser } from "../../utils/getLoggedInUser";
+import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import { getStaffDetails, getUser } from "../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
 import { assignDevice, getAllDeviceDetails } from "../../services/api/devices/Device.Api";
@@ -8,10 +8,11 @@ import Modal from "react-modal";
 import SiganturePad from "../cards/signaturePad/SiganturePad";
 import SubmitButton from "../buttons/SubmitButton";
 import { FaRedo } from "react-icons/fa";
-import { getUserSignature } from "../../services/api/signature/userSignatures";
-import { handleTimeStamp } from "../../utils/dateConverter";
+import { getIssureApproverSignature, getUserSignature } from "../../services/api/signature/userSignatures";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
+import PrintButton from "../buttons/printButton/PrintButton";
 
-function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
+function StaffIssueForm({ handleOnPrint, deviceId, staff_no, deviceDetails_ }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -20,6 +21,7 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   const [staffData, setStaffData] = useState();
   const [deviceDetails, setDeviceDetails] = useState();
   const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, user_id: null });
+  const [issuerApproverSignatures, setIssuerApproverSignature] = useState(null);
 
   const [ictStaffTrimmedDataURL, setIctStaffTrimmedDataURL] = useState(null);
   const [staffTrimmedDataURL, setStaffTrimmedDataURL] = useState(null);
@@ -34,16 +36,10 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   };
 
   //Get Logged In User details
-  const getLoggedInUserDetails = () => {
-    if (loggedInUser?.id) {
-      getUser(loggedInUser?.id, setLoggedInUserDetails);
-    }
-  };
 
   //Get device data based on device id
   const setDetails = (deviceData) => {
     setDeviceDetails(...deviceData);
-    getLoggedInUserDetails();
   };
 
   const getDeviceDetails = () => {
@@ -52,6 +48,25 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
     }
     getAllDeviceDetails(deviceId, setDetails);
   };
+
+  //Handle Get Issuer & Approver Signature
+  const handleSetIssuerApproverSignature = async (deviceDetails) => {
+    if (!deviceDetails?.serial_no) {
+      console.log("Laptop serial number not found");
+    }
+
+    const data = {
+      device_serial_number: deviceDetails?.serial_no,
+      status: deviceDetails?.status,
+    };
+
+    return setIssuerApproverSignature(await getIssureApproverSignature(data));
+  };
+
+  useEffect(() => {
+    handleSetIssuerApproverSignature(deviceDetails_);
+    console.log(deviceDetails_);
+  }, []);
 
   useEffect(() => {
     const { year, month, day } = getTodayFullDate();
@@ -66,162 +81,137 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no }) {
   }, []);
 
   return (
-    <div className="printable ">
-      <div className="w-full flex justify-center ">
-        <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
-      </div>
-      <div className="w-11/12 flex flex-col gap-4 ">
-        {/*
+    <div className="printable">
+      <div className="flex flex-col items-center justify-center gap-5">
+        <div className="w-full flex justify-center ">
+          <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
+        </div>
+        <div className="w-11/12 flex flex-col gap-4 ">
+          {/*
         <div className=" flex col-span-2  ">
           <div className="w-1/5 text-sm font-semibold col-span-1 border  border-black p-1">TICKET NO</div>
           <div className="w-1/5 text-sm col-span-1 p-1  border  border-black black-t-border">{""}</div>
         </div>*/}
-        <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">STAFF DEVICE ISSUE FORM</span>
-          <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
-        </div>
+          <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
+            <span className="text-base font-bold">STAFF DEVICE ISSUE FORM</span>
+            <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
+          </div>
 
-        {/**/}
-        <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">DEVICE INFORMATION</span>
-        </div>
-        {/**/}
-        <div className="grid grid-cols-2 grid-rows-6 border border-black">
-          <div className=" flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DATE OF ISSUE</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{`${day} / ${month} / ${year}`}</div>
+          {/**/}
+          <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
+            <span className="text-base font-bold">DEVICE INFORMATION</span>
           </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE TYPE</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.category}</div>
+          {/**/}
+          <div className="grid grid-cols-2 grid-rows-5 border border-black">
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE TYPE</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.category}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE MAKE</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.make}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE MODEL</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.model}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE SERIAL NO</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.serial_no}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">ASSET TAG</div>
+              <div className="w-1/2  text-sm col-span-1 p-2">{deviceDetails?.asset_tag}</div>
+            </div>
           </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE MAKE</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.make}</div>
+          {/**/}
+          {/**/}
+          <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
+            <span className="text-base font-bold">STAFF INFORMATION</span>
           </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE MODEL</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.model}</div>
-          </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE SERIAL NO</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{deviceDetails?.serial_no}</div>
-          </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">ASSET TAG</div>
-            <div className="w-1/2  text-sm col-span-1 p-2">{deviceDetails?.asset_tag}</div>
-          </div>
-          <div className="flex col-span-2  ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE CONDITION</div>
-            <div className="w-1/2  text-sm col-span-1 p-2">{deviceDetails?.device_condition}</div>
-          </div>
-        </div>
-        {/**/}
-        {/**/}
-        <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">STAFF INFORMATION</span>
-        </div>
-        {/**/}
-        {/**/}
-        <div className="w-full grid grid-cols-2 grid-rows-5 border border-black">
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">NAME & SURNAME</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{`${staffData?.name} ${staffData?.surname}`}</div>
-          </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">STAFF NO</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.staff_no}</div>
-          </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEPARTMENT / FACULTY</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.department_name}</div>
-          </div>
-          <div className="flex col-span-2 black-b-border ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">POSITION</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.title}</div>
-          </div>
-          <div className="flex col-span-2  ">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">CONTACT NUMBER</div>
-            <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.phone_number}</div>
-          </div>
-          <div className="h-[75px] flex col-span-2  black-t-border ">
-            <div className="w-1/2 text-sm h-[75px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
-            <div className={`w-1/2  col-span-1 flex items-center justify-center  p-2`}>
-              <div className="h-[70px] flex justify-between gap-5 ">
-                <div className="flex flex-col items-center ">
-                  <img alt="signature" src={staffData?.image_base64} className="w-[180px] " />
-                  <span className="date-small-text ">
-                    {(() => {
-                      return handleTimeStamp(staffData?.signature_date);
-                    })()}
-                  </span>
+          {/**/}
+          {/**/}
+          <div className="w-full grid grid-cols-2 grid-rows-5 border border-black">
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">NAME & SURNAME</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{`${staffData?.name} ${staffData?.surname}`}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">STAFF NO</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.staff_no}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEPARTMENT / FACULTY</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.department_name}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">POSITION</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.position_name}</div>
+            </div>
+            <div className="flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">CONTACT NUMBER</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.phone_number}</div>
+            </div>
+            <div className=" flex col-span-2 black-b-border ">
+              <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DATE OF ISSUE</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{handleTimeStampToText(issuerApproverSignatures?.issue_date)}</div>
+            </div>
+
+            <div className="h-[75px] flex col-span-2  black-t-border ">
+              <div className="w-1/2 text-sm h-[75px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
+              <div className={`w-1/2  col-span-1 flex items-center justify-center  p-2`}>
+                <div className="h-[70px] flex justify-between gap-5 ">
+                  <div className="flex flex-col items-center ">
+                    <img alt="signature" src={staffData?.image_base64} className="w-[180px] " />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        {/**/}
-        {/**/}
-        <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-          <span className="text-base font-bold">FOR OFFICE USE</span>
-        </div>
-        {/**/}
-
-        <div>
-          <div className="flex col-span-2 black-t-border black-l-border black-r-border">
-            <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">ICT STAFF NAME & SURNAME</div>
-            <div className="w-1/2  text-sm col-span-1 p-2">{loggedInUser?.fullName}</div>
+          {/**/}
+          {/**/}
+          <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
+            <span className="text-base font-bold">FOR OFFICE USE</span>
           </div>
-          <div className="h-[75px] flex col-span-2  border border-black  ">
-            <div className="w-1/2 text-sm h-[74px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
-            <div className={`w-1/2  col-span-1 flex  items-center justify-center  p-2`}>
-              <div className="h-[75px] flex justify-between gap-5 ">
-                <div className="flex flex-col items-center justify-center ">
-                  <img alt="signature" src={loggedInUserDetails?.image_base64} className="w-[180px] " />
-                  <span className="date-small-text ">{`${day} / ${month} / ${year}`}</span>
-                </div>
+          {/**/}
+
+          <div>
+            <div className="flex col-span-2 border border-black">
+              <div className="w-1/2 flex flex-col text-sm  col-span-1  black-r-border p-2">
+                <span className="font-semibold">ISSUED BY:</span>
+                <span>{issuerApproverSignatures?.issuerFullname}</span>
+              </div>
+              <div className="flex flex-col items-center justify-center ">
+                <img alt="signature" src={issuerApproverSignatures?.issuerSignature} className="w-[180px] " />
+              </div>
+            </div>
+            <div className="flex col-span-2 border border-black">
+              <div className="w-1/2 flex flex-col text-sm  col-span-1  black-r-border p-2">
+                <span className="font-semibold">APPROVED BY:</span>
+                <span>{issuerApproverSignatures?.approverFullname}</span>
+              </div>
+              <div className="flex flex-col items-center justify-center ">
+                <img alt="signature" src={issuerApproverSignatures?.approverSignature} className="w-[180px] " />
               </div>
             </div>
           </div>
+
+          {/**/}
+          <div className="flex bottom-0 ">
+            <img alt="banner" src="/page_banner.png" className="w-full h-[50px]" />
+          </div>
         </div>
 
-        {/**/}
-      </div>
-      <Modal
-        isOpen={openModal.isShown}
-        ariaHideApp={false}
-        onRequestClose={() => {
-          setOpenModal({ isShown: false });
-        }}
-        style={{
-          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
-        }}
-        contentLabel=""
-        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-auto"
-      >
-        <SiganturePad
-          lablel={"Signature"}
-          trimmedDataURL={openModal?.trimmedDataURL}
-          setTrimmedDataURL={openModal?.setTrimmedDataURL}
-          user_id={openModal?.user_id}
-          onClose={() => {
-            setOpenModal({ isShown: false });
-          }}
-        />
-      </Modal>
-
-      <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
-        <button
-          className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md"
-          onClick={() => {
-            handleOnPrint();
-          }}
-        >
-          Print
-        </button>
-      </div>
-      <div className="flex absolute bottom-0 ">
-        <img alt="banner" src="/page_banner.png" className="w-[800px] h-[50px]" />
+        {hasPermission("print") && (
+          <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+            <PrintButton
+              text={"Print"}
+              onClick={() => {
+                handleOnPrint();
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

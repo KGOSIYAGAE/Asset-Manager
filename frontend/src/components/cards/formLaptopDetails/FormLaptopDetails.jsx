@@ -2,7 +2,7 @@ import React from "react";
 
 function FormLaptopDetails({ laptopDetails }) {
   return (
-    <div>
+    <div className="bg-white">
       <span className="heading-text text-lg">Devices</span>
       <div className="flex flex-col pl-3 gap-1">
         <div className="flex gap-2">

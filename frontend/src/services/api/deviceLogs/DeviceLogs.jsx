@@ -1,19 +1,20 @@
 import axiosInstance from "../../../utils/axiosInstance";
 
-export const getAllDeviceLogs = async (id, setDeviceLogs) => {
+export const getAllDeviceTransactions = async (data, setDeviceLogs) => {
   try {
-    const response = await axiosInstance.get("/device-logs/" + id, { showSpinner: true });
+    const response = await axiosInstance.get("/device-transactions/transactions", { params: data, showSpinner: true });
 
     //console.log(...response.data.deviceLogList);
 
     if (!response.data.error) {
-      return setDeviceLogs(response.data.deviceLogList);
+      return setDeviceLogs(response.data.transactionList);
       //setShowToast({ isShow: true, type: "success", message: response.data.message });
       //response.data.deviceLogList;
     }
   } catch (error) {
     if (error.response.data.error) {
-      return console.log(error.response.data.message);
+      console.log(error.response.data.message);
+      return setDeviceLogs(null);
     } else {
       return console.log(`An unexpected error occured, please try again.${error.response.error}`);
     }
@@ -27,8 +28,6 @@ export const getAllLatestDevicesLogs = async (logDispatch) => {
 
     if (!response.data.error) {
       return logDispatch({ type: "SET_LOGS", payload: response.data.deviceLogList });
-      //setShowToast({ isShow: true, type: "success", message: response.data.message });
-      //response.data.deviceLogList;
     }
   } catch (error) {
     if (error.response.data.error) {

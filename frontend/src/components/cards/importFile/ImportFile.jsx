@@ -67,7 +67,7 @@ function ImportFile({ type, setShowToast, onClose, onSubmit }) {
   const onDownloadTemplate = () => {};
 
   return (
-    <div>
+    <div className="bg-white">
       <div className="flex flex-col p-2 gap-7">
         <div className="flex justify-between cursor-pointer">
           <span className="text-xl font-semibold">Upload file</span>

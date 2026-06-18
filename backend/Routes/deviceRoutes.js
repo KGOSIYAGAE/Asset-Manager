@@ -14,6 +14,7 @@ const {
   assignDevice,
   loanDevice,
   releaseDevice,
+  approveDevice,
 } = require("../Controllers/deviceController");
 const requireAuth = require("../middleware/requireAuth");
 //const checkRole = require("../middleware/checkRole");
@@ -57,7 +58,10 @@ router.put("/loan-device/:id", loanDevice);
 //release device
 router.put("/release-device/:id", releaseDevice);
 
+//approve device
+router.put("/approve-device/:id", approveDevice);
+
 //Delete device
-router.delete("/delete-device/:id", deleteDevice);
+router.put("/delete-device/:id", deleteDevice);
 
 module.exports = router;

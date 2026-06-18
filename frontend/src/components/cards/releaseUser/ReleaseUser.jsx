@@ -55,12 +55,12 @@ function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
         <div className="flex flex-col border border-red-400 p-4 rounded-md">
           <span className="text-sm text-red-400">This operation will remove the current user.</span>
         </div>
-        <div className="flex flex-col border-t-2 border-b-2 py-5 ">
+        {/*<div className="flex flex-col border-t-2 border-b-2 py-5 ">
           <div className="text-input col-span-2" onClick={() => {}}>
             <span className="w-fit text-zinc-500 -mt-5 bg-white">New User</span>
             <span>{selectedUser?.fullName ? `${selectedUser.fullName} - ${selectedUser.userId}` : "- Select User -"}</span>
           </div>
-        </div>
+        </div>*/}
         <div className="flex justify-end p-3 gap-8">
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel

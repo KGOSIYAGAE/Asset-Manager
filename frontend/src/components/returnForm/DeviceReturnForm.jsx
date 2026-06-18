@@ -12,8 +12,9 @@ import { getIssureApproverSignature, getUserSignature } from "../../services/api
 import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { getStudentDetails } from "../../services/api/students/Students.Api";
 import PrintButton from "../buttons/printButton/PrintButton";
+import StudentAOD from "../student AOD/StudentAOD";
 
-function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
+function DeviceReturnForm({ handleOnPrint, deviceId, clickedTransactionData, deviceDetails_ }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -31,11 +32,11 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
 
   //Get Staff data
   const getUserData = () => {
-    if (deviceDetails_?.current_user_id.toString().length > 5) {
-      getStudentDetails(deviceDetails_?.current_user_id, setUserData);
+    if (clickedTransactionData?.user_id.toString().length > 5) {
+      getStudentDetails(clickedTransactionData?.user_id, setUserData);
       console.log("student");
     } else {
-      getStaffDetails(deviceDetails_?.current_user_id, setUserData);
+      getStaffDetails(clickedTransactionData?.user_id, setUserData);
       console.log("staff");
     }
   };
@@ -61,7 +62,7 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
 
     const data = {
       device_serial_number: deviceDetails?.serial_no,
-      status: deviceDetails?.status,
+      status: clickedTransactionData?.status,
     };
 
     return setIssuerReturnerApproverSignature(await getIssureApproverSignature(data));
@@ -84,7 +85,7 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col gap-10">
       <div className="printable">
         <div className="flex flex-col items-center justify-center gap-5">
           <div className="w-full flex justify-center ">
@@ -97,7 +98,7 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
           <div className="w-1/5 text-sm col-span-1 p-1  border  border-black black-t-border">{""}</div>
         </div>*/}
             <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
-              <span className="text-base font-bold">DEVICE LOAN ISSUE FORM</span>
+              <span className="text-base font-bold">DEVICE RETURN FORM</span>
               <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
             </div>
 
@@ -157,8 +158,8 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
                 <div className="w-1/2 text-sm col-span-1 p-2">{userData?.phone_number}</div>
               </div>
               <div className=" flex col-span-2 black-t-border ">
-                <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DATE OF LOAN</div>
-                <div className="w-1/2 text-sm col-span-1 p-2">{handleTimeStampToText(deviceDetails?.issue_date)}</div>
+                <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DATE OF RETURN</div>
+                <div className="w-1/2 text-sm col-span-1 p-2">{handleTimeStampToText(issuerReturnerApproverSignatures?.return_date)}</div>
               </div>
               <div className="h-[75px] flex col-span-2  black-t-border ">
                 <div className="w-1/2 text-sm h-[75px] font-semibold col-span-1  black-r-border p-2">STAFF SIGNATURE</div>
@@ -181,43 +182,43 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
             <div>
               <div className="flex col-span-2 border border-black">
                 <div className="w-1/2 flex flex-col text-sm  col-span-1  black-r-border p-2">
-                  <span className="font-semibold">LOAN ISSUED BY:</span>
-                  <span>{issuerReturnerApproverSignatures?.issuerFullname}</span>
+                  <span className="font-semibold">RETURNED BY:</span>
+                  <span>{issuerReturnerApproverSignatures?.returnerFullname}</span>
                 </div>
                 <div className="flex flex-col items-center justify-center ">
-                  <img alt="signature" src={issuerReturnerApproverSignatures?.issuerSignature} className="w-[180px] " />
-                </div>
-              </div>
-              <div className="flex col-span-2 border border-black">
-                <div className="w-1/2 flex flex-col text-sm  col-span-1  black-r-border p-2">
-                  <span className="font-semibold">LOAN APPROVED BY:</span>
-                  <span>{issuerReturnerApproverSignatures?.approverFullname}</span>
-                </div>
-                <div className="flex flex-col items-center justify-center ">
-                  <img alt="signature" src={issuerReturnerApproverSignatures?.approverSignature} className="w-[180px] " />
+                  <img alt="signature" src={issuerReturnerApproverSignatures?.returnerSignature} className="w-[180px] " />
                 </div>
               </div>
             </div>
 
             {/**/}
             <div className="flex bottom-0 ">
-              <img alt="banner" src="/page_banner.png" className="w-[800px] h-[50px]" />
+              <img alt="banner" src="/page_banner.png" className="w-full h-[50px]" />
             </div>
           </div>
         </div>
-        {hasPermission("print") && (
-          <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
-            <PrintButton
-              text={"Print"}
-              onClick={() => {
-                handleOnPrint();
-              }}
-            />
-          </div>
-        )}
       </div>
+
+      {/*clickedTransactionData?.status && clickedTransactionData?.action_type === "Issue" ? (
+        <div className="printable">
+          <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceId} student_no={clickedTransactionData?.user_id} deviceDetails_={deviceDetails} />
+        </div>
+      ) : (
+        "Loan Form"
+      )*/}
+
+      {hasPermission("print") && (
+        <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+          <PrintButton
+            text={"Print"}
+            onClick={() => {
+              handleOnPrint();
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
 
-export default LoanIssueForm;
+export default DeviceReturnForm;

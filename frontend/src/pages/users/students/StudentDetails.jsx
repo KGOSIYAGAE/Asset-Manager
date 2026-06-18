@@ -7,11 +7,18 @@ import { getAllUserDevices } from "../../../services/api/devices/Device.Api";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
 import UserDevicesTable from "../../../components/tables/UserDevicesTable";
 import { MdEdit } from "react-icons/md";
+import { FaRedo } from "react-icons/fa";
+import Modal from "react-modal";
+import { getUserDeviceHistory } from "../../../services/api/deviceLogs/deviceTransactions";
+import OpenSecondScreenButton from "../../../components/buttons/OpenSecondScreenButton/OpenSecondScreenButton";
+import UserCaptureSignature from "../../../components/cards/signaturePad/UserCaptureSignature";
 
 function StudentDetails({ path }) {
   const [studentDetails, setStudentDetails] = useState();
   const params = useParams();
   const { devicesState, devicesDispatch } = useDeviceContext();
+  const [devicesTransactionHistory, setDevicesTransactionHistory] = useState();
+  const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
 
@@ -25,6 +32,19 @@ function StudentDetails({ path }) {
     setStudentDetails(studentData);
   };
 
+  ///Get User's device history
+  const getDeviceTransactionsHistory = (student_no) => {
+    if (!student_no) {
+      return console.log("Selected student number not provided");
+    }
+
+    const data = {
+      user_id: student_no,
+    };
+
+    getUserDeviceHistory(data, setDevicesTransactionHistory);
+  };
+
   //Get data from the API
   const geDetails = () => {
     const { student_no } = params;
@@ -35,6 +55,7 @@ function StudentDetails({ path }) {
 
     getAllUserDevices(student_no, devicesDispatch);
     getStudentDetails(student_no, setFormDetails);
+    getDeviceTransactionsHistory(student_no);
   };
 
   useEffect(() => {
@@ -105,6 +126,34 @@ function StudentDetails({ path }) {
               })()}
             </span>
           </div>
+
+          <div className="flex flex-col justify-between p-2 ">
+            <span className="text-sm">Signature</span>
+
+            {studentDetails?.image_base64 ? (
+              <div className="flex flex-col gap-5">
+                <div className="w-6/12  rounded-md shadow-md p-2 flex items-center  ">
+                  <img alt="signature" src={studentDetails?.image_base64} className="w-[180px] " />
+                  <button
+                    onClick={() => {
+                      {
+                        /*setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });*/
+                        setOpenModal({ isShown: true, type: "release", data: "hello" });
+                      }
+                    }}
+                  ></button>
+                </div>
+                <div onClick={() => onCanel()}>
+                  <OpenSecondScreenButton btnLable={"Update Signature"} userId={studentDetails?.student_number} deviceId={null} setShowToast={null} />
+                </div>
+              </div>
+            ) : (
+              <div onClick={() => onCanel()}>
+                <OpenSecondScreenButton btnLable={"Capture signature"} userId={studentDetails?.student_number} deviceId={null} setShowToast={null} />
+              </div>
+            )}
+          </div>
+
           <div className="w-full flex justify-end p-2 ">
             <div
               className="w-[30px] flex items-center justify-center text-green-400 hover:text-green-500 bg-green-100 p-1 rounded-md border border-green-400 hover:border-green-500 cursor-pointer"
@@ -115,8 +164,24 @@ function StudentDetails({ path }) {
           </div>
         </div>
         {/* */}
-        <UserDevicesTable deviceList={devicesState?.deviceList} />
+        <UserDevicesTable deviceList={devicesState?.deviceList} deviceHistory={devicesTransactionHistory} />
       </div>
+      <Modal
+        isOpen={openModal.isShown}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setOpenModal({ isShown: false });
+        }}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+        }}
+        contentLabel=""
+        className={`${
+          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+      >
+        <UserCaptureSignature lablel={"Capture User Signature"} user_id={studentDetails?.student_number} />
+      </Modal>
     </div>
   );
 }

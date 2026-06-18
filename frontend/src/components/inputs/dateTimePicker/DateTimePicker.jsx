@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { handleTimeStamp } from "../../../utils/dateConverter";
 
-function DateTimePicker({ label, value, setOnChange }) {
+function DateTimePicker({ label, value, minimunDate, setOnChange }) {
   const [date, setDate] = useState("");
 
   useEffect(() => {
@@ -14,6 +14,7 @@ function DateTimePicker({ label, value, setOnChange }) {
         type="date"
         className="flex  outline-none "
         value={date}
+        min={minimunDate ? minimunDate : null}
         onChange={(e) => {
           setOnChange(e.target.value);
         }}

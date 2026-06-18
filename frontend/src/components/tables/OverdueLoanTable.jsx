@@ -14,6 +14,7 @@ function OverdueLoanTable({ devices, label }) {
 
   useEffect(() => {
     setLoanedDevices(getLoanedDevicesHelper(devices));
+    console.log(devices);
   }, [devices]);
 
   return (
@@ -53,15 +54,15 @@ function OverdueLoanTable({ devices, label }) {
                     <td>{device.serial_no}</td>
                     <td>{device.make}</td>
                     <td>{device.model}</td>
-                    <td>{device.user_id}</td>
+                    <td>{device.current_user_id}</td>
                     <td>
                       {(() => {
-                        return handleTimeStampToText(device.date_issued);
+                        return handleTimeStampToText(device.issue_date);
                       })()}
                     </td>
                     <td>
                       {(() => {
-                        return handleTimeStampToText(device.return_date);
+                        return handleTimeStampToText(device.loan_end_date);
                       })()}
                     </td>
                     <td>

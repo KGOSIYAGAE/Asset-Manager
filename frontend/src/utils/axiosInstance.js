@@ -35,6 +35,7 @@ const axiosInstance = axios.create({
   return config;
 }),
   (error) => {
+    LoadingService.hide();
     return Promise.reject(error);
   });
 
@@ -49,9 +50,11 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
+      LoadingService.hide();
       sessionStorage.clear();
       window.location.href = "/";
     }
+    LoadingService.hide();
     return Promise.reject(error);
   },
 );

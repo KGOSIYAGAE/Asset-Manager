@@ -2,7 +2,7 @@ import React from "react";
 
 function DeleteConfirmation({ onCanel, onDelete, email, text, heading, laptopSerialNo }) {
   return (
-    <div>
+    <div className="bg-white">
       <div className="flex flex-col gap-2 -z-50">
         <span className="font-semibold p-2">{heading ? heading : "Delete User"}</span>
         <div className="flex flex-col border-t-2 border-b-2 py-5 gap-3">

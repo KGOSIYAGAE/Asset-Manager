@@ -168,7 +168,24 @@ export const assignDevice = async (id, data, setShowToast) => {
     const response = await axiosInstance.put("/devices/assign-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return { isShow: true, type: "success", message: response.data.message };
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+    } else {
+      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+    }
+  }
+};
+
+//Assign device API call
+export const approveDevice = async (id, data, setShowToast) => {
+  try {
+    const response = await axiosInstance.put("/devices/approve-device/" + id, data, { showSpinner: true });
+
+    if (!response.data.error) {
+      return { isShow: true, type: "success", message: response.data.message };
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
@@ -185,7 +202,7 @@ export const createLoanDevice = async (id, data, setShowToast) => {
     const response = await axiosInstance.put("/devices/loan-device/" + id, data);
 
     if (!response.data.error) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return { isShow: true, type: "success", message: response.data.message };
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
@@ -214,13 +231,13 @@ export const releaseDevice = async (id, data, setShowToast) => {
 };
 
 //delete device
-export const deleteDevice = async (id, setShowToast) => {
+export const deleteDevice = async (id, data, setShowToast) => {
   try {
     if (!id) {
       return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
     }
 
-    const response = await axiosInstance.delete("/devices/delete-device/" + id, { showSpinner: true });
+    const response = await axiosInstance.put("/devices/delete-device/" + id, data, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });

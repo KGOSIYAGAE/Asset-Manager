@@ -14,6 +14,8 @@ import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelec
 import { useStaffContext } from "../../../hooks/useStaffContext";
 import { useStudentsContext } from "../../../hooks/useStudentsContext";
 import OpenSecondScreenButton from "../../buttons/OpenSecondScreenButton/OpenSecondScreenButton";
+import { getStaffData } from "../../../services/api/staff/Staff.Api";
+import { getAllStudents } from "../../../services/api/students/Students.Api";
 
 function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -25,8 +27,8 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   const [spuOBO, setSpuOBO] = useState(null);
   const [selectedWitnesses, setSelectedWitnesses] = useState(null);
 
-  const { staffState } = useStaffContext();
-  const { studentState } = useStudentsContext();
+  const { staffState, staffDispatch } = useStaffContext();
+  const { studentState, studentDispatch } = useStudentsContext();
 
   const toggleWitnessSelection = (id) => {
     if (selectedWitnesses.includes(id)) {
@@ -37,9 +39,9 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   const getSupportAdmins = (staffState) => {
     const admins = [];
 
-    for (let i = 0; i < staffState.staffList.length; i++) {
-      if (staffState.staffList[i].userrole === "support_admin") {
-        admins.push(staffState.staffList[i]);
+    for (let i = 0; i < staffState?.staffList?.length; i++) {
+      if (staffState?.staffList[i]?.userrole === "support_admin") {
+        admins.push(staffState?.staffList[i]);
       }
     }
 
@@ -49,14 +51,19 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   const getSupportTechs = (staffState) => {
     const technicians = [];
 
-    for (let i = 0; i < staffState.staffList.length; i++) {
-      if (staffState.staffList[i].userrole === "support_technician") {
-        technicians.push(staffState.staffList[i]);
+    for (let i = 0; i < staffState?.staffList?.length; i++) {
+      if (staffState?.staffList[i]?.userrole === "support_technician") {
+        technicians.push(staffState?.staffList[i]);
       }
     }
 
     return technicians;
   };
+
+  useEffect(() => {
+    getAllStudents(studentDispatch);
+    getStaffData(staffDispatch);
+  }, [deviceId]);
 
   useEffect(() => {
     getUserType(selectedUser?.userId, setUserType);
@@ -65,7 +72,7 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   }, [selectedUser]);
 
   return (
-    <div className="">
+    <div className="bg-white">
       <div className="flex flex-col gap-2 -z-50">
         <span className="font-semibold p-2">Assign User</span>
 
@@ -79,7 +86,7 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
           </button>
           {selectedUser?.fullName ? (
             <div onClick={() => onCanel()}>
-              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={selectedUser?.userId} deviceId={deviceId} setShowToast={setShowToast} />
+              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={selectedUser?.userId} deviceId={deviceId} formType={"issue-verification"} setShowToast={setShowToast} />
             </div>
           ) : (
             ""

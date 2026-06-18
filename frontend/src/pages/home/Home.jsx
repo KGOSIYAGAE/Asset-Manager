@@ -27,15 +27,11 @@ function Home() {
 
   const [currentUser, setCurrentUser] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-
-  const { showSpinner, hideSpinner } = useLoadingContext();
-
   useEffect(() => {
     getAllDevices(devicesDispatch);
     getAllStudents(studentDispatch);
     getStaffData(staffDispatch);
-    getAllLatestDevicesLogs(logDispatch);
+    //getAllLatestDevicesLogs(logDispatch);
     getAllDeviceLoanDue(loanDueDispatch);
 
     setCurrentUser(getLoggedInUser());

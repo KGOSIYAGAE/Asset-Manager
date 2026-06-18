@@ -54,11 +54,11 @@ function DevicesRequiresApprovalTable({ devices, label }) {
                     <td>{device.serial_no}</td>
                     <td>{device.make}</td>
                     <td>{device.model}</td>
-                    <td>{device.user_id}</td>
+                    <td>{device.current_user_id}</td>
                     <td>{device.status}</td>
                     <td>
                       {(() => {
-                        return handleTimeStampToText(device.date_issued);
+                        return handleTimeStampToText(device.issue_date);
                       })()}
                     </td>
 
@@ -69,7 +69,7 @@ function DevicesRequiresApprovalTable({ devices, label }) {
                           handleViewDevice(device.id);
                         }}
                       >
-                        Approve
+                        Approve / Reject
                       </span>
                     </td>
                   </tr>

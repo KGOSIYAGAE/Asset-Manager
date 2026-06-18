@@ -20,16 +20,16 @@ export const getUserSignature = async (user_id, setSignature) => {
   }
 };
 
-export const getIssureApproverSignature = async (device_id, setIssuerApproverSignature) => {
-  if (!device_id) {
+export const getIssureApproverSignature = async (data) => {
+  if (!data.device_serial_number || !data.status) {
     return console.log("Staff number must be provided");
   }
 
   try {
-    const response = await axiosInstance.get("/signatures/issuer-approver-signature/" + device_id, { showSpinner: true });
+    const response = await axiosInstance.get("/signatures/issuer-approver-signature", { params: data, showSpinner: true });
 
-    if (response.data && response.data.signatureList) {
-      return setIssuerApproverSignature(response.data.signatureList[0]);
+    if (response.data && response.data.signatures) {
+      return response.data.signatures;
     }
   } catch (error) {
     if (error.response && error.response.data.error) {

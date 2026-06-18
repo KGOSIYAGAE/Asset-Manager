@@ -6,8 +6,9 @@ import SignatureCanvas from "react-signature-canvas";
 import { setUserSignature } from "../../../services/api/signature/userSignatures";
 import { handleAssignDeviceToStaff, handleAssignDeviceToStudent } from "../../../utils/HandleAssignDevice";
 import { getUserType } from "../../../utils/helperMethods";
+import { handleLoanDevice } from "../../../utils/HandleLoanDevice";
 
-function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToast }) {
+function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate, setShowToast, formType }) {
   const signatureCanvasRef = useRef(null);
   const [userType, setUserType] = useState(null);
 
@@ -28,10 +29,12 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToas
   //Handle Assign suer
 
   const handleAssign = async () => {
-    if (userType === "Staff") {
-      handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
-    } else {
+    if (formType === "loan-issue") {
+      handleLoanDevice(userDetails, ...deviceDetails, returnDate, setShowToast);
+    } else if (formType === "student-issue") {
       handleAssignDeviceToStudent(userDetails, deviceDetails, setShowToast);
+    } else {
+      handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
     }
 
     return saveSignature();

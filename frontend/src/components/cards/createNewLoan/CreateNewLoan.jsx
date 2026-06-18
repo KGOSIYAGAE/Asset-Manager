@@ -7,11 +7,13 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 //import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
-import { getTodayDate } from "../../../utils/helperMethods";
+import { getCurrentDate, getTodayDate } from "../../../utils/helperMethods";
 import { assignDevice, createLoanDevice, releaseDevice } from "../../../services/api/devices/Device.Api";
 import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelectInput";
 import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
 import DateTimePicker from "../../inputs/dateTimePicker/DateTimePicker";
+import { handleLoanDevice } from "../../../utils/HandleLoanDevice";
+import OpenSecondScreenButton from "../../buttons/OpenSecondScreenButton/OpenSecondScreenButton";
 
 function CreateNewLoan({ onCanel, onSubmit, staffList, studentList, setShowToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
@@ -25,39 +27,11 @@ function CreateNewLoan({ onCanel, onSubmit, staffList, studentList, setShowToast
   const params = useParams();
   const navigate = useNavigate();
 
-  //Handle loan device
-  const handleCreateLoan = () => {
-    if (!selectedUser.fullName) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
-    }
-
-    if (!selectedDevice.id) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select device." });
-    }
-
-    if (!returnDate) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select return date." });
-    }
-
-    const today = getTodayDate();
-
-    const data = {
-      fullName: selectedUser?.fullName,
-      status: "Loaned",
-      date_issued: getTodayDate(),
-      userId: selectedUser.userId,
-      return_date: returnDate,
-    };
-
-    createLoanDevice(selectedDevice.id, data, setShowToast);
-    return onSubmit();
-  };
-
   useEffect(() => {
     setUserData([...staffList, ...studentList]);
   }, []);
   return (
-    <div>
+    <div className="bg-white">
       <span className="font-semibold p-2">Loan Device</span>
 
       <div className="flex flex-col  -z-50">
@@ -72,7 +46,7 @@ function CreateNewLoan({ onCanel, onSubmit, staffList, studentList, setShowToast
         <div className="grid grid-cols-2 gap-5 mt-5">
           {/** */}
           <div className="col-span-1">
-            <DateTimePicker label={"Return Date"} value={returnDate} setOnChange={setReturnDate} />
+            <DateTimePicker label={"Return Date"} value={returnDate} minimunDate={getCurrentDate()} setOnChange={setReturnDate} />
           </div>
         </div>
         {/** */}
@@ -80,7 +54,26 @@ function CreateNewLoan({ onCanel, onSubmit, staffList, studentList, setShowToast
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          <SubmitButton text={"Submit"} onClick={handleCreateLoan} />
+          {/*<SubmitButton
+            text={"Submit"}
+            onClick={() => {
+              handleLoanDevice(selectedUser, selectedDevice, returnDate, onSubmit, setShowToast);
+            }}
+          />*/}
+          {selectedUser?.fullName && selectedDevice?.id && returnDate ? (
+            <div onClick={() => onCanel()}>
+              <OpenSecondScreenButton
+                btnLable={"Continue to Verifaction"}
+                userId={selectedUser?.userId}
+                deviceId={selectedDevice?.id}
+                formType={"loan-verification"}
+                returnDate={returnDate}
+                setShowToast={setShowToast}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

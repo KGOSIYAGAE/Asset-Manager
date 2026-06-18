@@ -1,9 +1,10 @@
-import { assignDevice } from "../services/api/devices/Device.Api";
+import { approveDevice, assignDevice } from "../services/api/devices/Device.Api";
+import { getLoggedInUser } from "./getLoggedInUser";
 import { generateUpgradeDate, getTodayDate } from "./helperMethods";
 import { postMessage } from "./VerificationPostMessage";
 
 //Handle assign device to staff
-export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setShowToast) => {
+/*export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setShowToast) => {
   if (!staffData?.name) {
     return setShowToast({ isShow: true, type: "error", message: "Please select user." });
   }
@@ -30,45 +31,73 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setSho
   await assignDevice(deviceDetails?.id, data, setShowToast);
 
   return postMessage(staffData?.name, staffData?.surname);
+};*/
+
+export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setShowToast) => {
+  if (!staffData?.name) {
+    return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+  }
+
+  const loggedInUser = getLoggedInUser();
+
+  const data = {
+    issued_by: loggedInUser.id,
+    status: "Issue Approval required",
+    userId: staffData.staff_no,
+  };
+
+  const { message } = await assignDevice(deviceDetails?.id, data, setShowToast);
+
+  return postMessage(message);
 };
 //////////////////////////////////////////////////////
 
 //Handle assign device to staff
 export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails, setShowToast) => {
-  console.log(studentDetails.student_number);
-
   if (!studentDetails?.name) {
     return setShowToast({ isShow: true, type: "error", message: "Please select user." });
   }
 
+  const loggedInUser = getLoggedInUser();
+
   const data = {
-    fullName: `${studentDetails?.name} ${studentDetails?.surname}`,
-    status: "Approval required",
-    date_issued: getTodayDate(),
+    issued_by: loggedInUser.id,
+    status: "Issue Approval required",
     userId: studentDetails.student_number,
   };
 
-  await assignDevice(deviceDetails?.id, data, setShowToast);
+  const { message } = await assignDevice(deviceDetails?.id, data, setShowToast);
 
-  return postMessage(studentDetails?.name, studentDetails?.surname);
+  return postMessage(message);
 };
 //////////////////////////////////////////////////////
 
-//Handle assign device to staff
-export const handleApproveDevice = async (deviceUserDetails, setShowToast) => {
-  if (!deviceUserDetails?.full_name) {
-    return setShowToast({ isShow: true, type: "error", message: "Please select user." });
-  }
+//Handle assign device to user
+export const handleIssueApproveDevice = async (deviceUserDetails, onSubmit, setShowToast) => {
+  const loggedInUser = getLoggedInUser();
 
   const data = {
-    fullName: `${deviceUserDetails?.full_name}`,
+    approved_by: loggedInUser.id,
     status: "Assigned",
-    date_issued: getTodayDate(),
-    userId: deviceUserDetails?.user_id,
   };
 
-  await assignDevice(deviceUserDetails?.id, data, setShowToast);
+  await approveDevice(deviceUserDetails?.id, data, setShowToast);
 
-  return postMessage(deviceUserDetails?.full_name, "");
+  return onSubmit();
+};
+//////////////////////////////////////////////////////
+
+//Handle loan device
+export const handleLoanApproveDevice = async (deviceUserDetails, onSubmit, setShowToast) => {
+  const loggedInUser = getLoggedInUser();
+
+  const data = {
+    approved_by: loggedInUser.id,
+    status: "Loaned",
+  };
+
+  await approveDevice(deviceUserDetails?.id, data, setShowToast);
+
+  return onSubmit();
 };
 //////////////////////////////////////////////////////

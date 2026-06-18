@@ -38,8 +38,8 @@ const staffRouter = require("./Routes/staffRoutes");
 app.use("/api/v1/asset-manager/staff", staffRouter);
 
 //Device logs
-const deviceLogRouter = require("./Routes/deviceLogRoutes");
-app.use("/api/v1/asset-manager/device-logs", deviceLogRouter);
+const deviceTransactionsRouter = require("./Routes/deviceTransactionsRoutes");
+app.use("/api/v1/asset-manager/device-transactions", deviceTransactionsRouter);
 
 //Device logs
 const signatureRouter = require("./Routes/signatureRoutes");

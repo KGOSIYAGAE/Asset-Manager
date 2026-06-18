@@ -172,7 +172,11 @@ function App() {
       element: <Login />,
     },
     {
-      path: "/user-form/:userId/:deviceId",
+      path: "/user-form/:source/:userId/:deviceId",
+      element: <SecondScreenPage />,
+    },
+    {
+      path: "/user-form/:source/:userId/:deviceId/:returnDate",
       element: <SecondScreenPage />,
     },
     {

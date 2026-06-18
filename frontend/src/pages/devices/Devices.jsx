@@ -16,6 +16,7 @@ import ImportFile from "../../components/cards/importFile/ImportFile";
 import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 import BulkAddButton from "../../components/buttons/BulkAddButton";
 import { hasPermission } from "../../utils/getLoggedInUser";
+import { handleDeleteDevice } from "../../utils/handleDeleteDevice";
 
 function Devices({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
@@ -92,7 +93,7 @@ function Devices({ path }) {
             heading={"Delete Device"}
             laptopSerialNo={openModal.laptopSerialNo}
             onDelete={() => {
-              deleteDevice(openModal.selectedDevice, setShowToast);
+              handleDeleteDevice(openModal.selectedDevice, setShowToast);
               setOpenModal({ isShown: false });
             }}
             onCanel={() => {

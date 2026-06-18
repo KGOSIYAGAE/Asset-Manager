@@ -7,10 +7,12 @@ import SubmitButton from "../buttons/SubmitButton";
 import { getUser } from "../../services/api/staff/Staff.Api";
 import Modal from "react-modal";
 import SiganturePad from "../cards/signaturePad/SiganturePad";
-import { getLoggedInUser } from "../../utils/getLoggedInUser";
+import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import { getIssureApproverSignature } from "../../services/api/signature/userSignatures";
+import PrintButton from "../buttons/printButton/PrintButton";
+import { handleTimeStampToText } from "../../utils/dateConverter";
 
-function StudentAOD({ deviceId, handleOnPrint, student_no }) {
+function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
   const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, user_id: null });
 
   const [ictStaffTrimmedDataURL, setIctStaffTrimmedDataURL] = useState(null);
@@ -55,9 +57,19 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
     getAllDeviceDetails(deviceId, setDetails);
   };
 
-  useEffect(() => {
-    getIssureApproverSignature(deviceId, setIssuerApproverSignature);
-  }, [deviceId]);
+  //Handle Get Issuer & Approver Signature
+  const handleSetIssuerApproverSignature = async (deviceDetails) => {
+    if (!deviceDetails?.serial_no) {
+      console.log("Laptop serial number not found");
+    }
+
+    const data = {
+      device_serial_number: deviceDetails?.serial_no,
+      status: deviceDetails?.status,
+    };
+
+    return setIssuerApproverSignature(await getIssureApproverSignature(data));
+  };
 
   useEffect(() => {
     const { year, month, day } = getTodayFullDate();
@@ -69,10 +81,14 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
     setLoggedInUser(getLoggedInUser());
 
     //handleOnPrint();
-  }, [deviceId]);
+  }, [student_no]);
+
+  useEffect(() => {
+    handleSetIssuerApproverSignature(deviceDetails_);
+  }, []);
 
   return (
-    <div className="printable h-[1000px]">
+    <div className="printable p-2 h-[1000px]">
       <div class="page-header ">
         <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
         <div class="page-address">
@@ -164,7 +180,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
                 </ol>
                 {/*<br>*/}
               </li>
-
+              {}
               <li>
                 This acknowledgement of debt constitutes the whole agreement between the parties and no representations or warranties not contained herein shall be of any force or effect unless in
                 writing and signed by both the parties hereto. No consensual termination of this agreement shall be of any force or effect unless in writing and signed by both parties hereto. The
@@ -175,7 +191,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
             </ol>
           </div>
           <div>
-            Signed at <b>Kimberley</b> on the: <span className="font-semibold">{day}</span> day of <span className="font-semibold">{month}</span> <span className="font-semibold">{year}</span>
+            Signed at <b>Kimberley</b> on the: <span className="font-semibold">{handleTimeStampToText(issuerApproverSignatures?.issue_date)}</span>
           </div>
         </div>
         {/*<br>*/}
@@ -190,7 +206,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
                   <div>
                     <div className=" flex justify-between ">
                       <div className="flex flex-col items-center justify-center ">
-                        <img alt="signature" src={issuerApproverSignatures?.approver_siganture} className="w-[160px] " />
+                        <img alt="signature" src={issuerApproverSignatures?.approverSignature} className="w-[160px] " />
                       </div>
                     </div>
                     <div className="flex flex-col -mt-3">
@@ -229,7 +245,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
               <div>
                 <div className=" flex justify-between ">
                   <div className="flex flex-col items-center justify-center ">
-                    <img alt="signature" src={issuerApproverSignatures?.requestor_siganture} className="w-[160px] " />
+                    <img alt="signature" src={issuerApproverSignatures?.issuerSignature} className="w-[160px] " />
                   </div>
                 </div>
                 <div className="flex flex-col -mt-3">
@@ -243,16 +259,16 @@ function StudentAOD({ deviceId, handleOnPrint, student_no }) {
         {/**/}
       </div>
 
-      <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
-        <button
-          className="flex justify-center items-center bg-blue-900 text-white p-2 rounded-md"
-          onClick={() => {
-            handleOnPrint();
-          }}
-        >
-          Print
-        </button>
-      </div>
+      {hasPermission("print") && (
+        <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+          <PrintButton
+            text={"Print"}
+            onClick={() => {
+              handleOnPrint();
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

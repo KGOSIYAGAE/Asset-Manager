@@ -2,7 +2,7 @@ import React from "react";
 
 function FormUserStatus({ isActive, isDisabled, handleUserstatus }) {
   return (
-    <div>
+    <div className="bg-white">
       <span className="w-fit text-zinc-500 bg-white">User Status</span>
       <div className="flex gap-5 pl-2">
         <div className="flex gap-2">

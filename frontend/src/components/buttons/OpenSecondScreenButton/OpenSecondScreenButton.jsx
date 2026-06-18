@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SubmitButton from "../SubmitButton";
 
-function OpenSecondScreenButton({ btnLable, userId, deviceId, setShowToast, w = 800, h = 600 }) {
+function OpenSecondScreenButton({ btnLable, userId, deviceId, formType, returnDate, setShowToast, w = 800, h = 600 }) {
   const [error, setError] = useState("");
 
   async function openOnSecondScreen() {
@@ -27,8 +27,10 @@ function OpenSecondScreenButton({ btnLable, userId, deviceId, setShowToast, w = 
         const top = target.top;
         var url = "";
 
-        if (deviceId) {
-          url = `${window.location.origin}/user-form/${userId}/${deviceId}`;
+        if (deviceId && returnDate) {
+          url = `${window.location.origin}/user-form/${formType}/${userId}/${deviceId}/${returnDate}`;
+        } else if (deviceId) {
+          url = `${window.location.origin}/user-form/${formType}/${userId}/${deviceId}`;
         } else {
           url = `${window.location.origin}/user-form/${userId}`;
         }

@@ -13,6 +13,7 @@ import AddButton from "../../components/buttons/AddButton";
 import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 import { getAllStudents } from "../../services/api/students/Students.Api";
 import { getStaffData } from "../../services/api/staff/Staff.Api";
+import ToastMessageBox from "../../components/ToastMessageBox/ToastMessageBox";
 
 function DevicesOnLoan({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
@@ -26,6 +27,19 @@ function DevicesOnLoan({ path }) {
     getAllStudents(studentDispatch);
     getStaffData(staffDispatch);
     getAllDevices(devicesDispatch);
+  }, []);
+
+  //handle post Message Response
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "device_loaned") {
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        getAllDevices(devicesDispatch);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   return (

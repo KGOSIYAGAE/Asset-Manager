@@ -72,5 +72,5 @@ export const devicesTableHeaders = [
       }
     },
   },
-  { field: "user_id", headerName: "Assigned To", width: 110 },
+  { field: "current_user_id", headerName: "Assigned To", width: 110 },
 ];

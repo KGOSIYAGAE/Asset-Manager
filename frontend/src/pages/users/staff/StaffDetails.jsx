@@ -14,12 +14,14 @@ import SiganturePad from "../../../components/cards/signaturePad/SiganturePad";
 import OpenSecondScreenButton from "../../../components/buttons/OpenSecondScreenButton/OpenSecondScreenButton";
 import UserCaptureSignature from "../../../components/cards/signaturePad/UserCaptureSignature";
 import ToastMessage from "../../../components/toastMessage/ToastMessage";
+import { getUserDeviceHistory } from "../../../services/api/deviceLogs/deviceTransactions";
 
 function StaffDetails({ path }) {
   const [staffDetails, setStaffDetails] = useState();
   const params = useParams();
   const { devicesState, devicesDispatch } = useDeviceContext();
   const navigate = useNavigate();
+  const [devicesTransactionHistory, setDevicesTransactionHistory] = useState();
 
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
@@ -34,6 +36,19 @@ function StaffDetails({ path }) {
     setStaffDetails(stafftData);
   };
 
+  ///Get User's device history
+  const getDeviceTransactionsHistory = (staff_no) => {
+    if (!staff_no) {
+      return console.log("Selected staff number not provided");
+    }
+
+    const data = {
+      user_id: staff_no,
+    };
+
+    getUserDeviceHistory(data, setDevicesTransactionHistory);
+  };
+
   //Get data from the API
   const geDetails = () => {
     const { staff_no } = params;
@@ -44,6 +59,7 @@ function StaffDetails({ path }) {
 
     getAllUserDevices(staff_no, devicesDispatch);
     getStaffDetails(staff_no, setFormDetails);
+    getDeviceTransactionsHistory(staff_no);
     //getStudentDetails(staff_no, setFormDetails);
   };
 
@@ -65,7 +81,7 @@ function StaffDetails({ path }) {
   }, []);
 
   return (
-    <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
+    <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll border">
       <span className="text-sm">
         <b>Staff /</b> {path}
       </span>
@@ -176,7 +192,7 @@ function StaffDetails({ path }) {
           </div>
         </div>
 
-        <UserDevicesTable deviceList={devicesState?.deviceList} />
+        <UserDevicesTable deviceList={devicesState?.deviceList} deviceHistory={devicesTransactionHistory} />
       </div>
       <Modal
         isOpen={openModal.isShown}

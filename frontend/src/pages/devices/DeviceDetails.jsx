@@ -12,7 +12,6 @@ import { useStudentsContext } from "../../hooks/useStudentsContext";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import ReleaseUser from "../../components/cards/releaseUser/ReleaseUser";
 import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
-import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
 import { MdLocalPrintshop } from "react-icons/md";
 import StudentAOD from "../../components/student AOD/StudentAOD";
 import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
@@ -22,6 +21,10 @@ import { getUserType, handleCurrency } from "../../utils/helperMethods";
 import RejectIssueCard from "../../components/cards/rejectIssue/RejectIssueCard";
 import ApproveIssue from "../../components/cards/approveIssue/ApproveIssue";
 import LoanIssueForm from "../../components/LoanForms/LoanIssueForm";
+import PrintButton from "../../components/buttons/printButton/PrintButton";
+import { handleOpenForm } from "../../utils/handleOpenForm";
+import { getAllDeviceTransactions } from "../../services/api/deviceLogs/DeviceLogs";
+import DeviceReturnForm from "../../components/returnForm/DeviceReturnForm";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -42,8 +45,23 @@ function DeviceDetails({ path }) {
   const [purchaseDate, setPurchaseDate] = useState("");
   const [print, setPrint] = useState(false);
 
+  const [deviceTransactions, setDeviceTransactions] = useState(null);
+
   const navigate = useNavigate();
   let rowNumber = 0;
+
+  //Get All Device Transactions
+  const getDeviceTransactions = (deviceSerialNo) => {
+    if (!deviceSerialNo) {
+      return console.log("Selected device id not provided");
+    }
+
+    const data = {
+      serial_no: deviceSerialNo,
+    };
+
+    getAllDeviceTransactions(data, setDeviceTransactions);
+  };
 
   //On View more information on user
   const onViewMore = (user_id) => {
@@ -68,15 +86,6 @@ function DeviceDetails({ path }) {
     getAllDeviceDetails(id, setDetails);
   };
 
-  const getDeviceLogs = () => {
-    const { id } = params;
-
-    if (!id) {
-      return console.log("Selected device id not provided");
-    }
-    getAllDeviceLogs(id, setDeviceLogs);
-  };
-
   const handleOnPrint = () => {
     let printContents = document.getElementById("print-file").innerHTML;
     let originalContents = document.body.innerHTML;
@@ -89,39 +98,13 @@ function DeviceDetails({ path }) {
     window.location.reload();
   };
 
-  ///Get set form type
-  const handleSetFormType = (userType, laptopStatus) => {
-    console.log(userType);
-
-    if (userType === "Staff" && laptopStatus === "Assigned") {
-      return setFormType("Staff-Issue");
-    }
-
-    if (userType === "Student" && laptopStatus === "Assigned") {
-      return setFormType("Student-Issue");
-    }
-
-    return setFormType("Loan-Issue");
-  };
-
   useEffect(() => {
-    getDeviceLogs();
     getDeviceDetails();
   }, []);
 
   useEffect(() => {
-    getDeviceDetails();
-
-    //Get user type based on userID
-    getUserType(deviceDetails?.user_id, setUserType);
-
-    //
-    handleSetFormType(userType, deviceDetails?.status);
-
-    if (!staffState || !studentState) {
-      console.log("No data");
-    }
-  }, [userType]);
+    getDeviceTransactions(deviceDetails?.serial_no);
+  }, [deviceDetails]);
 
   //handle post Message Response
   useEffect(() => {
@@ -152,7 +135,7 @@ function DeviceDetails({ path }) {
                     setOpenModal({ isShown: true, type: "release", data: "hello" });
                   }}
                 />
-              ) : deviceDetails?.status === "Approval required" ? (
+              ) : deviceDetails?.status === "Issue Approval required" ? (
                 hasPermission("approve") && (
                   <div className="flex gap-5">
                     <SubmitButton
@@ -162,9 +145,27 @@ function DeviceDetails({ path }) {
                       }}
                     />
                     <SubmitButton
-                      text={"Approve"}
+                      text={"Approve Issue"}
                       onClick={() => {
-                        setOpenModal({ isShown: true, type: "approve", data: "hello" });
+                        setOpenModal({ isShown: true, type: "approve-issue", data: "hello" });
+                      }}
+                    />
+                  </div>
+                )
+              ) : deviceDetails?.status === "Loan Approval required" ? (
+                hasPermission("approve") && (
+                  <div className="flex gap-5">
+                    <SubmitButton
+                      text={"Reject"}
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "reject", data: "hello" });
+                      }}
+                    />
+
+                    <SubmitButton
+                      text={"Approve Loan"}
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "approve-loan", data: "hello" });
                       }}
                     />
                   </div>
@@ -212,7 +213,9 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Status</span>
             {deviceDetails?.status === "Available" ? (
               <span className="text-sm bg-green-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
-            ) : deviceDetails?.status === "Approval required" ? (
+            ) : deviceDetails?.status === "Issue Approval required" ? (
+              <span className="text-sm bg-yellow-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+            ) : deviceDetails?.status === "Loan Approval required" ? (
               <span className="text-sm bg-yellow-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
             ) : (
               <span className="text-sm bg-red-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
@@ -275,26 +278,26 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Date Issued</span>
             <span className="text-sm">
               {(() => {
-                return handleTimeStampToText(deviceDetails?.date_issued);
+                return handleTimeStampToText(deviceDetails?.issue_date);
               })() || "None"}
             </span>
           </div>
-          <div className="flex justify-between p-2 item-hover">
+          {/*<div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Return Date</span>
             <span className="text-sm">
               {(function () {
                 return handleTimeStampToText(deviceDetails?.return_date);
               })() || "None"}
             </span>
-          </div>
-          <div className="flex justify-between  p-2 item-hover">
+          </div>*/}
+          {/*<div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Upgrade Date</span>
             <span className="text-sm">
               {(function () {
                 return handleTimeStampToText(deviceDetails?.next_upgrade_date);
               })() || "None"}
             </span>
-          </div>
+          </div>*/}
         </div>
 
         <div className="flex flex-col col-span-2 gap-5">
@@ -312,7 +315,7 @@ function DeviceDetails({ path }) {
                 </div>
                 <div className="flex justify-between  p-1">
                   <span className="text-sm">User Id</span>
-                  <span className="text-sm">{deviceDetails?.user_id}</span>
+                  <span className="text-sm">{deviceDetails?.current_user_id}</span>
                 </div>
                 {/*<div className="flex justify-between bg-zinc-50 p-2">
                   <span className="text-sm">User Type</span>
@@ -332,7 +335,9 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
-        {hasPermission("view-logs") && <DeviceLogTable deviceLogs={deviceLogs} label={"Devices Logs"} />}
+        {hasPermission("view-logs") && (
+          <DeviceLogTable deviceDetails={deviceDetails} label={"Devices Logs"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} setShowToast={setShowToast} />
+        )}
       </div>
 
       <Modal
@@ -346,8 +351,8 @@ function DeviceDetails({ path }) {
         }}
         contentLabel=""
         className={`${
-          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
-        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] h-full bg-white"
+        } rounded-md mx-auto mt-14 p-5 overflow-auto outline-none`}
       >
         {openModal.type === "assign" ? (
           <IssueDevice
@@ -374,15 +379,19 @@ function DeviceDetails({ path }) {
           />
         ) : openModal.type === "Student-Issue" ? (
           <div className=" h-[1100px]  col-span-6 bg-white " id="print-file">
-            <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.user_id} />
+            <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "Staff-Issue" ? (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <StaffIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.user_id} />
+            <StaffIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "Loan-Issue" ? (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <LoanIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.user_id} />
+            <LoanIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} user_id={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
+          </div>
+        ) : openModal.type === "Return-form" ? (
+          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
+            <DeviceReturnForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} clickedTransactionData={openModal.data} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "reject" ? (
           <div>
@@ -399,7 +408,7 @@ function DeviceDetails({ path }) {
               laptopSerialNo={deviceDetails?.serial_no}
             />
           </div>
-        ) : (
+        ) : openModal.type === "approve-issue" || openModal.type === "approve-loan" ? (
           <div>
             <ApproveIssue
               onCanel={() => {
@@ -413,6 +422,10 @@ function DeviceDetails({ path }) {
               deviceUserDetails={deviceDetails}
             />
           </div>
+        ) : (
+          <div>
+            <span>Add another Template here!!!!!</span>
+          </div>
         )}
       </Modal>
       <ToastMessage
@@ -423,22 +436,6 @@ function DeviceDetails({ path }) {
           setShowToast({ isShow: false });
         }}
       />
-      {hasPermission("print") &&
-        (deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
-          <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
-            <button
-              className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
-              onClick={() => {
-                setOpenModal({ isShown: true, type: formType, data: "hello" });
-              }}
-            >
-              <MdLocalPrintshop size={25} />
-            </button>
-            <button className="flex justify-center items-center bg-cyan-500 text-white p-2 rounded-md">Save PDF</button>
-          </div>
-        ) : (
-          ""
-        ))}
     </div>
   );
 }

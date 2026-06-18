@@ -50,10 +50,20 @@ export const getTodayDate = () => {
 export const getTodayFullDate = () => {
   const date = new Date();
   const day = date.getDate();
-  const month = date.getMonth();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
   return { year, month, day };
+};
+
+//Get todays date
+export const getCurrentDate = () => {
+  const date = new Date();
+  const day = date.getDate();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
 };
 
 //Get todays date
@@ -139,8 +149,10 @@ export const getUserType = (user_id, setUserType) => {
   let userId = user_id?.toString();
 
   if (userId?.length > 5) {
+    console.log("Student");
     return setUserType("Student");
   } else {
+    console.log("Staff");
     return setUserType("Staff");
   }
 };

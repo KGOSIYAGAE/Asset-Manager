@@ -95,7 +95,7 @@
 
   /*Student AOD Start*/
   .printable {
-    @apply w-full bg-white text-black text-[12px] flex flex-col justify-center items-center;
+    @apply w-full bg-white text-black text-[12px] flex flex-col pb-5 rounded-md shadow-lg print:shadow-none;
   }
 
   /* 1. Screen Styles: Only show one copy on the monitor */

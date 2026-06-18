@@ -29,7 +29,7 @@ function AssignDeviceToUser({ onCanel, onSubmit, StudentNo, setShowToast }) {
   }, []);
 
   return (
-    <div className="">
+    <div className="bg-white">
       <div className="flex flex-col gap-2 -z-50">
         <span className="font-semibold p-2">Assign Device</span>
 
@@ -41,7 +41,7 @@ function AssignDeviceToUser({ onCanel, onSubmit, StudentNo, setShowToast }) {
           </button>
           {selectedDevice?.id ? (
             <div onClick={() => onCanel()}>
-              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={StudentNo} deviceId={selectedDevice?.id} setShowToast={setShowToast} />
+              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={StudentNo} deviceId={selectedDevice?.id} formType={"issue-verification"} setShowToast={setShowToast} />
             </div>
           ) : (
             ""

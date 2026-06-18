@@ -46,7 +46,7 @@ function StaffIssueVirificationCard({ deviceId, staff_no }) {
           <span className="text-xl">Date: {getTodayDate()}</span>
         </div>
       </div>
-      <SiganturePad lablel={"Staff Signature"} user_id={staff_no} userDetails={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast} />
+      <SiganturePad lablel={"Staff Signature"} user_id={staff_no} userDetails={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast} formType={"staff-issue"} />
     </div>
   );
 }

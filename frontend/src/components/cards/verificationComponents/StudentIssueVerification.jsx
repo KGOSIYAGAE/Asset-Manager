@@ -150,7 +150,14 @@ function StudentIssueVerification({ deviceId, student_no }) {
             <div>
               Signed at Kimberley on the: <span className="font-semibold">{day}</span> day of <span className="font-semibold">{month}</span> <span className="font-semibold">{year}</span>
             </div>
-            <SiganturePad lablel={"Student Signature"} user_id={studentData?.student_number} userDetails={studentData} deviceDetails={deviceDetails} setShowToast={setShowToast} />
+            <SiganturePad
+              lablel={"Student Signature"}
+              user_id={studentData?.student_number}
+              userDetails={studentData}
+              deviceDetails={deviceDetails}
+              setShowToast={setShowToast}
+              formType={"student-issue"}
+            />
           </div>
         </div>
       </div>

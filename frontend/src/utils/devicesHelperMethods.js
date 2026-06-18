@@ -66,7 +66,7 @@ export const getRequiresApprovalDevices = (devicesList) => {
 
   if (devicesList) {
     for (let i = 0; i < devicesList.length; i++) {
-      if (devicesList[i].status === "Approval required") {
+      if (devicesList[i].status === "Loan Approval required" || devicesList[i].status === "Issue Approval required") {
         list.push(devicesList[i]);
       }
     }
