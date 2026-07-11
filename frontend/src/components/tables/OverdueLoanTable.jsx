@@ -2,58 +2,68 @@ import React, { useEffect, useState } from "react";
 import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { useNavigate } from "react-router-dom";
 import { getLoanedDevicesHelper } from "../../utils/devicesHelperMethods";
+import { BsEyeFill } from "react-icons/bs";
+import TablePagation from "../cards/tablePagation/TablePagation";
 
-function OverdueLoanTable({ devices, label }) {
+function OverdueLoanTable({ devices, currentPage, setCurrentPage, totalPages, limit }) {
   const navigate = useNavigate();
-  const [loanedDevices, setLoanedDevices] = useState(null);
+
   const [columnCount, setColumnCount] = useState(8);
   //Handle view more
   const handleViewDevice = (id) => {
     navigate(`/devices/device-details/${id}`);
   };
 
-  useEffect(() => {
-    setLoanedDevices(getLoanedDevicesHelper(devices));
-    console.log(devices);
-  }, [devices]);
-
   return (
-    <div className="w-fulltext-sm  rounded-sm">
-      <table className="w-full bg-white ">
-        <thead className=" bg-slate-100 sticky top-0 h-[40px]">
-          <th>#</th>
-          <th>Asset Tag</th>
-          <th>Serial Number</th>
-          <th>Make</th>
-          <th>Model</th>
-          <th>User</th>
-          <th>Date Issued</th>
-          <th>Expected Return Date</th>
-          <th>Action</th>
+    <div className="table-view">
+      <table className="">
+        <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
+          <th>
+            <span>Asset Tag</span>
+          </th>
+          <th>
+            <span>Serial Number</span>
+          </th>
+          <th>
+            <span>Make</span>
+          </th>
+          <th>
+            <span>Model</span>
+          </th>
+          <th>
+            <span>User</span>
+          </th>
+          <th>
+            <span>Staff / Student Number</span>
+          </th>
+          <th>
+            <span>Date Issued</span>
+          </th>
+          <th>
+            <span>Expected Return Date</span>
+          </th>
+          <th>
+            <span>Action</span>
+          </th>
         </thead>
-        {loanedDevices <= 0 ? (
+        {devices <= 0 ? (
           <tbody>
-            <tr>
+            <tr className="">
               <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
                 <strong>No data available</strong>
-                <p>Create a new loan.</p>
               </td>
             </tr>
           </tbody>
         ) : (
           <tbody className="">
-            {loanedDevices
-              ? loanedDevices.map((device, count) => (
+            {devices
+              ? devices.map((device, count) => (
                   <tr className="hover:bg-slate-50" key={device.id}>
-                    <td>
-                      {(() => {
-                        return count + 1;
-                      })()}
-                    </td>
                     <td>{device.asset_tag}</td>
                     <td>{device.serial_no}</td>
                     <td>{device.make}</td>
                     <td>{device.model}</td>
+                    <td>{device.full_name}</td>
                     <td>{device.current_user_id}</td>
                     <td>
                       {(() => {
@@ -62,18 +72,20 @@ function OverdueLoanTable({ devices, label }) {
                     </td>
                     <td>
                       {(() => {
-                        return handleTimeStampToText(device.loan_end_date);
+                        return handleTimeStampToText(device.expected_return_date);
                       })()}
                     </td>
                     <td>
-                      <span
-                        className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                      <div
+                        className="flex items-center gap-2 text-gray-600 hover:text-gray-600 cursor-pointer"
                         onClick={() => {
                           handleViewDevice(device.id);
                         }}
                       >
-                        View more
-                      </span>
+                        <BsEyeFill size={20} />
+
+                        <span>View more</span>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -81,6 +93,7 @@ function OverdueLoanTable({ devices, label }) {
           </tbody>
         )}
       </table>
+      <TablePagation currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} />
     </div>
   );
 }

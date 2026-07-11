@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
@@ -7,27 +7,29 @@ import { CiViewList } from "react-icons/ci";
 import { CgDetailsMore } from "react-icons/cg";
 import { hasPermission } from "../../utils/getLoggedInUser";
 
-function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetails }) {
+function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetails, pagationModel, setPagationModel, rowCount }) {
   const actionsColumn = [
     {
       field: "Actions",
       renderCell: (cellValues) => {
         return (
           <div className="flex items-center justify-center gap-2 mt-3">
-            <div
-              className="w-[30px] flex items-center justify-center text-yellow-500 bg-yello-100 p-1 rounded-md border border-yellow-500 cursor-pointer"
-              onClick={() => handleViewDetails(cellValues)}
-            >
-              <CiViewList size={20} />
-            </div>
+            {hasPermission("view") && (
+              <div
+                className="w-[30px] flex items-center justify-center text-orange-500 bg-orange-100 p-1 rounded-md border border-orange-500 cursor-pointer"
+                onClick={() => handleViewDetails(cellValues)}
+              >
+                <CiViewList size={20} />
+              </div>
+            )}
             {hasPermission("edit") && (
-              <div className="w-[30px] flex items-center justify-center text-green-500 bg-green-100 p-1 rounded-md border border-green-500 cursor-pointer" onClick={() => handleEdit(cellValues)}>
+              <div className="w-[30px] flex items-center justify-center text-blue-500 bg-blue-100 p-1 rounded-md border border-blue-500 cursor-pointer" onClick={() => handleEdit(cellValues)}>
                 <MdEdit size={20}></MdEdit>
               </div>
             )}
 
             {hasPermission("delete") && (
-              <div className="w-[30px] flex items-center justify-center text-red-500 bg-red-100 p-1 rounded-md border border-red-500 cursor-pointer" onClick={() => handleDelete(cellValues)}>
+              <div className="w-[30px] flex items-center justify-center text-red-600 bg-red-100 p-1 rounded-md border border-red-600 cursor-pointer" onClick={() => handleDelete(cellValues)}>
                 <MdDeleteForever size={20}></MdDeleteForever>
               </div>
             )}
@@ -40,6 +42,10 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetai
 
   const columns = [...colHeaders, ...actionsColumn];
 
+  useEffect(() => {
+    console.log();
+  }, []);
+
   return (
     <DataGrid
       sx={{
@@ -51,12 +57,14 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetai
       columns={columns}
       initialState={{
         pagination: {
-          paginationModel: {
-            pageSize: 9,
-          },
+          paginationModel: pagationModel,
         },
       }}
-      pageSizeOptions={[9]}
+      rowCount={rowCount}
+      paginationMode="server"
+      paginationMode={pagationModel}
+      onPaginationModelChange={setPagationModel}
+      pageSizeOptions={[8]}
     />
   );
 }

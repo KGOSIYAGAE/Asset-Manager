@@ -1,12 +1,13 @@
 import axiosInstance from "../../../utils/axiosInstance";
 
 //get All Students
-export const getAllStudents = async (studentDispatch) => {
+export const getAllStudents = async (data, setAllStaff, setTotalPages) => {
   try {
-    const response = await axiosInstance.get("/students/", { showSpinner: true });
+    const response = await axiosInstance.get(`/students/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (!response.data.error) {
-      return studentDispatch({ type: "SET_STUDENTS", payload: response.data.studentsData });
+      setTotalPages(response.data.totalPages);
+      return setAllStaff(response.data.studentsData);
     }
   } catch (error) {
     if (error.response && error.response.error) {

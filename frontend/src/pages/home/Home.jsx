@@ -3,7 +3,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import axios from "axios";
 import Dashboard from "../../components/dashboard/Dashboard";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
-import { getAllDeviceLoanDue, getAllDevices } from "../../services/api/devices/Device.Api";
+import { getAllDeviceLoanDue, getAllDevices, getDevicesStats } from "../../services/api/devices/Device.Api";
 import { useStaffContext } from "../../hooks/useStaffContext";
 import { getStaffData } from "../../services/api/staff/Staff.Api";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
@@ -17,6 +17,7 @@ import { useLoanDueContext } from "../../hooks/useLoanDueContext";
 import AdminDashboard from "../../components/dashboard/AdminDashboard";
 import UserDashCard from "../../components/cards/userDashCard/UserDashCard";
 import { useLoadingContext } from "../../hooks/useLoadingContext";
+import MainAdminDashboard from "../../components/dashboard/MainAdminDashboard";
 
 function Home() {
   const { devicesState, devicesDispatch } = useDeviceContext();
@@ -26,30 +27,17 @@ function Home() {
   const { loanDueState, loanDueDispatch } = useLoanDueContext();
 
   const [currentUser, setCurrentUser] = useState(null);
+  const [deviceStats, setDeviceStats] = useState(null);
 
   useEffect(() => {
-    getAllDevices(devicesDispatch);
-    getAllStudents(studentDispatch);
-    getStaffData(staffDispatch);
-    //getAllLatestDevicesLogs(logDispatch);
-    getAllDeviceLoanDue(loanDueDispatch);
-
     setCurrentUser(getLoggedInUser());
-  }, [devicesDispatch, staffDispatch, studentDispatch, logDispatch, loanDueDispatch]);
+    getDevicesStats(setDeviceStats);
+  }, []);
+
   return (
     <div>
-      <UserDashCard loggedInUser={currentUser} />
-      {hasPermission("support-dash") && (
-        <AdminDashboard
-          devices={devicesState?.deviceList}
-          students={studentState?.studentsList}
-          deviceNumber={devicesState?.deviceList?.length || 0}
-          staffNumber={staffState?.staffList?.length || 0}
-          studentsNumber={studentState?.studentsList?.length || 0}
-          devicesLogs={logState?.logList}
-          loanDueState={loanDueState?.loanDueList}
-        />
-      )}
+      {/*<UserDashCard loggedInUser={currentUser} />*/}
+      {hasPermission("support-admin-dash") && <MainAdminDashboard deviceStats={deviceStats} />}
     </div>
   );
 }

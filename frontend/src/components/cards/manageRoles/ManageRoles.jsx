@@ -12,7 +12,7 @@ import { assignDevice, createLoanDevice, releaseDevice } from "../../../services
 import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelectInput";
 import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
 import DateTimePicker from "../../inputs/dateTimePicker/DateTimePicker";
-import { rolesList } from "../../../utils/getLoggedInUser";
+import { ROLES, rolesList } from "../../../utils/getLoggedInUser";
 import TextInput from "../../inputs/textInput/TextInput";
 import { assignUserRole } from "../../../services/api/admin/Admin.Api";
 
@@ -21,6 +21,7 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
   const [selectedRole, setSelectedRole] = useState(null);
   const [tempPassword, setTempPassword] = useState(null);
   const [userAccessType, setUserAccessType] = useState(null);
+  const [systemRoles, setSystemRoles] = useState();
 
   //Handle loan device
   const handleAssignRole = async () => {
@@ -42,36 +43,43 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
       tempPassword: tempPassword,
     };
 
-    console.log(selectedUser);
     const message = await assignUserRole(data, setShowToast);
 
     return onSubmit(message);
   };
 
   //show user access
-  const showUserAccess = (userRole) => {
-    if (userRole) {
-      for (let i = 0; i < rolesList.length; i++) {
-        if (userRole === rolesList[i].name) {
-          return setUserAccessType(rolesList[i].can);
+  const showUserAccess = (selectedRole) => {
+    if (selectedRole) {
+      for (let i = 0; i < systemRoles.length; i++) {
+        if (systemRoles[i].name === selectedRole) {
+          return setUserAccessType(systemRoles[i].permissions);
         }
       }
     }
-    return null;
+
+    return;
   };
 
   useEffect(() => {
-    if (userData) {
-      //setSearchResultsData(userData);
-    }
+    const rolesList = Object.entries(ROLES).map(([roleName, roleData]) => {
+      return {
+        name: roleName,
+        permissions: roleData.can,
+      };
+    });
+
+    setSystemRoles(rolesList);
   }, []);
+
   return (
     <div>
       <span className="font-semibold p-2">Assign Role</span>
 
       <div className="flex flex-col  -z-50">
         {/** */}
-        <UserSelectInput userData={userData} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+        <UserSelectInput studentData={[]} staffData={userData} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+
         {/** */}
         <div className="flex flex-col gap-5">
           <div className="flex flex-col border rounded-md p-2 overflow-auto">
@@ -85,7 +93,7 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
               }}
             >
               x<option>----- Select Role -----</option>
-              {rolesList.map((role) => (
+              {systemRoles?.map((role) => (
                 <option key={role.id}>{role.name}</option>
               ))}
             </select>
@@ -93,7 +101,10 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
           <div className="col-span-2">
             <TextInput label={"Temporary Password"} value={tempPassword} isDisabled={false} maxLength={30} setOnChange={setTempPassword} />
           </div>
-          <span>The user will have the following access:- {userAccessType && userAccessType}</span>
+          <div className="flex flex-col gap-2">
+            <span>The user will have the following access:- </span>
+            <span className="font-semibold"> {userAccessType && String(userAccessType)}</span>
+          </div>
         </div>
       </div>
 

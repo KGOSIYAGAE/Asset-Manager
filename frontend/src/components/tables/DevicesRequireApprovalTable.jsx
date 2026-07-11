@@ -4,8 +4,10 @@ import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverte
 import { getRequiresApprovalDevices } from "../../utils/devicesHelperMethods";
 import SearchInput from "../inputs/searchInput/SearchInput";
 import { useSearchContext } from "../../hooks/useSearchContext";
+import { MdGavel } from "react-icons/md";
+import TablePagation from "../cards/tablePagation/TablePagation";
 
-function DevicesRequiresApprovalTable({ devices, label }) {
+function DevicesRequiresApprovalTable({ devices, currentPage, setCurrentPage, totalPages, limit }) {
   const navigate = useNavigate();
 
   const [columnCount, setColumnCount] = useState(8);
@@ -18,23 +20,38 @@ function DevicesRequiresApprovalTable({ devices, label }) {
   useEffect(() => {}, [devices]);
 
   return (
-    <div className="w-full text-sm  rounded-md ">
-      <table className="w-full bg-white ">
+    <div className="table-view">
+      <table className="">
         <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
-          <th>#</th>
-          <th>Asset Tag</th>
-          <th>Serial Number</th>
-          <th>Make</th>
-          <th>Model</th>
-          <th>User</th>
-          <th>Status</th>
-          <th>Date Issued</th>
-          <th>Action</th>
+          <th>
+            <span>Asset Tag</span>
+          </th>
+          <th>
+            <span>Serial Number</span>
+          </th>
+          <th>
+            <span>Make</span>
+          </th>
+          <th>
+            <span>Model</span>
+          </th>
+          <th>
+            <span>User</span>
+          </th>
+          <th>
+            <span>Status</span>
+          </th>
+          <th>
+            <span>Date Issued</span>
+          </th>
+          <th>
+            <span>Action</span>
+          </th>
         </thead>
 
         {devices <= 0 ? (
           <tbody>
-            <tr>
+            <tr className="">
               <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
                 <strong>No data available</strong>
               </td>
@@ -44,12 +61,12 @@ function DevicesRequiresApprovalTable({ devices, label }) {
           <tbody className="">
             {devices
               ? devices.map((device, count) => (
-                  <tr className="hover:bg-slate-50" key={device.id}>
-                    <td>
+                  <tr className="hover:bg-slate-50 border h-1 " key={device.id}>
+                    {/*<td>
                       {(() => {
                         return count + 1;
                       })()}
-                    </td>
+                    </td>*/}
                     <td>{device.asset_tag}</td>
                     <td>{device.serial_no}</td>
                     <td>{device.make}</td>
@@ -64,11 +81,12 @@ function DevicesRequiresApprovalTable({ devices, label }) {
 
                     <td>
                       <span
-                        className="text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                        className="flex gap-2 text-blue-600 hover:text-blue-700  cursor-pointer"
                         onClick={() => {
                           handleViewDevice(device.id);
                         }}
                       >
+                        <MdGavel size={20} />
                         Approve / Reject
                       </span>
                     </td>
@@ -78,6 +96,7 @@ function DevicesRequiresApprovalTable({ devices, label }) {
           </tbody>
         )}
       </table>
+      <TablePagation currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} />
     </div>
   );
 }

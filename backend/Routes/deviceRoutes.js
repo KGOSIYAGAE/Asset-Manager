@@ -4,6 +4,9 @@ const {
   getAllDevices,
   getDeviceDueUpgrade,
   getDeviceForApproval,
+  getLoanedDevices,
+  getDevicesDueReturn,
+  getDevicesStats,
   getDevice,
   getDeviceDetails,
   getDevicesAssigned,
@@ -28,8 +31,17 @@ router.get("/", getAllDevices);
 //Get all device due for upgrade
 router.get("/due-upgrade", getDeviceDueUpgrade);
 
-//Get all device due for upgrade
+//Get all device's stats
+router.get("/devices-stats", getDevicesStats);
+
+//Get all device needing approval
 router.get("/requires-approval", getDeviceForApproval);
+
+//Get all device loaned
+router.get("/loaned-devices", getLoanedDevices);
+
+//Get all device due return at user termination
+router.get("/devices-due-return", getDevicesDueReturn);
 
 //Get all devices
 router.get("/:id", getDevice);

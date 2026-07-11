@@ -5,6 +5,7 @@ import ExportExcelButton from "../buttons/ExportExcelButton";
 import { BsEyeFill } from "react-icons/bs";
 import { handleOpenForm } from "../../utils/handleOpenForm";
 import { MdFileOpen } from "react-icons/md";
+import { hasPermission } from "../../utils/getLoggedInUser";
 
 function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal, setShowToast }) {
   const [columnCount, setColumnCount] = useState(6);
@@ -14,27 +15,25 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
   }, []);
 
   return (
-    <div className="col-span-6 h-[500px] bg-white rounded-md shadow-md overflow-x-scroll">
-      <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
-        <span className="heading-text ">{label}</span>
-        <ExportExcelButton />
+    <div className="col-span-6 flex flex-col h-[450px] bg-white rounded-md shadow-md overflow-auto">
+      <div className="flex items-center justify-between  rounded-t-md p-2 sticky top-0 bg-white">
+        <span className="heading-text sticky top-0">{label}</span>
+        {hasPermission("export") && <ExportExcelButton />}
       </div>
       <div className="w-full text-sm  rounded-sm">
         <table className="w-full bg-white ">
-          <thead className=" bg-slate-100 sticky top-0 h-[40px]">
+          <thead className=" bg-slate-100 sticky top-11 h-[40px]">
             <tr>
-              <th>#</th>
               <th>Transaction Id</th>
               <th>Action</th>
               <th>Transaction Status</th>
               <th>User Full Name</th>
               <th>Date Issued</th>
               <th>Date Approved</th>
-              <th>Loan Return Date</th>
+              <th>Expected Return Date</th>
 
               <th>Date Returned</th>
-
-              <th>View Form</th>
+              {hasPermission("print") && <th>View Form</th>}
             </tr>
           </thead>
           {deviceTransactions <= 0 ? (
@@ -50,23 +49,18 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
               {deviceTransactions &&
                 deviceTransactions.map((transaction, count) => (
                   <tr key={transaction.id} className="hover:bg-slate-50">
-                    <td>
-                      {(() => {
-                        return count + 1;
-                      })()}
-                    </td>
                     <td>{transaction.id}</td>
                     <td>{transaction.action_type}</td>
                     <td>
                       <div className="flex justify-between  p-2 item-hover">
                         {transaction?.status === "Available" || transaction?.status === "Returned" ? (
-                          <span className="text-sm bg-green-500 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
+                          <span className="text-sm bg-green-600 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
                         ) : transaction?.status === "Issue Approval required" ? (
-                          <span className="text-sm bg-yellow-500 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
+                          <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
                         ) : transaction?.status === "Loan Approval required" ? (
-                          <span className="text-sm bg-yellow-500 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
+                          <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
                         ) : (
-                          <span className="text-sm bg-red-500 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
+                          <span className="text-sm bg-red-600 border shadow-sm p-1 rounded-md text-white">{transaction?.status}</span>
                         )}
                       </div>
                     </td>
@@ -83,9 +77,9 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
                       })()}
                     </td>
                     <td>
-                      {transaction.loan_end_date
+                      {transaction.expected_return_date
                         ? (() => {
-                            return handleTimeStampToText(transaction.loan_end_date);
+                            return handleTimeStampToText(transaction.expected_return_date);
                           })()
                         : "N/A"}
                     </td>
@@ -96,20 +90,21 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
                       })()}
                     </td>
 
-                    <td>
-                      <div className="flex items-center gap-2 text-blue-500 hover:text-blue-600 cursor-pointer">
-                        <MdFileOpen size={20} />
-
-                        <span
+                    {hasPermission("print") && (
+                      <td>
+                        <div
+                          className="flex items-center gap-2 text-slate-500 hover:text-slate-600 cursor-pointer"
                           onClick={() => {
                             handleOpenForm(transaction, setOpenModal, setShowToast);
                             //setOpenModal({ isShown: true, type: "view-more-details", data: device });
                           }}
                         >
-                          Open
-                        </span>
-                      </div>
-                    </td>
+                          <MdFileOpen size={20} />
+
+                          <span>Open</span>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
             </tbody>

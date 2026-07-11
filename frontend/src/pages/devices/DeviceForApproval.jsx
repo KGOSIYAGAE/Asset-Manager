@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllDevices } from "../../services/api/devices/Device.Api";
+import { getAllDeviceForApproval, getAllDevices } from "../../services/api/devices/Device.Api";
 
 import { Modal } from "@mui/material";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
@@ -14,30 +14,60 @@ function DeviceForApproval({ path }) {
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
   const [approvalDevices, setApprovalDevices] = useState(null);
 
-  const { devicesState, devicesDispatch } = useDeviceContext();
   const { searchState, searchDispatch } = useSearchContext();
 
-  useEffect(() => {
-    getAllDevices(devicesDispatch);
-  }, []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 8;
 
+  const [searchResults, setSearchResults] = useState(null);
+  /////////////////////Handle Search Results////////////
+
+  const handleGetPage = () => {
+    const data = {
+      page: currentPage,
+      limit: limit,
+    };
+
+    getAllDeviceForApproval(data, setApprovalDevices, setTotalPages);
+  };
+
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    getAllDeviceForApproval({ page: currentPage, limit: limit }, setApprovalDevices, setTotalPages);
+  };
+
+  //Execute Gett All devices on load or status change
   useEffect(() => {
-    setApprovalDevices(getRequiresApprovalDevices(devicesState?.deviceList));
-  }, [devicesState]);
+    getAllDeviceForApproval({ page: currentPage, limit: limit }, setApprovalDevices, setTotalPages);
+  }, [currentPage]);
+
+  /* useEffect(() => {
+    //setApprovalDevices(getRequiresApprovalDevices(devicesState?.deviceList));
+    getAllDeviceForApproval({ page: currentPage, limit: limit }, setApprovalDevices, setTotalPages);
+  }, [currentPage]);*/
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
       <span className="text-sm ">
         Devices/ <b> {path}</b>
       </span>
-      <div className="flex flex-col overflow-scroll  bg-white rounded-md shadow-md ">
+      <div className="flex flex-col  bg-white rounded-md shadow-md ">
         <div className="  bg-white  flex  justify-between sticky top-0  p-5">
           <span className="heading-text ">Devices For Approval</span>
-          <SearchInput searchData={approvalDevices} dataType={"devices"} />
+          <SearchInput tableName={"devices"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
         </div>
         {/* */}
-        <div className="col-span-6 p-5">
-          <DevicesRequiresApprovalTable devices={searchState?.searchResults ? searchState?.searchResults : approvalDevices} label={"Devices For Approval"} />
+        <div className="flex p-2">
+          <DevicesRequiresApprovalTable
+            devices={searchResults ? searchResults : approvalDevices}
+            label={"Devices For Approval"}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+            limit={limit}
+          />
         </div>
         {/* */}
       </div>

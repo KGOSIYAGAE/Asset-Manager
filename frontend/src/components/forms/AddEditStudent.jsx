@@ -29,19 +29,19 @@ import StudentFacultySelectInput from "../inputs/selectInputs/studentFacultySele
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
 
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [studentNumber, setStudentNumber] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [phone_number, setPhone_Number] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState();
+  const [surname, setSurname] = useState();
+  const [studentNumber, setStudentNumber] = useState();
+  const [idNumber, setIdNumber] = useState();
+  const [phone_number, setPhone_Number] = useState();
+  const [email, setEmail] = useState();
   const [faculty_name, setFaculty_name] = useState(null);
-  const [course_code, setCourse_Code] = useState("");
-  const [course, setCourse] = useState("");
-  const [isActive, setIsActive] = useState("");
+  const [course_code, setCourse_Code] = useState();
+  const [course, setCourse] = useState();
+  const [isActive, setIsActive] = useState();
   const [laptopDetails, setLaptopDetails] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [registration_date, setRegistration_Date] = useState("");
+  const [registration_date, setRegistration_Date] = useState();
   const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
   const [courseList, setCourseList] = useState(null);
 
@@ -55,17 +55,17 @@ function AddEditStudent({ path }) {
 
   //Form clear
   const clearForm = () => {
-    setName("");
-    setSurname("");
-    setStudentNumber("");
-    setIdNumber("");
-    setPhone_Number("");
-    setEmail("");
-    setFaculty_name("");
-    setCourse("");
-    setCourse_Code("");
-    setIsActive("");
-    setRegistration_Date("");
+    setName();
+    setSurname();
+    setStudentNumber();
+    setIdNumber();
+    setPhone_Number();
+    setEmail();
+    setFaculty_name();
+    setCourse();
+    setCourse_Code();
+    setIsActive();
+    setRegistration_Date();
   };
 
   //Form submit
@@ -173,9 +173,15 @@ function AddEditStudent({ path }) {
   //handle post Message Response
   useEffect(() => {
     const handleMessage = (event) => {
+      console.log(event);
       if (event.data.type === "form_submitted") {
-        setShowToast({ isShow: true, type: "success", message: event.data.payload });
-        return viewStudentProfile();
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: event.data.payload.message });
+          setOpenModal({ isShown: true });
+          return;
+        }
+
+        setShowToast({ isShow: true, type: "success", message: event.data.payload.message });
       }
     };
 
@@ -291,17 +297,17 @@ function AddEditStudent({ path }) {
               //getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
-            StudentNo={studentNumber}
+            userId={studentNumber}
             setShowToast={setShowToast}
           />
         </Modal>
 
         <ToastMessage
-          isShown={showToast.isShown}
+          isShown={showToast.isShow}
           type={showToast.type}
           message={showToast.message}
           onClose={() => {
-            setShowToast({ isShown: false });
+            setShowToast({ isShow: false });
           }}
         />
       </div>

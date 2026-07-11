@@ -2,12 +2,13 @@ import { useState } from "react";
 import axiosInstance from "../../../utils/axiosInstance";
 
 //Handle getData API CALL
-export const getStaffData = async (staffDispatch) => {
+export const getStaffData = async (data, setAllStaff, setTotalPages) => {
   try {
-    const response = await axiosInstance.get("/staff/", { showSpinner: true });
+    const response = await axiosInstance.get(`/staff/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (!response.data.error) {
-      staffDispatch({ type: "SET_STAFF", payload: response.data.staffData });
+      setTotalPages(response.data.totalPages);
+      return setAllStaff(response.data.staffData);
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
@@ -59,18 +60,18 @@ export const updateStaff = async (id, userData, setShowToast) => {
 };
 
 //Hanlde deleteStaff API
-export const deleteStaff = async (staff_no, setShowToast) => {
+export const deleteStaff = async (staff_no, data, setShowToast) => {
   try {
     if (!staff_no) {
       return console.log("Staff number must be provided");
     }
-    const response = await axiosInstance.delete("/staff/delete-staff/" + staff_no, { showSpinner: true });
+    const response = await axiosInstance.put("/staff/delete-staff/" + staff_no, data, { showSpinner: true });
 
     if (response.data && !response.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
     }
   } catch (error) {
-    if (error.response.data && error.response.error) {
+    if (error.response.data && error.response.data.error) {
       return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
       return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });

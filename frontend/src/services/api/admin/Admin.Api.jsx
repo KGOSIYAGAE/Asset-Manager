@@ -22,7 +22,7 @@ export const changePassword = async (email, oldPassword, newPassword, setShowToa
       newPassword,
     };
 
-    const response = await loginAxiosInstance.put("/change-password", data);
+    const response = await loginAxiosInstance.put("/change-password", data, { showSpinner: true });
 
     if (!response.data.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });
@@ -40,7 +40,7 @@ export const changePassword = async (email, oldPassword, newPassword, setShowToa
 //Assign Role
 export const assignUserRole = async (data) => {
   try {
-    const response = await loginAxiosInstance.put("/assign-role", data);
+    const response = await loginAxiosInstance.put("/assign-role", data, { showSpinner: true });
 
     if (!response.data.error) {
       return response.data.message;
@@ -55,13 +55,31 @@ export const assignUserRole = async (data) => {
   }
 };
 
-//Assign Role
+//Update Role
 export const updateUserRole = async (data) => {
   try {
-    const response = await loginAxiosInstance.put("/update-role", data);
+    const response = await loginAxiosInstance.put("/update-role", data, { showSpinner: true });
 
     if (!response.data.error) {
       return response.data.message;
+    }
+  } catch (error) {
+    if (error.response.data.error) {
+      return error.response.data.message;
+    } else {
+      console.log(error.response.data);
+      return "An unxpected error occured, Please try again.";
+    }
+  }
+};
+
+//Get Admins
+export const getAdmins = async (setUsersAndAdmins) => {
+  try {
+    const response = await loginAxiosInstance.get("/", { showSpinner: true });
+
+    if (!response.data.error) {
+      return setUsersAndAdmins(response.data.adminList);
     }
   } catch (error) {
     if (error.response.data.error) {

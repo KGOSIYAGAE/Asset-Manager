@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function PositionSelectInput({ value, department_name, label, positionsList, isDisabled, setOnChange }) {
+function PositionSelectInput({ value, label, positionsList, isDisabled, setOnChange }) {
   /* const handleSetPositionsList = (selectedDepartement) => {
       for (let i = 0; i < positionsList?.length; i++) {
         if (positionsList[i].name === selectedDepartement) {

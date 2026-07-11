@@ -36,6 +36,7 @@ export const getTodayDate = () => {
   const year = date.getFullYear();
 
   let finalMonth;
+  let finalDay;
 
   if (month < 10) {
     finalMonth = "0" + month.toString();
@@ -43,7 +44,13 @@ export const getTodayDate = () => {
     finalMonth = month;
   }
 
-  return `${year}-${finalMonth}-${day}`;
+  if (day < 10) {
+    finalDay = "0" + day.toString();
+  } else {
+    finalDay = day;
+  }
+
+  return `${year}-${finalMonth}-${finalDay}`;
 };
 
 //Get todays date
@@ -59,7 +66,8 @@ export const getTodayFullDate = () => {
 //Get todays date
 export const getCurrentDate = () => {
   const date = new Date();
-  const day = date.getDate();
+  //const day = date.getDate();
+  const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 

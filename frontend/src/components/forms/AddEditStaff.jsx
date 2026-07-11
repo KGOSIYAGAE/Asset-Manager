@@ -22,6 +22,9 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
 //import { positionList } from "../../utils/positionsList";
 import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/FacultySelectInput";
+import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
+
+import Modal from "react-modal";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -29,17 +32,17 @@ function AddEditStaff({ path }) {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [staff_no, setStaff_no] = useState("");
-  const [phone_number, setPhone_Number] = useState("");
-  const [email, setEmail] = useState("");
-  const [faculty_name, setFaculty_name] = useState("");
-  const [department_name, setDepartment_name] = useState("");
-  const [position_name, setPosition_name] = useState("");
-  const [contract_type, setContract_Type] = useState("");
-  const [isActive, setIsActive] = useState("");
-  const [start_date, setStart_date] = useState("");
+  const [name, setName] = useState();
+  const [surname, setSurname] = useState();
+  const [staff_no, setStaff_no] = useState();
+  const [phone_number, setPhone_Number] = useState();
+  const [email, setEmail] = useState();
+  const [faculty_name, setFaculty_name] = useState();
+  const [department_name, setDepartment_name] = useState();
+  const [position_name, setPosition_name] = useState();
+  const [contract_type, setContract_Type] = useState();
+  const [isActive, setIsActive] = useState();
+  const [start_date, setStart_date] = useState();
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -53,7 +56,10 @@ function AddEditStaff({ path }) {
   const [positionList, setPositionList] = useState(null);
 
   const [formType, setFormType] = useState("add");
+
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+
+  const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   //Toast close code
   const handleToastClose = () => {
@@ -82,43 +88,43 @@ function AddEditStaff({ path }) {
   //Handle Submit / Update
   const handleSubmit = () => {
     if (!name) {
-      return setShowToast({ isShown: true, type: "", message: "First name must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "First name must be provided" });
     }
 
     if (!surname) {
-      return setShowToast({ isShown: true, type: "", message: "Last name must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Last name must be provided" });
     }
 
     if (!staff_no) {
-      return setShowToast({ isShown: true, type: "", message: "Staff number must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Staff number must be provided" });
     }
 
     if (!phone_number) {
-      return setShowToast({ isShown: true, type: "", message: "Phone number must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Phone number must be provided" });
     }
 
     if (!email) {
-      return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Email must be provided" });
     }
 
     if (!isActive) {
-      return setShowToast({ isShown: true, type: "", message: "User status must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "User status must be provided" });
     }
 
     if (!faculty_name) {
-      return setShowToast({ isShown: true, type: "", message: "Faculty must be selected" });
+      return setShowToast({ isShown: true, type: "error", message: "Faculty must be selected" });
     }
 
     if (!department_name) {
-      return setShowToast({ isShown: true, type: "", message: "Department must be selected" });
+      return setShowToast({ isShown: true, type: "error", message: "Department must be selected" });
     }
 
     if (!position_name) {
-      return setShowToast({ isShown: true, type: "", message: "Position must be selected" });
+      return setShowToast({ isShown: true, type: "error", message: "Position must be selected" });
     }
 
     if (!start_date) {
-      return setShowToast({ isShown: true, type: "", message: "Start date must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Start date must be provided" });
     }
 
     setError(null);
@@ -159,19 +165,19 @@ function AddEditStaff({ path }) {
 
   //Form Clear
   const hanldeFormClear = () => {
-    setName("");
-    setSurname("");
-    setStaff_no("");
-    setPhone_Number("");
-    setEmail("");
-    setFaculty_name("");
-    setPosition_name("");
-    setDepartment_name("");
-    setContract_Type("");
-    setIsActive("");
-    setLaptopDetails("");
-    setStart_date("");
-    setEndDate("");
+    setName();
+    setSurname();
+    setStaff_no();
+    setPhone_Number();
+    setEmail();
+    setFaculty_name();
+    setPosition_name();
+    setDepartment_name();
+    setContract_Type();
+    setIsActive();
+    setLaptopDetails();
+    setStart_date();
+    setEndDate();
   };
 
   //Choose user status
@@ -190,6 +196,24 @@ function AddEditStaff({ path }) {
 
   useEffect(() => {
     getUserDetails();
+  }, []);
+
+  //handle post Message Response
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted") {
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: event.data.payload.message });
+          setOpenModal({ isShown: true });
+          return;
+        }
+
+        setShowToast({ isShow: true, type: "success", message: event.data.payload.message });
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   return (
@@ -245,7 +269,7 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-2">
-            <PositionSelectInput label={"Position"} value={position_name} department_name={department_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
+            <PositionSelectInput label={"Position"} value={position_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
           </div>
 
           <div className="col-span-2">
@@ -268,8 +292,16 @@ function AddEditStaff({ path }) {
             <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
 
-          <div className="col-span-5">
-            <FormLaptopDetails laptopDetails={laptopDetails} />
+          <div className="col-span-4">
+            {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
+            <span
+              className="link-text"
+              onClick={() => {
+                setOpenModal({ isShown: true });
+              }}
+            >
+              Assign Laptop
+            </span>
           </div>
         </div>
         <div className="flex justify-end">
@@ -281,7 +313,35 @@ function AddEditStaff({ path }) {
         </div>
         {error ? <span className="text-sm text-red-500">{error}</span> : ""}
       </div>
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={handleToastClose} />
+
+      <Modal
+        isOpen={openModal.isShown}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setOpenModal({ isShown: false });
+        }}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+        }}
+        contentLabel=""
+        className={`${
+          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+      >
+        <AssignDeviceToUser
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+          onSubmit={() => {
+            //getDeviceDetails();
+            setOpenModal({ isShown: false });
+          }}
+          userId={staff_no}
+          setShowToast={setShowToast}
+        />
+      </Modal>
+
+      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
   );
 }

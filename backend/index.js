@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 require("dotenv").config();
+
 const { dbConnection } = require("./util/dbConnection");
 
 const app = express();
@@ -15,7 +16,7 @@ app.use(express.json({ limit: "900mb" }));
 /*Update*/
 //Admin
 const adminRouter = require("./Routes/adminRoutes");
-app.use("/api/v1/asset-manager/admin/", adminRouter);
+app.use("/api/v1/asset-manager/admin", adminRouter);
 
 //Devices
 const deviceRouter = require("./Routes/deviceRoutes");
@@ -44,6 +45,18 @@ app.use("/api/v1/asset-manager/device-transactions", deviceTransactionsRouter);
 //Device logs
 const signatureRouter = require("./Routes/signatureRoutes");
 app.use("/api/v1/asset-manager/signatures", signatureRouter);
+
+//Search
+const searchRouter = require("./Routes/searchRoutes");
+app.use("/api/v1/asset-manager/search", searchRouter);
+
+//send notifications
+const notificationRouter = require("./Routes/notificationRoutes");
+app.use("/api/v1/asset-manager/notification", notificationRouter);
+
+//Repairs
+const repairRouter = require("./Routes/deviceRepairRoutes");
+app.use("/api/v1/asset-manager/repairs", repairRouter);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server running on port", process.env.PORT);

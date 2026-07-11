@@ -2,20 +2,17 @@ import React, { useEffect, useState } from "react";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { useNavigate } from "react-router-dom";
 import { getSystemUsers } from "../../utils/helperMethods";
+import { getAdmins } from "../../services/api/admin/Admin.Api";
 
-function RolesAndPermissionTable({ users, label, handleUpdateRole }) {
+function RolesAndPermissionTable({ userAndAdmins, label, handleUpdateRole }) {
   const navigate = useNavigate();
-  const [userAndAdmins, setUsersAndAdmins] = useState(null);
+
   const [columnCount, setColumnCount] = useState(8);
 
   //Handle view more
   const handleViewDevice = (id) => {
     navigate(`/devices/device-details/${id}`);
   };
-
-  useEffect(() => {
-    setUsersAndAdmins(getSystemUsers(users));
-  }, [users]);
 
   return (
     <div className="w-full text-sm  rounded-sm">
@@ -34,7 +31,7 @@ function RolesAndPermissionTable({ users, label, handleUpdateRole }) {
         </thead>
         {userAndAdmins <= 0 ? (
           <tbody>
-            <tr>
+            <tr className="border border-slate-200">
               <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
                 <strong>No data available</strong>
                 <p>Create a new system user.</p>

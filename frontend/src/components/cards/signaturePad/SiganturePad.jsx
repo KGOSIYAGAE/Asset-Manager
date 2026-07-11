@@ -7,6 +7,7 @@ import { setUserSignature } from "../../../services/api/signature/userSignatures
 import { handleAssignDeviceToStaff, handleAssignDeviceToStudent } from "../../../utils/HandleAssignDevice";
 import { getUserType } from "../../../utils/helperMethods";
 import { handleLoanDevice } from "../../../utils/HandleLoanDevice";
+import { handleSendApprovalEmail } from "../../../utils/handleNotificationEmails";
 
 function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate, setShowToast, formType }) {
   const signatureCanvasRef = useRef(null);
@@ -31,10 +32,13 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate,
   const handleAssign = async () => {
     if (formType === "loan-issue") {
       handleLoanDevice(userDetails, ...deviceDetails, returnDate, setShowToast);
+      handleSendApprovalEmail(userDetails, ...deviceDetails, setShowToast, "Loan");
     } else if (formType === "student-issue") {
       handleAssignDeviceToStudent(userDetails, deviceDetails, setShowToast);
+      handleSendApprovalEmail(userDetails, deviceDetails, setShowToast, "Issue");
     } else {
       handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
+      handleSendApprovalEmail(userDetails, ...deviceDetails, setShowToast, "Issue");
     }
 
     return saveSignature();

@@ -14,7 +14,7 @@ import LoanIssueVirificationCard from "../../components/cards/verificationCompon
 import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";*/
 
 function SecondScreenPage() {
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState();
   const params = useParams();
 
   const { source, userId, deviceId, returnDate } = params;

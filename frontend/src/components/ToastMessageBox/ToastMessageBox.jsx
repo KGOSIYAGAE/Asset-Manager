@@ -20,7 +20,7 @@ function ToastMessageBox({ isShown, type, message, onClose }) {
         className={`w-[500px] h-[150px] flex flex-col bg-white  rounded-md shadow-lg border border-zinc-100 relative  transition-all duration-300 ${isShown ? "opacity-100" : "opacity-0 -right-96"} `}
       >
         <div className="">
-          <div className={`${type === "success" ? "bg-green-500" : type == "error" ? "bg-red-500" : "bg-yellow-500"} p-2 rounded-t-md`}></div>
+          <div className={`${type === "success" ? "bg-green-600" : type == "error" ? "bg-red-600" : "bg-orange-600"} p-2 rounded-t-md`}></div>
           <div className="flex justify-end p-2">
             <IoMdClose
               size={20}
@@ -33,11 +33,11 @@ function ToastMessageBox({ isShown, type, message, onClose }) {
         <div className={`h-full flex flex-col items-center justify-center gap-5`}>
           <div className="flex items-center">
             {type === "success" ? (
-              <FaCheckCircle className="text-green-500" size={30} />
+              <FaCheckCircle className="text-green-600" size={30} />
             ) : type === "error" ? (
-              <IoCloseCircle className="text-red-500" size={35} />
+              <IoCloseCircle className="text-red-600" size={35} />
             ) : (
-              <IoInformationCircle className="text-yellow-500" size={35} />
+              <IoInformationCircle className="text-orange-600" size={35} />
             )}
             <span className="font-bold">{type === "success" ? "Success" : type === "error" ? "Error" : "Info"}</span>
           </div>

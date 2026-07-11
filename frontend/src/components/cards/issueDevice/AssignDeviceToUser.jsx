@@ -17,31 +17,49 @@ import OpenSecondScreenButton from "../../buttons/OpenSecondScreenButton/OpenSec
 import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
 
-function AssignDeviceToUser({ onCanel, onSubmit, StudentNo, setShowToast }) {
+function AssignDeviceToUser({ onCanel, onSubmit, userId, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null }); //Get user type based on userID
   const [selectedDevice, setSelectedDevice] = useState({ id: null, make: null, model: null, serial_no: null, asset_tag: null });
 
-  const { devicesDispatch } = useDeviceContext();
+  const [allDevices, setAllDevices] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const deviceLimit = 50;
+  const userLimit = 50;
+
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    //getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllDevices, setTotalPages);
+  };
+
+  //Handle Get data
+  const handleGetDevices = () => {
+    getAllDevices({ page: currentPage, limit: deviceLimit }, setAllDevices, setTotalPages);
+  };
+
+  //Execute Gett All devices on load or status change
   useEffect(() => {
-    getAllDevices(devicesDispatch);
-  }, []);
+    handleGetDevices();
+  }, [currentPage]);
 
   return (
     <div className="bg-white">
       <div className="flex flex-col gap-2 -z-50">
         <span className="font-semibold p-2">Assign Device</span>
 
-        <DeviceSelectInput userId={StudentNo} selectedDevice={selectedDevice} setSelectedDevice={setSelectedDevice} />
-
+        {/** */}
+        <DeviceSelectInput allDevices={allDevices} selectedDevice={selectedDevice} setSelectedDevice={setSelectedDevice} />
+        {/** */}
         <div className="flex justify-end p-3 gap-8">
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
           {selectedDevice?.id ? (
             <div onClick={() => onCanel()}>
-              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={StudentNo} deviceId={selectedDevice?.id} formType={"issue-verification"} setShowToast={setShowToast} />
+              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={userId} deviceId={selectedDevice?.id} formType={"issue-verification"} setShowToast={setShowToast} />
             </div>
           ) : (
             ""

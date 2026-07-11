@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SubmitButton from "../SubmitButton";
 
 function OpenSecondScreenButton({ btnLable, userId, deviceId, formType, returnDate, setShowToast, w = 800, h = 600 }) {
-  const [error, setError] = useState("");
+  const [error, setError] = useState();
 
   async function openOnSecondScreen() {
     try {

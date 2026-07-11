@@ -78,11 +78,11 @@ export default ReleaseUser;
  const [showUsers, setShowUsers] = useState({ isShow: false });
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
 
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState();
   const [searchResultsData, setSearchResultsData] = useState([]);
 
-  const [userType, setUserType] = useState("");
-  const [formType, setFormType] = useState("");
+  const [userType, setUserType] = useState();
+  const [formType, setFormType] = useState();
 
   const params = useParams();
   const navigate = useNavigate();

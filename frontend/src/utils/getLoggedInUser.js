@@ -33,23 +33,61 @@ export const rolesList = [
   },
 ];
 
-//Cehck if user has permissions
-export const hasPermission = (permission) => {
-  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  const userRole = currentUser?.role;
-
-  const ROLES = {
-    support_admin: {
-      can: ["create", "edit", "delete", "view", "support-dash", "view-logs", "bulk-create", "export", "assign", "approve", "manage-roles", "print"],
-    },
-    support_technician: {
-      can: ["create", "edit", "view", "support-tech-dash", "assign", "print"],
-    },
-    support_intern: {
-      can: ["view", "support-tech-dash", "assign"],
-    },
-    networks_admin: {
-      can: ["create", "edit", "delete", "view", "networks-dash", "view-logs", "bulk-create", "export", "assign"],
+export const ROLES = {
+  support_admin: {
+    can: [
+      "create",
+      "edit",
+      "delete",
+      "view",
+      "support-admin-dash",
+      "view-transactions",
+      "export",
+      "import",
+      "assign",
+      "approve",
+      "release",
+      "loan",
+      "manage-roles",
+      "print",
+      "create-repair",
+      "assign-repair",
+      "view-upgrades",
+      "view-repairs",
+      "signature",
+      "view",
+    ],
+  },
+  support_technician: {
+    can: ["create", "edit", "view", "support-tech-dash", "assign", "loan", "release", "import", "print", "view-transactions", "create-repair", "view-repairs", "view-upgrades", "signature"],
+  },
+  support_servicedesk: {
+    can: [
+      "create",
+      "edit",
+      "view",
+      "support-Service-dash",
+      "assign",
+      "loan",
+      "release",
+      "import",
+      "print",
+      "view-transactions",
+      "create-repair",
+      "assign-repair",
+      "view-repairs",
+      "view-upgrades",
+      "signature",
+    ],
+  },
+  support_intern: {
+    can: ["view", "support-tech-dash", "assign", "create-repair", "view-repairs"],
+  },
+  viewer: {
+    can: ["view"],
+  },
+  /*networks_admin: {
+      can: ["create", "edit", "delete", "view", "networks-dash", "view-logs", "bulk-create", "export", "assign", "create-repair"],
     },
     networks_technician: {
       can: ["create", "edit", "view", "networks-dash", "assign"],
@@ -57,10 +95,13 @@ export const hasPermission = (permission) => {
     editor: {
       can: ["create", "edit", "view", "assign"],
     },
-    viewer: {
-      can: ["view"],
-    },
-  };
+    */
+};
+
+//Cehck if user has permissions
+export const hasPermission = (permission) => {
+  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  const userRole = currentUser?.role;
 
   if (!userRole) {
     console.log("You do not have access to the system");

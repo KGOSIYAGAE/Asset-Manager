@@ -13,7 +13,7 @@ function DeleteConfirmation({ onCanel, onDelete, email, text, heading, laptopSer
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          <button className="flex bg-red-400 text-white  rounded-sm p-3" onClick={onDelete}>
+          <button className="flex bg-red-600 text-white  rounded-sm p-3" onClick={onDelete}>
             Delete
           </button>
         </div>

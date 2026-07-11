@@ -467,15 +467,117 @@ const updateDevice = async (req, res) => {
 //Get all devices that require approval
 const getDeviceForApproval = async (req, res) => {
   try {
-    const GET_ALL_QUERY = `SELECT * FROM "deviceUserDetails" WHERE status = 'Loan Approval required' OR status= 'Issue Approval required'`;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
 
-    const { rows } = await query(GET_ALL_QUERY);
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "deviceUserDetails" WHERE status = 'Loan Approval required' OR status= 'Issue Approval required'`;
+
+    //Get the pagated data
+    const dataQuery = `SELECT * FROM "deviceUserDetails" WHERE status = 'Loan Approval required' OR status= 'Issue Approval required' LIMIT $1 OFFSET $2`;
+
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    const totalDevices = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalDevices / limit);
+
+    const { rows } = await query(dataQuery, [limit, offset]);
 
     if (!rows) {
       return res.status(400).json({ message: "An error occured fetching devices", error: true });
     }
 
-    return res.status(200).json({ deviceList: rows, message: "Success", error: false });
+    return res.status(200).json({ deviceList: rows, totalPages: totalPages, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//Get all loaned devices
+const getLoanedDevices = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "deviceUserDetails" WHERE status = 'Loaned'`;
+
+    //Get the pagated data
+    const dataQuery = `SELECT * FROM "deviceUserDetails" WHERE status = 'Loaned' LIMIT $1 OFFSET $2`;
+
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    const totalDevices = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalDevices / limit);
+
+    const { rows } = await query(dataQuery, [limit, offset]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    return res.status(200).json({ deviceList: rows, totalPages: totalPages, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//Get all loaned devices
+const getDevicesDueReturn = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "deviceUserDetails" WHERE status = 'Assigned' AND expected_return_date <= CURRENT_DATE`;
+
+    //Get the pagated data
+    const dataQuery = `SELECT * FROM "deviceUserDetails" WHERE status = 'Assigned' AND expected_return_date <= CURRENT_DATE LIMIT $1 OFFSET $2`;
+
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    const totalDevices = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalDevices / limit);
+
+    const { rows } = await query(dataQuery, [limit, offset]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    return res.status(200).json({ deviceList: rows, totalPages: totalPages, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//Get devices stats
+const getDevicesStats = async (req, res) => {
+  try {
+    const getDevicesStatsQuery = `SELECT * FROM "devicesStats";`;
+
+    const { rows } = await query(getDevicesStatsQuery);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Device stats not found", error: true });
+    }
+
+    return res.status(200).json({ deviceDetails: rows, message: "Success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -511,6 +613,60 @@ const getAllDevices = async (req, res) => {
   try {
     const userrole = req.userrole;
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    if (!userrole) {
+      return res.status(400).json({ message: "User role must be provided", error: true });
+    }
+
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "deviceUserDetails"`;
+
+    //Get the pagated data
+    const dataQuery = `SELECT * FROM "deviceDetails"
+     WHERE device_type = 
+      CASE 
+        WHEN $1 = 'support_admin' THEN 'Support' 
+        WHEN $1 = 'support_technician' THEN 'Support'
+        WHEN $1 = 'networks_admin' THEN 'Network'
+        WHEN $1 = 'networks_technician' THEN 'Network'
+        WHEN $1 = 'av_admin' THEN 'Audio Visual'
+        WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
+        ELSE device_type 
+      END AND is_deleted = FALSE ORDER BY created_at DESC LIMIT $2 OFFSET $3 `;
+
+    //Get device count
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    const totalDevices = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalDevices / limit);
+
+    const { rows } = await query(dataQuery, [userrole, limit, offset]);
+
+    //const { rows } = await query(GET_ALL_QUERY, [userrole]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    return res.status(200).json({ deviceList: rows, totalPages: totalPages, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//Get all devices that need approval
+{
+  /*const getAllDevicesForApproval = async (req, res) => {
+  try {
+    const userrole = req.userrole;
+
     if (!userrole) {
       return res.status(400).json({ message: "User role must be provided", error: true });
     }
@@ -525,7 +681,7 @@ const getAllDevices = async (req, res) => {
         WHEN $1 = 'av_admin' THEN 'Audio Visual'
         WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
         ELSE device_type 
-      END AND is_deleted = FALSE ORDER BY created_at DESC`;
+      END AND is_deleted = FALSE AND status LIKE '%Approval%' ORDER BY updated_at DESC LIMIT 8`;
 
     /*  const GET_ALL_QUERY = `SELECT * FROM devices 
      WHERE device_type = 
@@ -537,7 +693,7 @@ const getAllDevices = async (req, res) => {
         WHEN $1 = 'av_admin' THEN 'Audio Visual'
         WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
         ELSE device_type 
-      END ORDER BY created_at DESC`;*/
+      END ORDER BY created_at DESC`;*
 
     const { rows } = await query(GET_ALL_QUERY, [userrole]);
 
@@ -550,7 +706,8 @@ const getAllDevices = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
-};
+};*/
+}
 
 //Get all device details by id
 const getDeviceDetails = async (req, res) => {
@@ -604,7 +761,7 @@ const getDevicesAssigned = async (req, res) => {
 const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { issued_by, status, userId } = req.body;
+    const { issued_by, status, userId, userEndDate } = req.body;
 
     //const previousStatus = await checkDeviceStatus(id);
 
@@ -635,8 +792,9 @@ const assignDevice = async (req, res) => {
     }
 
     //Create entry on the device transations table
-    const createDeviceTransaction = "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, issue_date, action_type) VALUES ($1,$2,$3,$4,NOW(), 'Issue');";
-    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status]);
+    const createDeviceTransaction =
+      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date, issue_date, action_type) VALUES ($1,$2,$3,$4,$5,NOW(), 'Issue');";
+    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, userEndDate]);
 
     //Update Laptop current status and user
     const updateDeviceCurrentState = "UPDATE devices SET status=$1, current_user_id=$2, updated_at=NOW() WHERE id=$3";
@@ -657,13 +815,13 @@ const assignDevice = async (req, res) => {
 const loanDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { issued_by, status, userId, loan_end_date } = req.body;
+    const { issued_by, status, userId, expected_return_date } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!status || !userId || !issued_by || !loan_end_date) {
+    if (!status || !userId || !issued_by || !expected_return_date) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
@@ -686,8 +844,8 @@ const loanDevice = async (req, res) => {
 
     //Create entry on the device transations table
     const createDeviceTransaction =
-      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, loan_end_date, issue_date, action_type) VALUES ($1,$2,$3,$4,$5, NOW(), 'Loan');";
-    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, loan_end_date]);
+      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date, issue_date, action_type) VALUES ($1,$2,$3,$4,$5, NOW(), 'Loan');";
+    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, expected_return_date]);
 
     //Update Laptop current status and user
     const updateDeviceCurrentState = "UPDATE devices SET status=$1, current_user_id=$2, updated_at=NOW() WHERE id=$3";
@@ -753,17 +911,17 @@ const releaseDevice = async (req, res) => {
   }
 };
 
-//release device
-const approveDevice = async (req, res) => {
+//reject device
+const rejectDeviceIssueLoan = async (req, res) => {
   try {
     const { id } = req.params;
-    const { approved_by, status } = req.body;
+    const { status } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!approved_by || !status) {
+    if (!returned_by || !status) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
@@ -778,8 +936,57 @@ const approveDevice = async (req, res) => {
     const device = rows[0];
 
     //Update  transations table status, returned_by, return_date
-    const updateDeviceCurrentState = "UPDATE device_transactions SET status=$1, approved_by=$2, approve_date=NOW() WHERE device_serial_number=$3 AND user_id = $4";
-    const deviceState = await query(updateDeviceCurrentState, [status, approved_by, device.serial_no, device.current_user_id]);
+    const updateDeviceCurrentState = "UPDATE device_transactions SET status=$1, WHERE device_serial_number=$2 AND user_id = $3";
+    const deviceState = await query(updateDeviceCurrentState, [status, device.serial_no, device.current_user_id]);
+
+    if (deviceState.rowCount === 0) {
+      return res.status(400).json({ message: "Device transaction not updated", error: true });
+    }
+
+    //Update  device table status, current_user_id
+    const updateDevice = "UPDATE devices SET status=$1, current_user_id=$2, updated_at=NOW() WHERE id=$3";
+    const VALUES = ["Available", null];
+
+    const { rowCount } = await query(updateDevice, [...VALUES, id]);
+
+    if (rowCount === 0) {
+      return res.status(400).json({ message: "An error occured when releasing the device from user", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: `Device successfully released.`, error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//approve device
+const approveDevice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { approved_by, status, deviceTransactionId } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Device Id not provided.", error: true });
+    }
+
+    if (!approved_by || !status || !deviceTransactionId) {
+      return res.status(400).json({ message: "All fields must be provided.", error: true });
+    }
+
+    //Verify Device
+    const verifyDevice = `SELECT * FROM devices WHERE id = $1`;
+    const { rows } = await query(verifyDevice, [id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Device matching the id not found", error: true });
+    }
+
+    const device = rows[0];
+
+    //Update  transations table status, returned_by, return_date
+    const updateDeviceCurrentState = "UPDATE device_transactions SET status=$1, approved_by=$2, approve_date=NOW() WHERE id=$3 ";
+    const deviceState = await query(updateDeviceCurrentState, [status, approved_by, deviceTransactionId]);
 
     if (deviceState.rowCount === 0) {
       return res.status(400).json({ message: "Device transaction not updated", error: true });
@@ -806,18 +1013,20 @@ const deleteDevice = async (req, res) => {
     const { id } = req.params;
     const { is_deleted, deleted_by, status } = req.body;
 
-    console.log(req.body);
-
     if (!id) {
       return res.status(400).json({ message: "Device Id must be provided", error: true });
     }
 
     //Verify if exist
     const find_device_query = "SELECT * FROM devices WHERE id = $1";
-    const { rowCount } = await query(find_device_query, [id]);
+    const { rowCount, rows } = await query(find_device_query, [id]);
 
     if (rowCount === 0) {
       return res.status(400).json({ message: "Device matching Id not found", error: true });
+    }
+
+    if (rows[0].current_user_id) {
+      return res.status(400).json({ message: "Operation failed, this is device is currently assigned to a user.", error: true });
     }
 
     //Update  device table status
@@ -839,6 +1048,9 @@ module.exports = {
   getAllDevices,
   getDeviceDueUpgrade,
   getDeviceForApproval,
+  getLoanedDevices,
+  getDevicesDueReturn,
+  getDevicesStats,
   getDevice,
   getDeviceDetails,
   getDevicesAssigned,

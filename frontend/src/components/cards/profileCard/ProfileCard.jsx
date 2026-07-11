@@ -48,16 +48,16 @@ function ProfileCard() {
           showProfileOptions(showMenu);
         }}
       >
-        <div className="w-[30px] h-[30px] flex items-center justify-center bg-zinc-100 p-3 rounded-full border border-zinc-300">
-          <span className="text-sm">{getIntials(loggedInUser?.fullName)}</span>
+        <div className="w-[30px] h-[30px] flex items-center justify-center bg-zinc-100 p-3 rounded-full border border-red-500">
+          <span className="primary-text">{getIntials(loggedInUser?.fullName)}</span>
         </div>
         <div className="flex flex-col justify-center">
-          <span className="text-sm">{`${loggedInUser?.fullName}`}</span>
+          <span className="">{`${loggedInUser?.fullName}`}</span>
         </div>
         <IoChevronDown className="menu-items" />
       </div>
       <div
-        className={`w-[140px] bg-white ${showMenu ? "flex" : "hidden"} flex-col  absolute top-14 right-12 border rounded-sm shadow-md`}
+        className={`w-[140px] bg-red-600 ${showMenu ? "flex" : "hidden"} flex-col  absolute top-14 right-12 rounded-sm shadow-md`}
         onMouseLeave={() => {
           showProfileOptions(showMenu);
         }}
@@ -87,7 +87,7 @@ function ProfileCard() {
             logout();
           }}
         >
-          <div className="flex items-center  text-sm text-red-500 p-2 gap-2 ">
+          <div className="flex items-center  text-sm text-white hover:text-red-600 p-2 gap-2 ">
             <MdPowerSettingsNew className="" size={15} />
             <span className="">Logout</span>
           </div>

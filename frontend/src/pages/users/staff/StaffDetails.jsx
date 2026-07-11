@@ -15,6 +15,9 @@ import OpenSecondScreenButton from "../../../components/buttons/OpenSecondScreen
 import UserCaptureSignature from "../../../components/cards/signaturePad/UserCaptureSignature";
 import ToastMessage from "../../../components/toastMessage/ToastMessage";
 import { getUserDeviceHistory } from "../../../services/api/deviceLogs/deviceTransactions";
+import AssignDeviceToUser from "../../../components/cards/issueDevice/AssignDeviceToUser";
+import SubmitButton from "../../../components/buttons/SubmitButton";
+import { hasPermission } from "../../../utils/getLoggedInUser";
 
 function StaffDetails({ path }) {
   const [staffDetails, setStaffDetails] = useState();
@@ -72,6 +75,35 @@ function StaffDetails({ path }) {
     const handleMessage = (event) => {
       if (event.data.type === "form_submitted_signature") {
         setShowToast({ isShow: true, type: "success", message: event.data.payload });
+
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: "Error updating the signature" });
+          geDetails();
+          return;
+        }
+
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        geDetails();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  //handle post Message Response on assign device
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted") {
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: "Error Assigning device" });
+          geDetails();
+          return;
+        }
+
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
         geDetails();
       }
     };
@@ -112,9 +144,9 @@ function StaffDetails({ path }) {
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Account Status</span>
             {staffDetails?.acc_status === "Active" ? (
-              <span className="text-sm bg-green-500 border shadow-sm p-1 rounded-md text-white">{staffDetails?.acc_status}</span>
+              <span className="text-sm bg-green-600 border shadow-sm p-1 rounded-md text-white">{staffDetails?.acc_status}</span>
             ) : (
-              <span className="text-sm bg-red-500 border shadow-sm p-1 rounded-md text-white">{staffDetails?.acc_status}</span>
+              <span className="text-sm bg-red-600 border shadow-sm p-1 rounded-md text-white">{staffDetails?.acc_status}</span>
             )}
           </div>
           <div className="flex justify-between  p-2 item-hover">
@@ -163,36 +195,34 @@ function StaffDetails({ path }) {
               <div className="flex flex-col gap-5">
                 <div className="w-6/12  rounded-md shadow-md p-2 flex items-center  ">
                   <img alt="signature" src={staffDetails?.image_base64} className="w-[180px] " />
-                  <button
-                    onClick={() => {
-                      {
-                        /*setOpenModal({ isShown: true, trimmedDataURL: staffTrimmedDataURL, setTrimmedDataURL: setStaffTrimmedDataURL, user_id: staffData?.staff_no });*/
-                        setOpenModal({ isShown: true, type: "release", data: "hello" });
-                      }
-                    }}
-                  ></button>
                 </div>
-                <div onClick={() => onCanel()}>
-                  <OpenSecondScreenButton btnLable={"Update Signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
-                </div>
+                {hasPermission("signature") && (
+                  <div onClick={() => onCanel()}>
+                    <OpenSecondScreenButton btnLable={"Update Signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
+                  </div>
+                )}
               </div>
             ) : (
-              <div onClick={() => onCanel()}>
-                <OpenSecondScreenButton btnLable={"Capture signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
-              </div>
+              hasPermission("signature") && (
+                <div onClick={() => onCanel()}>
+                  <OpenSecondScreenButton btnLable={"Capture signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
+                </div>
+              )
             )}
           </div>
           <div className="w-full flex justify-end p-2 gap-2">
-            <div
-              className="w-[30px] flex items-center justify-center text-green-400 hover:text-green-500 bg-green-100 p-1 rounded-md border border-green-400 hover:border-green-500 cursor-pointer"
-              onClick={() => handleEdit(staffDetails?.id)}
-            >
-              <MdEdit size={20}></MdEdit>
-            </div>
+            {hasPermission("edit") && (
+              <div
+                className="w-[30px] flex items-center justify-center text-blue-600 hover:text-blue-600 bg-blue-100 p-1 rounded-md border border-blue-500 hover:border-blue-600 cursor-pointer"
+                onClick={() => handleEdit(staffDetails?.id)}
+              >
+                <MdEdit size={20}></MdEdit>
+              </div>
+            )}
           </div>
         </div>
 
-        <UserDevicesTable deviceList={devicesState?.deviceList} deviceHistory={devicesTransactionHistory} />
+        <UserDevicesTable deviceList={devicesState?.deviceList} deviceHistory={devicesTransactionHistory} onAssignDevice={() => setOpenModal({ isShown: true, type: "release", data: "hello" })} />
       </div>
       <Modal
         isOpen={openModal.isShown}
@@ -208,7 +238,17 @@ function StaffDetails({ path }) {
           openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
-        <UserCaptureSignature lablel={"Capture User Signature"} user_id={staffDetails?.staff_no} />
+        <AssignDeviceToUser
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+          onSubmit={() => {
+            //getDeviceDetails();
+            setOpenModal({ isShown: false });
+          }}
+          userId={staffDetails?.staff_no}
+          setShowToast={setShowToast}
+        />
       </Modal>
       <ToastMessage
         isShown={showToast.isShow}

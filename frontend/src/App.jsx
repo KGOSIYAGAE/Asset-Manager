@@ -37,6 +37,8 @@ import RolesAndPermissionsPage from "./pages/users/staff/RolesAndPermissionsPage
 import NoAccess from "./pages/noAcess/NoAccess";
 import { setNavigate } from "./utils/navigate";
 import { LoadingContextProvider } from "./context/LoadingContext";
+import Repairs from "./pages/repairs/Repairs";
+import Approval from "./pages/emailTemplates/Approval";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,8 +66,8 @@ function App() {
   const Layout = () => {
     return (
       <div className="w-screen flex ">
-        <div className={`${isMinimize ? "w-[60px] " : "w-2/12"} border`}>
-          <Menu isMinimized={isMinimize} />
+        <div className={`${isMinimize ? "w-[60px] " : "w-2/12"}`}>
+          <Menu isMinimized={isMinimize} setIsMinimize={setIsMinimize} />
         </div>
         <div className={`${isMinimize ? "w-full" : "w-10/12"} `}>
           <div className="bottom-border">
@@ -260,7 +262,18 @@ function App() {
         },
         { path: "/users/students/student-details/:student_no", element: <StudentDetails path={"student-details/"} />, errorElement: <Home /> },
 
-        ,
+        //Repairs
+        {
+          path: "/repairs",
+          element: <Repairs path={"Repairs"} />,
+        },
+
+        //View Email templates
+        {
+          path: "/email-templates",
+          element: <Approval path={"Email Templates"} />,
+        },
+
         //User Management
         { path: "/users/roles-and-permissions", element: <RolesAndPermissionsPage path={"roles-and-permissions/"} />, errorElement: <Home /> },
       ],

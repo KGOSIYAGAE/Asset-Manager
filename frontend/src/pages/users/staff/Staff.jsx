@@ -16,6 +16,7 @@ import ImportFile from "../../../components/cards/importFile/ImportFile";
 import BulkAddButton from "../../../components/buttons/BulkAddButton";
 import { hasPermission } from "../../../utils/getLoggedInUser";
 import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
+import { handleDeleteStaff } from "../../../utils/handleDeleteItem";
 
 function Staff({ path }) {
   //Context
@@ -26,6 +27,18 @@ function Staff({ path }) {
   const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
+
+  //Set pagated data to the table
+  const [allStaff, setAllStaff] = useState(null);
+
+  const [pagationModel, setPagationModel] = useState({
+    page: 0,
+    pageSize: 8,
+  });
+
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchResults, setSearchResults] = useState(null);
+  /////////////////////Handle Search Results////////////
 
   // Toast Close
   const handleToastClose = () => {
@@ -59,11 +72,16 @@ function Staff({ path }) {
     setOpenImportModal({ isShown: true, type: "issue", data: null });
   };
 
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    getStaffData({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStaff, setTotalPages);
+  };
+
+  //Execute Gett All devices on load or status change
   useEffect(() => {
-    //API CALL ON RENDER
-    searchDispatch({ type: "SET_SEARCH_NULL" });
-    getStaffData(staffDispatch);
-  }, []);
+    getStaffData({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStaff, setTotalPages);
+  }, [pagationModel.page, pagationModel.pageSize]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -74,18 +92,21 @@ function Staff({ path }) {
         <div className="flex justify-between">
           <span className="heading-text">Staff List</span>
           <div className="flex gap-2">
-            <SearchInput searchData={staffState.staffList} />
+            <SearchInput tableName={"staff"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
             {hasPermission("create") && <AddButton name={"Add New Staff"} handleAdd={handleAdd} />}
-            {hasPermission("bulk-create") && <BulkAddButton onClick={ImportModal} />}
+            {hasPermission("import") && <BulkAddButton onClick={ImportModal} />}
             {hasPermission("export") && <ExportExcelButton />}
           </div>
         </div>
         <DataTable
-          rows={searchState.searchResults ? searchState.searchResults : staffState.staffList}
+          rows={searchResults ? searchResults : allStaff}
           colHeaders={staffTableHeaders}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handleViewDetails={handleViewDetails}
+          pagationModel={pagationModel}
+          setPagationModel={setPagationModel}
+          rowCount={totalPages}
         />
       </div>
       <Modal
@@ -103,7 +124,7 @@ function Staff({ path }) {
               setOpenModal({ isShown: false });
             }}
             onDelete={() => {
-              deleteStaff(openModal.selectedUser, setShowToast);
+              handleDeleteStaff(openModal.selectedUser, setShowToast);
               setOpenModal({ isShown: false });
             }}
             email={openModal.email}

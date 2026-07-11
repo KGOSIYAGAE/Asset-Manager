@@ -12,6 +12,9 @@ import Modal from "react-modal";
 import { getUserDeviceHistory } from "../../../services/api/deviceLogs/deviceTransactions";
 import OpenSecondScreenButton from "../../../components/buttons/OpenSecondScreenButton/OpenSecondScreenButton";
 import UserCaptureSignature from "../../../components/cards/signaturePad/UserCaptureSignature";
+import ToastMessage from "../../../components/toastMessage/ToastMessage";
+import AssignDeviceToUser from "../../../components/cards/issueDevice/AssignDeviceToUser";
+import { hasPermission } from "../../../utils/getLoggedInUser";
 
 function StudentDetails({ path }) {
   const [studentDetails, setStudentDetails] = useState();
@@ -19,6 +22,8 @@ function StudentDetails({ path }) {
   const { devicesState, devicesDispatch } = useDeviceContext();
   const [devicesTransactionHistory, setDevicesTransactionHistory] = useState();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
+
+  const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
 
   const navigate = useNavigate();
 
@@ -62,6 +67,48 @@ function StudentDetails({ path }) {
     geDetails();
   }, []);
 
+  //handle post Message Response
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted_signature") {
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: "Error updating the signature" });
+          geDetails();
+          return;
+        }
+
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        geDetails();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  //handle post Message Response on assign device
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted") {
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: "Error Assigning device" });
+          geDetails();
+          return;
+        }
+
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        geDetails();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
       <span className="text-sm">
@@ -97,9 +144,9 @@ function StudentDetails({ path }) {
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Account Status</span>
             {studentDetails?.acc_status === "Active" ? (
-              <span className="text-sm bg-green-500 border shadow-sm p-1 rounded-md text-white">{studentDetails?.acc_status}</span>
+              <span className="text-sm bg-green-600 border shadow-sm p-1 rounded-md text-white">{studentDetails?.acc_status}</span>
             ) : (
-              <span className="text-sm bg-red-500 border shadow-sm p-1 rounded-md text-white">{studentDetails?.acc_status}</span>
+              <span className="text-sm bg-red-600 border shadow-sm p-1 rounded-md text-white">{studentDetails?.acc_status}</span>
             )}
           </div>
           <div className="flex justify-between p-2 item-hover">
@@ -143,28 +190,34 @@ function StudentDetails({ path }) {
                     }}
                   ></button>
                 </div>
-                <div onClick={() => onCanel()}>
-                  <OpenSecondScreenButton btnLable={"Update Signature"} userId={studentDetails?.student_number} deviceId={null} setShowToast={null} />
-                </div>
+                {hasPermission("signature") && (
+                  <div onClick={() => onCanel()}>
+                    <OpenSecondScreenButton btnLable={"Update Signature"} userId={studentDetails?.student_number} deviceId={null} setShowToast={null} />
+                  </div>
+                )}
               </div>
             ) : (
-              <div onClick={() => onCanel()}>
-                <OpenSecondScreenButton btnLable={"Capture signature"} userId={studentDetails?.student_number} deviceId={null} setShowToast={null} />
-              </div>
+              hasPermission("signature") && (
+                <div onClick={() => onCanel()}>
+                  <OpenSecondScreenButton btnLable={"Capture signature"} userId={studentDetails?.student_number} deviceId={null} setShowToast={null} />
+                </div>
+              )
             )}
           </div>
 
-          <div className="w-full flex justify-end p-2 ">
-            <div
-              className="w-[30px] flex items-center justify-center text-green-400 hover:text-green-500 bg-green-100 p-1 rounded-md border border-green-400 hover:border-green-500 cursor-pointer"
-              onClick={() => handleEdit(studentDetails?.student_number)}
-            >
-              <MdEdit size={20}></MdEdit>
+          {hasPermission("edit") && (
+            <div className="w-full flex justify-end p-2 ">
+              <div
+                className="w-[30px] flex items-center justify-center text-blue-600 hover:text-blue-600 bg-blue-100 p-1 rounded-md border border-blue-500 hover:border-blue-600 cursor-pointer"
+                onClick={() => handleEdit(studentDetails?.student_number)}
+              >
+                <MdEdit size={20}></MdEdit>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         {/* */}
-        <UserDevicesTable deviceList={devicesState?.deviceList} deviceHistory={devicesTransactionHistory} />
+        <UserDevicesTable deviceList={devicesState?.deviceList} deviceHistory={devicesTransactionHistory} onAssignDevice={() => setOpenModal({ isShown: true, type: "release", data: "hello" })} />
       </div>
       <Modal
         isOpen={openModal.isShown}
@@ -180,8 +233,26 @@ function StudentDetails({ path }) {
           openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
-        <UserCaptureSignature lablel={"Capture User Signature"} user_id={studentDetails?.student_number} />
+        <AssignDeviceToUser
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+          onSubmit={() => {
+            //getDeviceDetails();
+            setOpenModal({ isShown: false });
+          }}
+          userId={studentDetails?.student_number}
+          setShowToast={setShowToast}
+        />
       </Modal>
+      <ToastMessage
+        isShown={showToast.isShow}
+        type={showToast.type}
+        message={showToast.message}
+        onClose={() => {
+          setShowToast({ isShow: false });
+        }}
+      />
     </div>
   );
 }

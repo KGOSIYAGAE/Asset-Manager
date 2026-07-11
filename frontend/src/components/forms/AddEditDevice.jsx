@@ -19,20 +19,20 @@ import CategorySelectInput from "../inputs/selectInputs/deviceCategorySelectInpu
 import { GetDeviceType } from "../../utils/helperMethods";
 
 function AddEditDevice({ path }) {
-  const [make, setMake] = useState("");
-  const [model, setModel] = useState("");
-  const [serial_no, setSerial_no] = useState("");
-  const [assetTag, setAssetTag] = useState("");
-  const [spec, setSpec] = useState("");
+  const [make, setMake] = useState();
+  const [model, setModel] = useState();
+  const [serial_no, setSerial_no] = useState();
+  const [assetTag, setAssetTag] = useState();
+  const [spec, setSpec] = useState();
   const [category, setCategory] = useState("Laptop"); // Laptop, desktop, all in one, Monitor
   const [device_condition, setDevice_Condition] = useState("New"); //New, Used, Faulty/ Scrap
   const [status, setStatus] = useState("Available"); //Available, Loaned, Assigned, Under Maintenance, Lost
-  const [warranty_end_date, setWarranty_End_date] = useState("");
-  const [invoice_no, setInvoice_no] = useState("");
-  const [supplier_name, setSupplier_name] = useState("");
+  const [warranty_end_date, setWarranty_End_date] = useState();
+  const [invoice_no, setInvoice_no] = useState();
+  const [supplier_name, setSupplier_name] = useState();
 
-  const [purchaseValue, setPurchaseValue] = useState("");
-  const [currentValue, setCurrentValue] = useState("");
+  const [purchaseValue, setPurchaseValue] = useState();
+  const [currentValue, setCurrentValue] = useState();
 
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [formType, setFormType] = useState("Add");
@@ -52,7 +52,7 @@ function AddEditDevice({ path }) {
     }
   };
 
-  //handle auto populate make
+  //handle auto populate model
   const handleModel = (manufatures) => {
     for (let i = 0; i < deviceMufactures.length; i++) {
       if (deviceMufactures[i].name === manufatures) {
@@ -68,6 +68,7 @@ function AddEditDevice({ path }) {
     setAssetTag(deviceDetails[0].asset_tag);
     setMake(deviceDetails[0].make);
     setModel(deviceDetails[0].model);
+
     setSpec(deviceDetails[0].specification);
     setCategory(deviceDetails[0].category);
     setDevice_Condition(deviceDetails[0].device_condition);
@@ -77,6 +78,9 @@ function AddEditDevice({ path }) {
     setInvoice_no(deviceDetails[0].invoice_number);
     setPurchaseValue(deviceDetails[0].purchase_price);
     setCurrentValue(deviceDetails[0].value_price);
+
+    handleMake(deviceDetails[0].category);
+    handleModel(deviceDetails[0].make);
   };
 
   //Handle Submit

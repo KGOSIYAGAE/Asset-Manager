@@ -3,7 +3,55 @@
 @tailwind utilities;
 
 :root {
-  --primary-color: #e21919;
+  /* Primary Brand Colors */
+  --primary: #d90429;
+  --primary-hover: #b7031f;
+  --primary-light: rgba(239, 35, 60, 0.2);
+  --primary-accent: #ef233c;
+
+  /* Accent Orange */
+  --accent: #f97316;
+  --accent-hover: #fb923c;
+  --accent-light: #fff3e0;
+
+  /* Neutral Colors */
+  --background: #f9fafb;
+  --surface: #ffffff;
+
+  --border: #e5e7eb;
+
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+
+  /* Status Colors */
+  --success: #22c55e;
+  --warning: #f97316;
+  --danger: #ef4444;
+  --info: #3b82f6;
+
+  /* Sidebar */
+  --sidebar-bg: #d90429;
+  --sidebar-hover: #b7031f;
+  --sidebar-active: rgba(255, 255, 255, 0.1);
+
+  --sidebar-text: #ffffff;
+  --sidebar-icon-bg: rgba(255, 255, 255, 0.1);
+  --sidebar-icon-hover: rgba(255, 255, 255, 0.2);
+
+  /* Buttons */
+  --btn-primary-bg: #d90429;
+  --btn-primary-hover: #b7031f;
+  --btn-primary-text: #ffffff;
+
+  /* Table */
+  --table-border: #e5e7eb;
+  --table-header: #ffffff;
+  --table-row-hover: #f9fafb;
+}
+
+html {
+  font-size: 90% !important; /* Forces everything to scale up by 20% */
 }
 
 @layer components {
@@ -19,21 +67,20 @@
     font-size: medium;
   }
 
-  .light-mode {
-    color: black;
-    background-color: #ffffff;
+  .menu-items {
+    @apply flex  items-center  gap-1 text-white transition-all duration-200 hover:bg-slate-50 hover:bg-opacity-15 rounded-md;
   }
 
-  .login-heading {
-    color: var(--primary-color);
+  .menu-icon {
+    @apply bg-slate-50 bg-opacity-15 rounded-md p-2;
   }
 
-  .bg-primary {
-    background-color: var(--primary-color);
+  .top-nav-items {
+    @apply size-7 flex  items-center  gap-1 text-red-600 transition-all duration-200 hover:text-red-700 hover:size-8 rounded-md;
   }
 
-  .primary-color {
-    color: var(--primary-color);
+  .primary-text {
+    @apply text-sm text-red-600;
   }
 
   .link-text {
@@ -41,19 +88,15 @@
   }
 
   .heading-text {
-    @apply text-blue-900 font-bold text-lg;
-  }
-
-  .menu-items {
-    @apply flex  items-center  gap-3 text-zinc-500 hover:bg-blue-50 hover:text-blue-900 rounded-md;
+    @apply text-red-600 font-bold text-lg;
   }
 
   .primary-btn {
-    @apply flex  text-sm items-center bg-blue-900 text-white py-2 px-5 gap-1 rounded-md hover:bg-blue-800;
+    @apply flex  text-sm items-center bg-red-600 text-white py-2 px-5 gap-1 rounded-md hover:bg-red-700;
   }
 
   .secondary-btn {
-    @apply flex  items-center bg-gray-200 text-black py-2 px-5 gap-1 rounded-md hover:bg-gray-100;
+    @apply flex  items-center bg-slate-200 text-red-600 py-2 px-5 gap-1 rounded-md hover:text-red-700 border border-red-500;
   }
 
   .reload-btn {
@@ -61,7 +104,11 @@
   }
 
   .search-input {
-    @apply flex items-center bg-zinc-100 p-1 border border-zinc-300 rounded-md;
+    @apply flex items-center bg-zinc-100 p-1  rounded-md;
+  }
+
+  .search-icon {
+    @apply text-red-600;
   }
 
   .text-input {
@@ -258,5 +305,59 @@
 
   .date-small-text {
     font-size: 8px;
+  }
+
+  .repair-filer {
+    @apply text-sm text-slate-500 flex items-center gap-5;
+  }
+
+  .repair-filer-item {
+    @apply border-b-4 border-white hover:border-b-4 hover:border-red-600 p-3 duration-300;
+  }
+
+  .active {
+    @apply border-b-4 border-red-600;
+  }
+
+  .table-view {
+    @apply w-full h-[520px] flex flex-col text-sm  rounded-md border border-slate-200;
+  }
+
+  .table-view {
+    @apply w-full h-[400px] flex flex-col text-sm  rounded-md border border-slate-200;
+  }
+
+  .table-view table {
+    @apply w-full bg-white rounded-md;
+  }
+
+  .table-view table th {
+    @apply h-[60px] bg-white rounded-md  font-normal;
+  }
+
+  .table-view table th span {
+    border-left: #e2e8f0 0.1svi solid;
+    @apply p-2;
+  }
+
+  .table-view table tbody {
+    @apply border-red-600;
+  }
+
+  .table-view table tr {
+    border: none;
+    @apply h-[50px] p-2;
+  }
+
+  .table-pagation {
+    @apply h-[40px] flex items-center justify-end p-5 gap-8;
+  }
+
+  .pagation-button {
+    @apply bg-transparent flex items-center justify-center rounded-full p-3;
+  }
+
+  .pagation-button:hover {
+    @apply hover:text-black font-bold hover:bg-slate-100;
   }
 }

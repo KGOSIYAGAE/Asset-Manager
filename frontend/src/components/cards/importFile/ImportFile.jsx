@@ -70,17 +70,17 @@ function ImportFile({ type, setShowToast, onClose, onSubmit }) {
     <div className="bg-white">
       <div className="flex flex-col p-2 gap-7">
         <div className="flex justify-between cursor-pointer">
-          <span className="text-xl font-semibold">Upload file</span>
+          <span className="text-xl font-semibold text-red-600">Upload file</span>
           <MdClose
             size={25}
-            className="text-slate-500 hover:text-red-500"
+            className="text-red-600 hover:text-red-700 hover:rotate-90 duration-300"
             onClick={() => {
               onClose();
             }}
           />
         </div>
         <div
-          className={`h-[240px] border-dashed border-2 ${isDrag ? "border-blue-500 bg-blue-50" : "border-slate-300"} rounded-md relative`}
+          className={`h-[240px] border-dashed border-2 ${isDrag ? "border-red-600 bg-red-50" : "border-slate-300"} rounded-md relative`}
           onDrop={(event) => {
             onFileDrop(event);
           }}
@@ -98,13 +98,13 @@ function ImportFile({ type, setShowToast, onClose, onSubmit }) {
             <div className="flex gap-1">
               <input type="file" name="" id="browseFile" className="" hidden accept=".xls, xlsx" onChange={(event) => handleSelectFile(event)} />
               <span>Drag and Drop file here or</span>
-              <label htmlFor="browseFile" className="font-semibold underline">
+              <label htmlFor="browseFile" className="font-semibold underline text-red-600">
                 Choose file
               </label>
             </div>
           </div>
         </div>
-        <div className="flex justify-between text-sm text-slate-500">
+        <div className="flex justify-between text-sm text-black">
           <span className="">Supported formats: XLS, XLSX</span>
           <span>Maximum size: 25 MB</span>
         </div>
@@ -138,7 +138,7 @@ function ImportFile({ type, setShowToast, onClose, onSubmit }) {
             <div className="flex flex-col gap-2">
               <div className="w-[250px] flex items-center bg-white rounded-md  gap-3 p-2">
                 <div className="bg-white rounded-md p-2">
-                  <img src="\public\excel-48.png" alt="" className="w-[30px]" />
+                  <img src="\public\excel-48.png" alt="" className="w-[30px] " />
                 </div>
                 <span className="text-sm font-semibold">Table Example</span>
               </div>
@@ -159,7 +159,7 @@ function ImportFile({ type, setShowToast, onClose, onSubmit }) {
             <CancelButton onClick={onClose} />
             <button
               type="submit"
-              className="bg-blue-900 text-white px-8 rounded-md"
+              className="bg-red-600 text-white px-8 rounded-md"
               onClick={() => {
                 handleUploadFile(file);
               }}

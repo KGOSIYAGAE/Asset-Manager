@@ -9,13 +9,16 @@ import { hasPermission } from "../../../utils/getLoggedInUser";
 import RolesAndPermissionTable from "../../../components/tables/RolesAndPermissionTable";
 import ManageRoles from "../../../components/cards/manageRoles/ManageRoles";
 import UpdateRoles from "../../../components/cards/manageRoles/UpdateRoles";
+import { getAdmins } from "../../../services/api/admin/Admin.Api";
 
 function RolesAndPermissionsPage({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
   const [viewedUser, setViewedUser] = useState(null);
 
-  const { staffState, staffDispatch } = useStaffContext();
+  //Set pagated data to the table
+
+  const [userAndAdmins, setUsersAndAdmins] = useState(null);
 
   const handleUpdateRole = (systemUser) => {
     setOpenModal({ isShown: true, type: "update-role", data: "hello" });
@@ -24,7 +27,7 @@ function RolesAndPermissionsPage({ path }) {
   };
 
   useEffect(() => {
-    getStaffData(staffDispatch);
+    getAdmins(setUsersAndAdmins);
   }, []);
 
   return (
@@ -48,7 +51,7 @@ function RolesAndPermissionsPage({ path }) {
             <ExportExcelButton />
           </div>
         </div>
-        <RolesAndPermissionTable users={staffState?.staffList} label={"Roles And Permissions"} handleUpdateRole={handleUpdateRole} />
+        <RolesAndPermissionTable userAndAdmins={userAndAdmins} label={"Roles And Permissions"} handleUpdateRole={handleUpdateRole} />
       </div>
       {/* */}
       <Modal
@@ -70,11 +73,11 @@ function RolesAndPermissionsPage({ path }) {
               setOpenModal({ isShown: false });
             }}
             onSubmit={(message) => {
-              getStaffData(staffDispatch);
+              getAdmins(setUsersAndAdmins);
               setOpenModal({ isShown: false });
               setShowToast({ isShow: true, type: "success", message: message });
             }}
-            userData={[...staffState?.staffList]}
+            userData={userAndAdmins}
             setShowToast={setShowToast}
           />
         ) : (
@@ -83,7 +86,7 @@ function RolesAndPermissionsPage({ path }) {
               setOpenModal({ isShown: false });
             }}
             onSubmit={(message) => {
-              getStaffData(staffDispatch);
+              getAdmins(setUsersAndAdmins);
               setOpenModal({ isShown: false });
               setShowToast({ isShow: true, type: "success", message: message });
             }}

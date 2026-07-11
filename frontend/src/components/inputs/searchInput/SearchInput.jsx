@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoReloadOutline, IoSearchOutline, IoCloseCircleOutline } from "react-icons/io5";
 
 import { useSearchContext } from "../../../hooks/useSearchContext";
+import { getSearchResults } from "../../../services/api/admin/Search.Api";
 
-function SearchInput({ searchData, dataType }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const { searchDispatch } = useSearchContext();
+function SearchInput({ tableName, setSearchResults, setTotalPages, onCanelSearch }) {
+  const [searchQuery, setSearchQuery] = useState();
+  const [searchInput, setSearchInput] = useState();
+
+  //const { searchDispatch } = useSearchContext();
 
   //Search function
-  const handleSearch = (searchQuery, searchData) => {
+  /* const handleSearch = (searchQuery, searchData) => {
     let searchResults = [];
 
     if (!searchQuery) {
@@ -41,47 +44,74 @@ function SearchInput({ searchData, dataType }) {
 
         /*else if (searchData[i].userId?.toString() && searchData[i].userId?.toString().toLowerCase().includes(searchQuery.toLowerCase())) {
           searchResults.push(searchData[i]);
-        }*/
+        }*
       }
 
       return searchDispatch({ type: "SET_SEARCH_RESULTS", payload: searchResults });
     } catch (error) {
       console.log("Error searching");
     }
+  };*/
+
+  const handleSearch = (searchQuery, tableName, setSearchResults, setTotalPages) => {
+    const data = {
+      tableName,
+      searchQuery,
+    };
+    getSearchResults(data, setSearchResults, setTotalPages);
   };
 
-  //Clear search
+  //Clears Search Box and fetch all data
   const handleClearSearch = () => {
-    searchDispatch({ type: "SET_SEARCH_NULL" });
-    setSearchQuery("");
+    setSearchInput();
+    onCanelSearch();
   };
+
+  //Search Debounce UseEffect
+  useEffect(() => {
+    const delayTimer = setTimeout(() => {
+      if (searchInput) {
+        setSearchQuery(searchInput);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayTimer);
+  }, [searchInput]);
+
+  //Search API axecution UseEffect
+  useEffect(() => {
+    handleSearch(searchQuery, tableName, setSearchResults, setTotalPages);
+  }, [searchQuery]);
 
   return (
-    <div className="search-input">
+    <div className="flex justify-between items-center p-1 gap-2">
       <input
         type="text"
         placeholder="search here..."
-        className="w-72 bg-zinc-100 outline-none"
-        value={searchQuery}
+        className="w-[250px] outline-none border-2 focus:border-red-600 rounded-md p-1"
+        value={searchInput}
         onChange={(e) => {
-          setSearchQuery(e.target.value);
-          handleSearch(e.target.value, searchData);
+          if (e.target.value.trim().length === 0) {
+            handleClearSearch();
+          } else {
+            setSearchInput(e.target.value);
+          }
         }}
       />
       {searchQuery ? (
         <IoCloseCircleOutline
-          className="text-zinc-500 "
-          size={20}
+          className="text-zinc-500 hover:text-red-600 "
+          size={25}
           onClick={() => {
             handleClearSearch();
           }}
         />
       ) : (
         <IoSearchOutline
-          className="text-zinc-500 "
-          size={20}
+          className="text-zinc-500  hover:text-red-600"
+          size={25}
           onClick={() => {
-            handleSearch(searchQuery, searchData);
+            handleSearch(searchQuery, tableName, setSearchResults, setTotalPages);
           }}
         />
       )}

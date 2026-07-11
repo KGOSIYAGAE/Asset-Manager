@@ -5,7 +5,7 @@ function InvoiceSelectInput({ label, value, invoiceId, options, optionName, isDi
     return <option key={option.id}>{option?.invoice_number}</option>;
   };
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState();
 
   const handleGetId = (selectedItem) => {
     for (let i = 0; i < options?.length; i++) {

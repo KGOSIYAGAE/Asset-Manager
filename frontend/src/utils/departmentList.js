@@ -840,7 +840,7 @@ export const departmentEntitiesList = [
           { id: 4, title: "Bussiness Analyst" },
           { id: 5, title: "Systems Analyst" },
           { id: 6, title: "Administrator" },
-          { id: 7, title: "Intern" },
+          { id: 8, title: "Intern" },
         ],
       },
       {
@@ -856,7 +856,7 @@ export const departmentEntitiesList = [
         ],
       },
       {
-        id: 4,
+        id: 5,
         name: "Audio and Visual Support",
         description: "Oversees cybersecurity, risk management, and data protection.",
         positions: [

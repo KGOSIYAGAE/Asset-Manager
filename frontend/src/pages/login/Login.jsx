@@ -10,8 +10,8 @@ import LoginEmailInput from "../../components/inputs/loginEmailInput/LoginEmailI
 import { setNavigate } from "../../utils/navigate";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
   const [showToast, setShowToast] = useState({ isShown: false, type: "error", message: "" });
   const [showLoading, setLoading] = useState(false);
   const [isDiabled, setIsDisabled] = useState(true);

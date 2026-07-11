@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 function CategorySelectInput({ label, value, options, setOnChange, onChoose }) {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState();
 
   const fnc = (option) => {
     return <option key={option.id}>{option.category || option.name}</option>;

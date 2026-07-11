@@ -49,7 +49,7 @@ function CourseSelctInput({ label, value, courseId, options, optionName, isDisab
     return <option key={option.id}>{option?.invoice_number || option?.course_name}</option>;
   };
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState();
 
   const handleGetId = (selectedItem) => {
     for (let i = 0; i < options?.length; i++) {

@@ -16,13 +16,23 @@ import ImportFile from "../../../components/cards/importFile/ImportFile";
 import { hasPermission } from "../../../utils/getLoggedInUser";
 
 function students({ path }) {
-  const { searchState, searchDispatch } = useSearchContext();
-  const { studentState, studentDispatch } = useStudentsContext();
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", selcetedUser: null, userEmail: null });
   const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
+
+  //Set pagated data to the table
+  const [allStudents, setAllStudents] = useState(null);
+
+  const [pagationModel, setPagationModel] = useState({
+    page: 0,
+    pageSize: 8,
+  });
+
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchResults, setSearchResults] = useState(null);
+  /////////////////////Handle Search Results////////////
 
   //Close Toast
   const onToastClose = () => {
@@ -53,10 +63,16 @@ function students({ path }) {
     setOpenImportModal({ isShown: true, type: "issue", data: null });
   };
 
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    getAllStudents({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStudents, setTotalPages);
+  };
+
+  //Execute Gett All devices on load or status change
   useEffect(() => {
-    searchDispatch({ type: "SET_SEARCH_NULL" });
-    getAllStudents(studentDispatch);
-  }, []);
+    getAllStudents({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStudents, setTotalPages);
+  }, [pagationModel.page, pagationModel.pageSize]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
@@ -67,19 +83,22 @@ function students({ path }) {
         <div className="flex justify-between">
           <span className="heading-text">Students List</span>
           <div className="flex gap-2">
-            <SearchInput searchData={studentState.studentsList} />
+            <SearchInput tableName={"students"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
             {hasPermission("create") && <AddButton name={"Add New Student"} handleAdd={handleAdd} />}
 
-            {hasPermission("bulk-create") && <BulkAddButton onClick={ImportModal} />}
+            {hasPermission("import") && <BulkAddButton onClick={ImportModal} />}
             {hasPermission("export") && <ExportExcelButton />}
           </div>
         </div>
         <DataTable
-          rows={searchState.searchResults ? searchState.searchResults : studentState.studentsList}
+          rows={searchResults ? searchResults : allStudents}
           colHeaders={studentsTableHeaders}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handleViewDetails={handleViewDetails}
+          pagationModel={pagationModel}
+          setPagationModel={setPagationModel}
+          rowCount={totalPages}
         />
       </div>
       <Modal

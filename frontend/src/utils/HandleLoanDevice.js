@@ -32,7 +32,7 @@ export const handleLoanDevice = async (selectedUser, selectedDevice, returnDate,
     issued_by: loggedInUser.id,
     status: "Loan Approval required",
     userId: userId,
-    loan_end_date: returnDate,
+    expected_return_date: returnDate,
   };
 
   const { message } = await createLoanDevice(selectedDevice.id, data, setShowToast);

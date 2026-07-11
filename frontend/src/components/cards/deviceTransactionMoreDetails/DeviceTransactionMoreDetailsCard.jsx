@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../buttons/AddButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import PrintButton from "../../buttons/printButton/PrintButton";
+import { hasPermission } from "../../../utils/getLoggedInUser";
 
 function DeviceTransactionMoreDetailsCard({ deviceDetails }) {
   useEffect(() => {
@@ -102,9 +103,11 @@ function DeviceTransactionMoreDetailsCard({ deviceDetails }) {
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-end gap-2">
-        <PrintButton text={"Print Form"} onClick={() => {}} />
-      </div>
+      {hasPermission("print") && (
+        <div className="flex items-center justify-end gap-2">
+          <PrintButton text={"Print Form"} onClick={() => {}} />
+        </div>
+      )}
     </div>
   );
 }

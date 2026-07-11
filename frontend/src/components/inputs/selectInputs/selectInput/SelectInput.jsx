@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 
 function SelectInput({ label, value, options, optionName, isDisabled, setOnChange, onChoose }) {
   const fnc = (option, name) => {
-    return <option key={option.id}>{option.name || option.faculty_name || option.course_name}</option>;
+    return (
+      <option key={option.id} onMouseOver={() => {}}>
+        {option.name || option.faculty_name || option.course_name}
+      </option>
+    );
   };
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState();
 
   useEffect(() => {
     setInputValue(value);

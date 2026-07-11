@@ -6,15 +6,31 @@ const checkStudentExist = async (req, res) => {};
 //Get all students
 const getStudents = async (req, res) => {
   try {
-    const get_students_query = `SELECT * FROM "studentDetails" ORDER BY created_at DESC`;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
 
-    const { rowCount, rows } = await query(get_students_query);
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "studentDetails"`;
+
+    const dataQuery = `SELECT * FROM "studentDetails" ORDER BY created_at DESC LIMIT $1 OFFSET $2`;
+
+    //Get device count
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    const totalDevices = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalDevices / limit);
+
+    const { rows } = await query(dataQuery, [limit, offset]);
 
     if (!rows) {
       return res.status(400).json({ message: "An error occured fetching students", error: true });
     }
 
-    return res.status(200).json({ rowCount, studentsData: rows, message: "Success", error: false });
+    return res.status(200).json({ totalPages: totalPages, studentsData: rows, message: "Success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });

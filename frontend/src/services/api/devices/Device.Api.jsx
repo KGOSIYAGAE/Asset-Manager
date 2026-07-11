@@ -1,12 +1,13 @@
 import axiosInstance from "../../../utils/axiosInstance";
 
 //Get All devices
-export const getAllDevices = async (devicesDispatch) => {
+export const getAllDevices = async (data, setAllDevices, setTotalPages) => {
   try {
-    const response = await axiosInstance.get("/devices/", { showSpinner: true });
+    const response = await axiosInstance.get(`/devices/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (response.data.deviceList) {
-      devicesDispatch({ type: "SET_DEVICES", payload: response.data.deviceList });
+      setTotalPages(response.data.totalPages);
+      return setAllDevices(response.data.deviceList);
     }
   } catch (error) {
     if (error.response && error.response.data.error) {
@@ -35,12 +36,50 @@ export const getAllDeviceLoanDue = async (loanDueDispatch) => {
 };
 
 //Get All device requires approval
-export const getAllDeviceForApproval = async (loanDueDispatch) => {
+export const getAllDeviceForApproval = async (data, setApprovalDevices, setTotalPages) => {
   try {
-    const response = await axiosInstance.get("/devices/requires-approval", { showSpinner: true });
+    const response = await axiosInstance.get(`/devices/requires-approval?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (response.data.deviceList) {
-      return loanDueDispatch({ type: "SET_LOANSDUE", payload: response.data.deviceList });
+      setTotalPages(response.data.totalPages);
+      return setApprovalDevices(response.data.deviceList);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
+//Get All loaned device
+export const getAllLoanedDevices = async (data, setLoanedDevices, setTotalPages) => {
+  try {
+    const response = await axiosInstance.get(`/devices/loaned-devices?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
+
+    if (response.data.deviceList) {
+      setTotalPages(response.data.totalPages);
+      return setLoanedDevices(response.data.deviceList);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
+//Get all device due return at user termination
+export const getAllDevicesDueReturn = async (data, setDueReturnDevices, setTotalPages) => {
+  try {
+    const response = await axiosInstance.get(`/devices/devices-due-return?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
+
+    if (response.data.deviceList) {
+      setTotalPages(response.data.totalPages);
+
+      return setDueReturnDevices(response.data.deviceList);
     }
   } catch (error) {
     if (error.response && error.response.data.error) {
@@ -58,6 +97,23 @@ export const getDevice = async (id, setFormData) => {
 
     if (response.data) {
       return setFormData(response.data.deviceDetails);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
+//Hanlde get device's stats
+export const getDevicesStats = async (setDeviceStats) => {
+  try {
+    const response = await axiosInstance.get("/devices/devices-stats", { showSpinner: true });
+
+    if (response.data) {
+      return setDeviceStats(...response.data.deviceDetails);
     }
   } catch (error) {
     if (error.response && error.response.data.error) {
@@ -168,13 +224,13 @@ export const assignDevice = async (id, data, setShowToast) => {
     const response = await axiosInstance.put("/devices/assign-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
-      return { isShow: true, type: "success", message: response.data.message };
+      return { error: response.data.error, message: response.data.message };
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return { error: error.response.data.error, message: error.response.data.message };
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return "An unexpected error occured, please try again.";
     }
   }
 };
@@ -244,7 +300,7 @@ export const deleteDevice = async (id, data, setShowToast) => {
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShown: true, type: "error", message: response.data.message });
+      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
     } else {
       return setShowToast({ isShown: true, type: "error", message: "An unexpected router occured, please try again." });
     }

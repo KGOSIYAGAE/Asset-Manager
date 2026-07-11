@@ -28,41 +28,41 @@ function AdminDashboard({ devices, students, deviceNumber, staffNumber, students
         <div className="grid grid-cols-4 grid-rows-1 gap-5">
           {/* */}
           <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
-            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
-              <FaPeopleGroup size={25} className="text-blue-900" />
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-50 border border-red-500 rounded-full">
+              <FaPeopleGroup size={25} className="text-red-600" />
             </div>
             <div className="flex flex-col g">
-              <span className="text-sm text-zinc-500 ">Total Staff</span>
+              <span className="text-sm text-black">Total Staff</span>
               <span className="font-bold text-xl">{staffNumber}</span>
             </div>
           </div>
 
           <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
-            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
-              <PiStudentFill size={25} className="text-blue-900" />
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-50 border border-red-500 rounded-full">
+              <PiStudentFill size={25} className="text-red-600" />
             </div>
             <div className="flex flex-col g">
-              <span className="text-sm text-zinc-500">Total Students</span>
+              <span className="text-sm text-black">Total Students</span>
               <span className="font-bold text-xl">{studentsNumber}</span>
             </div>
           </div>
 
           <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
-            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
-              <MdDevices size={25} className="text-blue-900" />
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-50 border border-red-500 rounded-full">
+              <MdDevices size={25} className="text-red-600" />
             </div>
             <div className="flex flex-col g">
-              <span className="text-sm text-zinc-500">Total Devices</span>
+              <span className="text-sm text-black">Total Devices</span>
               <span className="font-bold text-xl">{deviceNumber}</span>
             </div>
           </div>
 
           <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-2">
-            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-200 rounded-full">
-              <HiOutlineWrenchScrewdriver size={25} className="text-blue-900" />
+            <div className="w-[48px] h-[48px] flex items-center justify-center bg-slate-50 border border-red-500 rounded-full">
+              <HiOutlineWrenchScrewdriver size={25} className="text-red-600" />
             </div>
             <div className="flex flex-col g">
-              <span className="text-sm text-zinc-500">Total Repairs</span>
+              <span className="text-sm text-black">Total Repairs</span>
               <span className="font-bold text-xl">0</span>
             </div>
           </div>

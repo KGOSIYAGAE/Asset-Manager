@@ -70,7 +70,7 @@ const getAllTransactionsForDevice = async (req, res) => {
     device_transactions.return_date,
     device_transactions.status,
     device_transactions.approve_date,
-    device_transactions.loan_end_date,
+    device_transactions.expected_return_date,
     device_transactions.action_type,
     device_transactions.issue_date,
     concat(COALESCE(students.name, staff.name), ' ', COALESCE(students.surname, staff.surname)) AS user_full_name
@@ -124,7 +124,7 @@ const getAllTransactionsForUser = async (req, res) => {
     device_transactions.return_date,
     device_transactions.status,
     device_transactions.approve_date,
-    device_transactions.loan_end_date,
+    device_transactions.expected_return_date,
     device_transactions.action_type,
     device_transactions.issue_date,
 

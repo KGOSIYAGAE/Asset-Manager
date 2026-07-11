@@ -21,8 +21,8 @@ function RejectIssueCard({ onCanel, full_name, laptopSerialNo, setShowToast, onS
         <span className="font-semibold p-2">{"Reject Device Assigning"}</span>
 
         <div className="flex flex-col border-t-2 border-b-2 py-5 gap-3">
-          <div className="flex flex-col border border-red-400 p-4 rounded-md">
-            <span className="text-sm text-red-400">Are you sure you want to reject the assigning of the following device?</span>
+          <div className="flex flex-col border border-red-600 p-4 rounded-md">
+            <span className="text-sm text-red-600">Are you sure you want to reject the assigning of the following device?</span>
           </div>
           <span className="text-sm font-semibold">{`${laptopSerialNo} to ${full_name}`}</span>
         </div>

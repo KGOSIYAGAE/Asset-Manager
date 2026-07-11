@@ -28,17 +28,17 @@ function UserProfile({ path }) {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [staff_no, setStaff_no] = useState("");
-  const [phone_number, setPhone_Number] = useState("");
-  const [email, setEmail] = useState("");
-  const [faculty_name, setFaculty_name] = useState("");
-  const [department_name, setDepartment_name] = useState("");
-  const [position_name, setPosition_name] = useState("");
-  const [contract_type, setContract_Type] = useState("");
-  const [isActive, setIsActive] = useState("");
-  const [start_date, setStart_date] = useState("");
+  const [name, setName] = useState();
+  const [surname, setSurname] = useState();
+  const [staff_no, setStaff_no] = useState();
+  const [phone_number, setPhone_Number] = useState();
+  const [email, setEmail] = useState();
+  const [faculty_name, setFaculty_name] = useState();
+  const [department_name, setDepartment_name] = useState();
+  const [position_name, setPosition_name] = useState();
+  const [contract_type, setContract_Type] = useState();
+  const [isActive, setIsActive] = useState();
+  const [start_date, setStart_date] = useState();
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -51,9 +51,9 @@ function UserProfile({ path }) {
   const [departmentList, setDepartmentList] = useState(null);
   const [positionList, setPositionList] = useState(null);
 
-  const [oldPassowrd, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [oldPassowrd, setOldPassword] = useState();
+  const [newPassword, setNewPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
 
   const [formType, setFormType] = useState("add");
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
@@ -167,9 +167,9 @@ function UserProfile({ path }) {
 
   //Password Form Clear
   const hanldePasswordFormClear = () => {
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    setOldPassword();
+    setNewPassword();
+    setConfirmPassword();
   };
 
   //Choose user status

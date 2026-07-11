@@ -18,65 +18,39 @@ import { getStaffData } from "../../../services/api/staff/Staff.Api";
 import { getAllStudents } from "../../../services/api/students/Students.Api";
 
 function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
-  const [showUsers, setShowUsers] = useState({ isShow: false });
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null }); //Get user type based on userID
   const [userType, setUserType] = useState(null);
-  const [supportAdmins, setSupportAdmins] = useState(null);
-  const [supportTechnicians, setSupportTechnician] = useState(null);
 
-  const [spuOBO, setSpuOBO] = useState(null);
-  const [selectedWitnesses, setSelectedWitnesses] = useState(null);
+  const [allStaff, setAllStaff] = useState(null);
+  const [allStudents, setAllStudents] = useState(null);
 
-  const { staffState, staffDispatch } = useStaffContext();
-  const { studentState, studentDispatch } = useStudentsContext();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const deviceLimit = 50;
+  const userLimit = 50;
 
-  const toggleWitnessSelection = (id) => {
-    if (selectedWitnesses.includes(id)) {
-      setSelectedUser(selectedWitnesses.filter);
-    }
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    //getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllDevices, setTotalPages);
   };
 
-  const getSupportAdmins = (staffState) => {
-    const admins = [];
-
-    for (let i = 0; i < staffState?.staffList?.length; i++) {
-      if (staffState?.staffList[i]?.userrole === "support_admin") {
-        admins.push(staffState?.staffList[i]);
-      }
-    }
-
-    return admins;
+  //Handle Get data
+  const handleGetDevices = () => {
+    getStaffData({ page: currentPage, limit: userLimit }, setAllStaff, setTotalPages);
+    getAllStudents({ page: currentPage, limit: userLimit }, setAllStudents, setTotalPages);
   };
 
-  const getSupportTechs = (staffState) => {
-    const technicians = [];
-
-    for (let i = 0; i < staffState?.staffList?.length; i++) {
-      if (staffState?.staffList[i]?.userrole === "support_technician") {
-        technicians.push(staffState?.staffList[i]);
-      }
-    }
-
-    return technicians;
-  };
-
+  //Execute Gett All devices on load or status change
   useEffect(() => {
-    getAllStudents(studentDispatch);
-    getStaffData(staffDispatch);
-  }, [deviceId]);
-
-  useEffect(() => {
-    getUserType(selectedUser?.userId, setUserType);
-    setSupportAdmins(getSupportAdmins(staffState));
-    setSupportTechnician(getSupportTechs(staffState));
-  }, [selectedUser]);
+    handleGetDevices();
+  }, [currentPage]);
 
   return (
     <div className="bg-white">
       <div className="flex flex-col gap-2 -z-50">
         <span className="font-semibold p-2">Assign User</span>
-
-        <UserSelectInput userData={[...staffState?.staffList, ...studentState?.studentsList]} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+        <UserSelectInput studentData={allStudents} staffData={allStaff} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
 
         {/**/}
 

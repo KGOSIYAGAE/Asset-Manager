@@ -4,7 +4,7 @@ import { MdAddToPhotos } from "react-icons/md";
 
 function BulkAddButton({ onClick }) {
   return (
-    <button className="reload-btn" onClick={onClick}>
+    <button className="secondary-btn" onClick={onClick}>
       <MdAddToPhotos size={20} />
     </button>
   );

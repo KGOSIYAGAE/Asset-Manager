@@ -29,6 +29,6 @@ router.post("/bulk-create-staff/", bulkCreateStaff);
 router.put("/update-staff/:id", updateStaff);
 
 //delete staff
-router.delete("/delete-staff/:staff_no", deleteStaff);
+router.put("/delete-staff/:staff_no", deleteStaff);
 
 module.exports = router;
