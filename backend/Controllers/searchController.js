@@ -4,7 +4,7 @@ const format = require("pg-format");
 //Search
 const search = async (req, res) => {
   try {
-    const { tableName, userrole, searchQuery } = req.query;
+    const { tableName, searchQuery, userId } = req.query;
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
@@ -37,7 +37,7 @@ const search = async (req, res) => {
      WHERE  repair_code ILIKE '%' || $1 || '%' OR repair_type  ILIKE '%' || $1 || '%' OR description ILIKE '%' || $1 || '%' OR notes ILIKE '%' || $1 || '%' OR technican_name ILIKE '%' || $1 || '%' OR make ILIKE '%' || $1 || '%' OR model ILIKE '%' || $1 || '%' OR category ILIKE '%' || $1 || '%' OR serial_no ILIKE '%' || $1 || '%' LIMIT 5`;
     } else if (tableName === "tech-repairs") {
       dataQuery = `SELECT * FROM "repairTechDeviceDetails"
-     WHERE  repair_code ILIKE '%' || $1 || '%' OR repair_type  ILIKE '%' || $1 || '%' OR description ILIKE '%' || $1 || '%' OR notes ILIKE '%' || $1 || '%' OR technican_name ILIKE '%' || $1 || '%' OR make ILIKE '%' || $1 || '%' OR model ILIKE '%' || $1 || '%' OR category ILIKE '%' || $1 || '%' OR serial_no ILIKE '%' || $1 || '%' LIMIT 5`;
+     WHERE assigned_to = ${userId} AND repair_code ILIKE '%' || $1 || '%' OR repair_type  ILIKE '%' || $1 || '%' OR description ILIKE '%' || $1 || '%' OR notes ILIKE '%' || $1 || '%' OR technican_name ILIKE '%' || $1 || '%' OR make ILIKE '%' || $1 || '%' OR model ILIKE '%' || $1 || '%' OR category ILIKE '%' || $1 || '%' OR serial_no ILIKE '%' || $1 || '%' LIMIT 5`;
     } else {
       dataQuery = "";
     }

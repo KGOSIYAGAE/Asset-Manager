@@ -3,6 +3,7 @@ import { IoReloadOutline, IoSearchOutline, IoCloseCircleOutline } from "react-ic
 
 import { useSearchContext } from "../../../hooks/useSearchContext";
 import { getSearchResults } from "../../../services/api/admin/Search.Api";
+import { getLoggedInUser } from "../../../utils/getLoggedInUser";
 
 function SearchInput({ tableName, setSearchResults, setTotalPages, onCanelSearch }) {
   const [searchQuery, setSearchQuery] = useState();
@@ -53,10 +54,11 @@ function SearchInput({ tableName, setSearchResults, setTotalPages, onCanelSearch
     }
   };*/
 
-  const handleSearch = (searchQuery, tableName, setSearchResults, setTotalPages) => {
+  const handleSearch = (searchQuery, tableName, setSearchResults, setTotalPages, userId) => {
     const data = {
       tableName,
       searchQuery,
+      userId,
     };
     getSearchResults(data, setSearchResults, setTotalPages);
   };
@@ -80,7 +82,9 @@ function SearchInput({ tableName, setSearchResults, setTotalPages, onCanelSearch
 
   //Search API axecution UseEffect
   useEffect(() => {
-    handleSearch(searchQuery, tableName, setSearchResults, setTotalPages);
+    const user = getLoggedInUser();
+
+    handleSearch(searchQuery, tableName, setSearchResults, setTotalPages, user?.id);
   }, [searchQuery]);
 
   return (

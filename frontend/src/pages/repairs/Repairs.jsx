@@ -36,6 +36,7 @@ function Repairs({ path }) {
   const [allRepairsStats, setAllRepairsStats] = useState();
 
   const [searchResults, setSearchResults] = useState(null);
+  const [tableName, setTableName] = useState("repairs");
   /////////////////////Handle Search Results////////////
 
   const handleGetPage = () => {
@@ -49,9 +50,11 @@ function Repairs({ path }) {
     const user = getLoggedInUser();
 
     if (user?.role === "support_admin") {
+      setTableName("repairs");
       getAllRepairs({ page: currentPage, limit: limit }, setMaintenanceDevices, setTotalPages);
       getAllRepairsStats(setAllRepairsStats);
     } else {
+      setTableName("tech-repairs");
       getAllRepairsForTech({ page: currentPage, limit: limit, userId: user?.id }, setMaintenanceDevices, setTotalPages);
       getAllRepairsStatsForTech({ userId: user?.id }, setAllRepairsStats);
     }
@@ -160,7 +163,7 @@ function Repairs({ path }) {
               </div>
 
               <div className="w-fit flex p-2">
-                <SearchInput tableName={"repairs"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
+                <SearchInput tableName={tableName} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
               </div>
             </div>
             {/**searchResults ? searchResults : */}
