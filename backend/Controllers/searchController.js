@@ -15,6 +15,9 @@ const search = async (req, res) => {
     if (tableName === "devices") {
       dataQuery = `SELECT * FROM "deviceDetails"
      WHERE  is_deleted = FALSE AND serial_no ILIKE '%' || $1 || '%' OR asset_tag  ILIKE '%' || $1 || '%' OR current_user_id::text ILIKE '%' || $1 || '%' LIMIT 8`;
+    } else if (tableName === "devices-approval") {
+      dataQuery = `SELECT * FROM "deviceDetails"
+     WHERE (status = 'Issue Approval required' OR status = 'Loan Approval required') AND  is_deleted = FALSE AND serial_no ILIKE '%' || $1 || '%' OR asset_tag  ILIKE '%' || $1 || '%' OR current_user_id::text ILIKE '%' || $1 || '%' LIMIT 8`;
     } else if (tableName === "staff") {
       dataQuery = `SELECT * FROM "StaffDetails" WHERE is_deleted = FALSE  AND (staff_no::text ILIKE '%' || $1 || '%' OR name ILIKE '%' || $1 || '%'  OR surname ILIKE '%' || $1 || '%'  OR phone_number ILIKE '%' || $1 || '%') LIMIT 8`;
     } else if (tableName === "students") {
@@ -30,6 +33,9 @@ const search = async (req, res) => {
       dataQuery = `SELECT * FROM "deviceDetails"
      WHERE  is_deleted = FALSE AND serial_no ILIKE '%' || $1 || '%' OR asset_tag  ILIKE '%' || $1 || '%' OR current_user_id::text ILIKE '%' || $1 || '%' LIMIT 30`;
     } else if (tableName === "repairs") {
+      dataQuery = `SELECT * FROM "repairTechDeviceDetails"
+     WHERE  repair_code ILIKE '%' || $1 || '%' OR repair_type  ILIKE '%' || $1 || '%' OR description ILIKE '%' || $1 || '%' OR notes ILIKE '%' || $1 || '%' OR technican_name ILIKE '%' || $1 || '%' OR make ILIKE '%' || $1 || '%' OR model ILIKE '%' || $1 || '%' OR category ILIKE '%' || $1 || '%' OR serial_no ILIKE '%' || $1 || '%' LIMIT 5`;
+    } else if (tableName === "tech-repairs") {
       dataQuery = `SELECT * FROM "repairTechDeviceDetails"
      WHERE  repair_code ILIKE '%' || $1 || '%' OR repair_type  ILIKE '%' || $1 || '%' OR description ILIKE '%' || $1 || '%' OR notes ILIKE '%' || $1 || '%' OR technican_name ILIKE '%' || $1 || '%' OR make ILIKE '%' || $1 || '%' OR model ILIKE '%' || $1 || '%' OR category ILIKE '%' || $1 || '%' OR serial_no ILIKE '%' || $1 || '%' LIMIT 5`;
     } else {

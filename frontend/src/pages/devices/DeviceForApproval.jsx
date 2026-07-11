@@ -56,7 +56,7 @@ function DeviceForApproval({ path }) {
       <div className="flex flex-col  bg-white rounded-md shadow-md ">
         <div className="  bg-white  flex  justify-between sticky top-0  p-5">
           <span className="heading-text ">Devices For Approval</span>
-          <SearchInput tableName={"devices"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
+          <SearchInput tableName={"devices-approval"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
         </div>
         {/* */}
         <div className="flex p-2">
