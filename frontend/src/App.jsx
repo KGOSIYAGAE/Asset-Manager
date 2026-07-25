@@ -39,6 +39,9 @@ import { setNavigate } from "./utils/navigate";
 import { LoadingContextProvider } from "./context/LoadingContext";
 import Repairs from "./pages/repairs/Repairs";
 import Approval from "./pages/emailTemplates/Approval";
+import TabletView from "./pages/tabletView/TabletView";
+import SuccessPage from "./pages/succesPage/SuccessPage";
+import RepairDetails from "./pages/repairs/RepairDetails";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -186,6 +189,32 @@ function App() {
       element: <SecondScreenPage />,
     },
     {
+      path: "/user-form/:source/:deviceId",
+      element: <SecondScreenPage />,
+    },
+
+    //Send to tablet endpoint
+    {
+      path: "/sign-form/:source/:userId/:deviceId/:issuedBy/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign-form/:source/:userId/:deviceId/:issuedBy/:returnDate/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign-form/:userId/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign-form/:source/:deviceId/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign/:sessionId",
+      element: <TabletView />,
+    },
+    {
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
       children: [
         {
@@ -267,6 +296,11 @@ function App() {
           path: "/repairs",
           element: <Repairs path={"Repairs"} />,
         },
+        {
+          path: "/repairs/repair-details/:id",
+          element: <RepairDetails path={"repair-details/"} />,
+          errorElement: <Repairs path={"Repairs"} />,
+        },
 
         //View Email templates
         {
@@ -281,6 +315,10 @@ function App() {
     {
       path: "/No-Access",
       element: <NoAccess />,
+    },
+    {
+      path: "/Success",
+      element: <SuccessPage />,
     },
     {
       path: "*",

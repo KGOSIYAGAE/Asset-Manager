@@ -25,6 +25,8 @@ import PrintButton from "../../components/buttons/printButton/PrintButton";
 import { handleOpenForm } from "../../utils/handleOpenForm";
 import { getAllDeviceTransactions } from "../../services/api/deviceLogs/DeviceLogs";
 import DeviceReturnForm from "../../components/returnForm/DeviceReturnForm";
+import QrCodeCard from "../../components/cards/qrCodeCard/QrCodeCard";
+import { socket } from "../../utils/socket";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -111,21 +113,43 @@ function DeviceDetails({ path }) {
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data.type === "form_submitted") {
-        setShowToast({ isShow: true, type: "success", message: event.data.payload.message });
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
 
         if (event.data.payload.error) {
-          setShowToast({ isShow: true, type: "error", message: event.data.payload.message });
+          setShowToast({ isShow: true, type: "error", message: event.data.payload });
           setOpenModal({ isShown: true, type: "assign", data: "hello" });
-          getDeviceDetails();
+
           return;
         }
 
-        setShowToast({ isShow: true, type: "success", message: event.data.payload.message });
+        getDeviceDetails();
+        setOpenModal({ isShown: false, type: "assign", data: "hello" });
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
       }
     };
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      //setSignature(image.image);
+      getDeviceDetails();
+      socket.disconnect();
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
   }, []);
 
   return (
@@ -196,8 +220,8 @@ function DeviceDetails({ path }) {
         </div>
       )}
 
-      <div className="grid grid-cols-5 grid-rows-2 gap-5">
-        <div className="col-span-3 row-span-1 border p-1 rounded-md shadow-md bg-white">
+      <div className="grid grid-cols-5 grid-rows-3 gap-5 ">
+        <div className="h-fit col-span-3 row-span-1 border p-1 rounded-md shadow-md bg-white">
           <span className="heading-text">Device Details</span>
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Make</span>
@@ -346,6 +370,7 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
+
         <DeviceLogTable deviceDetails={deviceDetails} label={"Devices Logs"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} setShowToast={setShowToast} />
       </div>
 
@@ -376,10 +401,12 @@ function DeviceDetails({ path }) {
         {openModal.type === "assign" ? (
           <IssueDevice
             onCanel={() => {
+              getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
             onSubmit={() => {
               getDeviceDetails();
+
               setOpenModal({ isShown: false });
             }}
             deviceId={deviceDetails?.id}

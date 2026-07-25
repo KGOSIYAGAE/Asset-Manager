@@ -9,19 +9,13 @@ function SelectInput({ label, value, options, optionName, isDisabled, setOnChang
     );
   };
 
-  const [inputValue, setInputValue] = useState();
-
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
-
   return (
     <div className="text-input col-span-2">
       <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
       <select
         className="outline-none"
         disabled={isDisabled}
-        value={inputValue}
+        value={value}
         onChange={(e) => {
           setOnChange(e.target.value);
           if (onChoose) {

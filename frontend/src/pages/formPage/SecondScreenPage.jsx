@@ -6,6 +6,7 @@ import StaffIssueVirificationCard from "../../components/cards/verificationCompo
 import SiganturePad from "../../components/cards/signaturePad/SiganturePad";
 import UserCaptureSignature from "../../components/cards/signaturePad/UserCaptureSignature";
 import LoanIssueVirificationCard from "../../components/cards/verificationComponents/LoanIssueVirificationCard";
+import RepairVerification from "../../components/cards/verificationComponents/RepairVerification";
 
 //import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";
 //import StaffIssueVerification from "../../components/cards/verificationComponents/staffIssueVerification";
@@ -54,6 +55,8 @@ function SecondScreenPage() {
         <StudentIssueVerification deviceId={deviceId} student_no={userId} />
       ) : source === "loan-verification" ? (
         <LoanIssueVirificationCard deviceId={deviceId} userId={userId} returnDate={returnDate} />
+      ) : source === "laptop-repair" ? (
+        <RepairVerification />
       ) : (
         <UserCaptureSignature lablel={"Capture User Signature"} user_id={userId} />
       )}

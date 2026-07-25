@@ -16,6 +16,11 @@ import { useStudentsContext } from "../../../hooks/useStudentsContext";
 import OpenSecondScreenButton from "../../buttons/OpenSecondScreenButton/OpenSecondScreenButton";
 import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
 import { useDeviceContext } from "../../../hooks/useDevicesContext";
+import { getLoggedInUser } from "../../../utils/getLoggedInUser";
+import { socket } from "../../../utils/socket";
+import QrCodeCard from "../qrCodeCard/QrCodeCard";
+import CancelButton from "../../buttons/CancelButton";
+import SendToTablet from "../../buttons/SendToTablet/SendToTablet";
 
 function AssignDeviceToUser({ onCanel, onSubmit, userId, setShowToast }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
@@ -29,6 +34,10 @@ function AssignDeviceToUser({ onCanel, onSubmit, userId, setShowToast }) {
   const deviceLimit = 50;
   const userLimit = 50;
 
+  const [showQrCode, setShowQrCode] = useState(false);
+  const [qrCodeURL, setQrCodeURL] = useState(null);
+  const [isSigned, setIsSigned] = useState(false);
+
   //Handles search clear -> Sent to Search component
   const handleCancelSearch = () => {
     setSearchResults(null);
@@ -37,7 +46,8 @@ function AssignDeviceToUser({ onCanel, onSubmit, userId, setShowToast }) {
 
   //Handle Get data
   const handleGetDevices = () => {
-    getAllDevices({ page: currentPage, limit: deviceLimit }, setAllDevices, setTotalPages);
+    const user = getLoggedInUser();
+    getAllDevices({ page: currentPage, limit: deviceLimit, userrole: user?.role }, setAllDevices, setTotalPages);
   };
 
   //Execute Gett All devices on load or status change
@@ -45,27 +55,66 @@ function AssignDeviceToUser({ onCanel, onSubmit, userId, setShowToast }) {
     handleGetDevices();
   }, [currentPage]);
 
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      //setSignature(image.image);
+
+      onSubmit();
+      socket.disconnect();
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
+  }, []);
+
   return (
     <div className="bg-white">
-      <div className="flex flex-col gap-2 -z-50">
-        <span className="font-semibold p-2">Assign Device</span>
-
-        {/** */}
-        <DeviceSelectInput allDevices={allDevices} selectedDevice={selectedDevice} setSelectedDevice={setSelectedDevice} />
-        {/** */}
-        <div className="flex justify-end p-3 gap-8">
-          <button className="flex  rounded-sm p-3" onClick={onCanel}>
-            Cancel
-          </button>
-          {selectedDevice?.id ? (
-            <div onClick={() => onCanel()}>
-              <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={userId} deviceId={selectedDevice?.id} formType={"issue-verification"} setShowToast={setShowToast} />
+      {showQrCode && showQrCode ? (
+        <div className="flex flex-col items-center bg-white shadow-md rounded-md border ">
+          <div className="flex flex-col items-center p-2">
+            <QrCodeCard text={qrCodeURL} size={250} />
+            <div>
+              <CancelButton onClick={onCanel} />
             </div>
-          ) : (
-            ""
-          )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex flex-col gap-2 -z-50">
+          <span className="font-semibold p-2">Assign Device</span>
+
+          {/** */}
+          <DeviceSelectInput allDevices={allDevices} selectedDevice={selectedDevice} setSelectedDevice={setSelectedDevice} />
+          {/** */}
+          <div className="flex justify-end p-3 gap-8">
+            <CancelButton onClick={onCanel} />
+            {selectedDevice?.id ? (
+              <div className="flex gap-5">
+                <SendToTablet
+                  btnLable={"Send to Tablet (Wireless)"}
+                  userId={userId}
+                  deviceId={selectedDevice?.id}
+                  formType={"issue-verification"}
+                  setShowQrCode={setShowQrCode}
+                  setQrCodeURL={setQrCodeURL}
+                  onSubmit={onSubmit}
+                />
+                <OpenSecondScreenButton btnLable={"Send to USB Tablet"} userId={userId} deviceId={selectedDevice?.id} formType={"issue-verification"} setShowToast={setShowToast} />
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

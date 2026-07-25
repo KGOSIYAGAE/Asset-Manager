@@ -83,7 +83,7 @@ const createStudent = async (req, res) => {
     }
 
     const create_user_query =
-      "INSERT INTO students (name, surname, id_number, phone_number, email, student_number, faculty_name, course_name, course_code , acc_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)";
+      "INSERT INTO students (name, surname, id_number, phone_number, email, student_number, faculty_name, course_name, course_code , acc_status, registration_date,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW())";
     const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, faculty_name, course, course_code, isActive, registration_date];
 
     const { rowCount } = await query(create_user_query, [...VALUES]);
@@ -156,7 +156,7 @@ const updateStudent = async (req, res) => {
     }
 
     const update_student_query =
-      "UPDATE students SET name=$1, surname=$2, id_number=$3, phone_number=$4, email=$5, student_number=$6, faculty_name=$7, course_name=$8, course_code=$9, acc_status=$10, registration_date=$11 WHERE student_number = $12";
+      "UPDATE students SET name=$1, surname=$2, id_number=$3, phone_number=$4, email=$5, student_number=$6, faculty_name=$7, course_name=$8, course_code=$9, acc_status=$10, registration_date=$11, updated_at=NOW() WHERE student_number = $12";
     const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, faculty_name, course, course_code, isActive, registration_date];
 
     const { rowCount, rows } = await query(update_student_query, [...VALUES, student_no]);
@@ -192,10 +192,32 @@ const deleteStudent = async (req, res) => {
     const delete_student_query = "DELETE FROM students WHERE student_number = $1";
     const rowCount = await query(delete_student_query, [student_no]);
 
+    //Update  device table status
+    //const setAsDeleted = "UPDATE devices SET is_deleted=$1, deleted_at=NOW(), deleted_by=$2, status=$3, updated_at=NOW() WHERE id=$4";
+    //await query(setAsDeleted, [is_deleted, deleted_by, status, id]);
+
     return res.status(200).json({ message: "Student deleted successfully", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-module.exports = { getStudents, getStudentDetails, createStudent, bulkCreateStudents, updateStudent, deleteStudent };
+
+//Get Students stats
+const getStudentsStats = async (req, res) => {
+  try {
+    const getStatsQuery = `SELECT * FROM "studentsStats";`;
+
+    const { rows } = await query(getStatsQuery);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Students stats not found", error: true });
+    }
+
+    return res.status(200).json({ studentsDetails: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+module.exports = { getStudents, getStudentDetails, createStudent, bulkCreateStudents, updateStudent, deleteStudent, getStudentsStats };

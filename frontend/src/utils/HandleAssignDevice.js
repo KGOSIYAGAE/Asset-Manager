@@ -1,6 +1,8 @@
 import { approveDevice, assignDevice } from "../services/api/devices/Device.Api";
 import { getLoggedInUser } from "./getLoggedInUser";
+import { handleSendApprovalEmail } from "./handleNotificationEmails";
 import { generateUpgradeDate, getTodayDate } from "./helperMethods";
+import { navigateTo } from "./navigate";
 import { postMessage } from "./VerificationPostMessage";
 
 //Handle assign device to staff
@@ -33,7 +35,7 @@ import { postMessage } from "./VerificationPostMessage";
   return postMessage(staffData?.name, staffData?.surname);
 };*/
 
-export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setShowToast) => {
+export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issuedBy, setShowToast) => {
   try {
     if (!staffData?.name) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
@@ -48,7 +50,7 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setSho
     const loggedInUser = getLoggedInUser();
 
     const data = {
-      issued_by: loggedInUser.id,
+      issued_by: loggedInUser.id ? loggedInUser.id : issuedBy,
       status: "Issue Approval required",
       userId: staffData.staff_no,
       userEndDate: userEndDate || null,
@@ -60,7 +62,13 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setSho
       return postMessage(message);
     }
 
-    return postMessage(message);
+    //handleSendApprovalEmail(staffData, deviceDetails, issuedBy, setShowToast, "Issue");
+
+    if (issuedBy) {
+      return navigateTo("/Success");
+    } else {
+      return postMessage(message);
+    }
   } catch (error) {
     return console.log(error);
   }
@@ -68,7 +76,7 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setSho
 //////////////////////////////////////////////////////
 
 //Handle assign device to staff
-export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails, setShowToast) => {
+export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails, issuedBy, setShowToast) => {
   try {
     if (!studentDetails?.name) {
       return setShowToast({ isShow: true, type: "error", message: "Please select user." });
@@ -77,7 +85,7 @@ export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails,
     const loggedInUser = getLoggedInUser();
 
     const data = {
-      issued_by: loggedInUser.id,
+      issued_by: loggedInUser.id ? loggedInUser.id : issuedBy,
       status: "Issue Approval required",
       userId: studentDetails.student_number,
     };
@@ -88,7 +96,13 @@ export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails,
       return postMessage(message);
     }
 
-    return postMessage(message);
+    handleSendApprovalEmail(studentDetails, deviceDetails, issuedBy, setShowToast, "Issue");
+
+    if (issuedBy) {
+      return navigateTo("/Success");
+    } else {
+      return postMessage(message);
+    }
   } catch (error) {
     return console.log(error);
   }

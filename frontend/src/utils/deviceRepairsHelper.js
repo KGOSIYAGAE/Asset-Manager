@@ -1,4 +1,4 @@
-import { createRepair } from "../services/api/repairs/Repairs.Api";
+import { createRepair, updateRepair, updateRepairStatus } from "../services/api/repairs/Repairs.Api";
 
 export const maintenaceTypesList = [
   {
@@ -63,6 +63,8 @@ export const maintenaceTypesList = [
   },
 ];
 
+export const filterItems = ["All", "New", "Under Assesment", "Awaiting Parts", "In Progress", "Testing", "Ready For Collection", "Completed", "Overdue"];
+
 export const repairStatusList = [
   {
     id: 1,
@@ -71,7 +73,7 @@ export const repairStatusList = [
   },
   {
     id: 2,
-    name: "In progress",
+    name: "Under Assesment",
     description: "Work in Progress. The device is currently on the workbench undergoing active diagnostic assessment or structural repairs.",
   },
   {
@@ -81,44 +83,46 @@ export const repairStatusList = [
   },
   {
     id: 4,
-    name: "Quality Control",
-    description: "Technical fixes are complete, and the asset is undergoing systematic functional testing to ensure baseline operational stability.",
+    name: "In Progress",
+    description: "Work in Progress. The device is currently on the workbench undergoing active diagnostic assessment or structural repairs.",
   },
   {
     id: 5,
-    name: "Ready for Collection",
-    description: "The device is fully restored, validated, and placed in secure storage awaiting customer pick-up or dispatch.",
+    name: "Testing",
+    description: "Technical fixes are complete, and the asset is undergoing systematic functional testing to ensure baseline operational stability.",
   },
   {
     id: 6,
-    name: "Completed",
-    description: "The asset has been successfully handed over to the user, payment processing is finalized, and the ticket history is archived.",
+    name: "Ready For Collection",
+    description: "The device is fully restored, validated, and placed in secure storage awaiting customer pick-up or dispatch.",
   },
   {
     id: 7,
-    name: "Beyond Economic Repair",
+    name: "Beyond Repair",
     description: "Structural or systemic failure where replacement component costs exceed the fair market value of the hardware asset.",
+  },
+  {
+    id: 8,
+    name: "Completed",
+    description: "The asset has been successfully handed over to the user, payment processing is finalized, and the ticket history is archived.",
   },
 ];
 
-export const handleCreateRepair = async (deviceId, repairType, repairDescription, technicianId, repairNotes, repairStatus, setShowToast, onSubmit) => {
+export const handleCreateRepair = async (deviceId, repairType, repairDescription, technicianId, repairNotes, dislaimerAccepted, onSubmit, setShowToast) => {
   if (!deviceId) {
-    return setShowToast({ isShow: true, type: "error", message: "Device not selected" });
+    return setShowToast({ isShown: true, type: "error", message: "Device not selected" });
   }
 
   if (!repairType) {
-    return setShowToast({ isShow: true, type: "error", message: "Repair type not provided" });
+    return setShowToast({ isShown: true, type: "error", message: "Repair type not provided" });
   }
 
   if (!repairDescription) {
-    return setShowToast({ isShow: true, type: "error", message: "Description not provided" });
+    return setShowToast({ isShown: true, type: "error", message: "Description not provided" });
   }
 
   if (!technicianId) {
-    return setShowToast({ isShow: true, type: "error", message: "Technician not selected" });
-  }
-  if (!repairStatus) {
-    return setShowToast({ isShow: true, type: "error", message: "Repair status not selected" });
+    return setShowToast({ isShown: true, type: "error", message: "Technician not selected" });
   }
 
   const data = {
@@ -127,7 +131,8 @@ export const handleCreateRepair = async (deviceId, repairType, repairDescription
     repairDescription,
     technicianId,
     repairNotes: repairNotes || null,
-    repairStatus,
+    current_status_id: 1,
+    dislaimerAccepted,
   };
 
   const { response } = await createRepair(data);
@@ -137,6 +142,74 @@ export const handleCreateRepair = async (deviceId, repairType, repairDescription
     return;
   } else {
     setShowToast({ isShow: true, type: "success", message: response.message });
+    return onSubmit();
+  }
+};
+
+{
+  /** */
+}
+export const handleUpdateRepairStatus = async (repairId, selectedStatus, OnSubmit, setShowToast) => {
+  if (!repairId) {
+    return setShowToast({ isShown: true, type: "error", message: "Device id not providing" });
+  }
+
+  if (!selectedStatus) {
+    return setShowToast({ isShown: true, type: "error", message: "Status not selected" });
+  }
+
+  const status = repairStatusList.find((status) => status.name === selectedStatus);
+
+  const data = {
+    repairId,
+    statusId: status.id,
+  };
+  const { error, message } = await updateRepairStatus(data, setShowToast);
+
+  if (error) {
+    //setShowToast()
+    return setShowToast({ isShown: true, type: "error", message: message });
+  }
+
+  console.log(setShowToast);
+  OnSubmit();
+  return setShowToast({ isShown: true, type: "success", message: message });
+};
+
+export const handleUpdateRepair = async (repairId, repairType, repairDescription, technicianId, repairNotes, onSubmit, setShowToast) => {
+  if (!repairId) {
+    return setShowToast({ isShown: true, type: "error", message: "Device not selected" });
+  }
+
+  if (!repairType) {
+    return setShowToast({ isShown: true, type: "error", message: "Repair type not provided" });
+  }
+
+  if (!repairDescription) {
+    return setShowToast({ isShown: true, type: "error", message: "Description not provided" });
+  }
+
+  if (!technicianId) {
+    return setShowToast({ isShown: true, type: "error", message: "Technician not selected" });
+  }
+
+  const data = {
+    repairId,
+    repairType,
+    repairDescription,
+    technicianId,
+    repairNotes: repairNotes || null,
+  };
+
+  const { response } = await updateRepair(repairId, data);
+
+  if (response.error) {
+    setShowToast({ isShown: true, type: "error", message: response.message });
+    return;
+  } else {
+    console.log(response);
+    setShowToast({ isShown: true, type: "success", message: response.message });
+
     return onSubmit();
   }
 };

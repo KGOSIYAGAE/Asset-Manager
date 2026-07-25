@@ -157,10 +157,8 @@ export const getUserType = (user_id, setUserType) => {
   let userId = user_id?.toString();
 
   if (userId?.length > 5) {
-    console.log("Student");
     return setUserType("Student");
   } else {
-    console.log("Staff");
     return setUserType("Staff");
   }
 };

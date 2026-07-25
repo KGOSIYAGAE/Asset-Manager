@@ -9,7 +9,7 @@ import { LoadingService } from "./loadingService";
 //NODE_ENV = 'production'
 
 //Production
-const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager" : "http://localhost:3000/api/v1/asset-manager";
+const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager" : "http://192.168.8.4:3000/api/v1/asset-manager";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -21,8 +21,17 @@ const axiosInstance = axios.create({
 
 (axiosInstance.interceptors.request.use((config) => {
   //const accessToken = localStorage.getItem("token");
+
+  let accessToken = null;
+
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  const accessToken = currentUser.token;
+  const tempSign = JSON.parse(sessionStorage.getItem("temp-sign-token"));
+
+  if (currentUser) {
+    accessToken = currentUser.token;
+  } else {
+    accessToken = tempSign.token;
+  }
 
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;

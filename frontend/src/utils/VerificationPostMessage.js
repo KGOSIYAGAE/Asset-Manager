@@ -1,7 +1,7 @@
 //Handle postMessage
-export const postMessage = (responeData) => {
+export const postMessage = (message) => {
   if (window.opener) {
-    window.opener.postMessage({ type: "form_submitted", payload: responeData }, window.location.origin);
+    window.opener.postMessage({ type: "form_submitted", payload: message }, window.location.origin);
   }
 
   window.close();

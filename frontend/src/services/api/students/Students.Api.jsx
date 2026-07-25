@@ -51,6 +51,23 @@ export const getStudentDetails = async (student_number, studentData) => {
   }
 };
 
+//Hanlde get device's stats
+export const getStudentsStats = async (setStudentsStats) => {
+  try {
+    const response = await axiosInstance.get("/students/students-stats", { showSpinner: true });
+
+    if (response.data) {
+      return setStudentsStats(...response.data.studentsDetails);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
 //Add Student
 export const addStudent = async (studentData, setShowToast) => {
   try {

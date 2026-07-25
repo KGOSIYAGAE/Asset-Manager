@@ -1,10 +1,85 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 import { MdOutlineFacebook } from "react-icons/md";
 
+import { QRCodeSVG } from "qrcode.react";
+import QrCodeCard from "../../components/cards/qrCodeCard/QrCodeCard";
+import { getSession } from "../../services/api/testApi/Test.Api";
+import { socket } from "../../utils/socket";
+
 function Approval() {
+  const [text, setText] = useState("");
+
+  const [session, setSession] = useState(null);
+  const [signature, setSignature] = useState(null);
+
+  const startSigningSession = async () => {
+    setSignature(null);
+    try {
+      const data = await getSession();
+      setSession(data);
+
+      socket.connect();
+
+      if (!data.sessionId) {
+        return console.log("session id not provided");
+      }
+
+      socket.emit("join_session", data.sessionId);
+
+      return console.log("session created");
+    } catch (error) {
+      console.error("Failed creating session", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      setSignature(image.image);
+      socket.disconnect();
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
+  }, []);
+
+  /* useEffect(() => {
+    console.log(session);
+  }, [session]);*/
+
   return (
-    <div className="w-full flex flex-col items-center justify-center p-5 gap-5 border border-red-500 ">
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <h1>Signature Portal</h1>
+      {!session && (
+        <button className="bg-red-600 p-5 rounded-md text-white" onClick={startSigningSession}>
+          Create Session
+        </button>
+      )}
+
+      {session && !signature && <QrCodeCard text={session?.signUrl} />}
+
+      {signature && (
+        <div>
+          <img alt="signature" src={signature} className="w-[180px] " />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Approval;
+
+{
+  /*<div className="w-full flex flex-col items-center justify-center p-5 gap-5 border border-red-500 ">
       <div className="flex items-center justify-center">
         <span className="font-bold text-3xl">Approval Required</span>
       </div>
@@ -109,8 +184,5 @@ function Approval() {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>*/
 }
-
-export default Approval;

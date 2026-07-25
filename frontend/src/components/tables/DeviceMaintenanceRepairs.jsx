@@ -4,21 +4,22 @@ import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverte
 import { getRequiresApprovalDevices } from "../../utils/devicesHelperMethods";
 import SearchInput from "../inputs/searchInput/SearchInput";
 import { useSearchContext } from "../../hooks/useSearchContext";
-import { MdGavel } from "react-icons/md";
+import { MdDeleteForever, MdEdit, MdFileOpen, MdGavel } from "react-icons/md";
 import TablePagation from "../cards/tablePagation/TablePagation";
+import { BsEyeFill, BsGearFill } from "react-icons/bs";
 
-function DeviceMaintenanceRepairs({ repairs, currentPage, setCurrentPage, totalPages, limit }) {
+function DeviceMaintenanceRepairs({ repairs, currentPage, setCurrentPage, totalPages, limit, viewForm }) {
   const navigate = useNavigate();
 
   const [columnCount, setColumnCount] = useState(8);
 
   //Handle view more
   const handleViewDevice = (id) => {
-    navigate(`/devices/device-details/${id}`);
+    navigate(`/repairs/repair-details/${id}`);
   };
 
   return (
-    <div className="table-view  h-[400px]">
+    <div className="table-view">
       <table className="">
         <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
           <th>
@@ -67,52 +68,40 @@ function DeviceMaintenanceRepairs({ repairs, currentPage, setCurrentPage, totalP
                     <td>{repairs.category}</td>
                     <td>
                       {(() => {
-                        return handleTimeStampToText(repairs.date_created);
+                        return new Date(repairs.date_created).toLocaleString();
                       })()}
                     </td>
                     <td>
                       <div className="flex justify-between  p-2 item-hover">
-                        {repairs?.repair_status === "Available" || repairs?.repair_status === "Returned" ? (
-                          <span className="text-sm bg-green-600 border shadow-sm p-1 rounded-md text-white">{repairs?.repair_status}</span>
-                        ) : repairs?.repair_status === "Issue Approval required" ? (
-                          <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{repairs?.repair_status}</span>
-                        ) : repairs?.repair_status === "Loan Approval required" ? (
-                          <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{repairs?.repair_status}</span>
+                        {repairs?.status_name === "Completed" ? (
+                          <span className="text-sm bg-green-600 border shadow-sm p-1 rounded-md text-white">{repairs?.status_name}</span>
+                        ) : repairs?.status_name === "In Progress" || repairs?.status_name === "Awaiting Parts" || repairs?.status_name === "Testing" || repairs?.status_name === "Under Assesment" ? (
+                          <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{repairs?.status_name}</span>
+                        ) : repairs?.status_name === "Ready For Collection" ? (
+                          <span className="text-sm bg-blue-600 border shadow-sm p-1 rounded-md text-white">{repairs?.status_name}</span>
                         ) : (
-                          <span className="text-sm bg-red-600 border shadow-sm p-1 rounded-md text-white">{repairs?.repair_status}</span>
+                          <span className="text-sm bg-red-600 border shadow-sm p-1 rounded-md text-white">{repairs?.status_name}</span>
                         )}
                       </div>
                     </td>
                     <td>{repairs.technican_name}</td>
 
-                    {/*
                     <td>
-                                          <div
-                                            className="flex items-center gap-2 text-gray-600 hover:text-gray-600 cursor-pointer"
-                                            onClick={() => {
-                                              //handleViewDevice(device.id);
-                                              setOpenModal({ isShown: true, type: "view-more-details", data: device });
-                                            }}
-                                          >
-                                            <BsEyeFill size={20} />
-                    
-                                            <span>View more</span>
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div
-                                            className="flex items-center gap-2 text-blue-500 hover:text-blue-600 cursor-pointer"
-                                            onClick={() => {
-                                              handleViewDevice(device.id);
-                                              //setOpenModal({ isShown: true, type: "view-more-details", data: device });
-                                            }}
-                                          >
-                                            <BsGearFill size={20} className="hover:rotate-45 duration-300" />
-                    
-                                            <span>Manage</span>
-                                          </div>
-                                        </td>
-                    */}
+                      <div className="flex gap-3">
+                        <div
+                          className="w-[30px] flex items-center justify-center text-blue-600 hover:text-gray bg-blue-100 p-1 rounded-md border border-blue-500 cursor-pointer"
+                          onClick={() => {
+                            handleViewDevice(repairs?.id);
+                          }}
+                        >
+                          <BsEyeFill size={20} />
+                        </div>
+
+                        <div className="w-[30px] flex items-center justify-center text-gray-600 bg-gray-100 p-1 rounded-md border border-gray-600 cursor-pointer" onClick={() => viewForm()}>
+                          <MdFileOpen size={20} />
+                        </div>
+                      </div>
+                    </td>
                   </tr>
                 ))
               : ""}

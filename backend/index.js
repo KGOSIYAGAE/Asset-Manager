@@ -2,6 +2,8 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 require("dotenv").config();
+const http = require("http");
+const { Server } = require("socket.io");
 
 const { dbConnection } = require("./util/dbConnection");
 
@@ -58,6 +60,50 @@ app.use("/api/v1/asset-manager/notification", notificationRouter);
 const repairRouter = require("./Routes/deviceRepairRoutes");
 app.use("/api/v1/asset-manager/repairs", repairRouter);
 
-app.listen(process.env.PORT || 3000, () => {
+//Test Routes
+const testRouter = require("./Routes/testRoutes");
+const console = require("console");
+app.use("/api/v1/asset-manager/session", testRouter);
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: { origin: "*" },
+});
+
+io.on("connection", (socket) => {
+  socket.on("join_session", (sessionId, callback) => {
+    socket.join(sessionId);
+
+    if (callback) {
+      callback({ status: "success" });
+    }
+
+    console.log(`Socket ${socket.id} joined session: ${sessionId}`);
+  });
+
+  socket.on("submit_signature", ({ sessionId, image }, ackCallback) => {
+    console.log(`Socket ${socket.id} signature submitted `);
+
+    io.to(sessionId).emit("signature_saved", { image });
+
+    console.log(`Signature brodcasted for session: ${sessionId}`);
+  });
+
+  socket.on("accept_disclaimer_consent", ({ sessionId }, ackCallback) => {
+    console.log(`Socket ${socket.id} Accepted disclaimer and consent `);
+
+    io.to(sessionId).emit("disclaimer_consent_accepted");
+
+    console.log(`Returned after accaptance for session: ${sessionId}`);
+  });
+});
+
+//////
+server.listen(process.env.PORT || 3000, () => {
   console.log("Server running on port", process.env.PORT);
 });
+
+/*app.listen(process.env.PORT || 3000, () => {
+  console.log("Server running on port", process.env.PORT);
+});*/

@@ -101,6 +101,23 @@ export const bulkAddStaff = async (staffData, setShowToast, onClose) => {
   }
 };
 
+//Hanlde get staff's stats
+export const getStaffStats = async (setStaffStats) => {
+  try {
+    const response = await axiosInstance.get("/staff/staff-stats", { showSpinner: true });
+
+    if (response.data) {
+      return setStaffStats(...response.data.staffDetails);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      return console.log(error.response.data.message);
+    } else {
+      return console.log("An unexpected error occured, please try again");
+    }
+  }
+};
+
 export const getUser = async (id, setFormData) => {
   if (!id) {
     return console.log("Staff number must be provided");
@@ -138,7 +155,7 @@ export const getStaffDetails = async (staff_no, setStaffData) => {
     if (error.response && error.response.data.error) {
       return console.log(error.response.data.message);
     } else {
-      return console.log("An unexpected error occured, please try again.");
+      return console.log("An unexpected error occured, please try again.", error);
     }
   }
 };

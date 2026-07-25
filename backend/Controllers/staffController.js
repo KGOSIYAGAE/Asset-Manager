@@ -107,7 +107,7 @@ const getStaffDetails = async (req, res) => {
 
     return res.status(200).json({ staffData: rows, message: "Success", error: false });
   } catch (error) {
-    console.log(error);
+    console.log(error.stack || error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
@@ -316,4 +316,22 @@ const deleteStaff = async (req, res) => {
   }
 };
 
-module.exports = { getAllStaff, getStaff, getSupportAdmins, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff };
+//Get staff stats
+const getStaffStats = async (req, res) => {
+  try {
+    const getStatsQuery = `SELECT * FROM "staffStats";`;
+
+    const { rows } = await query(getStatsQuery);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Staff stats not found", error: true });
+    }
+
+    return res.status(200).json({ staffDetails: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+module.exports = { getAllStaff, getStaff, getSupportAdmins, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff, getStaffStats };

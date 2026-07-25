@@ -3,7 +3,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 //Get All devices
 export const getAllDevices = async (data, setAllDevices, setTotalPages) => {
   try {
-    const response = await axiosInstance.get(`/devices/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
+    const response = await axiosInstance.get(`/devices/?page=${data.page}&limit=${data.limit}`, { params: data, showSpinner: true });
 
     if (response.data.deviceList) {
       setTotalPages(response.data.totalPages);
@@ -230,7 +230,7 @@ export const assignDevice = async (id, data, setShowToast) => {
     if (error.response.data && error.response.data.error) {
       return { error: error.response.data.error, message: error.response.data.message };
     } else {
-      return "An unexpected error occured, please try again.";
+      return { error: error.response.data.error, message: "An unexpected error occured, please try again." };
     }
   }
 };
@@ -258,7 +258,24 @@ export const createLoanDevice = async (id, data, setShowToast) => {
     const response = await axiosInstance.put("/devices/loan-device/" + id, data);
 
     if (!response.data.error) {
-      return { isShow: true, type: "success", message: response.data.message };
+      return { error: response.data.error, message: response.data.message };
+    }
+  } catch (error) {
+    if (error.response.data && error.response.data.error) {
+      return { error: true, message: error.response.data.message };
+    } else {
+      return { error: true, message: "An unexpected error occured, please try again." };
+    }
+  }
+};
+
+//Assign device API call
+export const releaseDevice = async (id, data, setShowToast) => {
+  try {
+    const response = await axiosInstance.put("/devices/release-device/" + id, data, { showSpinner: true });
+
+    if (!response.data.error) {
+      return setShowToast({ isShow: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
@@ -270,9 +287,9 @@ export const createLoanDevice = async (id, data, setShowToast) => {
 };
 
 //Assign device API call
-export const releaseDevice = async (id, data, setShowToast) => {
+export const rejectDevice = async (id, data, setShowToast) => {
   try {
-    const response = await axiosInstance.put("/devices/release-device/" + id, data, { showSpinner: true });
+    const response = await axiosInstance.put("/devices/reject-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });

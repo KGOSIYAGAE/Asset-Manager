@@ -51,7 +51,7 @@ function UserDevicesTable({ deviceList, deviceHistory, onAssignDevice }) {
           <tbody className="">
             {deviceHistory
               ? deviceHistory.map((device, count) => (
-                  <tr key={device.id} className="hover:bg-slate-50">
+                  <tr key={count} className="hover:bg-slate-50">
                     <td>
                       {(() => {
                         return count + 1;

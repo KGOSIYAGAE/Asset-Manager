@@ -5,9 +5,9 @@ import Dashboard from "../../components/dashboard/Dashboard";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
 import { getAllDeviceLoanDue, getAllDevices, getDevicesStats } from "../../services/api/devices/Device.Api";
 import { useStaffContext } from "../../hooks/useStaffContext";
-import { getStaffData } from "../../services/api/staff/Staff.Api";
+import { getStaffData, getStaffStats } from "../../services/api/staff/Staff.Api";
 import { useStudentsContext } from "../../hooks/useStudentsContext";
-import { getAllStudents } from "../../services/api/students/Students.Api";
+import { getAllStudents, getStudentsStats } from "../../services/api/students/Students.Api";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import { getFacultyStats } from "../../utils/analyticsMethods";
@@ -29,15 +29,20 @@ function Home() {
   const [currentUser, setCurrentUser] = useState(null);
   const [deviceStats, setDeviceStats] = useState(null);
 
+  const [studentsStats, setStudentsStats] = useState(null);
+  const [staffStats, setStaffStats] = useState(null);
+
   useEffect(() => {
     setCurrentUser(getLoggedInUser());
     getDevicesStats(setDeviceStats);
+    getStudentsStats(setStudentsStats);
+    getStaffStats(setStaffStats);
   }, []);
 
   return (
     <div>
       {/*<UserDashCard loggedInUser={currentUser} />*/}
-      {hasPermission("support-admin-dash") && <MainAdminDashboard deviceStats={deviceStats} />}
+      {hasPermission("support-admin-dash") && <MainAdminDashboard deviceStats={deviceStats} studentsStats={studentsStats} staffStats={staffStats} />}
     </div>
   );
 }

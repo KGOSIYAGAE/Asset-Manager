@@ -1,6 +1,7 @@
 const { query } = require("../util/pg_dbConnection");
 const format = require("pg-format");
 const { createNewLog } = require("./deviceTransactionsController");
+const { sendApprovalEmail } = require("./notificationsController");
 
 //Check Previous device status
 const checkDeviceStatus = async (id) => {
@@ -372,7 +373,7 @@ const createDevice = async (req, res) => {
     }
 
     const create_device_query =
-      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14, NOW());";
+      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type,operational_state,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,'Normal', NOW());";
     const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, supplier_name, invoice_no, device_type];
 
     const { rowCount } = await query(create_device_query, [...VALUES]);
@@ -611,7 +612,7 @@ const getDevice = async (req, res) => {
 //Get all devices
 const getAllDevices = async (req, res) => {
   try {
-    const userrole = req.userrole;
+    const { userrole } = req.query;
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
@@ -763,6 +764,8 @@ const assignDevice = async (req, res) => {
     const { id } = req.params;
     const { issued_by, status, userId, userEndDate } = req.body;
 
+    console.log(issued_by);
+
     //const previousStatus = await checkDeviceStatus(id);
 
     if (!id) {
@@ -854,6 +857,10 @@ const loanDevice = async (req, res) => {
     if (deviceState.rowCount === 0) {
       return res.status(400).json({ message: "Device not updated", error: true });
     }
+
+    //await sendApprovalNotification(device.serial_no, device.make, device.model, device.category, device.device_type, userId, issued_by);
+
+    await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
 
     return res.status(200).json({ message: `Device state has been changed, Approval is required`, error: false });
   } catch (error) {

@@ -15,7 +15,7 @@ import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 import ImportFile from "../../components/cards/importFile/ImportFile";
 import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 import BulkAddButton from "../../components/buttons/BulkAddButton";
-import { hasPermission } from "../../utils/getLoggedInUser";
+import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import { handleDeleteDevice } from "../../utils/handleDeleteItem";
 
 function Devices({ path }) {
@@ -64,12 +64,15 @@ function Devices({ path }) {
   //Handles search clear -> Sent to Search component
   const handleCancelSearch = () => {
     setSearchResults(null);
-    getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllDevices, setTotalPages);
+    const user = getLoggedInUser();
+    getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
   };
 
   //Execute Gett All devices on load or status change
   useEffect(() => {
-    getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllDevices, setTotalPages);
+    const user = getLoggedInUser();
+
+    getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
   }, [pagationModel.page, pagationModel.pageSize]);
 
   return (

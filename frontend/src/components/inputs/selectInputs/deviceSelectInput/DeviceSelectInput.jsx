@@ -6,7 +6,7 @@ import { getAvailableDevicesHelper } from "../../../../utils/devicesHelperMethod
 import { getSearchResults } from "../../../../services/api/admin/Search.Api";
 import { MdDevices, MdOutlineMonitor } from "react-icons/md";
 
-function DeviceSelectInput({ userId, allDevices, selectedDevice, setSelectedDevice, repair }) {
+function DeviceSelectInput({ userId, allDevices, selectedDevice, setSelectedDevice, repair, viewDevice }) {
   const [showDevices, setShowDevices] = useState({ isShow: false });
   const [showDevicesSearch, setShowDevicesSearch] = useState({ isShow: true });
 
@@ -44,6 +44,11 @@ function DeviceSelectInput({ userId, allDevices, selectedDevice, setSelectedDevi
 
     return () => clearTimeout(delayTimer);
   }, [searchInput]);
+
+  useEffect(() => {
+    setSearchInput(viewDevice);
+    console.log(viewDevice);
+  }, [viewDevice]);
 
   //Search API axecution UseEffect
   useEffect(() => {

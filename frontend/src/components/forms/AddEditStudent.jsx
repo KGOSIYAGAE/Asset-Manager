@@ -25,6 +25,7 @@ import { departmentsList } from "../../utils/departmentList";
 import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
 import Modal from "react-modal";
 import StudentFacultySelectInput from "../inputs/selectInputs/studentFacultySelectInput/StudentFacultySelectInput";
+import { socket } from "../../utils/socket";
 
 function AddEditStudent({ path }) {
   const { studentState } = useStudentsContext();
@@ -191,6 +192,31 @@ function AddEditStudent({ path }) {
 
   useEffect(() => {
     getSelectedUser();
+  }, []);
+
+  useEffect(() => {
+    getSelectedUser();
+  }, []);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      //setSignature(image.image);
+
+      getSelectedUser();
+      socket.disconnect();
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
   }, []);
 
   return (

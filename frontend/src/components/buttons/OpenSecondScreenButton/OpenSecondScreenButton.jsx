@@ -29,8 +29,10 @@ function OpenSecondScreenButton({ btnLable, userId, deviceId, formType, returnDa
 
         if (deviceId && returnDate) {
           url = `${window.location.origin}/user-form/${formType}/${userId}/${deviceId}/${returnDate}`;
-        } else if (deviceId) {
+        } else if (deviceId && userId) {
           url = `${window.location.origin}/user-form/${formType}/${userId}/${deviceId}`;
+        } else if (deviceId) {
+          url = `${window.location.origin}/user-form/${formType}/${deviceId}`;
         } else {
           url = `${window.location.origin}/user-form/${userId}`;
         }

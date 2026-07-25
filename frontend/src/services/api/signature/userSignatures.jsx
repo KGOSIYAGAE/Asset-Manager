@@ -40,9 +40,8 @@ export const getIssureApproverSignature = async (data) => {
   }
 };
 
-export const setUserSignature = async (user_id, image_base64, setShowToast) => {
+export const setUserSignature = async (user_id, image_base64) => {
   if (!user_id) {
-    console.log(user_id);
     return console.log("User ID must be provided");
   }
 

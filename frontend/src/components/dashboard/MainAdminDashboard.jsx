@@ -1,18 +1,21 @@
 import React, { useEffect } from "react";
 import { BsClipboard2Pulse } from "react-icons/bs";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaUser, FaUserGraduate } from "react-icons/fa";
 import { FaHandHoldingDroplet, FaHandshakeSimple } from "react-icons/fa6";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
-import { MdDevices, MdLaptopWindows, MdOutlineAssignmentTurnedIn, MdOutlineDesktopWindows, MdOutlineMonitor, MdOutlineTabletMac } from "react-icons/md";
+import { MdDevices, MdDevicesOther, MdLaptopWindows, MdOutlineAssignmentTurnedIn, MdOutlineDesktopWindows, MdOutlineMonitor, MdOutlineTabletMac } from "react-icons/md";
 import { getPercentage } from "../../utils/getValueInPercentage";
 import { AiOutlinePrinter } from "react-icons/ai";
 
-function MainAdminDashboard({ deviceStats, path }) {
+function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
   const availableEnd = (deviceStats?.available_devices / deviceStats?.total_devices) * 100;
   const assignedEnd = availableEnd + (deviceStats?.assigned_devices / deviceStats?.total_devices) * 100;
   const loanedEnd = assignedEnd + (deviceStats?.loaned_devices / deviceStats?.total_devices) * 100;
   const maintenanceEnd = loanedEnd + (deviceStats?.maintenance_devices / deviceStats?.total_devices) * 100;
   const avEnd = 100;
+
+  const issuedStaff = (deviceStats?.issued_to_staff / deviceStats?.assigned_devices) * 100;
+  const issuedStudents = issuedStaff + (deviceStats?.loaned_to_students / deviceStats?.assigned_devices) * 100;
 
   useEffect(() => {
     console.log(deviceStats);
@@ -25,6 +28,7 @@ function MainAdminDashboard({ deviceStats, path }) {
         <span className="text-sm text-slate-600">Welcome back1 Here's what's happening with your ICT assets.</span>
       </div>
       <div className="flex flex-col gap-5">
+        {/* Device Summary*/}
         <div className="grid grid-cols-5 grid-rows-1 gap-5">
           {/* */}
           <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-5">
@@ -33,7 +37,10 @@ function MainAdminDashboard({ deviceStats, path }) {
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Devices</span>
-              <span className="font-bold text-xl">{deviceStats?.total_devices}</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xl">{deviceStats?.total_devices}</span>
+                <span className="text-sm text-slate-500">All registered devices</span>
+              </div>
             </div>
           </div>
 
@@ -44,7 +51,11 @@ function MainAdminDashboard({ deviceStats, path }) {
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Available</span>
-              <span className="font-bold text-xl">{deviceStats?.available_devices}</span>
+
+              <div className="flex flex-col">
+                <span className="font-bold text-xl">{deviceStats?.available_devices}</span>
+                <span className="text-sm text-slate-500">Ready to be assigned</span>
+              </div>
             </div>
           </div>
 
@@ -55,7 +66,10 @@ function MainAdminDashboard({ deviceStats, path }) {
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Assigned</span>
-              <span className="font-bold text-xl">{deviceStats?.assigned_devices}</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xl">{deviceStats?.assigned_devices}</span>
+                <span className="text-sm text-slate-500">Currently assigned</span>
+              </div>
             </div>
           </div>
 
@@ -66,7 +80,10 @@ function MainAdminDashboard({ deviceStats, path }) {
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Loaned</span>
-              <span className="font-bold text-xl">{deviceStats?.loaned_devices}</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xl">{deviceStats?.loaned_devices}</span>
+                <span className="text-sm text-slate-500">On loan</span>
+              </div>
             </div>
           </div>
 
@@ -77,7 +94,11 @@ function MainAdminDashboard({ deviceStats, path }) {
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Repairs</span>
-              <span className="font-bold text-xl">{deviceStats?.maintenance_devices}</span>
+
+              <div className="flex flex-col">
+                <span className="font-bold text-xl">{deviceStats?.maintenance_devices}</span>
+                <span className="text-sm text-slate-500">In repair</span>
+              </div>
             </div>
           </div>
         </div>
@@ -85,9 +106,16 @@ function MainAdminDashboard({ deviceStats, path }) {
         {/*******************************************/}
 
         <div className="grid grid-cols-12 grid-rows-1 gap-5">
-          {/* */}
+          {/* Device Status Overview*/}
           <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
-            <span className=" font-semibold text-black">Device Status Overview</span>
+            <div className="flex justify-between">
+              <span className=" font-semibold text-black">Device Status Overview</span>
+
+              <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
+                View all <FaArrowRight />
+              </span>
+            </div>
+
             <div className="w-[100%] h-[100%] flex items-center justify-between">
               <div
                 className="w-48 h-48 rounded-full flex items-center justify-center"
@@ -96,14 +124,16 @@ function MainAdminDashboard({ deviceStats, path }) {
                 #16a34a  0% ${availableEnd}%,
                 #ea580c  ${availableEnd}% ${assignedEnd}%,
                 #2563eb   ${assignedEnd}% ${loanedEnd}%,
-                #9333ea   ${loanedEnd}% ${maintenanceEnd}%,
                 #9333ea    ${maintenanceEnd}% 100%)`,
                 }}
+
+                /*#ea580c  0% ${issuedStaff}%,
+                #9333ea  ${issuedStaff}% ${100}%)`, */
               >
                 <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center text-sm font-bold">{deviceStats?.total_devices}</div>
               </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between ">
+              <div className="flex flex-col gap-5 justify-evenly text-sm">
+                <div className="flex items-center justify-between">
                   <div className=" bg-green-600 p-2 rounded-full"></div>
                   <span className="text-sm">Available</span>
                   <span>{deviceStats?.available_devices}</span>
@@ -138,7 +168,7 @@ function MainAdminDashboard({ deviceStats, path }) {
                 {/* */}
                 <div className="flex items-center gap-5">
                   <div className=" bg-purple-600 p-2 rounded-full"></div>
-                  <span className="text-sm">Maintence</span>
+                  <span className="text-sm">Maintenance</span>
                   <span>{deviceStats?.maintenance_devices}</span>
                   <span className="text-slate-500">
                     {(() => {
@@ -150,19 +180,56 @@ function MainAdminDashboard({ deviceStats, path }) {
             </div>
           </div>
 
-          {/* */}
+          {/*Issued to Staff vs Students */}
           <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
-            <div className="w-full flex justify-between">
-              <span className=" font-bold text-black">Recent Alerts</span>
+            <div className="flex justify-between">
+              <span className=" font-semibold text-black">Issued to Staff vs Students</span>
 
               <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
                 View all <FaArrowRight />
               </span>
             </div>
-            <div>%</div>
+
+            <div className="w-[100%] h-[100%] flex items-center justify-between">
+              <div
+                className="w-48 h-48 rounded-full flex items-center justify-center"
+                style={{
+                  background: `conic-gradient( 
+                #ea580c  0% ${issuedStaff}%,
+                #9333ea  ${issuedStaff}% ${100}%)`,
+                }}
+              >
+                <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center text-sm font-bold">{deviceStats?.assigned_devices}</div>
+              </div>
+              <div className="flex flex-col gap-5 justify-evenly text-sm">
+                {/* */}
+                <div className="flex items-center justify-between">
+                  <div className=" bg-orange-600 p-2 rounded-full"></div>
+                  <span className="text-sm">Staff</span>
+                  <span>{deviceStats?.issued_to_staff}</span>
+                  <span className="text-slate-500">
+                    {(() => {
+                      return `${getPercentage(deviceStats?.issued_to_staff, deviceStats?.assigned_devices)}%`;
+                    })()}
+                  </span>
+                </div>
+
+                {/* */}
+                <div className="flex items-center gap-5">
+                  <div className=" bg-purple-600 p-2 rounded-full"></div>
+                  <span className="text-sm">Students</span>
+                  <span>{deviceStats?.issued_to_students}</span>
+                  <span className="text-slate-500">
+                    {(() => {
+                      return `${getPercentage(deviceStats?.issued_to_students, deviceStats?.assigned_devices)} %`;
+                    })()}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* */}
+          {/*Category breakdown*/}
           <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
             <div className="w-full flex justify-between">
               <span className="font-bold text-black">Category breakdown</span>
@@ -170,7 +237,7 @@ function MainAdminDashboard({ deviceStats, path }) {
                 View all <FaArrowRight />
               </span>
             </div>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5 text-sm">
               <div className="flex gap-2">
                 <div className="bg-slate-100 p-2 rounded-md bg-opacity-30">
                   <MdLaptopWindows size={25} />
@@ -322,6 +389,76 @@ function MainAdminDashboard({ deviceStats, path }) {
                       className="  p-1 rounded-md"
                     ></div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/*Staff Students Section*/}
+        </div>
+        <div className="grid grid-cols-6 grid-rows-1 gap-5">
+          {/* */}
+          <div className="flex items-center col-span-3 bg-white gap-3 border shadow-md rounded-md p-5">
+            <div className="w-[52px] h-[52px] flex items-center justify-center bg-blue-50 border border-blue-500 rounded-full">
+              <FaUser size={25} className="text-blue-600" />
+            </div>
+            <div className="flex flex-col gap-2">
+              <span className="text-sm text-black">Total Staff</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xl">{staffStats?.total_staff}</span>
+                <span className="text-sm text-slate-500">All registered devices</span>
+              </div>
+            </div>
+          </div>
+
+          {/* */}
+          <div className="w-full flex items-center justify-between col-span-3 bg-white gap-3 border shadow-md rounded-md p-5">
+            {/* */}
+            <div className="w-3/6 flex gap-3 ">
+              <div className="w-[52px] h-[52px] flex items-center justify-center bg-purple-50 border border-purple-500 rounded-full">
+                <FaUserGraduate size={25} className="text-purple-600" />
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-sm text-black">Total Students</span>
+
+                <div className="flex flex-col">
+                  <span className="font-bold text-xl">{studentsStats?.total_students}</span>
+                  <span className="text-sm text-slate-500">Students Stats</span>
+                </div>
+              </div>
+            </div>
+            {/* */}
+            <div className="w-3/6 flex fle gap-5 text-sm ">
+              <div className="flex gap-3">
+                <div className="w-[10px] h-[10px] rounded-full p-2 bg-yellow-500"></div>
+
+                <div className="flex flex-col">
+                  <span>EDU</span>
+                  <span className="font-semibold">{studentsStats?.edu_students}</span>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-[10px] h-[10px] rounded-full p-2 bg-orange-500"></div>
+
+                <div className="flex flex-col">
+                  <span>HUM</span>
+                  <span className="font-semibold">{studentsStats?.hum_students}</span>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-[10px] h-[10px] rounded-full p-2 bg-green-500"></div>
+
+                <div className="flex flex-col">
+                  <span>NAS</span>
+                  <span className="font-semibold">{studentsStats?.nas_students}</span>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-[10px] h-[10px] rounded-full p-2 bg-blue-600"></div>
+
+                <div className="flex flex-col">
+                  <span>EMS</span>
+                  <span className="font-semibold">{studentsStats?.ems_students}</span>
                 </div>
               </div>
             </div>

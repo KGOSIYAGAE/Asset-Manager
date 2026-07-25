@@ -25,6 +25,7 @@ import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/Facult
 import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
 
 import Modal from "react-modal";
+import { socket } from "../../utils/socket";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -196,6 +197,27 @@ function AddEditStaff({ path }) {
 
   useEffect(() => {
     getUserDetails();
+  }, []);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      //setSignature(image.image);
+
+      getUserDetails();
+      socket.disconnect();
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
   }, []);
 
   //handle post Message Response

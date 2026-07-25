@@ -246,4 +246,4 @@ const getAdmins = async (req, res) => {
   }
 };
 
-module.exports = { login, signUp, changePassword, assignStaffRole, updateStaffRole, getAdmins };
+module.exports = { createToken, login, signUp, changePassword, assignStaffRole, updateStaffRole, getAdmins };

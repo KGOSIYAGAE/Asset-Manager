@@ -6,7 +6,7 @@ const { getAllLogs, getAllTransactionsForDevice, getAllLatestDevicesTransactions
 const requireAuth = require("../middleware/requireAuth");
 
 //
-//router.use(requireAuth);
+router.use(requireAuth);
 
 //Get all logs
 //router.get("/", getAllLogs);

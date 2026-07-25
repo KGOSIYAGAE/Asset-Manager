@@ -18,6 +18,12 @@ import { getUserDeviceHistory } from "../../../services/api/deviceLogs/deviceTra
 import AssignDeviceToUser from "../../../components/cards/issueDevice/AssignDeviceToUser";
 import SubmitButton from "../../../components/buttons/SubmitButton";
 import { hasPermission } from "../../../utils/getLoggedInUser";
+import { socket } from "../../../utils/socket";
+import CaptureSignatureCard from "../../../components/cards/captureSignatureCard/CaptureSignatureCard";
+import SendToTablet from "../../../components/buttons/SendToTablet/SendToTablet";
+import QrCodeCard from "../../../components/cards/qrCodeCard/QrCodeCard";
+import CancelButton from "../../../components/buttons/CancelButton";
+import BlankCard from "../../../components/cards/blackCard/BlankCard";
 
 function StaffDetails({ path }) {
   const [staffDetails, setStaffDetails] = useState();
@@ -53,21 +59,22 @@ function StaffDetails({ path }) {
   };
 
   //Get data from the API
-  const geDetails = () => {
+  const getDetails = () => {
+    console.log("Details");
     const { staff_no } = params;
 
     if (!staff_no) {
       console.log("Selected student's student number not provided");
     }
 
-    getAllUserDevices(staff_no, devicesDispatch);
     getStaffDetails(staff_no, setFormDetails);
+    getAllUserDevices(staff_no, devicesDispatch);
     getDeviceTransactionsHistory(staff_no);
     //getStudentDetails(staff_no, setFormDetails);
   };
 
   useEffect(() => {
-    geDetails();
+    getDetails();
   }, []);
 
   //handle post Message Response
@@ -78,12 +85,12 @@ function StaffDetails({ path }) {
 
         if (event.data.payload.error) {
           setShowToast({ isShow: true, type: "error", message: "Error updating the signature" });
-          geDetails();
+          getDetails();
           return;
         }
 
         setShowToast({ isShow: true, type: "success", message: event.data.payload });
-        geDetails();
+        getDetails();
       }
     };
 
@@ -99,17 +106,39 @@ function StaffDetails({ path }) {
 
         if (event.data.payload.error) {
           setShowToast({ isShow: true, type: "error", message: "Error Assigning device" });
-          geDetails();
+          getDetails();
           return;
         }
 
         setShowToast({ isShow: true, type: "success", message: event.data.payload });
-        geDetails();
+        getDetails();
       }
     };
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      console.log("Signature recieved");
+
+      getDetails();
+
+      socket.disconnect();
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
   }, []);
 
   return (
@@ -197,15 +226,25 @@ function StaffDetails({ path }) {
                   <img alt="signature" src={staffDetails?.image_base64} className="w-[180px] " />
                 </div>
                 {hasPermission("signature") && (
-                  <div onClick={() => onCanel()}>
-                    <OpenSecondScreenButton btnLable={"Update Signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
+                  <div>
+                    <SubmitButton
+                      text={"Capture Signature"}
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "capture-signature" });
+                      }}
+                    />
                   </div>
                 )}
               </div>
             ) : (
               hasPermission("signature") && (
-                <div onClick={() => onCanel()}>
-                  <OpenSecondScreenButton btnLable={"Capture signature"} userId={staffDetails?.staff_no} deviceId={null} setShowToast={null} />
+                <div>
+                  <SubmitButton
+                    text={"Capture Signature"}
+                    onClick={() => {
+                      setOpenModal({ isShown: true, type: "capture-signature" });
+                    }}
+                  />
                 </div>
               )
             )}
@@ -238,17 +277,32 @@ function StaffDetails({ path }) {
           openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
-        <AssignDeviceToUser
-          onCanel={() => {
-            setOpenModal({ isShown: false });
-          }}
-          onSubmit={() => {
-            //getDeviceDetails();
-            setOpenModal({ isShown: false });
-          }}
-          userId={staffDetails?.staff_no}
-          setShowToast={setShowToast}
-        />
+        {openModal.type === "capture-signature" ? (
+          <BlankCard
+            onCanel={() => {
+              getDetails();
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={() => {
+              getDetails();
+              setOpenModal({ isShown: false });
+            }}
+            userId={staffDetails?.staff_no}
+          />
+        ) : (
+          <AssignDeviceToUser
+            onCanel={() => {
+              getDetails();
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={() => {
+              getDetails();
+              setOpenModal({ isShown: false });
+            }}
+            userId={staffDetails?.staff_no}
+            setShowToast={setShowToast}
+          />
+        )}
       </Modal>
       <ToastMessage
         isShown={showToast.isShow}
