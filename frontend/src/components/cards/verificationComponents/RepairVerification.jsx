@@ -5,7 +5,7 @@ import SiganturePad from "../signaturePad/SiganturePad";
 import { useParams } from "react-router-dom";
 import { getAllDeviceDetails } from "../../../services/api/devices/Device.Api";
 import UserCaptureSignature from "../signaturePad/UserCaptureSignature";
-import RepairDesclaimerSignaturePad from "../signaturePad/repairDesclaimerSignaturePad";
+import RepairDesclaimerSignaturePad from "../signaturePad/RepairDesclaimerSignaturePad";
 
 function RepairVerification() {
   const params = useParams();
