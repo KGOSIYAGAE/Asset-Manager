@@ -3,25 +3,28 @@ import TextInput from "../../components/inputs/textInput/TextInput";
 import PasswordInput from "../../components/inputs/textInput/PasswordInput";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import loginAxiosInstance from "../../utils/loginAxiosInstance";
 import { checkInternetConnection } from "../../utils/systemChecks";
 import LoginEmailInput from "../../components/inputs/loginEmailInput/LoginEmailInput";
 import { setNavigate } from "../../utils/navigate";
 
 function Login() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showToast, setShowToast] = useState({ isShown: false, type: "error", message: "" });
   const [showLoading, setLoading] = useState(false);
   const [isDiabled, setIsDisabled] = useState(true);
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   //Login Api Call
   const onLogin = async (email, password) => {
+    const redrictUrl = location.state?.from ? location.state.from : "/home";
+
     try {
       if (!email) {
         return setShowToast({ isShown: true, type: "error", message: "Username not provided" });
@@ -41,8 +44,9 @@ function Login() {
 
         authDispatch({ type: "LOGIN", payload: response.data });
 
-        navigate("/home");
-        return setShowToast({ isShown: true, type: "add", message: "Login successful" });
+        navigate(redrictUrl, { replace: true });
+
+        return setShowToast({ isShown: true, type: "success", message: "Login successful" });
       }
     } catch (error) {
       if (!isOnline) {

@@ -91,24 +91,27 @@ function App() {
       //Check if user is authorized to access private protected routes
       if (!user.role) {
         sessionStorage.clear();
-        return navigate("/No-Access", { replace: true });
+        console.log(window.location.pathname);
+        return navigate("/", { replace: true, state: { from: window.location.pathname } });
       }
 
       if (!user.token) {
         sessionStorage.clear();
-        return navigate("/", { replace: true });
+        console.log(window.location.pathname);
+        return navigate("/", { replace: true, state: { from: window.location.pathname } });
       }
 
       //Check if user token is still valid if not redirect to login
       if (isTokenExpired(user.token)) {
         sessionStorage.clear();
-        return navigate("/");
+        console.log(window.location.pathname);
+        return navigate("/", { replace: true, state: { from: window.location.pathname } });
       }
 
       setIsAuthenticated(true);
-    }, [isAuthenticated, navigate, setIsAuthenticated]);
+    }, [navigate]);
 
-    return isAuthenticated ? Element : <h1>Authenticated</h1>;
+    return isAuthenticated ? Element : <h1>Authentication Required</h1>;
   };
 
   /*const router = createBrowserRouter([
