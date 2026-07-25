@@ -13,7 +13,7 @@ import { handleCreateRepair, handleUpdateRepair, maintenaceTypesList, repairStat
 import SelectInput from "../../inputs/selectInputs/selectInput/SelectInput";
 import { getLoggedInUser, hasPermission } from "../../../utils/getLoggedInUser";
 import { getAdmins } from "../../../services/api/admin/Admin.Api";
-import TechnicianSelectInput from "../../inputs/selectInputs/technicianSelectInput/technicianSelectInput";
+import TechnicianSelectInput from "../../inputs/selectInputs/technicianSelectInput/TechnicianSelectInput";
 import SubmitButton from "../../buttons/SubmitButton";
 import { useParams } from "react-router-dom";
 import { getRepair } from "../../../services/api/repairs/Repairs.Api";
