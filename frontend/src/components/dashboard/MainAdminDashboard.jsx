@@ -130,7 +130,10 @@ function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
                 /*#ea580c  0% ${issuedStaff}%,
                 #9333ea  ${issuedStaff}% ${100}%)`, */
               >
-                <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center text-sm font-bold">{deviceStats?.total_devices}</div>
+                <div className="w-32 h-32  flex-col bg-white rounded-full flex items-center justify-center ">
+                  <span className=" font-bold">{deviceStats?.total_devices}</span>
+                  <span className="text-sm">Total</span>
+                </div>
               </div>
               <div className="flex flex-col gap-5 justify-evenly text-sm">
                 <div className="flex items-center justify-between">
@@ -199,7 +202,10 @@ function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
                 #9333ea  ${issuedStaff}% ${100}%)`,
                 }}
               >
-                <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center text-sm font-bold">{deviceStats?.assigned_devices}</div>
+                <div className="w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center ">
+                  <span className="font-bold">{deviceStats?.assigned_devices}</span>
+                  <span className="text-sm">Total</span>
+                </div>
               </div>
               <div className="flex flex-col gap-5 justify-evenly text-sm">
                 {/* */}

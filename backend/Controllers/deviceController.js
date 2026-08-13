@@ -1,7 +1,7 @@
 const { query } = require("../util/pg_dbConnection");
 const format = require("pg-format");
 const { createNewLog } = require("./deviceTransactionsController");
-const { sendApprovalEmail } = require("./notificationsController");
+const { sendApprovalEmail, sendApprovedEmail, sendRejectionEmail } = require("./notificationsController");
 
 //Check Previous device status
 const checkDeviceStatus = async (id) => {
@@ -860,7 +860,7 @@ const loanDevice = async (req, res) => {
 
     //await sendApprovalNotification(device.serial_no, device.make, device.model, device.category, device.device_type, userId, issued_by);
 
-    await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
+    // await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
 
     return res.status(200).json({ message: `Device state has been changed, Approval is required`, error: false });
   } catch (error) {
@@ -922,13 +922,13 @@ const releaseDevice = async (req, res) => {
 const rejectDeviceIssueLoan = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { rejected_by, status, deviceTransactionId, rejectReason } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!returned_by || !status) {
+    if (!rejectReason || !status) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
@@ -943,7 +943,7 @@ const rejectDeviceIssueLoan = async (req, res) => {
     const device = rows[0];
 
     //Update  transations table status, returned_by, return_date
-    const updateDeviceCurrentState = "UPDATE device_transactions SET status=$1, WHERE device_serial_number=$2 AND user_id = $3";
+    const updateDeviceCurrentState = "UPDATE device_transactions SET status=$1 WHERE device_serial_number=$2 AND user_id = $3";
     const deviceState = await query(updateDeviceCurrentState, [status, device.serial_no, device.current_user_id]);
 
     if (deviceState.rowCount === 0) {
@@ -959,6 +959,9 @@ const rejectDeviceIssueLoan = async (req, res) => {
     if (rowCount === 0) {
       return res.status(400).json({ message: "An error occured when releasing the device from user", error: true });
     }
+
+    //Send Rejection Email Email
+    const emailSent = await sendRejectionEmail(rejected_by, deviceTransactionId, device, rejectReason, res);
 
     return res.status(200).json({ rowCount, message: `Device successfully released.`, error: false });
   } catch (error) {
@@ -1007,7 +1010,12 @@ const approveDevice = async (req, res) => {
       return res.status(400).json({ message: "An error occured when releasing the device from user", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: `Device successfully ${device.status === "Loan Approval required" ? "loaned" : "assigned"}.`, error: false });
+    //Send Approved Email
+    const emailSent = await sendApprovedEmail(approved_by, deviceTransactionId, device, res);
+
+    if (emailSent) {
+      return res.status(200).json({ rowCount, message: `Device successfully ${device.status === "Loan Approval required" ? "loaned" : "assigned"}.`, error: false });
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -1068,5 +1076,6 @@ module.exports = {
   assignDevice,
   loanDevice,
   releaseDevice,
+  rejectDeviceIssueLoan,
   approveDevice,
 };

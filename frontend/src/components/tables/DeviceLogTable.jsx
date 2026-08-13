@@ -92,17 +92,19 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
 
                     {hasPermission("print") && (
                       <td>
-                        <div
-                          className="flex items-center gap-2 text-slate-500 hover:text-slate-600 cursor-pointer"
-                          onClick={() => {
-                            handleOpenForm(transaction, setOpenModal, setShowToast);
-                            //setOpenModal({ isShown: true, type: "view-more-details", data: device });
-                          }}
-                        >
-                          <MdFileOpen size={20} />
+                        {transaction?.status !== "Rejected" && (
+                          <div
+                            className="flex items-center gap-2 text-slate-500 hover:text-slate-600 cursor-pointer"
+                            onClick={() => {
+                              handleOpenForm(transaction, setOpenModal, setShowToast);
+                              //setOpenModal({ isShown: true, type: "view-more-details", data: device });
+                            }}
+                          >
+                            <MdFileOpen size={20} />
 
-                          <span>Open</span>
-                        </div>
+                            <span>Open</span>
+                          </div>
+                        )}
                       </td>
                     )}
                   </tr>

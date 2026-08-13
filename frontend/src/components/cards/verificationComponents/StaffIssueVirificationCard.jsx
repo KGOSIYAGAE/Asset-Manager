@@ -108,5 +108,4 @@ function StaffIssueVerification({ deviceId, staff_no }) {
 }
 
 export default StaffIssueVerification;
-
 */

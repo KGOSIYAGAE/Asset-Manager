@@ -4,14 +4,14 @@ import { MdOutlineFacebook } from "react-icons/md";
 
 import { QRCodeSVG } from "qrcode.react";
 
-function QrCodeCard({ text, size }) {
+function QrCodeCard({ title, text, size }) {
   useEffect(() => {
     console.log(text);
   }, [text]);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center p-2">
-      <span className="font-semibold text-sm">Scan the QR Code with a tablet to capture user signature</span>
+    <div className="w-full flex flex-col items-center justify-center p-2 ">
+      <span className="font-semibold text-sm">{title}</span>
 
       <div className="flex bg-white p-5">
         <QRCodeSVG

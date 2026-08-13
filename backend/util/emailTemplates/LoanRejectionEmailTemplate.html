@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Laptop Issuance Approval Request</title>
+    <title>Device Loan Rejection</title>
     <!-- Server will inject your external style.css rules directly here -->
     <style>
       /* Core Layout Resets for Email Client Render Engines */
@@ -156,6 +156,11 @@
       .banner-wrapper {
         margin-top: 24px;
       }
+
+      .rejection-seaction {
+        display: flex;
+        flex-direction: column;
+      }
     </style>
   </head>
   <body>
@@ -165,42 +170,12 @@
         <td>
           <div class="email-container">
             <div class="header-section">
-              <span class="main-title">Approval Required</span>
+              <span class="main-title">Loan Rejected</span>
             </div>
 
             <div>
-              <p class="body-text">Dear Admin,</p>
-              <p class="body-text">A request to issue a company laptop requires your immediate review and approval.</p>
-
-              <span class="section-subtitle">Issuance Details:</span>
-              <table class="data-table">
-                <tbody>
-                  <tr>
-                    <td>Recipient:</td>
-                    <td>{{recipient_name}}</td>
-                  </tr>
-                  <tr>
-                    <td>Recipient Staff / Student No:</td>
-                    <td>{{recipient_staff_no}}</td>
-                  </tr>
-                  <tr>
-                    <td>Issued By:</td>
-                    <td>{{issuer_name}}</td>
-                  </tr>
-                  <tr>
-                    <td>Issuer Staff No:</td>
-                    <td>{{issuer_staff_no}}</td>
-                  </tr>
-                  <tr>
-                    <td>Request Date:</td>
-                    <td>{{request_date}}</td>
-                  </tr>
-                  <tr>
-                    <td>Expected Return Date:</td>
-                    <td>{{expected_return_date}}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <p class="body-text">Dear {{issuer_name}},</p>
+              <p class="body-text">Your request to loan a device to {{recipient_name}} - {{recipient_staff_no}} has been rejected by {{approver_name}}, see reason below</p>
 
               <span class="section-subtitle">Device Details:</span>
               <table class="data-table">
@@ -213,13 +188,22 @@
                     <td>Serial number:</td>
                     <td>{{device_serial_no}}</td>
                   </tr>
+                  <tr>
+                    <td>Expected return date:</td>
+                    <td>{{expected_return_date}}</td>
+                  </tr>
                 </tbody>
               </table>
 
-              <div class="portal-alert-box">
-                <p class="body-text" style="display: inline; margin-right: 6px">Please log into the asset management portal to approve or reject this request.</p>
-                <a href="https://yourportal.com" class="link-primary">ICT-Asset-Manager</a>
+              <div class="rejection-seaction">
+                <span class="section-subtitle">Rejection Reason:</span>
+                <span> {{rejection_reason}} </span>
               </div>
+
+              <!--div class="portal-alert-box">
+                <p class="body-text" style="display: inline; margin-right: 6px">Please log into the asset management portal to view / print the form.</p>
+                <a href="https://yourportal.com" class="link-primary">ICT-Asset-Manager</a>
+              </div-->
               <div class="social-footer">
                 <span>Message from:</span>
               </div>

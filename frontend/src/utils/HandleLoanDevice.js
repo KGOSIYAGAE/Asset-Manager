@@ -44,7 +44,7 @@ export const handleLoanDevice = async (selectedUser, selectedDevice, issuedBy, r
       return postMessage(message);
     }
 
-    //await handleSendApprovalEmail(selectedUser, selectedDevice, issuedBy, setShowToast, "Loan");
+    await handleSendApprovalEmail(selectedUser, selectedDevice, issuedBy, setShowToast, "Loan", returnDate);
 
     if (issuedBy) {
       return navigateTo("/Success");

@@ -30,7 +30,7 @@ function ApproveIssue({ onCanel, deviceUserDetails, setShowToast, onSubmit }) {
 
               if (deviceUserDetails.status === "Loan Approval required") {
                 handleLoanApproveDevice(deviceUserDetails, onSubmit, setShowToast);
-                handleSendApprovalEmail(deviceUserDetails, onSubmit, setShowToast, "Loan");
+
                 return onCanel();
               }
             }}

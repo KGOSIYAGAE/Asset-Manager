@@ -7,6 +7,7 @@ import { useSearchContext } from "../../hooks/useSearchContext";
 import { MdDeleteForever, MdEdit, MdFileOpen, MdGavel } from "react-icons/md";
 import TablePagation from "../cards/tablePagation/TablePagation";
 import { BsEyeFill, BsGearFill } from "react-icons/bs";
+import { CiViewList } from "react-icons/ci";
 
 function DeviceMaintenanceRepairs({ repairs, currentPage, setCurrentPage, totalPages, limit, viewForm }) {
   const navigate = useNavigate();
@@ -87,18 +88,14 @@ function DeviceMaintenanceRepairs({ repairs, currentPage, setCurrentPage, totalP
                     <td>{repairs.technican_name}</td>
 
                     <td>
-                      <div className="flex gap-3">
+                      <div className="flex items-center justify-center gap-3">
                         <div
-                          className="w-[30px] flex items-center justify-center text-blue-600 hover:text-gray bg-blue-100 p-1 rounded-md border border-blue-500 cursor-pointer"
+                          className="w-[30px] flex items-center justify-center text-orange-600 hover:text-gray bg-orange-100 p-1 rounded-md border border-orange-500 cursor-pointer"
                           onClick={() => {
                             handleViewDevice(repairs?.id);
                           }}
                         >
-                          <BsEyeFill size={20} />
-                        </div>
-
-                        <div className="w-[30px] flex items-center justify-center text-gray-600 bg-gray-100 p-1 rounded-md border border-gray-600 cursor-pointer" onClick={() => viewForm()}>
-                          <MdFileOpen size={20} />
+                          <CiViewList size={20} />
                         </div>
                       </div>
                     </td>

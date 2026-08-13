@@ -80,7 +80,7 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
       {showQrCode && showQrCode ? (
         <div className="flex flex-col items-center bg-white shadow-md rounded-md border ">
           <div className="flex flex-col items-center p-2">
-            <QrCodeCard text={qrCodeURL} size={250} />
+            <QrCodeCard title={"Scan the QR Code with a tablet to capture user signature"} text={qrCodeURL} size={250} />
             <div>
               <CancelButton onClick={onCanel} />
             </div>

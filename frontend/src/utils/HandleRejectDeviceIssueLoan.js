@@ -1,9 +1,9 @@
-import { releaseDevice } from "../services/api/devices/Device.Api";
+import { rejectDevice, releaseDevice } from "../services/api/devices/Device.Api";
 import { getLoggedInUser } from "./getLoggedInUser";
 
 //Handle release device
-export const handleRejectDeviceIssueLoan = async (selectedUser, params, onSubmit, setShowToast) => {
-  if (!selectedUser.fullName) {
+export const handleRejectDeviceIssueLoan = async (deviceUserDetails, rejectReason, params, onSubmit, setShowToast) => {
+  if (!deviceUserDetails?.full_name) {
     return setShowToast({ isShow: true, type: "error", message: "Please select user." });
   }
 
@@ -12,13 +12,19 @@ export const handleRejectDeviceIssueLoan = async (selectedUser, params, onSubmit
     return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
   }
 
+  if (!rejectReason) {
+    return setShowToast({ isShow: true, type: "error", message: "Please provide rejection reason." });
+  }
+
   const loggedInUser = getLoggedInUser();
 
   const data = {
-    returned_by: loggedInUser.id,
-    status: "Returned",
+    rejected_by: loggedInUser.id,
+    status: "Rejected",
+    rejectReason,
+    deviceTransactionId: deviceUserDetails?.device_transaction_id,
   };
 
-  await releaseDevice(id, data, setShowToast);
+  await rejectDevice(id, data, setShowToast);
   return onSubmit();
 };

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laptop Issuance Approval Request</title>
+    <!-- Server will inject your external style.css rules directly here -->
+    <style>
+      /* Core Layout Resets for Email Client Render Engines */
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        background-color: #ffffff;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+
+      table,
+      td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+        border-collapse: collapse;
+      }
+
+      img {
+        -ms-interpolation-mode: bicubic;
+        border: 0;
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* Custom Email Card Styling Layout */
+      .email-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 24px;
+      }
+
+      .header-section {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .main-title {
+        font-weight: 700;
+        font-size: 28px;
+        color: #ef4444;
+      }
+
+      .body-text {
+        color: #374151;
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0 0 16px 0;
+      }
+
+      .section-subtitle {
+        font-weight: 700;
+        font-size: 15px;
+        color: #111827;
+        display: block;
+        margin-top: 20px;
+        margin-bottom: 8px;
+      }
+
+      /* Data Tables */
+      .data-table {
+        width: 100%;
+        border: 0;
+        margin-bottom: 16px;
+      }
+
+      .data-table td {
+        padding: 6px 0;
+        font-size: 15px;
+        vertical-align: top;
+        color: #374151;
+        border-bottom: 0 !important;
+      }
+
+      .data-table td:first-child {
+        width: 35%;
+        font-weight: 600;
+        color: #4b5563;
+      }
+
+      /* Utility Links & Actions */
+      .portal-alert-box {
+        margin-top: 20px;
+        margin-bottom: 24px;
+        font-size: 15px;
+      }
+
+      .link-primary {
+        color: #2563eb;
+        text-decoration: underline;
+        font-weight: 500;
+      }
+
+      /* Institutional Signature Block */
+      .signature-container {
+        margin-top: 24px;
+        border-top: 1px solid #e5e7eb;
+        padding-top: 20px;
+      }
+
+      .signature-line {
+        display: block;
+        font-size: 14px;
+        color: #4b5563;
+        margin-bottom: 6px;
+        border-bottom: 0 !important;
+      }
+
+      .signature-line b {
+        color: #1f2937;
+      }
+
+      /* Social Media Row */
+      .social-footer {
+        margin-top: 24px;
+        padding-top: 16px;
+      }
+
+      .social-label {
+        font-size: 14px;
+        color: #4b5563;
+        margin: 0 0 12px 0;
+      }
+
+      .social-icon-wrapper {
+        display: inline-block;
+        margin-right: 16px;
+        vertical-align: middle;
+      }
+
+      .social-icon {
+        width: 24px;
+        height: 24px;
+        fill: #ef4444; /* Custom Red Social Icons */
+      }
+
+      .banner-wrapper {
+        margin-top: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Outer Wrapper Table for email client containment centering -->
+    <table cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td>
+          <div class="email-container">
+            <div class="header-section">
+              <span class="main-title">Loan Approval Required</span>
+            </div>
+
+            <div>
+              <p class="body-text">Dear Admin,</p>
+              <p class="body-text">A request to loan a company laptop requires your immediate review and approval.</p>
+
+              <span class="section-subtitle">Loan Details:</span>
+              <table class="data-table">
+                <tbody>
+                  <tr>
+                    <td>Recipient:</td>
+                    <td>{{recipient_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Recipient Staff / Student No:</td>
+                    <td>{{recipient_staff_no}}</td>
+                  </tr>
+                  <tr>
+                    <td>Issued By:</td>
+                    <td>{{issuer_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Issuer Staff No:</td>
+                    <td>{{issuer_staff_no}}</td>
+                  </tr>
+                  <tr>
+                    <td>Request Date:</td>
+                    <td>{{request_date}}</td>
+                  </tr>
+                  <tr>
+                    <td>Expected Return Date:</td>
+                    <td>{{expected_return_date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <span class="section-subtitle">Device Details:</span>
+              <table class="data-table">
+                <tbody>
+                  <tr>
+                    <td>Model:</td>
+                    <td>{{model_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Serial number:</td>
+                    <td>{{device_serial_no}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="portal-alert-box">
+                <p class="body-text" style="display: inline; margin-right: 6px">Please log into the asset management portal to approve or reject this request.</p>
+                <a href="https://yourportal.com" class="link-primary">ICT-Asset-Manager</a>
+              </div>
+              <div class="social-footer">
+                <span>Message from:</span>
+              </div>
+
+              <!-- Lower Banner Attachment Box -->
+              <div class="banner-wrapper">
+                <img src="cid:ict_banner_image" alt="ICT Banner" width="552" />
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

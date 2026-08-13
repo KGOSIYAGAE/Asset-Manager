@@ -7,7 +7,6 @@ import { setUserSignature } from "../../../services/api/signature/userSignatures
 import { handleAssignDeviceToStaff, handleAssignDeviceToStudent } from "../../../utils/HandleAssignDevice";
 import { getUserType } from "../../../utils/helperMethods";
 import { handleLoanDevice } from "../../../utils/HandleLoanDevice";
-import { handleSendApprovalEmail } from "../../../utils/handleNotificationEmails";
 import { socket } from "../../../utils/socket";
 import { useParams } from "react-router-dom";
 

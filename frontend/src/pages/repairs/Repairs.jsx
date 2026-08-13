@@ -273,7 +273,6 @@ function Repairs({ path }) {
           />
         ) : (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            {/*<LoanIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} user_id={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />*/}
             <RepairForm />
           </div>
         )}

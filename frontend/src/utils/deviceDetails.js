@@ -33,6 +33,11 @@ export const deviceManufacture = [
     description: "",
     deviceModel: [
       {
+        id: 0,
+        name: "255 G7",
+        specification: "",
+      },
+      {
         id: 1,
         name: "255 G8",
         specification: "",
@@ -120,9 +125,10 @@ export const ICT_DEVICES = [
         name: "HP",
         description: "HP business laptops and enterprise-grade devices.",
         deviceModel: [
+          { id: 0, name: "255 G7", specification: "15.6 FHD Ryzen 3/5 entry" },
           { id: 1, name: "255 G8", specification: "15.6 FHD Ryzen 3/5 entry" },
           { id: 2, name: "255 G9", specification: "Ryzen 5 USB-C business" },
-          { id: 3, name: "255 G10", specification: "Ryzen 7000 modern chassis" },
+          { id: 3, name: "ProBook 455 G5", specification: "15.6 Intel enterprise" },
           { id: 5, name: "ProBook 455 G6", specification: "15.6 Intel enterprise" },
           { id: 6, name: "ProBook 455 G7", specification: "15.6 Intel enterprise" },
           { id: 7, name: "ProBook 455 G8", specification: "15.6 Intel enterprise" },
@@ -130,7 +136,12 @@ export const ICT_DEVICES = [
           { id: 9, name: "ProBook 455 G10", specification: "14 Intel 13th Gen business" },
           { id: 10, name: "EliteBook 840 G8", specification: "Premium security laptop" },
           { id: 11, name: "EliteBook 840 G10", specification: "Ultra-secure enterprise" },
-          { id: 12, name: "ZBook Firefly 14", specification: "Mobile workstation" },
+          { id: 12, name: "EliteBook 840 G11", specification: "Ultra-secure enterprise" },
+          { id: 13, name: "EliteBook x360 G8", specification: "Ultra-secure enterprise" },
+          { id: 14, name: "ZBook Firefly 14", specification: "Mobile workstation" },
+          { id: 15, name: "Convertible x360", specification: "Mobile workstation" },
+          { id: 16, name: "ZBook Firefly 14", specification: "Mobile workstation" },
+          { id: 17, name: "ZBook 8 G1i", specification: "Mobile workstation" },
         ],
       },
       {

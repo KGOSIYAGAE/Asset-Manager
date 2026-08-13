@@ -65,7 +65,7 @@ function Approval() {
         </button>
       )}
 
-      {session && !signature && <QrCodeCard text={session?.signUrl} />}
+      {session && !signature && <QrCodeCard title={"Scan the QR Code with a tablet to capture user signature"} text={session?.signUrl} />}
 
       {signature && (
         <div>

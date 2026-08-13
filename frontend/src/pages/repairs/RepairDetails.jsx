@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { getRepair, getRepairProgress } from "../../services/api/repairs/Repairs.Api";
 import { handleTimeStampToText } from "../../utils/dateConverter";
 import { IoCheckmark } from "react-icons/io5";
-import { MdRadioButtonChecked } from "react-icons/md";
+import { MdFileOpen, MdRadioButtonChecked } from "react-icons/md";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import AddButton from "../../components/buttons/AddButton";
 import EditButton from "../../components/buttons/EditButton";
@@ -15,6 +15,8 @@ import { BsExclamationCircleFill } from "react-icons/bs";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import Modal from "react-modal";
 import CreateNewRepair from "../../components/cards/createNewRepair/CreateNewRepair";
+import RepairForm from "../../components/repairForm/RepairForm";
+import PrintButton from "../../components/buttons/printButton/PrintButton";
 
 function RepairDetails({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
@@ -51,6 +53,11 @@ function RepairDetails({ path }) {
     }
   }, [repairDetails]);
 
+  //Handle view form
+  const handleViewRepairForm = () => {
+    setOpenModal({ isShown: true, type: "repair-details", data: "hello" });
+  };
+
   return (
     <div className=" flex flex-col p-3 gap-3 ">
       <span className="text-sm">
@@ -76,7 +83,11 @@ function RepairDetails({ path }) {
               <SubmitButton
                 text={"Update Status"}
                 onClick={() => {
-                  handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
+                  if (repairDetails?.status_name === "Completed") {
+                    handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
+                  } else {
+                    handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
+                  }
                 }}
               />
             ) : (
@@ -93,7 +104,7 @@ function RepairDetails({ path }) {
 
       <div className=" grid grid-cols-12 grid-rows-1 gap-5 ">
         {/************************/}
-        <div className="h-[450px] flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white">
+        <div className=" flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white">
           <span className="heading-text">Repair Details</span>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Repair ID</span>
@@ -135,7 +146,7 @@ function RepairDetails({ path }) {
           </div>
         </div>
         {/************************/}
-        <div className="h-[450px] flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white ">
+        <div className=" flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white ">
           <span className="heading-text">Repair Progress</span>
           <div className="h-[450px] flex gap-5  reletive overflow-y-auto">
             <div className="flex flex-col items-center">
@@ -180,7 +191,7 @@ function RepairDetails({ path }) {
           </div>
         </div>
         {/************************/}
-        <div className="h-[450px] flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white">
+        <div className=" flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white">
           <span className="heading-text">Device Details</span>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Device Category</span>
@@ -227,6 +238,17 @@ function RepairDetails({ path }) {
         </div>
         {/************************/}
       </div>
+      <div className="w-full flex justify-end ">
+        <div
+          className="flex items-center gap-3 text-gray-600 bg-gray-100 p-1 rounded-md border border-gray-600 cursor-pointer"
+          onClick={() => {
+            handleViewRepairForm();
+          }}
+        >
+          <span>Open Form</span>
+          <MdFileOpen text={"Open Form"} />
+        </div>
+      </div>
       <Modal
         isOpen={openModal.isShown}
         onRequestClose={() => {
@@ -240,19 +262,25 @@ function RepairDetails({ path }) {
           openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
-        <CreateNewRepair
-          onCanel={() => {
-            getRepairDetails();
-            setOpenModal({ isShown: false });
-          }}
-          type={"Edit"}
-          data={openModal.data}
-          onSubmit={() => {
-            getRepairDetails();
-            setOpenModal({ isShown: false });
-          }}
-          setShowToast={setShowToast}
-        />
+        {openModal.type === "Edit" ? (
+          <CreateNewRepair
+            onCanel={() => {
+              getRepairDetails();
+              setOpenModal({ isShown: false });
+            }}
+            type={"Edit"}
+            data={openModal.data}
+            onSubmit={() => {
+              getRepairDetails();
+              setOpenModal({ isShown: false });
+            }}
+            setShowToast={setShowToast}
+          />
+        ) : (
+          <div className="h-[1150px] col-span-6 bg-white " id="print-file">
+            <RepairForm repairDetails={repairDetails} />
+          </div>
+        )}
       </Modal>
       <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>

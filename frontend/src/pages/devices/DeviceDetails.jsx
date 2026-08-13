@@ -388,14 +388,14 @@ function DeviceDetails({ path }) {
           openModal.type === "release"
             ? "w-[80%] max-h-3/4 bg-white"
             : openModal.type === "assign"
-              ? "w-[80%] max-h-3/4 bg-white"
-              : openModal.type === "approve-issue"
-                ? "w-[80%] max-h-3/4 bg-white"
-                : openModal.type === "reject"
-                  ? "w-[80%] max-h-3/4 bg-white"
-                  : openModal.type === "approve-loan"
-                    ? "w-[80%] max-h-3/4 bg-white"
-                    : "w-[50%] h-full bg-white"
+            ? "w-[80%] max-h-3/4 bg-white"
+            : openModal.type === "approve-issue"
+            ? "w-[80%] max-h-3/4 bg-white"
+            : openModal.type === "reject"
+            ? "w-[80%] max-h-3/4 bg-white"
+            : openModal.type === "approve-loan"
+            ? "w-[80%] max-h-3/4 bg-white"
+            : "w-[50%] h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto outline-none`}
       >
         {openModal.type === "assign" ? (
@@ -450,8 +450,7 @@ function DeviceDetails({ path }) {
                 setOpenModal({ isShown: false });
               }}
               setShowToast={setShowToast}
-              full_name={deviceDetails?.full_name}
-              laptopSerialNo={deviceDetails?.serial_no}
+              deviceUserDetails={deviceDetails}
             />
           </div>
         ) : openModal.type === "approve-issue" || openModal.type === "approve-loan" ? (
