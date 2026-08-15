@@ -4,7 +4,7 @@ import axios from "axios";
 //Production
 //const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager/admin" : `http://192.168.8.4:3000/api/v1/asset-manager/admin`;
 
-const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager/admin" : `http://10.90.1.25:3000/api/v1/asset-manager/admin`;
+const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager/admin" : `http://192.168.8.4:3000/api/v1/asset-manager/admin`;
 
 const loginAxiosInstance = axios.create({
   baseURL: BASE_URL,
