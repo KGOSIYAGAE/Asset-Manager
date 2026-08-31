@@ -373,7 +373,7 @@ const createDevice = async (req, res) => {
     }
 
     const create_device_query =
-      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type,operational_state,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,'Normal', NOW());";
+      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type,operational_state,created_at,is_deleted) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,'Normal', NOW(),FALSE);";
     const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, supplier_name, invoice_no, device_type];
 
     const { rowCount } = await query(create_device_query, [...VALUES]);
@@ -860,7 +860,7 @@ const loanDevice = async (req, res) => {
 
     //await sendApprovalNotification(device.serial_no, device.make, device.model, device.category, device.device_type, userId, issued_by);
 
-    // await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
+    //await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
 
     return res.status(200).json({ message: `Device state has been changed, Approval is required`, error: false });
   } catch (error) {

@@ -26,6 +26,6 @@ router.post("/bulk-create-student/", bulkCreateStudents);
 router.put("/update-student/:student_no", updateStudent);
 
 //Delete student
-router.delete("/delete-student/:student_no", deleteStudent);
+router.put("/delete-student/:student_no", deleteStudent);
 
 module.exports = router;

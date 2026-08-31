@@ -10,6 +10,7 @@ import { getStaffDetails } from "../../services/api/staff/Staff.Api";
 function RepairForm({ repairDetails }) {
   const [userData, setUserData] = useState("");
   const [accessories, setAccessories] = useState();
+  const [baseUrl, setBaseUrl] = useState();
 
   //Get Staff data
   const getUserData = (userId) => {
@@ -26,6 +27,12 @@ function RepairForm({ repairDetails }) {
     const parsedArray = repairDetails?.accessories?.replace(/[{}"]/g, "").split(",");
 
     setAccessories(parsedArray);
+
+    if (process.env.NODE_ENV === "production") {
+      setBaseUrl(`/repairs/repair-details`);
+    } else {
+      setBaseUrl(`http://192.168.8.4:5173/repairs/repair-details`);
+    }
   }, [repairDetails]);
 
   return (
@@ -150,7 +157,7 @@ function RepairForm({ repairDetails }) {
                 <span className="">{repairDetails?.description}</span>
               </div>
               <div className="w-5/12 flex place-self-end">
-                <QrCodeCard title={""} text={`http://192.168.8.4:5173/repairs/repair-details/${repairDetails?.id}`} size={100} />
+                <QrCodeCard title={""} text={`${baseUrl}/${repairDetails?.id}`} size={100} />
               </div>
             </div>
           </div>

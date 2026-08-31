@@ -14,6 +14,7 @@ import BulkAddButton from "../../../components/buttons/BulkAddButton";
 import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
 import ImportFile from "../../../components/cards/importFile/ImportFile";
 import { hasPermission } from "../../../utils/getLoggedInUser";
+import { handleDeleteStudent } from "../../../utils/handleDeleteItem";
 
 function students({ path }) {
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
@@ -115,9 +116,14 @@ function students({ path }) {
           <DeleteConfirmation
             onCanel={() => {
               setOpenModal({ isShown: false });
+              getAllStudents({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStudents, setTotalPages);
+            }}
+            onSubmit={() => {
+              setOpenModal({ isShown: false });
+              getAllStudents({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStudents, setTotalPages);
             }}
             onDelete={() => {
-              deleteStudent(openModal.selcetedUser, setShowToast);
+              handleDeleteStudent(openModal.selcetedUser, setShowToast);
               setOpenModal({ isShown: false });
             }}
             email={openModal.userEmail}

@@ -7,6 +7,7 @@ export const handleSendApprovalEmail = async (userDetails, deviceDetails, issued
   const loggedInUser = getLoggedInUser();
 
   const emailData = {
+    deviceId: deviceDetails?.id,
     device_issuer_userId: loggedInUser.id ? loggedInUser.id : issuedBy,
     device_reciever_userId: userDetails?.staff_no || userDetails?.student_number,
     request_date: getCurrentDate(),
@@ -15,6 +16,8 @@ export const handleSendApprovalEmail = async (userDetails, deviceDetails, issued
     issuanceType,
     expected_return_date: returnDate,
   };
+
+  console.log(emailData);
 
   await sendApprovalEmail(emailData, setShowToast);
 

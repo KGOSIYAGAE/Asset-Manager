@@ -121,6 +121,11 @@ function Devices({ path }) {
             }}
             onCanel={() => {
               setOpenModal({ isShown: false });
+              getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
+            }}
+            onSubmit={() => {
+              setOpenModal({ isShown: false });
+              getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
             }}
             setShowToast={setShowToast}
           />

@@ -1,5 +1,6 @@
 import { deleteDevice, releaseDevice } from "../services/api/devices/Device.Api";
 import { deleteStaff } from "../services/api/staff/Staff.Api";
+import { deleteStudent } from "../services/api/students/Students.Api";
 import { getLoggedInUser } from "./getLoggedInUser";
 
 //Handle delete device
@@ -36,6 +37,25 @@ export const handleDeleteStaff = async (staff_no, setShowToast) => {
   };
 
   await deleteStaff(staff_no, data, setShowToast);
+
+  return;
+};
+
+//Handle delete staff
+export const handleDeleteStudent = async (student_number, setShowToast) => {
+  if (!student_number) {
+    return setShowToast({ isShown: true, type: "error", message: "Student no not provided" });
+  }
+
+  const loggedInUser = getLoggedInUser();
+
+  const data = {
+    is_deleted: true,
+    deleted_by: loggedInUser.id,
+    acc_status: "In Active",
+  };
+
+  await deleteStudent(student_number, data, setShowToast);
 
   return;
 };

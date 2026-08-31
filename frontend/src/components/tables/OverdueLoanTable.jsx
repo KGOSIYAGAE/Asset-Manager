@@ -17,7 +17,7 @@ function OverdueLoanTable({ devices, currentPage, setCurrentPage, totalPages, li
   return (
     <div className="table-view">
       <table className="">
-        <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
+        <thead className=" bg-slate-100 sticky top-0 h-[40px] rounded-md">
           <th>
             <span>Asset Tag</span>
           </th>

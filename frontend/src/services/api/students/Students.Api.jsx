@@ -133,13 +133,13 @@ export const updateStudent = async (student_no, studentData, setShowToast) => {
 };
 
 //Delete student
-export const deleteStudent = async (student_no, setShowToast) => {
+export const deleteStudent = async (student_no, data, setShowToast) => {
   if (!student_no) {
     return setShowToast({ isShown: true, type: "error", message: "Student number must be provided." });
   }
 
   try {
-    const response = await axiosInstance.delete("/students/delete-student/" + student_no, { showSpinner: true });
+    const response = await axiosInstance.put("/students/delete-student/" + student_no, data, { showSpinner: true });
 
     if (!response.error) {
       return setShowToast({ isShown: true, type: "success", message: response.data.message });

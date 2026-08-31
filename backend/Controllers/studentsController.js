@@ -11,9 +11,9 @@ const getStudents = async (req, res) => {
     const offset = (page - 1) * limit;
 
     //Get total device that need approval
-    const countQuery = `SELECT COUNT(*) AS total FROM "studentDetails"`;
+    const countQuery = `SELECT COUNT(*) AS total FROM "students" WHERE is_deleted = FALSE`;
 
-    const dataQuery = `SELECT * FROM "studentDetails" ORDER BY created_at DESC LIMIT $1 OFFSET $2`;
+    const dataQuery = `SELECT * FROM "students" WHERE is_deleted = FALSE ORDER BY created_at DESC LIMIT $1 OFFSET $2`;
 
     //Get device count
     const countResponse = await query(countQuery);
@@ -83,7 +83,7 @@ const createStudent = async (req, res) => {
     }
 
     const create_user_query =
-      "INSERT INTO students (name, surname, id_number, phone_number, email, student_number, faculty_name, course_name, course_code , acc_status, registration_date,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW())";
+      "INSERT INTO students (name, surname, id_number, phone_number, email, student_number, faculty_name, course_name, course_code , acc_status, registration_date,created_at,is_deleted) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW(),FALSE)";
     const VALUES = [name, surname, idNumber, phone_number, email, studentNumber, faculty_name, course, course_code, isActive, registration_date];
 
     const { rowCount } = await query(create_user_query, [...VALUES]);
@@ -176,10 +176,16 @@ const updateStudent = async (req, res) => {
 const deleteStudent = async (req, res) => {
   try {
     const { student_no } = req.params;
+    const { is_deleted, deleted_by, acc_status } = req.body;
+
+    console.log(req.body);
 
     if (!student_no) {
       return res.status(400).json({ message: "Student number ggdgdgmust be provided", error: true });
     }
+
+    /////////////////////////
+    //verify if exist
 
     const checkUserQuery = "SELECT * FROM students WHERE student_number = $1";
 
@@ -189,12 +195,17 @@ const deleteStudent = async (req, res) => {
       return res.status(400).json({ rows, message: "User mathcing student number not found", error: true });
     }
 
-    const delete_student_query = "DELETE FROM students WHERE student_number = $1";
-    const rowCount = await query(delete_student_query, [student_no]);
+    //Verify if user has any active devices
+    const find_device_query = "SELECT * FROM devices WHERE current_user_id = $1";
+    const device_repsonse = await query(find_device_query, [student_no]);
 
-    //Update  device table status
-    //const setAsDeleted = "UPDATE devices SET is_deleted=$1, deleted_at=NOW(), deleted_by=$2, status=$3, updated_at=NOW() WHERE id=$4";
-    //await query(setAsDeleted, [is_deleted, deleted_by, status, id]);
+    if (device_repsonse.rows.length > 0) {
+      return res.status(400).json({ message: "Operation failed, this user currently has a device assigned to them.", error: true });
+    }
+
+    //Soft Delete student table status
+    const deleteStudentQuery = "UPDATE students SET is_deleted=$1, deleted_at=NOW(), deleted_by=$2, acc_status=$3, updated_at=NOW() WHERE student_number = $4";
+    await query(deleteStudentQuery, [is_deleted, deleted_by, acc_status, student_no]);
 
     return res.status(200).json({ message: "Student deleted successfully", error: false });
   } catch (error) {

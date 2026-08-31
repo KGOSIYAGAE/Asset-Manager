@@ -9,7 +9,7 @@ const { sendEmail } = require("../util/azureGraphConnection");
 const sendApprovalEmail = async (req, res) => {
   try {
     // const {to, device_reciever, device_reciever_userId, device_issuer, device_issuer_userId, request_date, model_name, device_serial_no } = req.body;
-    const { device_issuer_userId, device_reciever_userId, request_date, model_name, device_serial_no, issuanceType, expected_return_date } = req.body;
+    const { deviceId, device_issuer_userId, device_reciever_userId, request_date, model_name, device_serial_no, issuanceType, expected_return_date } = req.body;
 
     //get Approver list
     const getApproverQuery = "SELECT * FROM staff WHERE userrole = 'support_admin'";
@@ -62,7 +62,8 @@ const sendApprovalEmail = async (req, res) => {
         .replace(/{{request_date}}/g, request_date)
         .replace(/{{expected_return_date}}/g, expected_return_date)
         .replace(/{{model_name}}/g, model_name)
-        .replace(/{{device_serial_no}}/g, device_serial_no);
+        .replace(/{{device_serial_no}}/g, device_serial_no)
+        .replace(/{{url_link}}/g, `http://192.168.8.4:5173/devices/device-details/${deviceId}`);
     } else {
       templatePath = path.join(__dirname, "..", "util", "emailTemplates", "IssueApprovalEmailTemplate.html");
       htmlContent = fs.readFileSync(templatePath, "utf8");
@@ -77,7 +78,8 @@ const sendApprovalEmail = async (req, res) => {
         .replace(/{{issuer_staff_no}}/g, issuerDetails.rows[0].staff_no)
         .replace(/{{request_date}}/g, request_date)
         .replace(/{{model_name}}/g, model_name)
-        .replace(/{{device_serial_no}}/g, device_serial_no);
+        .replace(/{{device_serial_no}}/g, device_serial_no)
+        .replace(/{{url_link}}/g, `http://192.168.8.4:5173/devices/device-details/${deviceId}`);
     }
 
     if (!htmlContent) {

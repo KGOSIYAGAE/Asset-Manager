@@ -1,6 +1,6 @@
 import React from "react";
 
-function DeleteConfirmation({ onCanel, onDelete, email, text, heading, laptopSerialNo }) {
+function DeleteConfirmation({ onCanel, onSubmit, onDelete, email, text, heading, laptopSerialNo }) {
   return (
     <div className="bg-white">
       <div className="flex flex-col gap-2 -z-50">
@@ -13,7 +13,13 @@ function DeleteConfirmation({ onCanel, onDelete, email, text, heading, laptopSer
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          <button className="flex bg-red-600 text-white  rounded-sm p-3" onClick={onDelete}>
+          <button
+            className="flex bg-red-600 text-white  rounded-sm p-3"
+            onClick={() => {
+              onDelete();
+              return onSubmit();
+            }}
+          >
             Delete
           </button>
         </div>

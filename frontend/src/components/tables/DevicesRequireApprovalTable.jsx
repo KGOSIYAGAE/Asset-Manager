@@ -22,7 +22,8 @@ function DevicesRequiresApprovalTable({ devices, currentPage, setCurrentPage, to
   return (
     <div className="table-view">
       <table className="">
-        <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
+        <thead className=" bg-slate-100 sticky top-0 h-[40px] rounded-md">
+          {" "}
           <th>
             <span>Asset Tag</span>
           </th>
@@ -67,6 +68,7 @@ function DevicesRequiresApprovalTable({ devices, currentPage, setCurrentPage, to
                         return count + 1;
                       })()}
                     </td>*/}
+
                     <td>{device.asset_tag}</td>
                     <td>{device.serial_no}</td>
                     <td>{device.make}</td>

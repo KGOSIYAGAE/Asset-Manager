@@ -20,7 +20,7 @@ const getAllStaff = async (req, res) => {
     const offset = (page - 1) * limit;
 
     //Get total device that need approval
-    const countQuery = `SELECT COUNT(*) AS total FROM staff`;
+    const countQuery = `SELECT COUNT(*) AS total FROM staff WHERE is_deleted = FALSE`;
 
     const dataQuery = "SELECT * FROM staff WHERE is_deleted = FALSE LIMIT $1 OFFSET $2 ";
 
@@ -30,8 +30,8 @@ const getAllStaff = async (req, res) => {
       return res.status(400).json({ message: "An error occured fetching devices", error: true });
     }
 
-    const totalDevices = countResponse.rows[0].total;
-    const totalPages = Math.ceil(totalDevices / limit);
+    const totalStaff = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalStaff / limit);
 
     const { rows } = await query(dataQuery, [limit, offset]);
 
@@ -153,7 +153,7 @@ const createStaff = async (req, res) => {
     }
 
     const create_staff_query =
-      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, faculty_name, position_name, department_name, start_date, end_date,created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,  $12, NOW(), NOW() )";
+      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, faculty_name, position_name, department_name, start_date, end_date,created_at, updated_at,is_deleted) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,  $12, NOW(), NOW(),FALSE )";
     const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, faculty_name, position_name, department_name, start_date, endDate];
 
     //Check if user exist

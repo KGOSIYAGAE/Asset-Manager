@@ -62,7 +62,6 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetai
       }}
       rowCount={rowCount}
       paginationMode="server"
-      paginationMode={pagationModel}
       onPaginationModelChange={setPagationModel}
       pageSizeOptions={[8]}
     />

@@ -122,6 +122,11 @@ function Staff({ path }) {
           <DeleteConfirmation
             onCanel={() => {
               setOpenModal({ isShown: false });
+              getStaffData({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStaff, setTotalPages);
+            }}
+            onSubmit={() => {
+              setOpenModal({ isShown: false });
+              getStaffData({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStaff, setTotalPages);
             }}
             onDelete={() => {
               handleDeleteStaff(openModal.selectedUser, setShowToast);
