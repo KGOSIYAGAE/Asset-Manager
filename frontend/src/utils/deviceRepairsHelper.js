@@ -1,4 +1,5 @@
 import { createRepair, updateRepair, updateRepairStatus } from "../services/api/repairs/Repairs.Api";
+import { getLoggedInUser } from "./getLoggedInUser";
 
 export const maintenaceTypesList = [
   {
@@ -63,7 +64,7 @@ export const maintenaceTypesList = [
   },
 ];
 
-export const filterItems = ["All", "New", "Under Assesment", "Awaiting Parts", "In Progress", "Testing", "Ready For Collection", "Completed", "Overdue"];
+export const filterItems = ["All", "New", "Awaiting Parts", "In Progress", "Ready For Collection", "Completed", "Overdue"];
 
 export const repairStatusList = [
   {
@@ -103,12 +104,17 @@ export const repairStatusList = [
   },
   {
     id: 8,
-    name: "Completed",
+    name: "Collected",
+    description: "The asset has been successfully handed over to the user, payment processing is finalized, and the ticket history is archived.",
+  },
+  {
+    id: 9,
+    name: "Closed",
     description: "The asset has been successfully handed over to the user, payment processing is finalized, and the ticket history is archived.",
   },
 ];
 
-export const handleCreateRepair = async (deviceId, repairType, repairDescription, technicianId, repairNotes, dislaimerAccepted, onSubmit, setShowToast) => {
+export const handleCreateRepair = async (deviceId, repairType, repairDescription, technicianId, repairNotes, accessories, dislaimerAccepted, onSubmit, setShowToast) => {
   if (!deviceId) {
     return setShowToast({ isShown: true, type: "error", message: "Device not selected" });
   }
@@ -131,6 +137,7 @@ export const handleCreateRepair = async (deviceId, repairType, repairDescription
     repairDescription,
     technicianId,
     repairNotes: repairNotes || null,
+    accessories,
     current_status_id: 1,
     dislaimerAccepted,
   };
@@ -160,10 +167,28 @@ export const handleUpdateRepairStatus = async (repairId, selectedStatus, OnSubmi
 
   const status = repairStatusList.find((status) => status.name === selectedStatus);
 
-  const data = {
+  let data;
+
+  const user = getLoggedInUser();
+
+  if (selectedStatus === "Closed") {
+    data = {
+      repairId,
+      statusId: status.id,
+      closedBy: user?.id,
+    };
+  } else {
+    data = {
+      repairId,
+      statusId: status.id,
+    };
+  }
+
+  /* const data = {
     repairId,
     statusId: status.id,
-  };
+  };*/
+
   const { error, message } = await updateRepairStatus(data, setShowToast);
 
   if (error) {
@@ -171,7 +196,6 @@ export const handleUpdateRepairStatus = async (repairId, selectedStatus, OnSubmi
     return setShowToast({ isShown: true, type: "error", message: message });
   }
 
-  console.log(setShowToast);
   OnSubmit();
   return setShowToast({ isShown: true, type: "success", message: message });
 };

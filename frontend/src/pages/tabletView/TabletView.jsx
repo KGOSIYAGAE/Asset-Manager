@@ -100,14 +100,14 @@ function TabletView() {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
+    <div className="w-screen h-svh flex flex-col items-center p-5">
       <div style={{ display: "flex", gap: "15px", justifyContent: "center", marginBottom: "20px" }}>
         <div>Server Status: {isConnected ? "🟢 Connected" : "🔴 Disconnected"}</div>
         <div>Session Sync: {isRoomJoined ? "🟢 Synced" : "🟡 Waiting..."}</div>
         <div>Session Id: {isRoomJoined ? sessionId : "Waiting..."}</div>
       </div>
 
-      <div className="w-screen flex p-5 bg-white overflow-auto" id="print-file">
+      <div className=" flex bg-white overflow-y-auto  ">
         {userType && userType === "Staff" && source === "issue-verification" ? (
           <StaffIssueVirificationCard deviceId={deviceId} staff_no={userId} />
         ) : userType === "Student" && source === "issue-verification" ? (

@@ -22,7 +22,7 @@ function DeviceMaintenanceRepairs({ repairs, currentPage, setCurrentPage, totalP
   return (
     <div className="table-view">
       <table className="">
-        <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
+        <thead className=" bg-slate-100 sticky top-0 h-[40px] rounded-md">
           <th>
             <span>Maintenance ID</span>
           </th>
@@ -74,7 +74,7 @@ function DeviceMaintenanceRepairs({ repairs, currentPage, setCurrentPage, totalP
                     </td>
                     <td>
                       <div className="flex justify-between  p-2 item-hover">
-                        {repairs?.status_name === "Completed" ? (
+                        {repairs?.status_name === "Closed" || repairs?.status_name === "Collected" ? (
                           <span className="text-sm bg-green-600 border shadow-sm p-1 rounded-md text-white">{repairs?.status_name}</span>
                         ) : repairs?.status_name === "In Progress" || repairs?.status_name === "Awaiting Parts" || repairs?.status_name === "Testing" || repairs?.status_name === "Under Assesment" ? (
                           <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{repairs?.status_name}</span>

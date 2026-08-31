@@ -16,13 +16,13 @@ function SendToTablet({ btnLable, userId, deviceId, formType, returnDate, setSho
       const user = getLoggedInUser();
 
       if (deviceId && returnDate) {
-        setQrCodeURL(` http://192.168.8.4:5173/sign-form/${formType}/${userId}/${deviceId}/${user.id}/${returnDate}/${data.sessionId}/${data.tempToken}`);
+        setQrCodeURL(` http://10.10.12.158:5173/sign-form/${formType}/${userId}/${deviceId}/${user.id}/${returnDate}/${data.sessionId}/${data.tempToken}`);
       } else if (deviceId && user.id) {
-        setQrCodeURL(` http://192.168.8.4:5173/sign-form/${formType}/${userId}/${deviceId}/${user.id}/${data.sessionId}/${data.tempToken}`);
+        setQrCodeURL(` http://10.10.12.158:5173/sign-form/${formType}/${userId}/${deviceId}/${user.id}/${data.sessionId}/${data.tempToken}`);
       } else if (deviceId) {
-        setQrCodeURL(` http://192.168.8.4:5173/sign-form/${formType}/${deviceId}/${data.sessionId}/${data.tempToken}`);
+        setQrCodeURL(` http://10.10.12.158:5173/sign-form/${formType}/${deviceId}/${data.sessionId}/${data.tempToken}`);
       } else {
-        setQrCodeURL(` http://192.168.8.4:5173/sign-form/${userId}/${data.sessionId}/${data.tempToken}`);
+        setQrCodeURL(` http://10.10.12.158:5173/sign-form/${userId}/${data.sessionId}/${data.tempToken}`);
       }
 
       setShowQrCode(true);

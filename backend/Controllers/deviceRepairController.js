@@ -4,7 +4,7 @@ const format = require("pg-format");
 //Create repair
 const createRepair = async (req, res) => {
   try {
-    const { deviceId, repairType, repairDescription, technicianId, repairNotes, current_status_id, dislaimerAccepted } = req.body;
+    const { deviceId, repairType, repairDescription, technicianId, repairNotes, accessories, current_status_id, dislaimerAccepted } = req.body;
 
     if (!deviceId || !repairType || !repairDescription || !technicianId || !current_status_id) {
       return res.status(400).json({ message: "All details must be provided!" });
@@ -26,8 +26,8 @@ const createRepair = async (req, res) => {
     }
 
     const create_repair_query =
-      "INSERT INTO repairs ( device_id, repair_type, current_status_id, assigned_to, description, notes,dislaimer_ccepted, date_created, updated_at ) VALUES ($1,$2,$3,$4,$5,$6,$7,NOW(), NOW());";
-    const VALUES = [deviceId, repairType, current_status_id, technicianId, repairDescription, repairNotes, dislaimerAccepted];
+      "INSERT INTO repairs ( device_id, repair_type, current_status_id, assigned_to, description, notes,accessories, dislaimer_ccepted, date_created, updated_at ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW(), NOW());";
+    const VALUES = [deviceId, repairType, current_status_id, technicianId, repairDescription, repairNotes, accessories, dislaimerAccepted];
 
     const { rowCount, rows } = await query(create_repair_query, [...VALUES]);
 
@@ -246,20 +246,17 @@ const getRepairsStatsForTech = async (req, res) => {
       return res.status(400).json({ message: "User id not provided", error: true });
     }
 
-    const getRepairsStatsQuery = ` SELECT count(*) AS total_repairs,
+    const getRepairsStatsQuery = `SELECT count(*) AS total_repairs,
+ 	count(*) FILTER (WHERE repair_statuses.id NOT IN (8, 9)) AS total_open_repairs,
     count(*) FILTER (WHERE repair_statuses.id = 1) AS new_repairs,
-	 count(*) FILTER (WHERE repair_statuses.id = 2) AS under_assesment,
-	  count(*) FILTER (WHERE repair_statuses.id = 3) AS awaiting_parts,
-    count(*) FILTER (WHERE repair_statuses.id = 4) AS in_progress,
-    count(*) FILTER (WHERE repair_statuses.id = 5) AS testing,
+    count(*) FILTER (WHERE repair_statuses.id = 3) AS awaiting_parts,
+    count(*) FILTER (WHERE repair_statuses.id = 2 OR repair_statuses.id = 4 OR repair_statuses.id = 5) AS in_progress,
     count(*) FILTER (WHERE repair_statuses.id = 6) AS ready_for_collection,
     count(*) FILTER (WHERE repair_statuses.id = 7) AS beyond_repair,
-	    count(*) FILTER (WHERE repair_statuses.id = 8) AS completed,
-		 count(*) FILTER (WHERE date_created < (now() - '14 days'::interval)) AS overdue_repairs
-   
- FROM repairs
- JOIN repair_statuses ON repairs.current_status_id = repair_statuses.id
-
+    count(*) FILTER (WHERE repair_statuses.id = 8 OR repair_statuses.id = 9) AS completed,
+    count(*) FILTER (WHERE repairs.date_created < (now() - '14 days'::interval)) AS overdue_repairs
+   FROM repairs
+     JOIN repair_statuses ON repairs.current_status_id = repair_statuses.id
  WHERE assigned_to = $1`;
 
     const { rows } = await query(getRepairsStatsQuery, [userId]);
@@ -278,7 +275,7 @@ const getRepairsStatsForTech = async (req, res) => {
 //Update repair status
 const updateStatus = async (req, res) => {
   try {
-    const { repairId, statusId } = req.params;
+    const { repairId, statusId, closedBy } = req.body;
 
     if (!repairId) {
       return res.status(400).json({ message: "Repair id must be provided", error: true });
@@ -288,8 +285,16 @@ const updateStatus = async (req, res) => {
       return res.status(400).json({ message: "Status id must be provided", error: true });
     }
 
-    const update_status_query = "UPDATE repairs SET current_status_id = $1 WHERE id = $2";
-    const VALUES = [statusId, repairId];
+    let update_status_query;
+    let VALUES;
+
+    if (closedBy) {
+      update_status_query = "UPDATE repairs SET current_status_id = $1, closed_by=$2, date_closed=NOW() WHERE id = $3";
+      VALUES = [statusId, closedBy, repairId];
+    } else {
+      update_status_query = "UPDATE repairs SET current_status_id = $1 WHERE id = $2";
+      VALUES = [statusId, repairId];
+    }
 
     const { rowCount, rows } = await query(update_status_query, [...VALUES]);
 

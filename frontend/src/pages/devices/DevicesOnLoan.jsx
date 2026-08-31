@@ -86,8 +86,8 @@ function DevicesOnLoan({ path }) {
         }}
         contentLabel=""
         className={`${
-          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
-        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+          openModal.type === "release" ? "w-[80%] max-h-3/4 " : openModal.type === "assign" ? "w-[80%] max-h-3/4" : "w-[80%] lg:w-[50%] max-h-full"
+        }  bg-white rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
         <CreateNewLoan
           onCanel={() => {

@@ -43,6 +43,6 @@ router.post("/create-repair", createRepair);
 router.put("/update-repair/:id", udateRepair);
 
 //Update status
-router.put("/update-repair-status/:repairId/:statusId", updateStatus);
+router.put("/update-repair-status", updateStatus);
 
 module.exports = router;

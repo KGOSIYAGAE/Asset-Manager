@@ -17,6 +17,11 @@ import Modal from "react-modal";
 import CreateNewRepair from "../../components/cards/createNewRepair/CreateNewRepair";
 import RepairForm from "../../components/repairForm/RepairForm";
 import PrintButton from "../../components/buttons/printButton/PrintButton";
+import QrCodeCard from "../../components/cards/qrCodeCard/QrCodeCard";
+import CancelButton from "../../components/buttons/CancelButton";
+import { getSession } from "../../services/api/testApi/Test.Api";
+import { socket } from "../../utils/socket";
+import BlankCard from "../../components/cards/blackCard/BlankCard";
 
 function RepairDetails({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
@@ -26,6 +31,16 @@ function RepairDetails({ path }) {
   const params = useParams();
   const [repairStatus, setRepairStatus] = useState("");
   const [repairProgress, setRepairProgress] = useState();
+  const [qrCodeURL, setQrCodeURL] = useState(null);
+  const [session, setSession] = useState(null);
+
+  //Set up URL to collect signature on laptop collection
+  const getURL = async () => {
+    const data = await getSession();
+    setSession(data);
+
+    return setQrCodeURL(` http://192.168.8.4:5173/sign-form/${repairDetails?.current_user_id}/${data?.sessionId}/${data?.tempToken}`);
+  };
 
   const getRepairDetails = async () => {
     const { id } = params;
@@ -58,6 +73,48 @@ function RepairDetails({ path }) {
     setOpenModal({ isShown: true, type: "repair-details", data: "hello" });
   };
 
+  //Listen for signature capture
+  // Move this helper block into your component scope:
+  const bindSignatureListener = () => {
+    // 1. Double check the core socket pipe line state
+    if (!socket.connected) {
+      console.log("🛠️ RepairDetails: Socket offline, establishing connection...");
+      socket.connect();
+    }
+
+    console.log("🟢 Laptop actively listening for signature_saved event...");
+
+    // 2. Kill any stale, lingering copies of this listener to prevent duplicates
+    socket.off("signature_saved");
+
+    // 3. Listen for the response
+    socket.on("signature_saved", (image) => {
+      console.log("🎉 SUCCESS! Signature capture confirmed!");
+
+      // 4. Update your database record status to "Collected" through your API
+      handleUpdateRepairStatus(
+        repairDetails?.id,
+        "Collected",
+        () => {
+          getRepairDetails(); // Refresh local repair progress layouts on screen
+          setOpenModal({ isShown: false, type: null, data: null });
+        },
+        setShowToast,
+      );
+
+      // 5. Unsubscribe cleanly since the action is completed
+      socket.off("signature_saved");
+      socket.disconnect();
+    });
+  };
+
+  // Clean up globally when navigating away from the page entirely
+  useEffect(() => {
+    return () => {
+      socket.off("signature_saved");
+    };
+  }, []);
+
   return (
     <div className=" flex flex-col p-3 gap-3 ">
       <span className="text-sm">
@@ -71,7 +128,7 @@ function RepairDetails({ path }) {
           </p>
         </div>
         <div className="flex gap-5">
-          {repairDetails?.status_name !== "Completed" ? (
+          {repairDetails?.status_name !== "Closed" ? (
             <div className="col-span-2">
               <SelectInput label={"Repair Status"} value={repairStatus} options={repairStatusList} optionName={"name"} isDisabled={false} setOnChange={setRepairStatus} onChoose={() => {}} />
             </div>
@@ -82,9 +139,9 @@ function RepairDetails({ path }) {
             {repairDetails?.status_name && repairDetails?.status_name !== repairStatus ? (
               <SubmitButton
                 text={"Update Status"}
-                onClick={() => {
-                  if (repairDetails?.status_name === "Completed") {
-                    handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
+                onClick={async () => {
+                  if (repairStatus === "Collected") {
+                    setOpenModal({ isShown: true, type: "capture-signature", data: repairDetails });
                   } else {
                     handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
                   }
@@ -102,7 +159,7 @@ function RepairDetails({ path }) {
         </div>
       </div>
 
-      <div className=" grid grid-cols-12 grid-rows-1 gap-5 ">
+      <div className=" grid lg:grid-cols-12 lg:grid-rows-1 gap-5 ">
         {/************************/}
         <div className=" flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white">
           <span className="heading-text">Repair Details</span>
@@ -148,14 +205,14 @@ function RepairDetails({ path }) {
         {/************************/}
         <div className=" flex flex-col gap-2 col-span-4 row-span-1 border p-3 rounded-md shadow-md bg-white ">
           <span className="heading-text">Repair Progress</span>
-          <div className="h-[450px] flex gap-5  reletive overflow-y-auto">
+          <div className="max-h-[400px] lg:h-[450px] flex gap-5  reletive overflow-y-auto">
             <div className="flex flex-col items-center">
               {repairProgress &&
                 repairProgress.map((item, index) => (
                   <div key={index} className="flex flex-col items-center">
                     {index === repairProgress?.length - 1 ? (
                       <div>
-                        {item.status_name === "Completed" ? (
+                        {item.status_name === "Closed" ? (
                           <div className="w-[18px] h-[18px] flex items-center justify-center bg-green-500  rounded-full text-white">
                             <IoCheckmark size={10} />
                           </div>
@@ -259,8 +316,8 @@ function RepairDetails({ path }) {
         }}
         contentLabel=""
         className={`${
-          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
-        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+          openModal.type === "release" ? "lg:w-[80%] lg:max-h-3/4" : openModal.type === "assign" ? "lg:w-[80%] lg:max-h-3/4 " : "w-[90%] lg:w-[50%] lg:max-h-full "
+        } bg-white rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
         {openModal.type === "Edit" ? (
           <CreateNewRepair
@@ -275,6 +332,20 @@ function RepairDetails({ path }) {
               setOpenModal({ isShown: false });
             }}
             setShowToast={setShowToast}
+          />
+        ) : openModal.type === "capture-signature" ? (
+          <BlankCard
+            title={"Capture User Signature"}
+            onCanel={() => {
+              getRepairDetails();
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={() => {
+              handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
+              getRepairDetails();
+              setOpenModal({ isShown: false });
+            }}
+            userId={repairDetails?.current_user_id}
           />
         ) : (
           <div className="h-[1150px] col-span-6 bg-white " id="print-file">

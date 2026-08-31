@@ -11,18 +11,18 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
   const [columnCount, setColumnCount] = useState(6);
 
   useEffect(() => {
-    //getDeviceTransactions(deviceSerialNo);
+    //console.log(deviceTransactions);
   }, []);
 
   return (
-    <div className="col-span-6 flex flex-col h-[450px] bg-white rounded-md shadow-md overflow-auto">
+    <div className="h-[400px] lg:h-full col-span-6 flex flex-col border  bg-white rounded-md shadow-md">
       <div className="flex items-center justify-between  rounded-t-md p-2 sticky top-0 bg-white">
         <span className="heading-text sticky top-0">{label}</span>
         {hasPermission("export") && <ExportExcelButton />}
       </div>
-      <div className="w-full text-sm  rounded-sm">
+      <div className="w-full  max-h-[480px] text-sm  rounded-md overflow-auto">
         <table className="w-full bg-white ">
-          <thead className=" bg-slate-100 sticky top-11 h-[40px]">
+          <thead className=" bg-slate-100 sticky top-0 h-[40px]">
             <tr>
               <th>Transaction Id</th>
               <th>Action</th>

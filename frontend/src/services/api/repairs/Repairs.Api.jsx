@@ -141,7 +141,7 @@ export const getAllRepairsStatsForTech = async (data, setAllRepairsStats) => {
 //Handle update device
 export const updateRepairStatus = async (data) => {
   try {
-    const response = await axiosInstance.put(`/repairs/update-repair-status/${data.repairId}/${data.statusId}`, { showSpinner: true });
+    const response = await axiosInstance.put(`/repairs/update-repair-status`, data, { showSpinner: true });
 
     if (response.data) {
       return { error: response.data.error, message: response.data.message };

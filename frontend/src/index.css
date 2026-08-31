@@ -320,7 +320,7 @@ html {
   }
 
   .table-view {
-    @apply w-full h-[520px] flex flex-col text-sm  rounded-md border border-slate-200;
+    @apply w-full h-[520px] flex flex-col text-sm  rounded-md border border-slate-200 overflow-auto;
   }
 
   .table-view {

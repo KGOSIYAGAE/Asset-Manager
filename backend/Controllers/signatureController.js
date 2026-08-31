@@ -125,6 +125,8 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
     const getIssuer = "SELECT * FROM staff WHERE id = $1";
     const issuer = await query(getIssuer, [device_transaction.rows[0].issued_by]);
 
+    console.log(issuer);
+
     if (issuer.rows.length === 0) {
       return res.status(400).json({ message: "Issuer not found", error: true });
     }

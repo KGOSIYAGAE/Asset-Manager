@@ -22,7 +22,7 @@ function UserDevicesTable({ deviceList, deviceHistory, onAssignDevice }) {
     console.log(deviceHistory);
   }, []);
   return (
-    <div className="col-span-6 h-[480px] bg-white rounded-md shadow-md overflow-auto ">
+    <div className="h-fit col-span-6  bg-white rounded-md shadow-md ">
       <div className="flex items-center justify-between  rounded-t-md p-2 sticky top-0 bg-white">
         <span className="heading-text sticky top-0 ">User devices</span>
         {hasPermission("export") && (
@@ -32,9 +32,9 @@ function UserDevicesTable({ deviceList, deviceHistory, onAssignDevice }) {
           </div>
         )}
       </div>
-      <div className="w-full text-sm  rounded-sm">
+      <div className="w-full h-[480px] text-sm  rounded-md overflow-auto ">
         <table className="w-full bg-white ">
-          <thead className=" bg-slate-100 sticky top-11 h-[40px]">
+          <thead className=" bg-slate-100 sticky top-0 h-[40px]">
             <th>#</th>
             <th>Asset Tag</th>
             <th>Serial Number</th>
@@ -131,7 +131,7 @@ function UserDevicesTable({ deviceList, deviceHistory, onAssignDevice }) {
           overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
         }}
         contentLabel=""
-        className={"w-[80%] h-fit bg-white rounded-md mx-auto mt-14 p-5 overflow-auto"}
+        className={"w-[60%] h-fit bg-white rounded-md mx-auto mt-14 p-5 overflow-auto"}
       >
         <DeviceTransactionMoreDetailsCard deviceDetails={openModal.data} />
       </Modal>

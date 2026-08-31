@@ -21,8 +21,8 @@ import { MdDevices } from "react-icons/md";
 import SendToTablet from "../../buttons/SendToTablet/SendToTablet";
 import QrCodeCard from "../qrCodeCard/QrCodeCard";
 import CancelButton from "../../buttons/CancelButton";
-import { socket } from "../../../utils/socket";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { socket } from "../../../utils/socket";
 
 function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
@@ -54,7 +54,25 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
 
   const [showQrCode, setShowQrCode] = useState(false);
   const [qrCodeURL, setQrCodeURL] = useState(null);
+
+  const [accessories, setAccessories] = useState([]);
+
+  const [hasMouse, setHasMouse] = useState(false);
+  const [hasCharger, setHasCharger] = useState(false);
+  const [hasBag, setHasBag] = useState(false);
+
   const [dislaimerAccepted, setDisclaimerAccepted] = useState(false);
+
+  //Toggle Accessories
+  const toggleAccessories = (hasAccessory, setHasAccessory, accessoryName) => {
+    if (hasAccessory) {
+      setHasAccessory(false);
+      setAccessories((prevAccessories) => prevAccessories.filter((item) => item !== accessoryName));
+    } else {
+      setHasAccessory(true);
+      setAccessories((prevAccessories) => [...prevAccessories, accessoryName]);
+    }
+  };
 
   //Handles search clear -> Sent to Search component
   const handleCancelSearch = () => {
@@ -79,6 +97,10 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
     //setTechnicianName(data?.)
     setTechnicianId(data?.assigned_to);
     setRepairNotes(data?.notes);
+
+    const parsedArray = data?.accessories?.replace(/[{}"]/g, "").split(",");
+
+    setAccessories(parsedArray);
   };
 
   //Set form on create
@@ -151,12 +173,12 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
 
             {type && type === "Add" ? (
               <div>
-                <span className="font-semibold">1. Device Details</span>
+                <span className="font-semibold">Device Details</span>
                 <DeviceSelectInput allDevices={allDevices} selectedDevice={selectedDevice} setSelectedDevice={setSelectedDevice} repair={true} viewDevice={deviceSerialNo} />
               </div>
             ) : (
               <div className="">
-                <span className="font-semibold">1. Device Details</span>
+                <span className="font-semibold">Device Details</span>
                 <div className={`flex gap-2 bg-white border border-zinc-300 rounded-md p-2`}>
                   <div className="bg-slate-100 p-2 rounded-md bg-opacity-30">
                     <MdDevices size={25} />
@@ -193,7 +215,7 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
 
             {/** */}
             <div>
-              <span className="col-span-4 font-semibold">2. Maintenance Details</span>
+              <span className="col-span-4 font-semibold">Repair Details</span>
               <div className="grid grid-cols-4  gap-5 mt-5">
                 {/** */}
 
@@ -223,9 +245,73 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                   <TextInput label={"Technician"} value={technicianName} isDisabled={true} maxLength={20} setOnChange={setTechnicianName} type={"text"} />
                 </div>
 
-                <div className="col-span-4 row-span-1">
-                  <TextArea label={"Notes"} value={repairNotes} isDisabled={false} maxLength={500} setOnChange={setRepairNotes} />
-                </div>
+                {type && type === "Add" ? (
+                  <div className="col-span-1">
+                    <span className="col-span-4 font-semibold">Accessories</span>
+                    <div className="flex text-sm">
+                      <div className="flex flex-col p-2 ">
+                        <div className="flex items-center gap-1" onClick={() => toggleAccessories(hasCharger, setHasCharger, "Charger")}>
+                          <input type="checkbox" name="status" id="" readOnly checked={hasCharger ? true : false} />
+                          <label htmlFor="">Charger</label>
+                        </div>
+                        <div className="flex items-center gap-1" onClick={() => toggleAccessories(hasMouse, setHasMouse, "Mouse")}>
+                          <input type="checkbox" name="status" id="" readOnly checked={hasMouse ? true : false} />
+                          <label htmlFor="">Mouse</label>
+                        </div>
+                        <div className="flex items-center gap-1" onClick={() => toggleAccessories(hasBag, setHasBag, "Bag")}>
+                          <input type="checkbox" name="status" id="" readOnly checked={hasBag ? true : false} />
+                          <label htmlFor="">Bag</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col col-span-1">
+                    <span className="col-span-4 font-semibold">Accessories</span>
+                    {accessories ? (
+                      accessories.map((item, key) => (
+                        <div className="flex items-center gap-1" key={key} isDisabled={true}>
+                          <input type="checkbox" name="status" id="" readOnly checked={true} />
+                          <label htmlFor="">{item}</label>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm">
+                        <ol className="list-disc">
+                          <li>No Accessories</li>
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {type === "Edit" && (
+                  <div className="col-span-4 flex flex-col gap-5">
+                    <span className="col-span-4 font-semibold">Repair Outcome</span>
+                    <div className="col-span-4 row-span-1 flex flex-col gap-5">
+                      <div className="col-span-4 row-span-1">
+                        <TextArea label={"Notes"} value={repairNotes} isDisabled={false} maxLength={500} setOnChange={setRepairNotes} />
+                      </div>
+                      <div className="col-span-4 row-span-1 flex gap-5">
+                        <div className="w-5/6">
+                          <TechnicianSelectInput
+                            label={"Repaired By"}
+                            value={""}
+                            options={technicians}
+                            optionName={"name"}
+                            isDisabled={false}
+                            setTechnicianName={setTechnicianName}
+                            setTechnicianId={setTechnicianId}
+                          />
+                        </div>
+                        <div className="w-5/6">
+                          <TextInput label={"Technician"} value={technicianName} isDisabled={true} maxLength={20} setOnChange={setTechnicianName} type={"text"} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {dislaimerAccepted && (
                   <div className="col-span-4 row-span-1">
                     <div className="flex gap-2 items-center">
@@ -246,7 +332,7 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                   text={"Submit"}
                   onClick={() => {
                     if (type === "Add") {
-                      handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, dislaimerAccepted, onSubmit, setShowToast);
+                      handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, dislaimerAccepted, onSubmit, setShowToast);
                     } else {
                       handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, onSubmit, setShowToast);
                     }
@@ -274,7 +360,7 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                       text={"Submit"}
                       onClick={() => {
                         if (type === "Add") {
-                          handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, onSubmit, setShowToast);
+                          handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, onSubmit, setShowToast);
                         } else {
                           handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, onSubmit, setShowToast);
                         }

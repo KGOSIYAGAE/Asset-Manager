@@ -7,7 +7,7 @@ import { MdDevices, MdDevicesOther, MdLaptopWindows, MdOutlineAssignmentTurnedIn
 import { getPercentage } from "../../utils/getValueInPercentage";
 import { AiOutlinePrinter } from "react-icons/ai";
 
-function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
+function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffStats, path }) {
   const availableEnd = (deviceStats?.available_devices / deviceStats?.total_devices) * 100;
   const assignedEnd = availableEnd + (deviceStats?.assigned_devices / deviceStats?.total_devices) * 100;
   const loanedEnd = assignedEnd + (deviceStats?.loaned_devices / deviceStats?.total_devices) * 100;
@@ -29,7 +29,7 @@ function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
       </div>
       <div className="flex flex-col gap-5">
         {/* Device Summary*/}
-        <div className="grid grid-cols-5 grid-rows-1 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-5 grid-rows-1 gap-5">
           {/* */}
           <div className="flex items-center bg-white gap-3 border shadow-md rounded-md p-5">
             <div className="w-[52px] h-[52px] flex items-center justify-center bg-red-50 border border-red-500 rounded-full">
@@ -93,7 +93,7 @@ function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
               <BsClipboard2Pulse size={25} className="text-purple-600" />
             </div>
             <div className="flex flex-col gap-2">
-              <span className="text-sm text-black">Total Repairs</span>
+              <span className="text-sm text-black">Total Open Repairs</span>
 
               <div className="flex flex-col">
                 <span className="font-bold text-xl">{deviceStats?.maintenance_devices}</span>
@@ -105,7 +105,7 @@ function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
 
         {/*******************************************/}
 
-        <div className="grid grid-cols-12 grid-rows-1 gap-5">
+        <div className="grid lg:grid-cols-12 grid-rows-1 gap-5">
           {/* Device Status Overview*/}
           <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
             <div className="flex justify-between">
@@ -402,7 +402,7 @@ function MainAdminDashboard({ deviceStats, studentsStats, staffStats, path }) {
 
           {/*Staff Students Section*/}
         </div>
-        <div className="grid grid-cols-6 grid-rows-1 gap-5">
+        <div className="grid lg:grid-cols-6 grid-rows-1 gap-5">
           {/* */}
           <div className="flex items-center col-span-3 bg-white gap-3 border shadow-md rounded-md p-5">
             <div className="w-[52px] h-[52px] flex items-center justify-center bg-blue-50 border border-blue-500 rounded-full">

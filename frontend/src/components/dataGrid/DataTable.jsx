@@ -13,7 +13,7 @@ function DataTable({ rows, colHeaders, handleEdit, handleDelete, handleViewDetai
       field: "Actions",
       renderCell: (cellValues) => {
         return (
-          <div className="flex items-center justify-center gap-2 mt-3">
+          <div className="flex items-center justify-center gap-2 mt-3 z-0">
             {hasPermission("view") && (
               <div
                 className="w-[30px] flex items-center justify-center text-orange-500 bg-orange-100 p-1 rounded-md border border-orange-500 cursor-pointer"

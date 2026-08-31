@@ -139,7 +139,7 @@ function StudentDetails({ path }) {
         <b>Students /</b> {path}
       </span>
       <div className="grid grid-cols-6 grid-rows-2 gap-5">
-        <div className="col-span-3 row-span-1 border p-1 rounded-md shadow-md">
+        <div className="col-span-6 lg:col-span-3 row-span-1 border p-1 rounded-md shadow-md">
           <span className="heading-text">Student Details</span>
           <div className="flex justify-between bg-zinc-50 p-2 item-hover">
             <span className="text-sm">Name</span>
@@ -264,11 +264,12 @@ function StudentDetails({ path }) {
         }}
         contentLabel=""
         className={`${
-          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+          openModal.type === "release" ? "w-[60%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[60%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
         } rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
         {openModal.type === "capture-signature" ? (
           <BlankCard
+            title={""}
             onCanel={() => {
               getDetails();
               setOpenModal({ isShown: false });

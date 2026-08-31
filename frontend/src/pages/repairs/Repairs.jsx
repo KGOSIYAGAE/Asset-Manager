@@ -10,7 +10,7 @@ import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import AddButton from "../../components/buttons/AddButton";
 import { MdDevices, MdNewReleases, MdOutlineFlightTakeoff } from "react-icons/md";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
-import { TbProgressAlert, TbProgressCheck, TbProgressDown } from "react-icons/tb";
+import { TbProgressAlert, TbProgressCheck, TbProgressDown, TbProgressX } from "react-icons/tb";
 import { FaRegCheckCircle } from "react-icons/fa";
 import Modal from "react-modal";
 import DeviceMaintenanceRepairs from "../../components/tables/DeviceMaintenanceRepairs";
@@ -21,7 +21,7 @@ import { filterItems } from "../../utils/deviceRepairsHelper";
 import LoanIssueForm from "../../components/LoanForms/LoanIssueForm";
 import RepairForm from "../../components/repairForm/RepairForm";
 
-function Repairs({ path }) {
+function Repairs({ path, createRepair }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShown: false, type: "", message: null });
   const [maintenanceDevices, setMaintenanceDevices] = useState(null);
@@ -118,6 +118,12 @@ function Repairs({ path }) {
     setActive("All");
   }, [searchResults]);
 
+  useEffect(() => {
+    if (createRepair) {
+      setOpenModal({ isShown: true, type: "Add", data: "hello" });
+    }
+  }, [createRepair]);
+
   return (
     <div className="h-svh flex flex-col p-3  bg-zinc-50">
       <span className="text-sm ">
@@ -140,7 +146,7 @@ function Repairs({ path }) {
 
         {/* */}
         <div className="flex flex-col gap-10">
-          <div className="grid grid-cols-6 grid-rows-1 gap-3">
+          <div className="grid grid-cols-3 lg:grid-cols-7 grid-rows-1 gap-3">
             {/* */}
             <div className="h-[80px] flex items-center bg-white gap-3 border shadow-md rounded-md p-5">
               <div className="w-[40px] h-[40px] flex items-center justify-center bg-purple-50 border border-purple-600 rounded-full">
@@ -165,18 +171,18 @@ function Repairs({ path }) {
             {/* */}
             <div className="h-[80px] flex items-center bg-white gap-3 border shadow-md rounded-md p-5">
               <div className="w-[40px] h-[40px] flex items-center justify-center bg-red-50 border border-red-600 rounded-full">
-                <TbProgressDown size={25} className="text-red-600" />
+                <TbProgressX size={25} className="text-red-600" />
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-sm text-black">Awaiting Parts</span>
-                <span className="font-bold text-xl">{allRepairsStats?.overdue_repairs}</span>
+                <span className="font-bold text-xl">{allRepairsStats?.awaiting_parts}</span>
               </div>
             </div>
             {/* */}
             {/* */}
             <div className="h-[80px] flex items-center bg-white gap-3 border shadow-md rounded-md p-5">
               <div className="w-[40px] h-[40px] flex items-center justify-center bg-orange-50 border border-orange-600 rounded-full">
-                <TbProgressCheck size={25} className="text-orange-600" />
+                <TbProgressDown size={25} className="text-orange-600" />
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-sm text-black">In progress</span>
@@ -205,14 +211,25 @@ function Repairs({ path }) {
                 <span className="font-bold text-xl">{allRepairsStats?.completed}</span>
               </div>
             </div>
+            {/* */}
+
+            <div className="h-[80px] flex items-center bg-white gap-3 border shadow-md rounded-md p-5">
+              <div className="w-[40px] h-[40px] flex items-center justify-center bg-red-50 border border-red-600 rounded-full">
+                <TbProgressAlert size={25} className="text-red-600" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm text-black">14 Days & Old</span>
+                <span className="font-bold text-xl">{allRepairsStats?.overdue_repairs}</span>
+              </div>
+            </div>
           </div>
         </div>
         {/* */}
 
         <div className="flex flex-col">
           <div className="bg-white rounded-md shadow-md p-2">
-            <div className="flex justify-between gap-3">
-              <div className="repair-filer">
+            <div className="flex justify-end gap-3">
+              {/*<div className="repair-filer">
                 {filterItems.map((item, index) => (
                   <span
                     key={index}
@@ -225,7 +242,7 @@ function Repairs({ path }) {
                     {item}
                   </span>
                 ))}
-              </div>
+              </div>*/}
 
               <div className="w-fit flex p-2">
                 <SearchInput tableName={tableName} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
@@ -255,8 +272,8 @@ function Repairs({ path }) {
         }}
         contentLabel=""
         className={`${
-          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
-        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+          openModal.type === "release" ? "lg:w-[80%] lg:max-h-3/4" : openModal.type === "assign" ? "lg:w-[80%] lg:max-h-3/4 " : "w-[90%] lg:w-[50%] lg:max-h-full "
+        } bg-white rounded-md mx-auto mt-14 p-5 overflow-auto`}
       >
         {openModal.type === "Add" ? (
           <CreateNewRepair

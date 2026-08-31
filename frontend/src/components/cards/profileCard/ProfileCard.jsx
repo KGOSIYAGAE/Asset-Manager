@@ -52,7 +52,7 @@ function ProfileCard() {
           <span className="primary-text">{getIntials(loggedInUser?.fullName)}</span>
         </div>
         <div className="flex flex-col justify-center">
-          <span className="">{`${loggedInUser?.fullName}`}</span>
+          <span className="text-sm">{`${loggedInUser?.fullName}`}</span>
         </div>
         <IoChevronDown className="menu-items" />
       </div>

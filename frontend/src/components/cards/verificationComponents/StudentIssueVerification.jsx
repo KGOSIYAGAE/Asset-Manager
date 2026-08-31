@@ -46,6 +46,20 @@ function StudentIssueVerification({ deviceId, student_no }) {
   return (
     <div>
       <div className="printable h-[1200px]">
+        <div class="page-header">
+          <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" className="w-[180px] h-[180px]" />
+
+          <div class="page-address">
+            <span class="address-heading">SOL PLAATJE UNIVERSITY</span>
+            <span class="address-text">Private Bag X 5008, Kimberly, 8300</span>
+            <span class="address-text">Luka Jantjie House, Chapel Street,</span>
+            <span class="address-text">Kimberly</span>
+            <span class="address-text">Tel: 053 491 0000</span>
+            <span class="address-text">
+              <a href="http://spu.ac.za">www.spu.ac.za</a>
+            </span>
+          </div>
+        </div>
         <div className="body-header">
           <span class="body-title">ACKNOWLEDGEMENT OF DEBT</span>
         </div>

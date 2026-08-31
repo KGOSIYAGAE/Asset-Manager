@@ -18,6 +18,9 @@ import AdminDashboard from "../../components/dashboard/AdminDashboard";
 import UserDashCard from "../../components/cards/userDashCard/UserDashCard";
 import { useLoadingContext } from "../../hooks/useLoadingContext";
 import MainAdminDashboard from "../../components/dashboard/MainAdminDashboard";
+import { getAllRepairsStats, getAllRepairsStatsForTech } from "../../services/api/repairs/Repairs.Api";
+import SupportInternDashboard from "../../components/dashboard/SupportInternDashboard";
+import SupportTechnicianDashboard from "../../components/dashboard/SupportTechnicianDashboard";
 
 function Home() {
   const { devicesState, devicesDispatch } = useDeviceContext();
@@ -32,17 +35,29 @@ function Home() {
   const [studentsStats, setStudentsStats] = useState(null);
   const [staffStats, setStaffStats] = useState(null);
 
+  const [allRepairsStats, setAllRepairsStats] = useState(null);
+
   useEffect(() => {
     setCurrentUser(getLoggedInUser());
     getDevicesStats(setDeviceStats);
     getStudentsStats(setStudentsStats);
     getStaffStats(setStaffStats);
+
+    const user = getLoggedInUser();
+
+    if (user?.role === "support_admin") {
+      getAllRepairsStats(setAllRepairsStats);
+    } else {
+      getAllRepairsStatsForTech({ userId: user?.id }, setAllRepairsStats);
+    }
   }, []);
 
   return (
     <div>
       {/*<UserDashCard loggedInUser={currentUser} />*/}
-      {hasPermission("support-admin-dash") && <MainAdminDashboard deviceStats={deviceStats} studentsStats={studentsStats} staffStats={staffStats} />}
+      {hasPermission("support-admin-dash") && <MainAdminDashboard loggedInUser={currentUser} deviceStats={deviceStats} studentsStats={studentsStats} staffStats={staffStats} />}
+      {hasPermission("support-tech-dash") && <SupportTechnicianDashboard allRepairsStats={allRepairsStats} />}
+      {hasPermission("support-intern-dash") && <SupportInternDashboard allRepairsStats={allRepairsStats} />}
     </div>
   );
 }

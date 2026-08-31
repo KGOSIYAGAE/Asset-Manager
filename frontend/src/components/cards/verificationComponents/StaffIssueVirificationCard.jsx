@@ -31,7 +31,7 @@ function StaffIssueVirificationCard({ deviceId, staff_no }) {
   }, [staff_no]);
 
   return (
-    <div className=" flex flex-col gap-8 items-center overflow-auto">
+    <div className="flex flex-col gap-8 items-center">
       <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo-staff" />
       {/*<div className="flex flex-col gap-8">
         <span className=" font-bold text-2xl">Device Issuance Terms & Acknowledgment</span>
@@ -46,7 +46,7 @@ function StaffIssueVirificationCard({ deviceId, staff_no }) {
           <span className="text-xl">Date: {getTodayDate()}</span>
         </div>
       </div>*/}
-      <div className="flex flex-col gap-3">
+      <div className="h-fit flex flex-col gap-3 ">
         <span className="">
           <b>Instructions:</b> This form must be completed by permanent or fixed-term university staff members upon receiving an institutional device for long-term allocation.
         </span>
@@ -78,7 +78,7 @@ function StaffIssueVirificationCard({ deviceId, staff_no }) {
             </ol>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className=" flex flex-col gap-2 ">
           3. Acknowledgement and Sign-off By signing below, I certify that I have read, understood, and accept all the terms and conditions outlined above.
           <span className="font-bold">Collection Date: {getTodayDate()}</span>
           <SiganturePad lablel={"Staff Signature"} user_id={staff_no} userDetails={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast} formType={"staff-issue"} />

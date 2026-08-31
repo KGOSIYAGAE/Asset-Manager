@@ -220,8 +220,8 @@ function DeviceDetails({ path }) {
         </div>
       )}
 
-      <div className="grid grid-cols-5 grid-rows-3 gap-5 ">
-        <div className="h-fit col-span-3 row-span-1 border p-1 rounded-md shadow-md bg-white">
+      <div className="grid grid-cols-6 lg:grid-cols-5 lg:grid-rows-2 gap-5 mb-[100px]">
+        <div className="h-fit col-span-6 lg:col-span-3 row-span-1 border p-1 rounded-md shadow-md bg-white">
           <span className="heading-text">Device Details</span>
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Make</span>
@@ -335,12 +335,12 @@ function DeviceDetails({ path }) {
           </div>*/}
         </div>
 
-        <div className="flex flex-col col-span-2 gap-5">
-          <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 bg-white border  rounded-md shadow-md">
-            <img src={`/${deviceDetails?.model}.png`} alt="" className="h-4/5" />
+        <div className="h-fit flex flex-col col-span-6 lg:col-span-2 gap-5">
+          <div className="flex flex-col items-center justify-center w-5/5  bg-white border  rounded-md shadow-md">
+            <img src={`/255 G8.png`} alt="" className="h-[385px]" />
           </div>
           {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" || deviceDetails?.status === "Approval required" ? (
-            <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md bg-white">
+            <div className="flex flex-col h-fit  justify-between border p-2 rounded-md shadow-md bg-white">
               {deviceDetails?.status === "Loaned" ? <span className="heading-text">Loaned User</span> : <span className="heading-text">Assigned User</span>}
 
               <div className="">
@@ -386,17 +386,17 @@ function DeviceDetails({ path }) {
         contentLabel=""
         className={`${
           openModal.type === "release"
-            ? "w-[80%] max-h-3/4 bg-white"
+            ? "w-[60%] max-h-3/4 "
             : openModal.type === "assign"
-            ? "w-[80%] max-h-3/4 bg-white"
+            ? "w-[60%] max-h-3/4 "
             : openModal.type === "approve-issue"
-            ? "w-[80%] max-h-3/4 bg-white"
+            ? "w-[60%] max-h-3/4 "
             : openModal.type === "reject"
-            ? "w-[80%] max-h-3/4 bg-white"
+            ? "w-[60%] max-h-3/4 "
             : openModal.type === "approve-loan"
-            ? "w-[80%] max-h-3/4 bg-white"
-            : "w-[50%] h-full bg-white"
-        } rounded-md mx-auto mt-14 p-5 overflow-auto outline-none`}
+            ? "w-[60%] max-h-3/4 "
+            : "w-[60%] lg:w-[50%] h-fit lg:h-full "
+        } bg-white rounded-md mx-auto mt-14 p-5 overflow-auto outline-none`}
       >
         {openModal.type === "assign" ? (
           <IssueDevice

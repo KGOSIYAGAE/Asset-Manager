@@ -71,6 +71,8 @@ const sendApprovalEmail = async (req, res) => {
       htmlContent = htmlContent
         .replace(/{{recipient_name}}/g, `${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`)
         .replace(/{{recipient_staff_no}}/g, recieverDetails.rows[0].staff_no || recieverDetails.rows[0].student_number)
+        .replace(/{{contract_type}}/g, recieverDetails.rows[0].contract_type || "N/A")
+        .replace(/{{end_date}}/g, recieverDetails.rows[0].end_date || "N/A")
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{issuer_staff_no}}/g, issuerDetails.rows[0].staff_no)
         .replace(/{{request_date}}/g, request_date)

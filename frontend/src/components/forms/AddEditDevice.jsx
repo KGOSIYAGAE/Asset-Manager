@@ -170,57 +170,57 @@ function AddEditDevice({ path }) {
         <div className="flex justify-between">
           <span className="heading-text">Device Details</span>
         </div>
-        <div className="grid grid-cols-8 gap-8 pt-5">
-          <div className="col-span-3">
+        <div className="grid grid-cols-8 gap-8 pt-5 ">
+          <div className="col-span-5 lg:col-span-3">
             {/*<SelectInput label={"Category"} value={category} options={deviceCategory} optionName={"name"} isDisabled={false} setOnChange={setCategory} />*/}
             <CategorySelectInput label={"Category"} value={category} options={ICT_DEVICES} setOnChange={setCategory} onChoose={handleMake} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             {/*<SelectInput label={"Manufacture"} value={make} options={deviceManufacture} optionName={"name"} isDisabled={false} setOnChange={setMake} onChoose={handleModel} />*/}
             <CategorySelectInput label={"Make"} value={make} options={deviceMufactures} setOnChange={setMake} onChoose={handleModel} />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             {/*<SelectInput label={"Model"} value={model} options={modelList} optionName={"name"} opisDisabled={false} setOnChange={setModel} />*/}
             <CategorySelectInput label={"Model"} value={model} options={deviceModels} setOnChange={setModel} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-5 lg:col-span-2">
             <TextInput label={"Serial Number"} value={serial_no} isDisabled={false} maxLength={30} setOnChange={setSerial_no} />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <TextInput label={"Asset Tag"} value={assetTag} isDisabled={false} maxLength={6} setOnChange={setAssetTag} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             <SelectInput label={"Status"} value={status} options={deviceStatus} optionName={"name"} isDisabled={false} setOnChange={setStatus} onChoose={() => {}} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             <SelectInput label={"Condition"} value={device_condition} options={deviceCondition} optionName={"name"} isDisabled={false} setOnChange={setDevice_Condition} onChoose={() => {}} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-5 lg:col-span-2">
             <DateTimePicker label={"Warranty End Date"} value={warranty_end_date} setOnChange={setWarranty_End_date} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Purchase Value"} value={purchaseValue} isDisabled={false} maxLength={10} setOnChange={setPurchaseValue} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Current Value"} value={currentValue} isDisabled={false} maxLength={10} setOnChange={setCurrentValue} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-5 lg:col-span-3">
             <TextInput label={"Supplier Name"} value={supplier_name} isDisabled={false} maxLength={50} setOnChange={setSupplier_name} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-3 lg:col-span-3">
             <TextInput label={"Invoice Number"} value={invoice_no} isDisabled={false} maxLength={50} setOnChange={setInvoice_no} />
           </div>
 
-          <div className="col-span-8">
+          <div className=" col-span-8">
             <TextArea label={"Specification"} value={spec} isDisabled={false} setOnChange={setSpec} />
           </div>
         </div>

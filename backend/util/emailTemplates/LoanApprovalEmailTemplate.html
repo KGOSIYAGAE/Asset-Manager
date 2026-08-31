@@ -172,7 +172,7 @@
               <p class="body-text">Dear Admin,</p>
               <p class="body-text">A request to loan a company laptop requires your immediate review and approval.</p>
 
-              <span class="section-subtitle">Loan Details:</span>
+              <span class="section-subtitle">Recipient Details:</span>
               <table class="data-table">
                 <tbody>
                   <tr>
@@ -183,6 +183,12 @@
                     <td>Recipient Staff / Student No:</td>
                     <td>{{recipient_staff_no}}</td>
                   </tr>
+                </tbody>
+              </table>
+
+              <span class="section-subtitle">Issuer Details:</span>
+              <table class="data-table">
+                <tbody>
                   <tr>
                     <td>Issued By:</td>
                     <td>{{issuer_name}}</td>
@@ -194,10 +200,6 @@
                   <tr>
                     <td>Request Date:</td>
                     <td>{{request_date}}</td>
-                  </tr>
-                  <tr>
-                    <td>Expected Return Date:</td>
-                    <td>{{expected_return_date}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -212,6 +214,10 @@
                   <tr>
                     <td>Serial number:</td>
                     <td>{{device_serial_no}}</td>
+                  </tr>
+                  <tr>
+                    <td>Expected Return Date:</td>
+                    <td>{{expected_return_date}}</td>
                   </tr>
                 </tbody>
               </table>

@@ -248,27 +248,27 @@ function AddEditStaff({ path }) {
           <span className="heading-text">Staff Details</span>
         </div>
         <div className="grid grid-cols-6 gap-8 pt-5">
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <TextInput label={"First Name"} value={name} isDisabled={isDisabled} maxLength={50} setOnChange={setName} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <TextInput label={"Last Name"} value={surname} isDisabled={isDisabled} maxLength={50} setOnChange={setSurname} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-2 lg:col-span-2">
             <TextInput label={"Staff Number"} value={staff_no} isDisabled={isDisabled} maxLength={5} setOnChange={setStaff_no} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} maxLength={10} setOnChange={setPhone_Number} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} maxLength={50} setOnChange={setEmail} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <FacultySelectInput
               label={"Faculty"}
               value={faculty_name}
@@ -279,7 +279,7 @@ function AddEditStaff({ path }) {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <DepartmentSelectInput
               label={"Department"}
               value={department_name}
@@ -290,31 +290,31 @@ function AddEditStaff({ path }) {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             <PositionSelectInput label={"Position"} value={position_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-2 lg:col-span-2">
             <SelectInput label={"Contract Type"} value={contract_type} options={employmentTypes} optionName={"name"} isDisabled={isDisabled} setOnChange={setContract_Type} />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-3 lg:col-span-1">
             <DateTimePicker label={"Starting Date"} value={start_date} setOnChange={setStart_date} />
           </div>
 
           {contract_type !== "Permanent" ? (
-            <div className="col-span-1">
+            <div className="col-span-3 lg:col-span-1">
               <DateTimePicker label={"End Date"} value={endDate} setOnChange={setEndDate} />
             </div>
           ) : (
             ""
           )}
 
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
 
-          <div className="col-span-4">
+          <div className="col-span-6">
             {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
             <span
               className="link-text"

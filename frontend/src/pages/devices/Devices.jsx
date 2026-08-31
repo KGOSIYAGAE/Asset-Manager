@@ -81,9 +81,9 @@ function Devices({ path }) {
         <b> {path}</b>
       </span>
       <div className=" flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
-        <div className="flex justify-between">
+        <div className="flex flex-col lg:flex-row justify-between">
           <span className="heading-text">Device List</span>
-          <div className="flex gap-2 ">
+          <div className="flex gap-6 lg:gap-2 ">
             <SearchInput tableName={"devices"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
             {hasPermission("create") && <AddButton name={"Add New Device"} handleAdd={handleAdd} />}
             {hasPermission("import") && <BulkAddButton onClick={ImportModal} />}
@@ -108,7 +108,7 @@ function Devices({ path }) {
           overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
         }}
         contentLabel=""
-        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5  "
+        className="w-[60%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5  "
       >
         {openModal.isShown ? (
           <DeleteConfirmation

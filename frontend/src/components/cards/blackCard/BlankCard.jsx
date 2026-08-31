@@ -5,7 +5,7 @@ import OpenSecondScreenButton from "../../buttons/OpenSecondScreenButton/OpenSec
 import SendToTablet from "../../buttons/SendToTablet/SendToTablet";
 import { socket } from "../../../utils/socket";
 
-function BlankCard({ onCanel, onSubmit, userId }) {
+function BlankCard({ title, onCanel, onSubmit, userId }) {
   const [showQrCode, setShowQrCode] = useState(false);
   const [qrCodeURL, setQrCodeURL] = useState(null);
   const [isSigned, setIsSigned] = useState(false);
@@ -32,7 +32,10 @@ function BlankCard({ onCanel, onSubmit, userId }) {
   }, []);
 
   return (
-    <div className="flex flex-col items-center bg-white shadow-md rounded-md border ">
+    <div className="flex flex-col items-center bg-white shadow-md rounded-md border gap-5">
+      <div>
+        <span className="font-bold">{title}</span>
+      </div>
       {showQrCode && showQrCode ? (
         <div className="flex flex-col items-center p-2">
           <QrCodeCard title={"Scan the QR Code with a tablet to capture user signature"} text={qrCodeURL} size={250} />

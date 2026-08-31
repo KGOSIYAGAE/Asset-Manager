@@ -68,12 +68,12 @@ function App() {
   //App UI Layout
   const Layout = () => {
     return (
-      <div className="w-screen flex ">
-        <div className={`${isMinimize ? "w-[60px] " : "w-2/12"}`}>
-          <Menu isMinimized={isMinimize} setIsMinimize={setIsMinimize} />
+      <div className="w-screen lg:flex lg:flex-row">
+        <div className={`${isMinimize ? "w-[250px] lg:w-[60px] absolute lg:translate-x-0 lg:relative z-30" : "absolute -translate-x-60  lg:translate-x-0 lg:relative lg:w-2/12 z-50"}`}>
+          <Menu isMinimized={isMinimize} setIsMinimize={setIsMinimize} onCloseMenu={handleMinimizeMenu} />
         </div>
-        <div className={`${isMinimize ? "w-full" : "w-10/12"} `}>
-          <div className="bottom-border">
+        <div className={`${isMinimize ? "w-full p-2 lg:p-0" : "lg:w-10/12 p-2 lg:p-0"} flex flex-col`}>
+          <div className="bottom-border ">
             <Navbar onCloseMenu={handleMinimizeMenu} />
           </div>
           <Outlet />
@@ -298,6 +298,10 @@ function App() {
         {
           path: "/repairs",
           element: <Repairs path={"Repairs"} />,
+        },
+        {
+          path: "/repairs/create-repair",
+          element: <Repairs path={"Repairs"} createRepair={true} />,
         },
         {
           path: "/repairs/repair-details/:id",

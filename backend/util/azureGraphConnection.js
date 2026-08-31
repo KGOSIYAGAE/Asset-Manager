@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 require("isomorphic-fetch");
 const { Client } = require("@microsoft/microsoft-graph-client");
+require("dotenv").config();
 
 const msalConfig = {
   auth: {
@@ -15,6 +16,8 @@ const msalConfig = {
 const cca = new msal.ConfidentialClientApplication(msalConfig);
 
 async function getToken() {
+  console.log(process.env.CLIENT_ID);
+
   const results = await cca.acquireTokenByClientCredential({
     scopes: ["https://graph.microsoft.com/.default"],
   });
