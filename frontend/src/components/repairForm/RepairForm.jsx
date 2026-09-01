@@ -29,9 +29,9 @@ function RepairForm({ repairDetails }) {
     setAccessories(parsedArray);
 
     if (process.env.NODE_ENV === "production") {
-      setBaseUrl(`/repairs/repair-details`);
+      setBaseUrl("http://10.10.4.186");
     } else {
-      setBaseUrl(`http://192.168.8.4:5173/repairs/repair-details`);
+      setBaseUrl(`http://192.168.8.4:5173`);
     }
   }, [repairDetails]);
 
@@ -157,7 +157,7 @@ function RepairForm({ repairDetails }) {
                 <span className="">{repairDetails?.description}</span>
               </div>
               <div className="w-5/12 flex place-self-end">
-                <QrCodeCard title={""} text={`${baseUrl}/${repairDetails?.id}`} size={100} />
+                <QrCodeCard title={""} text={`${baseUrl}/repairs/repair-details/${repairDetails?.id}`} size={100} />
               </div>
             </div>
           </div>
