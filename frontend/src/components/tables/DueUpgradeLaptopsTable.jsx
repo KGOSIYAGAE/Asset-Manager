@@ -5,8 +5,9 @@ import { getAllDeviceLoanDue } from "../../services/api/devices/Device.Api";
 import { useDeviceContext } from "../../hooks/useDevicesContext";
 import { useNavigate } from "react-router-dom";
 import { getDueUpgradeDevicesHelper } from "../../utils/devicesHelperMethods";
+import TablePagation from "../cards/tablePagation/TablePagation";
 
-function DueUpgradeLaptopsTable({ devices }) {
+function DueUpgradeLaptopsTable({ devices, currentPage, setCurrentPage, totalPages, limit }) {
   const navigate = useNavigate();
 
   const [columnCount, setColumnCount] = useState(8);
@@ -22,9 +23,9 @@ function DueUpgradeLaptopsTable({ devices }) {
   }, [devices]);
 
   return (
-    <div className="w-full text-sm  rounded-sm">
-      <table className="w-full bg-white ">
-        <thead className=" bg-slate-100 sticky top-0 h-[40px]">
+    <div className="table-view">
+      <table className="">
+        <thead className=" bg-slate-100 sticky top-0 h-[40px] rounded-md">
           <th>#</th>
           <th>Asset Tag</th>
           <th>Serial Number</th>
@@ -84,6 +85,7 @@ function DueUpgradeLaptopsTable({ devices }) {
           </tbody>
         )}
       </table>
+      <TablePagation currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} />
     </div>
   );
 }

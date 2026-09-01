@@ -153,7 +153,7 @@ const createStaff = async (req, res) => {
     }
 
     const create_staff_query =
-      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, faculty_name, position_name, department_name, start_date, end_date,created_at, updated_at,is_deleted) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,  $12, NOW(), NOW(),FALSE )";
+      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, faculty_name, position_name, department_name, start_date, end_date,created_at, updated_at, is_deleted) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,  $12, NOW(), NOW(),'FALSE')";
     const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, faculty_name, position_name, department_name, start_date, endDate];
 
     //Check if user exist

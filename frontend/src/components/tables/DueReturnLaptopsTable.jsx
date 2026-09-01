@@ -19,7 +19,7 @@ function DueReturnLaptopsTable({ devices, currentPage, setCurrentPage, totalPage
   return (
     <div className="table-view">
       <table className="">
-        <thead className=" bg-slate-100 sticky top-16 h-[40px] rounded-md">
+        <thead className=" bg-slate-100 sticky top-0 h-[40px]">
           <th>
             <span>Asset Tag</span>
           </th>

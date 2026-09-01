@@ -3,8 +3,9 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { useNavigate } from "react-router-dom";
 import { getSystemUsers } from "../../utils/helperMethods";
 import { getAdmins } from "../../services/api/admin/Admin.Api";
+import TablePagation from "../cards/tablePagation/TablePagation";
 
-function RolesAndPermissionTable({ userAndAdmins, label, handleUpdateRole }) {
+function RolesAndPermissionTable({ userAndAdmins, handleUpdateRole, currentPage, setCurrentPage, totalPages, limit }) {
   const navigate = useNavigate();
 
   const [columnCount, setColumnCount] = useState(8);
@@ -15,9 +16,9 @@ function RolesAndPermissionTable({ userAndAdmins, label, handleUpdateRole }) {
   };
 
   return (
-    <div className="w-full text-sm  rounded-sm">
-      <table className="w-full bg-white ">
-        <thead className=" bg-slate-100 sticky top-0 h-[40px]">
+    <div className="table-view">
+      <table className="">
+        <thead className=" bg-slate-100 sticky top-0 h-[40px] rounded-md">
           <th>#</th>
           <th>Staff No</th>
           <th>First Name</th>
@@ -31,7 +32,7 @@ function RolesAndPermissionTable({ userAndAdmins, label, handleUpdateRole }) {
         </thead>
         {userAndAdmins <= 0 ? (
           <tbody>
-            <tr className="border border-slate-200">
+            <tr className="">
               <td colSpan={columnCount} style={{ textAlign: "center", padding: "20px", color: "#666" }}>
                 <strong>No data available</strong>
                 <p>Create a new system user.</p>
@@ -73,6 +74,7 @@ function RolesAndPermissionTable({ userAndAdmins, label, handleUpdateRole }) {
           </tbody>
         )}
       </table>
+      <TablePagation currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { getTodayDate } from "../../../utils/helperMethods";
 import { assignDevice, createLoanDevice, releaseDevice } from "../../../services/api/devices/Device.Api";
 import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelectInput";
 
-import { rolesList } from "../../../utils/getLoggedInUser";
+import { ROLES, rolesList } from "../../../utils/getLoggedInUser";
 import TextInput from "../../inputs/textInput/TextInput";
 import { assignUserRole, updateUserRole } from "../../../services/api/admin/Admin.Api";
 
@@ -14,6 +14,7 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
   const [selectedRole, setSelectedRole] = useState(null);
   const [userAccessType, setUserAccessType] = useState(null);
+  const [systemRoles, setSystemRoles] = useState();
 
   //Handle loan device
   const handleUpdateRole = async () => {
@@ -44,9 +45,14 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
   };
 
   useEffect(() => {
-    if (userData) {
-      //setSearchResultsData(userData);
-    }
+    const rolesList = Object.entries(ROLES).map(([roleName, roleData]) => {
+      return {
+        name: roleName,
+        permissions: roleData.can,
+      };
+    });
+
+    setSystemRoles(rolesList);
   }, []);
   return (
     <div>
@@ -69,8 +75,8 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
                 showUserAccess(e.target.value);
               }}
             >
-              <option>None</option>
-              {rolesList.map((role) => (
+              x<option>----- Select Role -----</option>
+              {systemRoles?.map((role) => (
                 <option key={role.id}>{role.name}</option>
               ))}
             </select>

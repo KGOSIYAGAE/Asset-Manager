@@ -18,7 +18,7 @@ export const getLoggedInUser = () => {
 export const rolesList = [
   {
     id: 0,
-    name: "support_admin",
+    name: "super_admin",
     can: ` "create",
       "edit",
       "delete",
@@ -42,6 +42,30 @@ export const rolesList = [
   },
   {
     id: 1,
+    name: "support_admin",
+    can: ` "create",
+      "edit",
+      "delete",
+      "view",
+      "support-admin-dash",
+      "view-transactions",
+      "export",
+      "import",
+      "assign",
+      "approve",
+      "release",
+      "loan",
+      "manage-roles",
+      "print",
+      "create-repair",
+      "assign-repair",
+      "view-upgrades",
+      "view-repairs",
+      "signature",
+      "view-due-return"`,
+  },
+  {
+    id: 2,
     name: "support_technician",
     can: `"create",
       "edit",
@@ -60,13 +84,37 @@ export const rolesList = [
       "view-due-return"`,
   },
   {
-    id: 2,
+    id: 3,
     name: "support_intern",
     can: `"view", "support-intern-dash", "create-repair", "view-repairs"`,
   },
 ];
 
 export const ROLES = {
+  super_admin: {
+    can: [
+      "create",
+      "edit",
+      "delete",
+      "view",
+      "support-admin-dash",
+      "view-transactions",
+      "export",
+      "import",
+      "assign",
+      "approve",
+      "release",
+      "loan",
+      "manage-roles",
+      "print",
+      "create-repair",
+      "assign-repair",
+      "view-upgrades",
+      "view-repairs",
+      "signature",
+      "view-due-return",
+    ],
+  },
   support_admin: {
     can: [
       "create",

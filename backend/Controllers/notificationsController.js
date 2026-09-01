@@ -63,7 +63,7 @@ const sendApprovalEmail = async (req, res) => {
         .replace(/{{expected_return_date}}/g, expected_return_date)
         .replace(/{{model_name}}/g, model_name)
         .replace(/{{device_serial_no}}/g, device_serial_no)
-        .replace(/{{url_link}}/g, `http://192.168.8.4:5173/devices/device-details/${deviceId}`);
+        .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${deviceId}`);
     } else {
       templatePath = path.join(__dirname, "..", "util", "emailTemplates", "IssueApprovalEmailTemplate.html");
       htmlContent = fs.readFileSync(templatePath, "utf8");
@@ -79,7 +79,7 @@ const sendApprovalEmail = async (req, res) => {
         .replace(/{{request_date}}/g, request_date)
         .replace(/{{model_name}}/g, model_name)
         .replace(/{{device_serial_no}}/g, device_serial_no)
-        .replace(/{{url_link}}/g, `http://192.168.8.4:5173/devices/device-details/${deviceId}`);
+        .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${deviceId}`);
     }
 
     if (!htmlContent) {
@@ -174,7 +174,8 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
         .replace(/{{expected_return_date}}/g, new Date(transactionDetails.rows[0].expected_return_date).toLocaleDateString())
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
-        .replace(/{{device_serial_no}}/g, device.serial_no);
+        .replace(/{{device_serial_no}}/g, device.serial_no)
+        .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${device.id}`);
 
       subject = `Loan Approved: Device Loan for ${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`;
     } else {
@@ -189,7 +190,8 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
-        .replace(/{{device_serial_no}}/g, device.serial_no);
+        .replace(/{{device_serial_no}}/g, device.serial_no)
+        .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${device.id}`);
 
       subject = `Issue Approved: Device Issue for ${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`;
     }

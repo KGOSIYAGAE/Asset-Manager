@@ -20,6 +20,10 @@ function RolesAndPermissionsPage({ path }) {
 
   const [userAndAdmins, setUsersAndAdmins] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 8;
+
   const handleUpdateRole = (systemUser) => {
     setOpenModal({ isShown: true, type: "update-role", data: "hello" });
 
@@ -37,8 +41,8 @@ function RolesAndPermissionsPage({ path }) {
       </span>
       {/* */}
       <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
-        <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
-          <span className="heading-text ">{""}</span>
+        <div className="flex items-center justify-between rounded-t-md p-2 sticky top-0 bg-white">
+          <span className="heading-text ">{"Roles & Permissions"}</span>
           <div className="flex gap-2 ">
             {hasPermission("create") && (
               <AddButton
@@ -51,7 +55,9 @@ function RolesAndPermissionsPage({ path }) {
             <ExportExcelButton />
           </div>
         </div>
-        <RolesAndPermissionTable userAndAdmins={userAndAdmins} label={"Roles And Permissions"} handleUpdateRole={handleUpdateRole} />
+        <div className="flex p-2">
+          <RolesAndPermissionTable userAndAdmins={userAndAdmins} handleUpdateRole={handleUpdateRole} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} />
+        </div>
       </div>
       {/* */}
       <Modal
