@@ -66,7 +66,7 @@ const sendEmail = async (mailOptions) => {
       }
     }
 
-    await client.api("/users/kgosi.test@spu.ac.za/sendMail").post(graphMailPayload);
+    await client.api("/users/ictasset.manager@spu.ac.za/sendMail").post(graphMailPayload);
 
     /* await client.api("/users/kgosiyagae.motabogi@spu.ac.za/sendMail").post({
     message: {

@@ -21,8 +21,8 @@ const getStudents = async (req, res) => {
       return res.status(400).json({ message: "An error occured fetching devices", error: true });
     }
 
-    const totalDevices = countResponse.rows[0].total;
-    const totalPages = Math.ceil(totalDevices / limit);
+    const totalStudents = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalStudents / limit);
 
     const { rows } = await query(dataQuery, [limit, offset]);
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QrCodeCard from "../cards/qrCodeCard/QrCodeCard";
 import PrintButton from "../buttons/printButton/PrintButton";
-import { handleTimeStampToText } from "../../utils/dateConverter";
+import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { repairStatusList } from "../../utils/deviceRepairsHelper";
 import { handleOnPrint } from "../../utils/handleOnPrint";
 import { getStudentDetails } from "../../services/api/students/Students.Api";
@@ -157,7 +157,7 @@ function RepairForm({ repairDetails }) {
                 <span className="">{repairDetails?.description}</span>
               </div>
               <div className="w-5/12 flex place-self-end">
-                <QrCodeCard title={""} text={`${baseUrl}/repairs/repair-details/${repairDetails?.id}`} size={100} />
+                <QrCodeCard title={""} text={`${baseUrl}/repairs/repair-details/${repairDetails?.id}`} size={150} />
               </div>
             </div>
           </div>
@@ -190,8 +190,18 @@ function RepairForm({ repairDetails }) {
           </div>
           <div className="w-full flex justify-between p-2">
             <div className=" flex flex-col ">
-              <span className="font-semibold">Date Repaired:</span>
-              <span className="">18 / 07 / 2026</span>
+              <div className="flex gap-5">
+                <span className="font-semibold">Date Repaired:</span>
+                <span className="">
+                  {(() => {
+                    return handleTimeStamp(repairDetails?.date_repaired);
+                  })()}
+                </span>
+              </div>
+              <div className="flex gap-5">
+                <span className="font-semibold">Repaired By:</span>
+                <span className="">{repairDetails?.repaired_by}</span>
+              </div>
               <span className="font-semibold">Comments:</span>
               <span className="">{repairDetails?.notes}</span>
             </div>

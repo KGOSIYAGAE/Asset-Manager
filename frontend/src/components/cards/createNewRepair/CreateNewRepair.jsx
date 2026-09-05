@@ -41,6 +41,10 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
 
   const [technicianName, setTechnicianName] = useState();
   const [technicianId, setTechnicianId] = useState();
+
+  const [repairTechnicianName, setRepairTechnicianName] = useState();
+  const [repairTechnicianId, setRepairTechnicianId] = useState(null);
+
   const [repairType, setRepairType] = useState(null);
 
   const [repairDescription, setRepairDescription] = useState();
@@ -91,12 +95,16 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
 
   //Set form on update
   const setRepairFormOnUpdate = async () => {
+    getAdmins(setTechnician);
+
     setDeviceSerialNo(data?.serial_no);
     setRepairType(data?.repair_type);
     setRepairDescription(data?.description);
-    //setTechnicianName(data?.)
+    setTechnicianName(data?.technican_name);
     setTechnicianId(data?.assigned_to);
     setRepairNotes(data?.notes);
+    setRepairTechnicianId(data?.assigned_to);
+    setRepairTechnicianName(data?.repaired_by);
 
     const parsedArray = data?.accessories?.replace(/[{}"]/g, "").split(",");
 
@@ -120,7 +128,6 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
     if (type === "Add") {
       setRepairFormOnCreate();
     } else {
-      setRepairFormOnCreate();
       setRepairFormOnUpdate();
     }
   }, [currentPage]);
@@ -300,12 +307,12 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                             options={technicians}
                             optionName={"name"}
                             isDisabled={false}
-                            setTechnicianName={setTechnicianName}
-                            setTechnicianId={setTechnicianId}
+                            setTechnicianName={setRepairTechnicianName}
+                            setTechnicianId={setRepairTechnicianId}
                           />
                         </div>
                         <div className="w-5/6">
-                          <TextInput label={"Technician"} value={technicianName} isDisabled={true} maxLength={20} setOnChange={setTechnicianName} type={"text"} />
+                          <TextInput label={"Repair Technician"} value={repairTechnicianName} isDisabled={true} maxLength={20} setOnChange={setRepairTechnicianName} type={"text"} />
                         </div>
                       </div>
                     </div>
@@ -334,7 +341,7 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                     if (type === "Add") {
                       handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, dislaimerAccepted, onSubmit, setShowToast);
                     } else {
-                      handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, onSubmit, setShowToast);
+                      handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, setShowToast);
                     }
                   }}
                 />
@@ -362,7 +369,7 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                         if (type === "Add") {
                           handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, onSubmit, setShowToast);
                         } else {
-                          handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, onSubmit, setShowToast);
+                          handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, setShowToast);
                         }
                       }}
                     />

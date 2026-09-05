@@ -49,9 +49,9 @@ function Login() {
         return setShowToast({ isShown: true, type: "success", message: "Login successful" });
       }
     } catch (error) {
-      if (!isOnline) {
+      /* if (!isOnline) {
         return checkInternetConnection(isOnline, setShowToast);
-      } else if (error.response?.data && error.response?.data?.error) {
+      } else*/ if (error.response?.data && error.response?.data?.error) {
         return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
       } else {
         return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
@@ -114,7 +114,7 @@ function Login() {
             type="button"
             value=""
             disabled={isDiabled}
-            className={`${isDiabled ? "bg-slate-300" : "bg-primary"} text-white text-sm font-semibold rounded-md p-1`}
+            className={`${isDiabled ? "bg-slate-300" : "bg-red-600"} text-white text-sm font-semibold rounded-md p-1`}
             onClick={() => {
               onLogin(email, password);
             }}

@@ -113,7 +113,7 @@ export const getDevicesStats = async (setDeviceStats) => {
     const response = await axiosInstance.get("/devices/devices-stats", { showSpinner: true });
 
     if (response.data) {
-      return setDeviceStats(...response.data.deviceDetails);
+      return setDeviceStats(response.data.stats);
     }
   } catch (error) {
     if (error.response && error.response.data.error) {

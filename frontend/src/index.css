@@ -323,6 +323,10 @@ html {
     @apply w-full h-[520px] flex flex-col text-sm  rounded-md border border-slate-200 overflow-auto;
   }
 
+  .table-view-summary {
+    @apply w-full h-[290px] flex flex-col text-sm  rounded-md border border-slate-200 overflow-auto;
+  }
+
   .table-view {
     @apply w-full h-[400px] flex flex-col text-sm  rounded-md border border-slate-200;
   }

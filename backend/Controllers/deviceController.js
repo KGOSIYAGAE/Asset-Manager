@@ -567,7 +567,7 @@ const getDevicesDueReturn = async (req, res) => {
   }
 };
 
-//Get devices stats
+/*Get devices stats
 const getDevicesStats = async (req, res) => {
   try {
     const getDevicesStatsQuery = `SELECT * FROM "devicesStats";`;
@@ -579,6 +579,213 @@ const getDevicesStats = async (req, res) => {
     }
 
     return res.status(200).json({ deviceDetails: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};*/
+
+//Get devices stats
+const getDevicesStats = async (req, res) => {
+  try {
+    //1. Overall summary counts
+    const devicesOverallSummaryQuery = `SELECT
+    COUNT(*) AS total_devices,
+    COUNT(*) FILTER (WHERE is_deleted = false OR is_deleted IS NULL) AS active_devices,
+    COUNT(*) FILTER (WHERE is_deleted = true) AS deleted_devices,
+    COUNT(DISTINCT make) AS distinct_makes,
+    COUNT(DISTINCT model) AS distinct_models,
+    COUNT(DISTINCT category) AS distinct_categories
+    FROM devices;`;
+
+    const devicesOverallSummaryResponse = await query(devicesOverallSummaryQuery);
+    const devicesOverallSummary = devicesOverallSummaryResponse.rows;
+
+    if (!devicesOverallSummary) {
+      return res.status(400).json({ message: "Device Summary not found", error: true });
+    }
+
+    //2. Devices grouped by make and model
+    const devicesByMakeModelQuery = `SELECT
+    make,
+    model,
+    COUNT(*) AS total_units
+    FROM devices
+    WHERE is_deleted = false OR is_deleted IS NULL
+    GROUP BY make, model
+    ORDER BY make, total_units DESC;`;
+
+    const devicesByMakeModelResponse = await query(devicesByMakeModelQuery);
+    const devicesByMakeModel = devicesByMakeModelResponse.rows;
+
+    if (!devicesByMakeModel) {
+      return res.status(400).json({ message: "Device grouped by Make & Model not found", error: true });
+    }
+
+    //3. Devices by status (e.g. issued, available, etc.)
+    const devicesByStatusQuery = `SELECT
+            status,
+            COUNT(*) AS total
+            FROM devices
+            WHERE is_deleted = false OR is_deleted IS NULL
+            GROUP BY status
+            ORDER BY total DESC;`;
+
+    const devicesByStatusResponse = await query(devicesByStatusQuery);
+    const devicesByStatus = devicesByStatusResponse.rows;
+
+    if (!devicesByStatus) {
+      return res.status(400).json({ message: "Device grouped by status not found", error: true });
+    }
+
+    /* -- 4. Issued vs Available breakdown (adjust status values to match your actual data)
+SELECT
+    count(*) FILTER (WHERE status::text = 'Assigned'::text) AS assigned_devices,
+    count(*) FILTER (WHERE status::text = 'Available'::text) AS available_devices,
+    count(*) FILTER (WHERE status::text = 'Loaned'::text) AS loaned_devices,
+    count(*) FILTER (WHERE status::text = 'Reserved for staff'::text) AS reserved_staff_devices,
+    count(*) FILTER (WHERE status::text = 'Reserved for students'::text) AS reserved_students_devices,
+	count(*) FILTER (WHERE status::text = 'Stolen'::text) AS stolen_devices,
+    count(*) FILTER (WHERE status::text = 'Sold'::text) AS sold_devices,
+    count(*) FILTER (WHERE status::text = 'Disposed'::text) AS disposed_devices,
+    count(*) FILTER (WHERE status::text = 'Retired'::text) AS retired_devices,
+    count(*) FILTER (WHERE status::text = 'Written Off'::text) AS writen_off_devices
+FROM devices
+WHERE is_deleted = false OR is_deleted IS NULL;
+    */
+
+    //5. Devices by category
+    const devicesByCategoryQuery = `SELECT
+    category,
+    COUNT(*) AS total
+    FROM devices
+    WHERE is_deleted = false OR is_deleted IS NULL
+    GROUP BY category
+    ORDER BY total DESC;`;
+
+    const devicesByCategorysResponse = await query(devicesByCategoryQuery);
+    const devicesByCategory = devicesByCategorysResponse.rows;
+
+    if (!devicesByCategory) {
+      return res.status(400).json({ message: "Device grouped by category not found", error: true });
+    }
+
+    //6. Devices by condition (new, used, damaged, etc.)
+    const devicesByConditionQuery = `SELECT
+    device_condition,
+    COUNT(*) AS total
+    FROM devices
+    WHERE is_deleted = false OR is_deleted IS NULL
+    GROUP BY device_condition
+    ORDER BY total DESC;`;
+
+    const devicesByConditionResponse = await query(devicesByConditionQuery);
+    const devicesByCondition = devicesByConditionResponse.rows;
+
+    if (!devicesByCondition) {
+      return res.status(400).json({ message: "Device grouped by condition not found", error: true });
+    }
+
+    //7. Devices by operational state
+    const devicesByOperationalQuery = `SELECT
+    operational_state,
+    COUNT(*) AS total
+    FROM devices
+    WHERE is_deleted = false OR is_deleted IS NULL
+    GROUP BY operational_state
+    ORDER BY total DESC;`;
+
+    const devicesByOperationalResponse = await query(devicesByOperationalQuery);
+    const devicesByOperational = devicesByOperationalResponse.rows;
+
+    if (!devicesByOperational) {
+      return res.status(400).json({ message: "Device grouped by operational state not found", error: true });
+    }
+
+    //8. Cross-tab: make + status (how many of each make are issued vs available)
+    const devicesMakeModelStatusCountQuery = `SELECT
+    make,
+    model,
+    status,
+    COUNT(*) AS total
+    FROM devices
+    WHERE is_deleted = false OR is_deleted IS NULL
+    GROUP BY make,model, status
+    ORDER BY make,model, status;`;
+
+    const devicesMakeModelStatusCountResponse = await query(devicesMakeModelStatusCountQuery);
+    const devicesMakeModelStatusCount = devicesMakeModelStatusCountResponse.rows;
+
+    if (!devicesMakeModelStatusCount) {
+      return res.status(400).json({ message: "Device grouped by Make Model Status count not found", error: true });
+    }
+
+    //9. Devices with warranty expired (within the last 60 days) or expiring within the next 60 days
+    const devicesWarrantyStatsQuery = `SELECT 
+    make, 
+    model, 
+    asset_tag, 
+    serial_no, 
+    warranty_end_date,
+    CASE 
+    WHEN warranty_end_date < CURRENT_DATE THEN 'Expired'
+    ELSE 'Expiring Soon'
+    END AS warranty_status,
+    CASE 
+    WHEN warranty_end_date < CURRENT_DATE 
+    THEN (CURRENT_DATE - warranty_end_date)   -- days past expiry
+    ELSE (warranty_end_date - CURRENT_DATE)        -- days until expiry
+    END AS days_diff,
+    CASE 
+    WHEN warranty_end_date < CURRENT_DATE 
+    THEN (CURRENT_DATE - warranty_end_date) || ' days ago'
+    ELSE (warranty_end_date - CURRENT_DATE) || ' days remaining'
+    END AS days_diff_label
+    FROM devices
+    WHERE warranty_end_date BETWEEN CURRENT_DATE - INTERVAL '5 days' 
+    AND CURRENT_DATE + INTERVAL '60 days'
+    AND (is_deleted = false OR is_deleted IS NULL)
+    ORDER BY warranty_end_date LIMIT 10;`;
+
+    const devicesWarrantyStatsResponse = await query(devicesWarrantyStatsQuery);
+    const devicesWarrantyStats = devicesWarrantyStatsResponse.rows;
+
+    if (!devicesWarrantyStats) {
+      return res.status(400).json({ message: "Device warranty stats not found", error: true });
+    }
+
+    //10. Summary counts of issued/loaned devices by staff vs student
+    const deviceAssignedLoanedByUserQuery = `SELECT
+    COUNT(*) FILTER (WHERE status = 'Assigned' AND length(current_user_id::text) > 6) AS issued_to_students,
+    COUNT(*) FILTER (WHERE status = 'Assigned' AND length(current_user_id::text) <= 6) AS issued_to_staff,
+    COUNT(*) FILTER (WHERE status = 'Loaned' AND length(current_user_id::text) > 6) AS loaned_to_students,
+    COUNT(*) FILTER (WHERE status = 'Loaned' AND length(current_user_id::text) <= 6) AS loaned_to_staff,
+    COUNT(*) FILTER (WHERE current_user_id IS NULL AND status IN ('Assigned', 'Loaned')) AS assigned_but_no_user_id
+    FROM devices
+    WHERE (is_deleted = false OR is_deleted IS NULL);`;
+
+    const deviceAssignedLoanedByUserResponse = await query(deviceAssignedLoanedByUserQuery);
+    const deviceAssignedLoanedByUser = deviceAssignedLoanedByUserResponse.rows;
+
+    if (!deviceAssignedLoanedByUser) {
+      return res.status(400).json({ message: "Device Assigned / Loaned users stats not found", error: true });
+    }
+
+    return res.status(200).json({
+      stats: {
+        devicesOverallSummary,
+        devicesByMakeModel,
+        devicesByStatus,
+        devicesByCategory,
+        devicesByCondition,
+        devicesByOperational,
+        devicesMakeModelStatusCount,
+        devicesWarrantyStats,
+        deviceAssignedLoanedByUser,
+      },
+      message: "Success",
+      error: false,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -860,7 +1067,7 @@ const loanDevice = async (req, res) => {
 
     //await sendApprovalNotification(device.serial_no, device.make, device.model, device.category, device.device_type, userId, issued_by);
 
-    //await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
+    await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
 
     return res.status(200).json({ message: `Device state has been changed, Approval is required`, error: false });
   } catch (error) {

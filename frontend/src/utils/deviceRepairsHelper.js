@@ -1,5 +1,6 @@
 import { createRepair, updateRepair, updateRepairStatus } from "../services/api/repairs/Repairs.Api";
 import { getLoggedInUser } from "./getLoggedInUser";
+import { getTodayDate } from "./helperMethods";
 
 export const maintenaceTypesList = [
   {
@@ -200,7 +201,7 @@ export const handleUpdateRepairStatus = async (repairId, selectedStatus, OnSubmi
   return setShowToast({ isShown: true, type: "success", message: message });
 };
 
-export const handleUpdateRepair = async (repairId, repairType, repairDescription, technicianId, repairNotes, onSubmit, setShowToast) => {
+export const handleUpdateRepair = async (repairId, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, setShowToast) => {
   if (!repairId) {
     return setShowToast({ isShown: true, type: "error", message: "Device not selected" });
   }
@@ -223,6 +224,13 @@ export const handleUpdateRepair = async (repairId, repairType, repairDescription
     repairDescription,
     technicianId,
     repairNotes: repairNotes || null,
+    repairTechnicianId: repairTechnicianId || null,
+    date_repaired: (() => {
+      if (repairTechnicianId) {
+        return getTodayDate();
+      }
+      return null;
+    })(),
   };
 
   const { response } = await updateRepair(repairId, data);

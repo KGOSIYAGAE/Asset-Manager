@@ -15,7 +15,7 @@ import { getAllLatestDevicesLogs } from "../../services/api/deviceLogs/DeviceLog
 import OverdueLoan from "../tables/OverdueLoanTable";
 import DataTable from "../dataGrid/DataTable";
 import { devicesTableHeaders } from "../../utils/TableHeaders";
-import PieCategory from "../charts/pieChart/PieCategory";
+import PieCategory from "../charts/pieChart/PieDevicesCategory";
 import { hasPermission } from "../../utils/getLoggedInUser";
 
 function Dashboard({ loggedInUser, devices, students, deviceNumber, staffNumber, studentsNumber, devicesLogs, loanDueState, path }) {

@@ -140,7 +140,7 @@ function RepairDetails({ path }) {
               <SubmitButton
                 text={"Update Status"}
                 onClick={async () => {
-                  if (repairStatus === "Collected") {
+                  if (repairStatus === "Collected" || repairStatus === "Ready For Collection") {
                     setOpenModal({ isShown: true, type: "capture-signature", data: repairDetails });
                   } else {
                     handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);

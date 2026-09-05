@@ -6,6 +6,12 @@ import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { MdDevices, MdDevicesOther, MdLaptopWindows, MdOutlineAssignmentTurnedIn, MdOutlineDesktopWindows, MdOutlineMonitor, MdOutlineTabletMac } from "react-icons/md";
 import { getPercentage } from "../../utils/getValueInPercentage";
 import { AiOutlinePrinter } from "react-icons/ai";
+import DynamicIcon from "../dynamicIcon/DynamicIcon";
+import PieDevicesStatuses from "../charts/pieChart/PieDevicesStatuses";
+import PieDevicesCategory from "../charts/pieChart/PieDevicesCategory";
+import DevicesStackedBarGraph from "../charts/stackedBargraph/DevicesStackedBarGraph";
+import DevicesWarrantySummaryTable from "../tables/DevicesWarrantySummaryTable";
+import PieDevicesIssuedLoanedUsers from "../charts/pieChart/PieDevicesIssuedLoanedUsers";
 
 function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffStats, path }) {
   const availableEnd = (deviceStats?.available_devices / deviceStats?.total_devices) * 100;
@@ -38,7 +44,7 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Devices</span>
               <div className="flex flex-col">
-                <span className="font-bold text-xl">{deviceStats?.total_devices}</span>
+                <span className="font-bold text-xl">{deviceStats?.devicesOverallSummary[0].total_devices}</span>
                 <span className="text-sm text-slate-500">All registered devices</span>
               </div>
             </div>
@@ -53,7 +59,12 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
               <span className="text-sm text-black">Total Available</span>
 
               <div className="flex flex-col">
-                <span className="font-bold text-xl">{deviceStats?.available_devices}</span>
+                <span className="font-bold text-xl">
+                  {(() => {
+                    const found = deviceStats?.devicesByStatus.find((e) => e.status === "Available");
+                    return found?.total ?? 0;
+                  })()}
+                </span>
                 <span className="text-sm text-slate-500">Ready to be assigned</span>
               </div>
             </div>
@@ -67,7 +78,12 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Assigned</span>
               <div className="flex flex-col">
-                <span className="font-bold text-xl">{deviceStats?.assigned_devices}</span>
+                <span className="font-bold text-xl">
+                  {(() => {
+                    const found = deviceStats?.devicesByStatus.find((e) => e.status === "Assigned");
+                    return found?.total ?? 0;
+                  })()}
+                </span>
                 <span className="text-sm text-slate-500">Currently assigned</span>
               </div>
             </div>
@@ -81,7 +97,12 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Loaned</span>
               <div className="flex flex-col">
-                <span className="font-bold text-xl">{deviceStats?.loaned_devices}</span>
+                <span className="font-bold text-xl">
+                  {(() => {
+                    const found = deviceStats?.devicesByStatus.find((e) => e.status === "Loaned");
+                    return found?.total ?? 0;
+                  })()}
+                </span>
                 <span className="text-sm text-slate-500">On loan</span>
               </div>
             </div>
@@ -94,9 +115,13 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-sm text-black">Total Open Repairs</span>
-
               <div className="flex flex-col">
-                <span className="font-bold text-xl">{deviceStats?.maintenance_devices}</span>
+                <span className="font-bold text-xl">
+                  {(() => {
+                    const found = deviceStats?.devicesByStatus.find((e) => e.status === "Maintenance");
+                    return found?.total ?? 0;
+                  })()}
+                </span>
                 <span className="text-sm text-slate-500">In repair</span>
               </div>
             </div>
@@ -110,77 +135,12 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
           <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
             <div className="flex justify-between">
               <span className=" font-semibold text-black">Device Status Overview</span>
-
               <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
                 View all <FaArrowRight />
               </span>
             </div>
 
-            <div className="w-[100%] h-[100%] flex items-center justify-between">
-              <div
-                className="w-48 h-48 rounded-full flex items-center justify-center"
-                style={{
-                  background: `conic-gradient( 
-                #16a34a  0% ${availableEnd}%,
-                #ea580c  ${availableEnd}% ${assignedEnd}%,
-                #2563eb   ${assignedEnd}% ${loanedEnd}%,
-                #9333ea    ${maintenanceEnd}% 100%)`,
-                }}
-
-                /*#ea580c  0% ${issuedStaff}%,
-                #9333ea  ${issuedStaff}% ${100}%)`, */
-              >
-                <div className="w-32 h-32  flex-col bg-white rounded-full flex items-center justify-center ">
-                  <span className=" font-bold">{deviceStats?.total_devices}</span>
-                  <span className="text-sm">Total</span>
-                </div>
-              </div>
-              <div className="flex flex-col gap-5 justify-evenly text-sm">
-                <div className="flex items-center justify-between">
-                  <div className=" bg-green-600 p-2 rounded-full"></div>
-                  <span className="text-sm">Available</span>
-                  <span>{deviceStats?.available_devices}</span>
-                  <span className="text-slate-500">
-                    {(() => {
-                      return `${getPercentage(deviceStats?.available_devices, deviceStats?.total_devices)} %`;
-                    })()}
-                  </span>
-                </div>
-                {/* */}
-                <div className="flex items-center justify-between">
-                  <div className=" bg-orange-600 p-2 rounded-full"></div>
-                  <span className="text-sm">Assigned</span>
-                  <span>{deviceStats?.assigned_devices}</span>
-                  <span className="text-slate-500">
-                    {(() => {
-                      return `${getPercentage(deviceStats?.assigned_devices, deviceStats?.total_devices)} %`;
-                    })()}
-                  </span>
-                </div>
-                {/* */}
-                <div className="w-[100%] flex items-center justify-between">
-                  <div className=" bg-blue-600 p-2 rounded-full"></div>
-                  <span className="text-sm">Loaned</span>
-                  <span>{deviceStats?.loaned_devices}</span>
-                  <span className="text-slate-500">
-                    {(() => {
-                      return `${getPercentage(deviceStats?.loaned_devices, deviceStats?.total_devices)} %`;
-                    })()}
-                  </span>
-                </div>
-                {/* */}
-                <div className="flex items-center gap-5">
-                  <div className=" bg-purple-600 p-2 rounded-full"></div>
-                  <span className="text-sm">Maintenance</span>
-                  <span>{deviceStats?.maintenance_devices}</span>
-                  <span className="text-slate-500">
-                    {(() => {
-                      return `${getPercentage(deviceStats?.maintenance_devices, deviceStats?.total_devices)} %`;
-                    })()}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <PieDevicesStatuses devicesByStatus={deviceStats?.devicesByStatus} />
           </div>
 
           {/*Issued to Staff vs Students */}
@@ -194,49 +154,12 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
             </div>
 
             <div className="w-[100%] h-[100%] flex items-center justify-between">
-              <div
-                className="w-48 h-48 rounded-full flex items-center justify-center"
-                style={{
-                  background: `conic-gradient( 
-                #ea580c  0% ${issuedStaff}%,
-                #9333ea  ${issuedStaff}% ${100}%)`,
-                }}
-              >
-                <div className="w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center ">
-                  <span className="font-bold">{deviceStats?.assigned_devices}</span>
-                  <span className="text-sm">Total</span>
-                </div>
-              </div>
-              <div className="flex flex-col gap-5 justify-evenly text-sm">
-                {/* */}
-                <div className="flex items-center justify-between">
-                  <div className=" bg-orange-600 p-2 rounded-full"></div>
-                  <span className="text-sm">Staff</span>
-                  <span>{deviceStats?.issued_to_staff}</span>
-                  <span className="text-slate-500">
-                    {(() => {
-                      return `${getPercentage(deviceStats?.issued_to_staff, deviceStats?.assigned_devices)}%`;
-                    })()}
-                  </span>
-                </div>
-
-                {/* */}
-                <div className="flex items-center gap-5">
-                  <div className=" bg-purple-600 p-2 rounded-full"></div>
-                  <span className="text-sm">Students</span>
-                  <span>{deviceStats?.issued_to_students}</span>
-                  <span className="text-slate-500">
-                    {(() => {
-                      return `${getPercentage(deviceStats?.issued_to_students, deviceStats?.assigned_devices)} %`;
-                    })()}
-                  </span>
-                </div>
-              </div>
+              <PieDevicesIssuedLoanedUsers deviceAssignedLoanedByUser={deviceStats?.deviceAssignedLoanedByUser[0]} />
             </div>
           </div>
 
           {/*Category breakdown*/}
-          <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
+          <div className="flex flex-col h-[250px] col-span-4 bg-white gap-3 border shadow-md rounded-md p-5 overflow-x-auto">
             <div className="w-full flex justify-between">
               <span className="font-bold text-black">Category breakdown</span>
               <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
@@ -244,159 +167,67 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
               </span>
             </div>
             <div className="flex flex-col gap-5 text-sm">
-              <div className="flex gap-2">
-                <div className="bg-slate-100 p-2 rounded-md bg-opacity-30">
-                  <MdLaptopWindows size={25} />
-                </div>
-                {/**/}
-                <div className="w-5/6 flex flex-col">
-                  <div className=" flex justify-between items-center ">
-                    <span className="text-sm">Laptops</span>
-                    <div className="flex gap-5">
-                      <span>{deviceStats?.laptops}</span>
-                      <span>
-                        {(() => {
-                          return `${getPercentage(deviceStats?.laptops, deviceStats?.total_devices)} %`;
-                        })()}
-                      </span>
+              {/* */}
+              {deviceStats?.devicesByCategory &&
+                deviceStats?.devicesByCategory?.map((deviceCategory, id) => (
+                  <div className="flex gap-2" key={id}>
+                    <div className="bg-slate-100 p-2 rounded-md bg-opacity-30 ">
+                      <DynamicIcon name={`Md${deviceCategory.category}`} size={25} iconColor="text-black" />
+                    </div>
+                    {/**/}
+                    <div className="w-5/6 flex flex-col">
+                      <div className=" flex justify-between items-center ">
+                        <span className="text-sm">{deviceCategory.category}</span>
+                        <div className="flex gap-5">
+                          <span>{deviceCategory?.total}</span>
+                          <span>
+                            {(() => {
+                              return `${getPercentage(deviceCategory?.total, deviceStats?.devicesOverallSummary[0].total_devices)} %`;
+                            })()}
+                          </span>
+                        </div>
+                      </div>
+                      {/**/}
+                      <div className="w-[100%] flex">
+                        <div
+                          style={{
+                            width: `${getPercentage(deviceCategory?.total, deviceStats?.devicesOverallSummary[0].total_devices)}%`,
+                            backgroundColor: `#ea580c`,
+                          }}
+                          className="  p-1 rounded-md"
+                        ></div>
+                      </div>
                     </div>
                   </div>
-                  {/**/}
-                  <div className="w-[100%] flex">
-                    <div
-                      style={{
-                        width: `${getPercentage(deviceStats?.laptops, deviceStats?.total_devices)}%`,
-                        backgroundColor: `#ea580c`,
-                      }}
-                      className="  p-1 rounded-md"
-                    ></div>
-                  </div>
-                </div>
-              </div>
+                ))}
 
               {/* */}
-              <div className="flex gap-2">
-                <div className="bg-slate-100 p-2 rounded-md bg-opacity-30">
-                  <MdOutlineMonitor size={25} />
-                </div>
-                {/**/}
-                <div className="w-5/6 flex flex-col">
-                  <div className=" flex justify-between items-center ">
-                    <span className="text-sm">Monitors</span>
-                    <div className="flex gap-5">
-                      <span>{deviceStats?.monitors}</span>
-                      <span>
-                        {(() => {
-                          return `${getPercentage(deviceStats?.monitors, deviceStats?.total_devices)} %`;
-                        })()}
-                      </span>
-                    </div>
-                  </div>
-                  {/**/}
-                  <div className="w-[100%] flex">
-                    <div
-                      style={{
-                        width: `${getPercentage(deviceStats?.monitors, deviceStats?.total_devices)}%`,
-                        backgroundColor: `#ea580c`,
-                      }}
-                      className="  p-1 rounded-md"
-                    ></div>
-                  </div>
-                </div>
-              </div>
+            </div>
+          </div>
 
-              {/* */}
-              <div className="flex gap-2">
-                <div className="bg-slate-100 p-2 rounded-md bg-opacity-30">
-                  <MdOutlineDesktopWindows size={25} />
-                </div>
-                {/**/}
-                <div className="w-5/6 flex flex-col">
-                  <div className=" flex justify-between items-center ">
-                    <span className="text-sm">Desktop</span>
-                    <div className="flex gap-5">
-                      <span>{deviceStats?.desktops}</span>
-                      <span>
-                        {(() => {
-                          return `${getPercentage(deviceStats?.desktops, deviceStats?.total_devices)} %`;
-                        })()}
-                      </span>
-                    </div>
-                  </div>
-                  {/**/}
-                  <div className="w-[100%] flex">
-                    <div
-                      style={{
-                        width: `${getPercentage(deviceStats?.desktops, deviceStats?.total_devices)}%`,
-                        backgroundColor: `#ea580c`,
-                      }}
-                      className="  p-1 rounded-md"
-                    ></div>
-                  </div>
-                </div>
-              </div>
+          {/*Device Model breakdown*/}
+          <div className="flex flex-col h-[370px]  col-span-12 bg-white gap-3 border shadow-md rounded-md p-5 overflow-x-auto">
+            <div className="w-full flex justify-between">
+              <span className="font-bold text-black">Devices Model Breakdown</span>
+              <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
+                View all <FaArrowRight />
+              </span>
+            </div>
+            <div className="flex flex-col gap-5 text-sm">
+              <DevicesStackedBarGraph devicesMakeModelStatusCount={deviceStats?.devicesMakeModelStatusCount} />
+            </div>
+          </div>
 
-              {/* */}
-              <div className="flex gap-2">
-                <div className="bg-slate-100 p-2 rounded-md bg-opacity-30">
-                  <MdOutlineTabletMac size={25} />
-                </div>
-                {/**/}
-                <div className="w-5/6 flex flex-col">
-                  <div className=" flex justify-between items-center ">
-                    <span className="text-sm">Tablets</span>
-                    <div className="flex gap-5">
-                      <span>{deviceStats?.tablets}</span>
-                      <span>
-                        {(() => {
-                          return `${getPercentage(deviceStats?.tablets, deviceStats?.total_devices)} %`;
-                        })()}
-                      </span>
-                    </div>
-                  </div>
-                  {/**/}
-                  <div className="w-[100%] flex">
-                    <div
-                      style={{
-                        width: `${getPercentage(deviceStats?.tablets, deviceStats?.total_devices)}%`,
-                        backgroundColor: `#ea580c`,
-                      }}
-                      className="  p-1 rounded-md"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* */}
-              <div className="flex gap-2">
-                <div className="bg-slate-100 p-2 rounded-md bg-opacity-30">
-                  <AiOutlinePrinter size={25} />
-                </div>
-                {/**/}
-                <div className="w-5/6 flex flex-col">
-                  <div className=" flex justify-between items-center ">
-                    <span className="text-sm">Printers</span>
-                    <div className="flex gap-5">
-                      <span>{deviceStats?.printers}</span>
-                      <span>
-                        {(() => {
-                          return `${getPercentage(deviceStats?.printers, deviceStats?.total_devices)} %`;
-                        })()}
-                      </span>
-                    </div>
-                  </div>
-                  {/**/}
-                  <div className="w-[100%] flex">
-                    <div
-                      style={{
-                        width: `${getPercentage(deviceStats?.printers, deviceStats?.total_devices)}%`,
-                        backgroundColor: `#ea580c`,
-                      }}
-                      className="  p-1 rounded-md"
-                    ></div>
-                  </div>
-                </div>
-              </div>
+          {/*Device With Eding warranty*/}
+          <div className="flex flex-col h-[370px]  col-span-8 bg-white gap-3 border shadow-md rounded-md p-5 ">
+            <div className="w-full flex justify-between">
+              <span className="font-bold text-black">Devices With Ending Warranty</span>
+              <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
+                View all <FaArrowRight />
+              </span>
+            </div>
+            <div className="flex flex-col gap-5 text-sm">
+              <DevicesWarrantySummaryTable devicesWarrantyStats={deviceStats?.devicesWarrantyStats} />
             </div>
           </div>
 

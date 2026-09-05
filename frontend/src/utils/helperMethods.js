@@ -182,19 +182,24 @@ export const getSystemUsers = (usersList) => {
 export const GetDeviceType = () => {
   const { role } = getLoggedInUser();
 
+  /*const rolesList = Object.entries(ROLES).map(([roleName, roleData]) => {
+        return {
+          name: roleName,
+          permissions: roleData.can,
+        };)
+      )*/
+
   switch (role) {
+    case "super_admin":
+      return "Support";
     case "support_admin":
       return "Support";
     case "support_technician":
       return "Support";
-    case "networks_admin":
-      return "Network";
-    case "networks_technician":
-      return "Network";
-    case "av_admin":
-      return "Audio Visual";
-    case "av_technician":
-      return "Audio Visual";
+    case "support_servicedesk":
+      return "Support";
+    case "support_intern":
+      return "Support";
     default:
       return null;
   }

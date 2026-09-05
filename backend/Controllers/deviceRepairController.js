@@ -46,7 +46,7 @@ const createRepair = async (req, res) => {
 //Create repair
 const udateRepair = async (req, res) => {
   try {
-    const { repairId, repairType, repairDescription, technicianId, repairNotes } = req.body;
+    const { repairId, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, date_repaired } = req.body;
 
     if (!repairId || !repairType || !repairDescription || !technicianId) {
       return res.status(400).json({ message: "All details must be provided!" });
@@ -60,8 +60,8 @@ const udateRepair = async (req, res) => {
     }
 
     //Update Laptop current operational state & condition
-    const updateRepair = "UPDATE repairs SET repair_type=$1, description=$2, assigned_to=$3, notes=$4, updated_at=NOW() WHERE id=$5";
-    const { rowCount } = await query(updateRepair, [repairType, repairDescription, technicianId, repairNotes, repairId]);
+    const updateRepair = "UPDATE repairs SET repair_type=$1, description=$2, assigned_to=$3, notes=$4,repaired_by=$5,date_repaired=$6, updated_at=NOW() WHERE id=$7";
+    const { rowCount } = await query(updateRepair, [repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, date_repaired, repairId]);
 
     if (rowCount === 0) {
       return res.status(400).json({ message: "Repair not updated", error: true });

@@ -24,7 +24,7 @@ const requireAuth = require("../middleware/requireAuth");
 //const checkRole = require("../middleware/checkRole");
 
 //
-router.use(requireAuth);
+//router.use(requireAuth);
 
 //Get all devices
 router.get("/", getAllDevices);

@@ -16,7 +16,7 @@ import OverdueLoan from "../tables/OverdueLoanTable";
 import DueUpgradeLaptopsTable from "../tables/DueUpgradeLaptopsTable";
 
 import { devicesTableHeaders } from "../../utils/TableHeaders";
-import PieCategory from "../charts/pieChart/PieCategory";
+import PieCategory from "../charts/pieChart/PieDevicesCategory";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import DueReturnLaptopsTable from "../tables/DueReturnLaptopsTable";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
