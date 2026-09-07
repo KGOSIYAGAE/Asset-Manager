@@ -9,7 +9,7 @@ function DateTimePicker({ label, value, minimumDate, setOnChange }) {
   }, [value]);
   return (
     <div className="text-input ">
-      <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
+      <span className="w-fit text-zinc-500 -mt-5 bg-white ">{label}</span>
       <input
         type="date"
         className="flex  outline-none "

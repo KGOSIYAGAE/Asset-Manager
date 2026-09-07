@@ -16,12 +16,12 @@ export const deviceStatus = [
   },
   {
     id: 4,
-    name: "Reserved",
+    name: "Reserved for Staff",
     description: "",
   },
   {
     id: 4,
-    name: "Reserved for students",
+    name: "Reserved for Students",
     description: "",
   },
   {

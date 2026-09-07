@@ -5,36 +5,6 @@ import { generateUpgradeDate, getTodayDate } from "./helperMethods";
 import { navigateTo } from "./navigate";
 import { postMessage } from "./VerificationPostMessage";
 
-//Handle assign device to staff
-/*export const handleAssignDeviceToStaff = async (staffData, deviceDetails, setShowToast) => {
-  if (!staffData?.name) {
-    return setShowToast({ isShow: true, type: "error", message: "Please select user." });
-  }
-
-  const data = {
-    fullName: `${staffData?.name} ${staffData?.surname}`,
-    status: "Assigned",
-    date_issued: getTodayDate(),
-    userId: staffData.staff_no,
-    return_date: (() => {
-      if (staffData.contract_type === "Permanent") {
-        return null;
-      }
-      return staffData.end_date;
-    })(),
-    upgradeDate: (() => {
-      if (staffData.staff_no.toString().length <= 5 && staffData.contract_type === "Permanent") {
-        return generateUpgradeDate(getTodayDate());
-      }
-      return null;
-    })(),
-  };
-
-  await assignDevice(deviceDetails?.id, data, setShowToast);
-
-  return postMessage(staffData?.name, staffData?.surname);
-};*/
-
 export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issuedBy, setShowToast) => {
   try {
     if (!staffData?.name) {
@@ -54,6 +24,7 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issued
       status: "Issue Approval required",
       userId: staffData.staff_no,
       userEndDate: userEndDate || null,
+      user_type: "Staff",
     };
 
     const { error, message } = await assignDevice(deviceDetails?.id, data, setShowToast);
@@ -89,6 +60,7 @@ export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails,
       issued_by: loggedInUser.id ? loggedInUser.id : issuedBy,
       status: "Issue Approval required",
       userId: studentDetails.student_number,
+      user_type: "Student",
     };
 
     const { error, message } = await assignDevice(deviceDetails?.id, data, setShowToast);

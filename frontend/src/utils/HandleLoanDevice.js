@@ -10,6 +10,16 @@ export const handleLoanDevice = async (selectedUser, selectedDevice, issuedBy, r
     return setShowToast({ isShow: true, type: "error", message: "Please select user." });
   }*/
 
+  const getUserType = (staff_student_no) => {
+    let userId = staff_student_no?.toString();
+
+    if (userId?.length > 5) {
+      return "Student";
+    } else {
+      return "Staff";
+    }
+  };
+
   try {
     let userId;
 
@@ -30,12 +40,14 @@ export const handleLoanDevice = async (selectedUser, selectedDevice, issuedBy, r
     }
 
     const loggedInUser = getLoggedInUser();
+    const userType = getUserType(userId);
 
     const data = {
       issued_by: loggedInUser.id ? loggedInUser.id : issuedBy,
       status: "Loan Approval required",
       userId: userId,
       expected_return_date: returnDate,
+      user_type: userType,
     };
 
     const { error, message } = await createLoanDevice(selectedDevice.id, data, setShowToast);

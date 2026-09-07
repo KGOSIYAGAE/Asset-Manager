@@ -28,7 +28,7 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
   }, []);
 
   return (
-    <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50 overflow-y-scroll">
+    <div className="h-svh flex flex-col p-3 pb-32 gap-3 bg-zinc-50 overflow-y-scroll">
       <div className="flex flex-col">
         <span className="text-xl font-bold">Dashboard</span>
         <span className="text-sm text-slate-600">Welcome back1 Here's what's happening with your ICT assets.</span>

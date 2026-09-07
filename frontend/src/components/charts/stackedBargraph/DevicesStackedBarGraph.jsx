@@ -6,7 +6,7 @@ const STATUS_COLORS = {
   Available: { hex: "#16a34a", bg: "bg-green-600" },
   Assigned: { hex: "#ea580c", bg: "bg-orange-600" },
   Loaned: { hex: "#2563eb", bg: "bg-blue-600" },
-  Reserved: { hex: "#9333ea", bg: "bg-purple-600" },
+  "Reserved for Staff": { hex: "#9333ea", bg: "bg-purple-600" },
   "Reserved for students": { hex: "#c026d3", bg: "bg-fuchsia-600" },
   Maintenance: { hex: "#9333ea", bg: "bg-purple-600" },
   Stolen: { hex: "#dc2626", bg: "bg-red-600" },

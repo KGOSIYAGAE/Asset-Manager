@@ -113,7 +113,7 @@ function TabletView() {
         ) : userType === "Student" && source === "issue-verification" ? (
           <StudentIssueVerification deviceId={deviceId} student_no={userId} />
         ) : source === "loan-verification" ? (
-          <LoanIssueVirificationCard deviceId={deviceId} userId={userId} returnDate={returnDate} />
+          <LoanIssueVirificationCard deviceId={deviceId} userId={userId} returnDate={returnDate} userType={userType} />
         ) : source === "laptop-repair" ? (
           <RepairVerification />
         ) : (

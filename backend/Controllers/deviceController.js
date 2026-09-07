@@ -598,13 +598,6 @@ const getDevicesStats = async (req, res) => {
     COUNT(DISTINCT category) AS distinct_categories
     FROM devices;`;
 
-    const devicesOverallSummaryResponse = await query(devicesOverallSummaryQuery);
-    const devicesOverallSummary = devicesOverallSummaryResponse.rows;
-
-    if (!devicesOverallSummary) {
-      return res.status(400).json({ message: "Device Summary not found", error: true });
-    }
-
     //2. Devices grouped by make and model
     const devicesByMakeModelQuery = `SELECT
     make,
@@ -615,13 +608,6 @@ const getDevicesStats = async (req, res) => {
     GROUP BY make, model
     ORDER BY make, total_units DESC;`;
 
-    const devicesByMakeModelResponse = await query(devicesByMakeModelQuery);
-    const devicesByMakeModel = devicesByMakeModelResponse.rows;
-
-    if (!devicesByMakeModel) {
-      return res.status(400).json({ message: "Device grouped by Make & Model not found", error: true });
-    }
-
     //3. Devices by status (e.g. issued, available, etc.)
     const devicesByStatusQuery = `SELECT
             status,
@@ -630,13 +616,6 @@ const getDevicesStats = async (req, res) => {
             WHERE is_deleted = false OR is_deleted IS NULL
             GROUP BY status
             ORDER BY total DESC;`;
-
-    const devicesByStatusResponse = await query(devicesByStatusQuery);
-    const devicesByStatus = devicesByStatusResponse.rows;
-
-    if (!devicesByStatus) {
-      return res.status(400).json({ message: "Device grouped by status not found", error: true });
-    }
 
     /* -- 4. Issued vs Available breakdown (adjust status values to match your actual data)
 SELECT
@@ -663,13 +642,6 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     GROUP BY category
     ORDER BY total DESC;`;
 
-    const devicesByCategorysResponse = await query(devicesByCategoryQuery);
-    const devicesByCategory = devicesByCategorysResponse.rows;
-
-    if (!devicesByCategory) {
-      return res.status(400).json({ message: "Device grouped by category not found", error: true });
-    }
-
     //6. Devices by condition (new, used, damaged, etc.)
     const devicesByConditionQuery = `SELECT
     device_condition,
@@ -679,13 +651,6 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     GROUP BY device_condition
     ORDER BY total DESC;`;
 
-    const devicesByConditionResponse = await query(devicesByConditionQuery);
-    const devicesByCondition = devicesByConditionResponse.rows;
-
-    if (!devicesByCondition) {
-      return res.status(400).json({ message: "Device grouped by condition not found", error: true });
-    }
-
     //7. Devices by operational state
     const devicesByOperationalQuery = `SELECT
     operational_state,
@@ -694,13 +659,6 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     WHERE is_deleted = false OR is_deleted IS NULL
     GROUP BY operational_state
     ORDER BY total DESC;`;
-
-    const devicesByOperationalResponse = await query(devicesByOperationalQuery);
-    const devicesByOperational = devicesByOperationalResponse.rows;
-
-    if (!devicesByOperational) {
-      return res.status(400).json({ message: "Device grouped by operational state not found", error: true });
-    }
 
     //8. Cross-tab: make + status (how many of each make are issued vs available)
     const devicesMakeModelStatusCountQuery = `SELECT
@@ -712,13 +670,6 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     WHERE is_deleted = false OR is_deleted IS NULL
     GROUP BY make,model, status
     ORDER BY make,model, status;`;
-
-    const devicesMakeModelStatusCountResponse = await query(devicesMakeModelStatusCountQuery);
-    const devicesMakeModelStatusCount = devicesMakeModelStatusCountResponse.rows;
-
-    if (!devicesMakeModelStatusCount) {
-      return res.status(400).json({ message: "Device grouped by Make Model Status count not found", error: true });
-    }
 
     //9. Devices with warranty expired (within the last 60 days) or expiring within the next 60 days
     const devicesWarrantyStatsQuery = `SELECT 
@@ -747,13 +698,6 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     AND (is_deleted = false OR is_deleted IS NULL)
     ORDER BY warranty_end_date LIMIT 10;`;
 
-    const devicesWarrantyStatsResponse = await query(devicesWarrantyStatsQuery);
-    const devicesWarrantyStats = devicesWarrantyStatsResponse.rows;
-
-    if (!devicesWarrantyStats) {
-      return res.status(400).json({ message: "Device warranty stats not found", error: true });
-    }
-
     //10. Summary counts of issued/loaned devices by staff vs student
     const deviceAssignedLoanedByUserQuery = `SELECT
     COUNT(*) FILTER (WHERE status = 'Assigned' AND length(current_user_id::text) > 6) AS issued_to_students,
@@ -764,24 +708,102 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     FROM devices
     WHERE (is_deleted = false OR is_deleted IS NULL);`;
 
+    /* const devicesOverallSummaryResponse = await query(devicesOverallSummaryQuery);
+    const devicesOverallSummary = devicesOverallSummaryResponse.rows;
+
+    if (!devicesOverallSummary) {
+      return res.status(400).json({ message: "Device Summary not found", error: true });
+    }
+
+    const devicesByMakeModelResponse = await query(devicesByMakeModelQuery);
+    const devicesByMakeModel = devicesByMakeModelResponse.rows;
+
+    if (!devicesByMakeModel) {
+      return res.status(400).json({ message: "Device grouped by Make & Model not found", error: true });
+    }
+
+    const devicesByStatusResponse = await query(devicesByStatusQuery);
+    const devicesByStatus = devicesByStatusResponse.rows;
+
+    if (!devicesByStatus) {
+      return res.status(400).json({ message: "Device grouped by status not found", error: true });
+    }
+
+    const devicesByCategorysResponse = await query(devicesByCategoryQuery);
+    const devicesByCategory = devicesByCategorysResponse.rows;
+
+    if (!devicesByCategory) {
+      return res.status(400).json({ message: "Device grouped by category not found", error: true });
+    }
+
+    const devicesByConditionResponse = await query(devicesByConditionQuery);
+    const devicesByCondition = devicesByConditionResponse.rows;
+
+    if (!devicesByCondition) {
+      return res.status(400).json({ message: "Device grouped by condition not found", error: true });
+    }
+
+    const devicesByOperationalResponse = await query(devicesByOperationalQuery);
+    const devicesByOperational = devicesByOperationalResponse.rows;
+
+    if (!devicesByOperational) {
+      return res.status(400).json({ message: "Device grouped by operational state not found", error: true });
+    }
+
+    const devicesMakeModelStatusCountResponse = await query(devicesMakeModelStatusCountQuery);
+    const devicesMakeModelStatusCount = devicesMakeModelStatusCountResponse.rows;
+
+    if (!devicesMakeModelStatusCount) {
+      return res.status(400).json({ message: "Device grouped by Make Model Status count not found", error: true });
+    }
+
+    const devicesWarrantyStatsResponse = await query(devicesWarrantyStatsQuery);
+    const devicesWarrantyStats = devicesWarrantyStatsResponse.rows;
+
+    if (!devicesWarrantyStats) {
+      return res.status(400).json({ message: "Device warranty stats not found", error: true });
+    }
+
     const deviceAssignedLoanedByUserResponse = await query(deviceAssignedLoanedByUserQuery);
     const deviceAssignedLoanedByUser = deviceAssignedLoanedByUserResponse.rows;
 
     if (!deviceAssignedLoanedByUser) {
       return res.status(400).json({ message: "Device Assigned / Loaned users stats not found", error: true });
-    }
+    }*/
+
+    const [
+      devicesOverallSummaryResponse,
+      devicesByMakeModelResponse,
+      devicesByStatusResponse,
+      devicesByCategoryResponse,
+      devicesByConditionResponse,
+      devicesByOperationalResponse,
+      devicesMakeModelStatusCountResponse,
+      devicesWarrantyStatsResponse,
+      deviceAssignedLoanedByUserResponse,
+    ] = await Promise.all([
+      query(devicesOverallSummaryQuery),
+      query(devicesByMakeModelQuery),
+      query(devicesByStatusQuery),
+      query(devicesByCategoryQuery),
+      query(devicesByConditionQuery),
+      query(devicesByOperationalQuery),
+      query(devicesMakeModelStatusCountQuery),
+      query(devicesWarrantyStatsQuery),
+      query(deviceAssignedLoanedByUserQuery),
+    ]);
 
     return res.status(200).json({
       stats: {
-        devicesOverallSummary,
-        devicesByMakeModel,
-        devicesByStatus,
-        devicesByCategory,
-        devicesByCondition,
-        devicesByOperational,
-        devicesMakeModelStatusCount,
-        devicesWarrantyStats,
-        deviceAssignedLoanedByUser,
+        devicesOverallSummary: devicesOverallSummaryResponse.rows,
+        devicesByMakeModel: devicesByMakeModelResponse.rows,
+        devicesByStatus: devicesByStatusResponse.rows,
+        devicesByCategory: devicesByCategoryResponse.rows,
+        devicesByCondition: devicesByConditionResponse.rows,
+        devicesByOperational: devicesByOperationalResponse.rows,
+        devicesMakeModelStatusCount: devicesMakeModelStatusCountResponse.rows,
+        devicesWarrantyStats: devicesWarrantyStatsResponse.rows,
+        deviceAssignedLoanedByUser: deviceAssignedLoanedByUserResponse.rows,
       },
       message: "Success",
       error: false,
@@ -869,54 +891,6 @@ const getAllDevices = async (req, res) => {
   }
 };
 
-//Get all devices that need approval
-{
-  /*const getAllDevicesForApproval = async (req, res) => {
-  try {
-    const userrole = req.userrole;
-
-    if (!userrole) {
-      return res.status(400).json({ message: "User role must be provided", error: true });
-    }
-
-    const GET_ALL_QUERY = `SELECT * FROM "deviceDetails"
-     WHERE device_type = 
-      CASE 
-        WHEN $1 = 'support_admin' THEN 'Support' 
-        WHEN $1 = 'support_technician' THEN 'Support'
-        WHEN $1 = 'networks_admin' THEN 'Network'
-        WHEN $1 = 'networks_technician' THEN 'Network'
-        WHEN $1 = 'av_admin' THEN 'Audio Visual'
-        WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
-        ELSE device_type 
-      END AND is_deleted = FALSE AND status LIKE '%Approval%' ORDER BY updated_at DESC LIMIT 8`;
-
-    /*  const GET_ALL_QUERY = `SELECT * FROM devices 
-     WHERE device_type = 
-      CASE 
-        WHEN $1 = 'support_admin' THEN 'Support' 
-        WHEN $1 = 'support_technician' THEN 'Support'
-        WHEN $1 = 'networks_admin' THEN 'Network'
-        WHEN $1 = 'networks_technician' THEN 'Network'
-        WHEN $1 = 'av_admin' THEN 'Audio Visual'
-        WHEN $1 = 'av_technician' THEN 'Ausio Visual'  
-        ELSE device_type 
-      END ORDER BY created_at DESC`;*
-
-    const { rows } = await query(GET_ALL_QUERY, [userrole]);
-
-    if (!rows) {
-      return res.status(400).json({ message: "An error occured fetching devices", error: true });
-    }
-
-    return res.status(200).json({ deviceList: rows, message: "Success", error: false });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
-  }
-};*/
-}
-
 //Get all device details by id
 const getDeviceDetails = async (req, res) => {
   try {
@@ -969,7 +943,7 @@ const getDevicesAssigned = async (req, res) => {
 const assignDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { issued_by, status, userId, userEndDate } = req.body;
+    const { issued_by, status, userId, userEndDate, user_type } = req.body;
 
     console.log(issued_by);
 
@@ -979,7 +953,7 @@ const assignDevice = async (req, res) => {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!status || !userId || !issued_by) {
+    if (!status || !userId || !issued_by || !user_type) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
@@ -1003,8 +977,8 @@ const assignDevice = async (req, res) => {
 
     //Create entry on the device transations table
     const createDeviceTransaction =
-      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date, issue_date, action_type) VALUES ($1,$2,$3,$4,$5,NOW(), 'Issue');";
-    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, userEndDate]);
+      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date,user_type, issue_date, action_type) VALUES ($1,$2,$3,$4,$5,$6,NOW(), 'Issue');";
+    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, userEndDate, user_type]);
 
     //Update Laptop current status and user
     const updateDeviceCurrentState = "UPDATE devices SET status=$1, current_user_id=$2, updated_at=NOW() WHERE id=$3";
@@ -1025,13 +999,13 @@ const assignDevice = async (req, res) => {
 const loanDevice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { issued_by, status, userId, expected_return_date } = req.body;
+    const { issued_by, status, userId, expected_return_date, user_type } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Device Id not provided.", error: true });
     }
 
-    if (!status || !userId || !issued_by || !expected_return_date) {
+    if (!status || !userId || !issued_by || !expected_return_date || !user_type) {
       return res.status(400).json({ message: "All fields must be provided.", error: true });
     }
 
@@ -1054,8 +1028,8 @@ const loanDevice = async (req, res) => {
 
     //Create entry on the device transations table
     const createDeviceTransaction =
-      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date, issue_date, action_type) VALUES ($1,$2,$3,$4,$5, NOW(), 'Loan');";
-    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, expected_return_date]);
+      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date, user_type, issue_date, action_type) VALUES ($1,$2,$3,$4,$5, NOW(), 'Loan');";
+    const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, expected_return_date, user_type]);
 
     //Update Laptop current status and user
     const updateDeviceCurrentState = "UPDATE devices SET status=$1, current_user_id=$2, updated_at=NOW() WHERE id=$3";
