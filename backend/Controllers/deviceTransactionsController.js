@@ -102,7 +102,7 @@ const getAllTransactionsForUser = async (req, res) => {
       return res.status(400).json({ message: "User Id not provided", error: true });
     }
 
-    const getAllTransactions = `SELECT * FROM device_transactions  WHERE user_id = $1`;
+    const getAllTransactions = `SELECT * FROM device_transactions  WHERE user_id = $1;`;
 
     const { rowCount, rows } = await query(getAllTransactions, [user_id]);
 

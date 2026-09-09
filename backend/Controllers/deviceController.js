@@ -42,79 +42,6 @@ const getDeviceDueUpgrade = async (req, res) => {
   }
 };
 
-/*Create device
-const createDevice = async (req, res) => {
-  try {
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, supplier_name, invoice_no, device_type, purchaseValue, currentValue } = req.body;
-
-    //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
-
-    if (!assetTag) {
-      return res.status(400).json({ message: "Asset Tag is required!" });
-    }
-    if (!make) {
-      return res.status(400).json({ message: "Make is required!" });
-    }
-    if (!model) {
-      return res.status(400).json({ message: "Model is required!" });
-    }
-    if (!serial_no) {
-      return res.status(400).json({ message: "Serial number is required!" });
-    }
-    if (!spec) {
-      return res.status(400).json({ message: "Specification is required!" });
-    }
-    if (!category) {
-      return res.status(400).json({ message: "Category is required!" });
-    }
-    if (!device_condition) {
-      return res.status(400).json({ message: "Device condition is required!" });
-    }
-    if (!status) {
-      return res.status(400).json({ message: "Device status is required!" });
-    }
-    if (!warranty_end_date) {
-      return res.status(400).json({ message: "Warranty end date is required!" });
-    }
-    if (!supplier_name) {
-      return res.status(400).json({ message: "Supplier name is required!" });
-    }
-    if (!invoice_no) {
-      return res.status(400).json({ message: "Invoice id is required!" });
-    }
-    if (!device_type) {
-      return res.status(400).json({ message: "Device type is required!" });
-    }
-    if (!purchaseValue) {
-      return res.status(400).json({ message: "Purchase value is required!" });
-    }
-    if (!currentValue) {
-      return res.status(400).json({ message: "Current value is required!" });
-    }
-
-    const create_device_query =
-      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14);";
-    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, supplier_name, invoice_no, device_type];
-
-    const { rowCount } = await query(create_device_query, [...VALUES]);
-
-    if (rowCount <= 0) {
-      return res.status(400).json({ message: "An error occured when creating a device", error: true });
-    }
-
-    //Create new log
-    //createNewLog("Create", req.user, id, `Device successfully created.`);
-
-    return res.status(200).json({ rowCount, message: "Successfully created", error: false });
-  } catch (error) {
-    console.log(error);
-    if (error.code === "23505") {
-      return res.status(400).json({ message: `Device already exist` });
-    }
-    return res.status(500).json({ message: `Internal server error: ${error}` });
-  }
-};*/
-
 //Bulk create devices
 const bulkCreateDevice = async (req, res) => {
   try {
@@ -165,130 +92,6 @@ const bulkCreateDevice = async (req, res) => {
     return res.status(500).json({ message: `Internal server error: ${error}` });
   }
 };
-
-/*Assign device
-const assignDevice = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { fullName, status, userId, date_issued, return_date, upgradeDate } = req.body;
-
-    const previousStatus = await checkDeviceStatus(id);
-
-    if (!id) {
-      return res.status(400).json({ message: "Device Id not provided.", error: true });
-    }
-
-    if (!status || !userId || !date_issued) {
-      return res.status(400).json({ message: "All fields must be provided.", error: true });
-    }
-
-    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3,return_date=$4, next_upgrade_date=$5 WHERE id=$6";
-    const VALUES = [status, userId, date_issued, return_date, upgradeDate];
-
-    const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
-
-    if (rowCount <= 0) {
-      return res.status(400).json({ message: "An error occured when assigning the device", error: true });
-    }
-
-    //Create new log
-    if (status === "Approval required") {
-      createNewLog("Approval required", req.user, id, `Device assigning to ${fullName} requires approval.`);
-    } else if (previousStatus === "Approval required" && status === "Assigned") {
-      createNewLog("Approved", req.user, id, `Device assigning to ${fullName} has been approved.`);
-      createNewLog("Assign", req.user, id, `Device successfully assigned to ${fullName}`);
-    } else {
-      createNewLog("Assign", req.user, id, `Device successfully assigned to ${fullName}`);
-    }
-
-    return res.status(200).json({ rowCount, message: `Device successfully assigned to ${fullName}`, error: false });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
-  }
-};*/
-
-//Loan device
-/*const loanDevice = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { fullName, status, userId, date_issued, return_date } = req.body;
-
-    if (!id) {
-      return res.status(400).json({ message: "Device Id not provided.", error: true });
-    }
-
-    if (!status || !userId || !date_issued || !return_date) {
-      return res.status(400).json({ message: "All fields must be provided.", error: true });
-    }
-
-    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, date_issued=$3,return_date=$4 WHERE id=$5";
-    const VALUES = [status, userId, date_issued, return_date];
-
-    const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
-
-    if (rowCount <= 0) {
-      return res.status(400).json({ message: "An error occured when loaning the device", error: true });
-    }
-
-    //Create new log
-    createNewLog("Assign", req.user, id, `Device successfully loaned to ${fullName}`);
-
-    return res.status(200).json({ rowCount, message: `Device successfully loaned to ${fullName}`, error: false });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
-  }
-};*/
-
-//release device
-/*const releaseDevice = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { fullName, status, userId, return_date, upgradeDate, date_issued } = req.body;
-
-    if (!id) {
-      return res.status(400).json({ message: "Device Id not provided.", error: true });
-    }
-
-    const previousStatus = await checkDeviceStatus(id);
-
-    if (!fullName || !status || !userId) {
-      return res.status(400).json({ message: "All fields must be provided.", error: true });
-    }
-
-    const getDeviceQuery = `SELECT * FROM "deviceUserDetails" WHERE id = $1`;
-
-    const { rows } = await query(getDeviceQuery, [id]);
-
-    if (!rows) {
-      return res.status(400).json({ message: "Device matching the id not found", error: true });
-    }
-
-    console.log(`Previous user ${rows[0].full_name}`);
-
-    const assignDeviceQuery = "UPDATE devices SET status=$1, user_id=$2, return_date=$3, next_upgrade_date=$4 ,date_issued=$5  WHERE id=$6";
-    const VALUES = [status, userId, return_date, upgradeDate, date_issued];
-
-    const { rowCount } = await query(assignDeviceQuery, [...VALUES, id]);
-
-    if (rowCount <= 0) {
-      return res.status(400).json({ message: "An error occured when releasing the device from user", error: true });
-    }
-
-    //Create new log
-    if (previousStatus === "Assigned") {
-      createNewLog("Release", req.user, id, `Device successfully released from ${rows[0].full_name} to ${fullName}`);
-    } else {
-      createNewLog("Rejected", req.user, id, `Device assigning to ${rows[0].full_name} has been rejected.`);
-    }
-
-    return res.status(200).json({ rowCount, message: `Device successfully released from ${rows[0].full_name} to ${fullName}.`, error: false });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
-  }
-};*/
 
 //Delete device
 /*const deleteDevice = async (req, res) => {
@@ -566,24 +369,6 @@ const getDevicesDueReturn = async (req, res) => {
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-
-/*Get devices stats
-const getDevicesStats = async (req, res) => {
-  try {
-    const getDevicesStatsQuery = `SELECT * FROM "devicesStats";`;
-
-    const { rows } = await query(getDevicesStatsQuery);
-
-    if (!rows) {
-      return res.status(400).json({ message: "Device stats not found", error: true });
-    }
-
-    return res.status(200).json({ deviceDetails: rows, message: "Success", error: false });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
-  }
-};*/
 
 //Get devices stats
 const getDevicesStats = async (req, res) => {
@@ -1028,7 +813,7 @@ const loanDevice = async (req, res) => {
 
     //Create entry on the device transations table
     const createDeviceTransaction =
-      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date, user_type, issue_date, action_type) VALUES ($1,$2,$3,$4,$5, NOW(), 'Loan');";
+      "INSERT INTO device_transactions (device_serial_number, user_id, issued_by, status, expected_return_date, user_type, issue_date, action_type) VALUES ($1,$2,$3,$4,$5,$6, NOW(), 'Loan');";
     const { rowData } = await query(createDeviceTransaction, [device.serial_no, userId, issued_by, status, expected_return_date, user_type]);
 
     //Update Laptop current status and user

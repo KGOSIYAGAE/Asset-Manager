@@ -42,7 +42,7 @@ function PieDevicesStatuses({ devicesByStatus }) {
           </div>
         </div>
 
-        <div className="h-[180px] flex flex-col gap-5 justify-evenly text-sm overflow-y-auto">
+        <div className="h-[180px] flex flex-col p-2 gap-5 justify-evenly text-sm overflow-y-auto">
           {devicesByStatus?.map((item) => {
             const color = STATUS_COLORS[item.status]?.bg ?? DEFAULT_COLOR.bg;
             return (

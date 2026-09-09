@@ -210,8 +210,11 @@ function AddEditStudent({ path }) {
     socket.on("signature_saved", (image) => {
       //setSignature(image.image);
 
-      getSelectedUser();
+      setShowToast({ isShown: true, type: "success", message: "Device issue, has been sent for approval" });
+
+      //getSelectedUser();
       socket.disconnect();
+      navigate(`/users/students/student-details/${studentNumber}`);
     });
 
     return () => {
@@ -328,14 +331,7 @@ function AddEditStudent({ path }) {
           />
         </Modal>
 
-        <ToastMessage
-          isShown={showToast.isShow}
-          type={showToast.type}
-          message={showToast.message}
-          onClose={() => {
-            setShowToast({ isShow: false });
-          }}
-        />
+        <ToastMessage isShown={showToast?.isShown} type={showToast?.type} message={showToast?.message} onClose={() => setShowToast({ isShown: false })} />
       </div>
     </div>
   );

@@ -132,7 +132,7 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
 
         <div className="grid lg:grid-cols-12 grid-rows-1 gap-5">
           {/* Device Status Overview*/}
-          <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
+          <div className="flex flex-col  col-span-6 bg-white gap-3 border shadow-md rounded-md p-5">
             <div className="flex justify-between">
               <span className=" font-semibold text-black">Device Status Overview</span>
               <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
@@ -144,7 +144,7 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
           </div>
 
           {/*Issued to Staff vs Students */}
-          <div className="flex flex-col  col-span-4 bg-white gap-3 border shadow-md rounded-md p-5">
+          <div className="flex flex-col  col-span-6 bg-white gap-3 border shadow-md rounded-md p-5">
             <div className="flex justify-between">
               <span className=" font-semibold text-black">Issued to Staff vs Students</span>
 
@@ -158,8 +158,21 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
             </div>
           </div>
 
+          {/*Device Model breakdown*/}
+          <div className="flex flex-col h-[370px]  col-span-12 bg-white gap-3 border shadow-md rounded-md p-5 overflow-x-auto">
+            <div className="w-full flex justify-between">
+              <span className="font-bold text-black">Devices Model Breakdown</span>
+              <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
+                View all <FaArrowRight />
+              </span>
+            </div>
+            <div className="flex flex-col gap-5 text-sm">
+              <DevicesStackedBarGraph devicesMakeModelStatusCount={deviceStats?.devicesMakeModelStatusCount} />
+            </div>
+          </div>
+
           {/*Category breakdown*/}
-          <div className="flex flex-col h-[250px] col-span-4 bg-white gap-3 border shadow-md rounded-md p-5 overflow-x-auto">
+          <div className="flex flex-col h-[370px] col-span-4 bg-white gap-3 border shadow-md rounded-md p-5 overflow-x-auto">
             <div className="w-full flex justify-between">
               <span className="font-bold text-black">Category breakdown</span>
               <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
@@ -202,19 +215,6 @@ function MainAdminDashboard({ loggedInUser, deviceStats, studentsStats, staffSta
                 ))}
 
               {/* */}
-            </div>
-          </div>
-
-          {/*Device Model breakdown*/}
-          <div className="flex flex-col h-[370px]  col-span-12 bg-white gap-3 border shadow-md rounded-md p-5 overflow-x-auto">
-            <div className="w-full flex justify-between">
-              <span className="font-bold text-black">Devices Model Breakdown</span>
-              <span className="text-sm flex items-center text-red-600 gap-1 hover:text-red-600 cursor-pointer">
-                View all <FaArrowRight />
-              </span>
-            </div>
-            <div className="flex flex-col gap-5 text-sm">
-              <DevicesStackedBarGraph devicesMakeModelStatusCount={deviceStats?.devicesMakeModelStatusCount} />
             </div>
           </div>
 

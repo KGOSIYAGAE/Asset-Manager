@@ -72,7 +72,7 @@ export const getStudentsStats = async (setStudentsStats) => {
 export const addStudent = async (studentData, setShowToast) => {
   try {
     if (!studentData) {
-      return setShowToast({ isShown: true, type: "add", message: "Student data must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Student data must be provided" });
     }
 
     const response = await axiosInstance.post("/students/create-student", studentData, { showSpinner: true });

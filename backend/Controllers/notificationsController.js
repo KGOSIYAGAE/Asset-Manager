@@ -9,6 +9,7 @@ const { sendEmail } = require("../util/azureGraphConnection");
 const sendApprovalEmail = async (req, res) => {
   try {
     // const {to, device_reciever, device_reciever_userId, device_issuer, device_issuer_userId, request_date, model_name, device_serial_no } = req.body;
+    console.log(req.body);
     const { deviceId, device_issuer_userId, device_reciever_userId, request_date, model_name, device_serial_no, issuanceType, expected_return_date } = req.body;
 
     //get Approver list

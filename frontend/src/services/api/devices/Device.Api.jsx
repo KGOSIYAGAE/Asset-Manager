@@ -258,6 +258,8 @@ export const createLoanDevice = async (id, data, setShowToast) => {
     const response = await axiosInstance.put("/devices/loan-device/" + id, data);
 
     if (!response.data.error) {
+      console.log(response.data.message);
+
       return { error: response.data.error, message: response.data.message };
     }
   } catch (error) {

@@ -213,6 +213,8 @@ function AddEditStaff({ path }) {
 
       getUserDetails();
       socket.disconnect();
+
+      navigate(`/users/staff/staff-details/${staff_no}`);
     });
 
     return () => {
