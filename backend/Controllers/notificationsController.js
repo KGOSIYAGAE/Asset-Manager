@@ -4,12 +4,14 @@ const path = require("path");
 const { query } = require("../util/pg_dbConnection");
 const { transporter } = require("../util/gmailTranspoter");
 const { sendEmail } = require("../util/azureGraphConnection");
+const puppeteer = require("puppeteer");
+const { getIssuerAndreturnerAndApproverSignatures, getIssuerAndreturnerAndApproverSignaturesHelper } = require("./signatureController");
 
 //Send Email for approval request
 const sendApprovalEmail = async (req, res) => {
   try {
     // const {to, device_reciever, device_reciever_userId, device_issuer, device_issuer_userId, request_date, model_name, device_serial_no } = req.body;
-    console.log(req.body);
+
     const { deviceId, device_issuer_userId, device_reciever_userId, request_date, model_name, device_serial_no, issuanceType, expected_return_date } = req.body;
 
     //get Approver list
@@ -40,9 +42,9 @@ const sendApprovalEmail = async (req, res) => {
       getReceiverQuery = "SELECT * FROM staff WHERE staff_no = $1";
     }
 
-    const recieverDetails = await query(getReceiverQuery, [device_reciever_userId]);
+    const userDetails = await query(getReceiverQuery, [device_reciever_userId]);
 
-    if (!recieverDetails) {
+    if (!userDetails) {
       return res.status(400).json({ issuerDetails, message: `Reciever NOT FOUND`, error: true });
     }
 
@@ -56,8 +58,8 @@ const sendApprovalEmail = async (req, res) => {
 
       //Replace placeholders with actual data
       htmlContent = htmlContent
-        .replace(/{{recipient_name}}/g, `${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`)
-        .replace(/{{recipient_staff_no}}/g, recieverDetails.rows[0].staff_no || recieverDetails.rows[0].student_number)
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{recipient_staff_no}}/g, userDetails.rows[0].staff_no || userDetails.rows[0].student_number)
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{issuer_staff_no}}/g, issuerDetails.rows[0].staff_no)
         .replace(/{{request_date}}/g, request_date)
@@ -71,10 +73,10 @@ const sendApprovalEmail = async (req, res) => {
 
       //Replace placeholders with actual data
       htmlContent = htmlContent
-        .replace(/{{recipient_name}}/g, `${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`)
-        .replace(/{{recipient_staff_no}}/g, recieverDetails.rows[0].staff_no || recieverDetails.rows[0].student_number)
-        .replace(/{{contract_type}}/g, recieverDetails.rows[0].contract_type || "N/A")
-        .replace(/{{end_date}}/g, recieverDetails.rows[0].end_date || "N/A")
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{recipient_staff_no}}/g, userDetails.rows[0].staff_no || userDetails.rows[0].student_number)
+        .replace(/{{contract_type}}/g, userDetails.rows[0].contract_type || "N/A")
+        .replace(/{{end_date}}/g, userDetails.rows[0].end_date || "N/A")
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{issuer_staff_no}}/g, issuerDetails.rows[0].staff_no)
         .replace(/{{request_date}}/g, request_date)
@@ -96,7 +98,7 @@ const sendApprovalEmail = async (req, res) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: approverList,
-      subject: `Approval Required: Laptop ${issuanceType} for ${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`,
+      subject: `Approval Required: Laptop ${issuanceType} for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`,
       html: htmlContent,
       attachments: [
         {
@@ -152,9 +154,9 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
       getReceiverQuery = "SELECT * FROM staff WHERE staff_no = $1";
     }
 
-    const recieverDetails = await query(getReceiverQuery, [transactionDetails.rows[0].user_id]);
+    const userDetails = await query(getReceiverQuery, [transactionDetails.rows[0].user_id]);
 
-    if (!recieverDetails) {
+    if (!userDetails) {
       return res.status(400).json({ issuerDetails, message: `Reciever NOT FOUND`, error: true });
     }
 
@@ -169,8 +171,8 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
 
       //Replace placeholders with actual data
       htmlContent = htmlContent
-        .replace(/{{recipient_name}}/g, `${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`)
-        .replace(/{{recipient_staff_no}}/g, recieverDetails.rows[0].staff_no || recieverDetails.rows[0].student_number)
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{recipient_staff_no}}/g, userDetails.rows[0].staff_no || userDetails.rows[0].student_number)
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{expected_return_date}}/g, new Date(transactionDetails.rows[0].expected_return_date).toLocaleDateString())
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
@@ -178,7 +180,7 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
         .replace(/{{device_serial_no}}/g, device.serial_no)
         .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${device.id}`);
 
-      subject = `Loan Approved: Device Loan for ${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`;
+      subject = `Loan Approved: Device Loan for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     } else {
       templatePath = path.join(__dirname, "..", "util", "emailTemplates", "IssueApprovedEmailTemplate.html");
       htmlContent = fs.readFileSync(templatePath, "utf8");
@@ -186,15 +188,15 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
       //Replace placeholders with actual data
       //Replace placeholders with actual data
       htmlContent = htmlContent
-        .replace(/{{recipient_name}}/g, `${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`)
-        .replace(/{{recipient_staff_no}}/g, recieverDetails.rows[0].staff_no || recieverDetails.rows[0].student_number)
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{recipient_staff_no}}/g, userDetails.rows[0].staff_no || userDetails.rows[0].student_number)
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
         .replace(/{{device_serial_no}}/g, device.serial_no)
         .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${device.id}`);
 
-      subject = `Issue Approved: Device Issue for ${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`;
+      subject = `Issue Approved: Device Issue for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     }
 
     if (!htmlContent) {
@@ -266,9 +268,9 @@ const sendRejectionEmail = async (rejected_by, deviceTransactionId, device, reje
       getReceiverQuery = "SELECT * FROM staff WHERE staff_no = $1";
     }
 
-    const recieverDetails = await query(getReceiverQuery, [transactionDetails.rows[0].user_id]);
+    const userDetails = await query(getReceiverQuery, [transactionDetails.rows[0].user_id]);
 
-    if (!recieverDetails) {
+    if (!userDetails) {
       return res.status(400).json({ issuerDetails, message: `Reciever NOT FOUND`, error: true });
     }
 
@@ -283,8 +285,8 @@ const sendRejectionEmail = async (rejected_by, deviceTransactionId, device, reje
 
       //Replace placeholders with actual data
       htmlContent = htmlContent
-        .replace(/{{recipient_name}}/g, `${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`)
-        .replace(/{{recipient_staff_no}}/g, recieverDetails.rows[0].staff_no || recieverDetails.rows[0].student_number)
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{recipient_staff_no}}/g, userDetails.rows[0].staff_no || userDetails.rows[0].student_number)
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{expected_return_date}}/g, new Date(transactionDetails.rows[0].expected_return_date).toLocaleDateString())
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
@@ -292,7 +294,7 @@ const sendRejectionEmail = async (rejected_by, deviceTransactionId, device, reje
         .replace(/{{device_serial_no}}/g, device.serial_no)
         .replace(/{{rejection_reason}}/g, rejectReason);
 
-      subject = `Loan Rejected: Device Loan for ${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`;
+      subject = `Loan Rejected: Device Loan for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     } else {
       templatePath = path.join(__dirname, "..", "util", "emailTemplates", "IssueRejectionEmailTemplate.html");
       htmlContent = fs.readFileSync(templatePath, "utf8");
@@ -300,15 +302,15 @@ const sendRejectionEmail = async (rejected_by, deviceTransactionId, device, reje
       //Replace placeholders with actual data
       //Replace placeholders with actual data
       htmlContent = htmlContent
-        .replace(/{{recipient_name}}/g, `${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`)
-        .replace(/{{recipient_staff_no}}/g, recieverDetails.rows[0].staff_no || recieverDetails.rows[0].student_number)
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{recipient_staff_no}}/g, userDetails.rows[0].staff_no || userDetails.rows[0].student_number)
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
         .replace(/{{device_serial_no}}/g, device.serial_no)
         .replace(/{{rejection_reason}}/g, rejectReason);
 
-      subject = `Issue Rejected: Device Issue for ${recieverDetails.rows[0].name} ${recieverDetails.rows[0].surname}`;
+      subject = `Issue Rejected: Device Issue for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     }
 
     if (!htmlContent) {
@@ -344,6 +346,166 @@ const sendRejectionEmail = async (rejected_by, deviceTransactionId, device, reje
   }
 };
 
+const generatePdf = async (formContent) => {
+  const browser = await puppeteer.launch({
+    headless: true,
+  });
+
+  console.log("Browser launched");
+
+  try {
+    const page = await browser.newPage();
+
+    //Build / Render form HTML here
+    await page.setContent(formContent, {
+      waitUntil: "networkidle0",
+    });
+
+    console.log("Content set");
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+    });
+
+    console.log("PDF generated:");
+    console.log("Buffer:", Buffer.isBuffer(pdfBuffer));
+    console.log("Size:", pdfBuffer.length);
+
+    return pdfBuffer;
+  } finally {
+    await browser.close();
+  }
+};
+
+//Send Email form via Email
+const sendFormViaEmail = async (req, res) => {
+  const { user_id, device_id, formType, emailReciever } = req.body;
+
+  //console.log(user_id, device_id, formType, ...emailReciever);
+
+  if (!user_id || !device_id || !formType || !emailReciever) {
+    return res.status(400).json({ message: `All Details must be provided`, error: true });
+  }
+
+  try {
+    //Get Device Details
+    const getDeviceDetailsQuery = `SELECT * FROM "deviceUserDetails" WHERE id = $1;`;
+    const deviceDetails = await query(getDeviceDetailsQuery, [device_id]);
+
+    //get receiver details
+    let getUserQuery;
+
+    if (String(user_id).length >= 6) {
+      getUserQuery = `SELECT * FROM "studentDetails" WHERE student_number = $1`;
+    } else {
+      getUserQuery = `SELECT * FROM "StaffDetails" WHERE staff_no = $1`;
+    }
+
+    const userDetails = await query(getUserQuery, [user_id]);
+
+    if (!userDetails) {
+      return res.status(400).json({ message: `User NOT FOUND`, error: true });
+    }
+
+    //Get Issuer & Approver
+    const segnatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, deviceDetails.rows[0].status);
+
+    /*return res.status(200).json({
+      success: true,
+     userDetails:userDetails
+    });*/
+
+    //get email template
+    let htmlContent;
+    let subject;
+    let pdfBuffer;
+
+    if (formType === "Student-Issue") {
+      templatePath = path.join(__dirname, "..", "util", "emailTemplates", "sendFormEmailTemplate.html");
+      htmlContent = fs.readFileSync(templatePath, "utf8");
+
+      htmlContent = htmlContent
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{form_type}}/g, "issued")
+        .replace(/{{title}}/g, `Asset Issue Form`);
+
+      templatePdf = path.join(__dirname, "..", "util", "emailTemplates", "Student_AOD_PDF_Template.html");
+      pdfContent = fs.readFileSync(templatePdf, "utf8");
+
+      const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
+      const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
+
+      if (!logoPath) {
+        return res.status(400).json({ message: `SPU Logo not found`, error: true });
+      }
+
+      const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+
+      const spuLogo = `data:image/jpeg;base64,${logoBase64}`;
+
+      pdfContent = pdfContent
+        .replace(/{{spu_logo}}/g, spuLogo)
+        .replace(/{{student_name}}/g, userDetails.rows[0].name)
+        .replace(/{{student_surname}}/g, userDetails.rows[0].surname)
+        .replace(/{{course_code}}/g, userDetails.rows[0].course_code)
+        .replace(/{{course_name}}/g, userDetails.rows[0].course_name)
+        .replace(/{{student_number}}/g, userDetails.rows[0].student_number)
+        .replace(/{{phone_number}}/g, userDetails.rows[0].phone_number)
+        .replace(/{{id_number}}/g, userDetails.rows[0].id_number)
+        .replace(/{{purchase_price}}/g, deviceDetails.rows[0].purchase_price)
+        .replace(/{{device_make}}/g, deviceDetails.rows[0].make)
+        .replace(/{{device_model}}/g, deviceDetails.rows[0].model)
+        .replace(/{{serial_number}}/g, deviceDetails.rows[0].serial_no)
+        .replace(/{{issue_date}}/g, deviceDetails.rows[0].issue_date)
+        .replace(/{{approver_signature}}/g, segnatureResponses.approverSignature)
+        .replace(/{{student_signature}}/g, userDetails.rows[0].image_base64)
+        .replace(/{{issuer_signature}}/g, segnatureResponses.issuerSignature);
+
+      pdfBuffer = await generatePdf(pdfContent);
+
+      subject = `Asset Issue Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
+    } else {
+    }
+
+    if (!htmlContent) {
+      return res.status(400).json({ message: `Email template not found`, error: true });
+    }
+
+    const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
+
+    if (!bannerImagePath) {
+      return res.status(400).json({ message: `ICT Banner not found`, error: true });
+    }
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: emailReciever,
+      subject: subject,
+      html: htmlContent,
+      attachments: [
+        {
+          filename: "ict_banner.png",
+          path: bannerImagePath,
+          cid: "ict_banner_image", // Matches the 'src="cid:ict_banner_image"' value in your HTML
+        },
+        {
+          filename: `test.pdf`,
+          content: pdfBuffer,
+          contentType: "application/pdf",
+        },
+      ],
+    };
+
+    await sendEmail(mailOptions);
+
+    return res.status(200).json({ message: `Email Sent`, error: false });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 ///Test Email controller
 const testEmail = async (req, res) => {
   try {
@@ -365,5 +527,6 @@ module.exports = {
   sendApprovalEmail,
   sendApprovedEmail,
   sendRejectionEmail,
+  sendFormViaEmail,
   testEmail,
 };

@@ -26,5 +26,7 @@ export const handleRejectDeviceIssueLoan = async (deviceUserDetails, rejectReaso
   };
 
   await rejectDevice(id, data, setShowToast);
+
+  //Rejection is Sent from the backend 🤐
   return onSubmit();
 };

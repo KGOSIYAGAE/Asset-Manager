@@ -76,7 +76,7 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white p-2 rounded-md">
       {showQrCode && showQrCode ? (
         <div className="flex flex-col items-center bg-white shadow-md rounded-md border ">
           <div className="flex flex-col items-center p-2">

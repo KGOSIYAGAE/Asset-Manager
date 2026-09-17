@@ -27,6 +27,7 @@ import { getAllDeviceTransactions } from "../../services/api/deviceLogs/DeviceLo
 import DeviceReturnForm from "../../components/returnForm/DeviceReturnForm";
 import QrCodeCard from "../../components/cards/qrCodeCard/QrCodeCard";
 import { socket } from "../../utils/socket";
+import ComposeEmail from "../../components/cards/composeEmail/ComposeEmail";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -98,6 +99,10 @@ function DeviceDetails({ path }) {
 
     document.body.innerHTML = originalContents;
     window.location.reload();
+  };
+
+  const handleSendEmail = (user_id, form_type, device_id) => {
+    setOpenModal({ isShown: true, type: "Send-Form", data: { user_id: user_id, form_type: form_type, device_id: device_id } });
   };
 
   useEffect(() => {
@@ -337,7 +342,7 @@ function DeviceDetails({ path }) {
 
         <div className="h-fit flex flex-col col-span-6 lg:col-span-2 gap-5">
           <div className="flex flex-col items-center justify-center w-5/5  bg-white border  rounded-md shadow-md">
-            <img src={`/255 G8.png`} alt="" className="h-[385px]" />
+            <img src={`/${deviceDetails?.model}.png`} alt="" className="h-[385px]" />
           </div>
           {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" || deviceDetails?.status === "Approval required" ? (
             <div className="flex flex-col h-fit  justify-between border p-2 rounded-md shadow-md bg-white">
@@ -381,22 +386,22 @@ function DeviceDetails({ path }) {
           setOpenModal({ isShown: false });
         }}
         style={{
-          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+          overlay: { backgroundColor: "rgb(0,0,0,0.3)" },
         }}
         contentLabel=""
         className={`${
           openModal.type === "release"
-            ? "w-[60%] max-h-3/4 "
+            ? "w-[60%] h-[200px] p-2 bg-white "
             : openModal.type === "assign"
-            ? "w-[60%] max-h-3/4 "
+            ? "w-[60%] h-fit p-2 "
             : openModal.type === "approve-issue"
-            ? "w-[60%] max-h-3/4 "
+            ? "w-[60%] h-fit p-2 "
             : openModal.type === "reject"
-            ? "w-[60%] max-h-3/4 "
+            ? "w-[60%] h-fit p-2"
             : openModal.type === "approve-loan"
-            ? "w-[60%] max-h-3/4 "
-            : "w-[60%] lg:w-[50%] h-fit lg:h-full "
-        } bg-white rounded-md mx-auto mt-14 p-5 overflow-auto outline-none`}
+            ? "w-[60%] h-fit p-2"
+            : "w-[60%] lg:w-[55%] h-fit lg:h-full "
+        }  rounded-md mx-auto mt-5 pb-28 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden outline-none`}
       >
         {openModal.type === "assign" ? (
           <IssueDevice
@@ -424,20 +429,20 @@ function DeviceDetails({ path }) {
             setShowToast={setShowToast}
           />
         ) : openModal.type === "Student-Issue" ? (
-          <div className=" h-[1100px]  col-span-6 bg-white " id="print-file">
-            <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
+          <div className=" h-[1100px]  col-span-6" id="print-file">
+            <StudentAOD handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "Staff-Issue" ? (
-          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <StaffIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
+          <div className="h-[1100px] col-span-6  " id="print-file">
+            <StaffIssueForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "Loan-Issue" ? (
-          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <LoanIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} user_id={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
+          <div className="h-[1100px] col-span-6  " id="print-file">
+            <LoanIssueForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} user_id={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "Return-form" ? (
-          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <DeviceReturnForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} clickedTransactionData={openModal.data} deviceDetails_={deviceDetails} />
+          <div className="h-[1100px] col-span-6  " id="print-file">
+            <DeviceReturnForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} clickedTransactionData={openModal.data} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "reject" ? (
           <div>
@@ -467,6 +472,17 @@ function DeviceDetails({ path }) {
               deviceUserDetails={deviceDetails}
             />
           </div>
+        ) : openModal.type === "Send-Form" ? (
+          <ComposeEmail
+            user_id={openModal.data.user_id}
+            form_type={openModal.data.form_type}
+            device_id={openModal.data.device_id}
+            onCanel={() => {
+              getDeviceDetails();
+              setOpenModal({ isShown: false });
+            }}
+            setShowToast={setShowToast}
+          />
         ) : (
           <div>
             <span>Add another Template here!!!!!</span>

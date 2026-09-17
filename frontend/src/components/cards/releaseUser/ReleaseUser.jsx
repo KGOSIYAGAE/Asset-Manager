@@ -48,7 +48,7 @@ function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
     });
   }, []);
   return (
-    <div>
+    <div className="">
       <span className="font-semibold p-2">Release User</span>
 
       <div className="flex flex-col gap-5 -z-50">

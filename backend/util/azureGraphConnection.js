@@ -33,63 +33,98 @@ const sendEmail = async (mailOptions) => {
       authProvider: (done) => done(null, token),
     });
 
-    //Prepare the base payload
     const graphMailPayload = {
       message: {
         subject: mailOptions.subject,
+
         body: {
-          contentType: "Html",
-          content: mailOptions.html, // Receives the html string from controller
+          contentType: "HTML",
+          content: mailOptions.html,
         },
+
         toRecipients: mailOptions.to.map((email) => ({
-          emailAddress: { address: email },
+          emailAddress: {
+            address: email,
+          },
         })),
-        attachments: [], // Will hold attachments if provided
+
+        attachments: [],
       },
-      saveToSentItems: "true",
+
+      saveToSentItems: true,
     };
 
-    // 3. Process attachments natively for Graph API if present
-    if (mailOptions.attachments && mailOptions.attachments.length > 0) {
+    // Process attachments
+    if (mailOptions.attachments?.length > 0) {
       for (const attach of mailOptions.attachments) {
-        if (fs.existsSync(attach.path)) {
-          const fileBuffer = fs.readFileSync(attach.path);
-          graphMailPayload.message.attachments.push({
-            "@odata.type": "#microsoft.graph.fileAttachment",
-            name: attach.filename,
-            contentType: "image/png", // Adjust mapping dynamically if sending other files
-            contentBytes: fileBuffer.toString("base64"),
-            isInline: true,
-            contentId: attach.cid, // Matches <img src="cid:ict_banner_image" /> inside approvalEmail.html
-          });
+        let fileBuffer;
+
+        // -----------------------------------------
+        // Attachment supplied as a Buffer
+        // -----------------------------------------
+        if (attach.content) {
+          fileBuffer = Buffer.isBuffer(attach.content) ? attach.content : Buffer.from(attach.content);
         }
+
+        // -----------------------------------------
+        // Attachment supplied as a file path
+        // -----------------------------------------
+        else if (attach.path) {
+          if (!fs.existsSync(attach.path)) {
+            console.error(`Attachment not found: ${attach.path}`);
+            continue;
+          }
+
+          fileBuffer = fs.readFileSync(attach.path);
+        }
+
+        // -----------------------------------------
+        // Skip invalid attachment
+        // -----------------------------------------
+        else {
+          console.error(`No content or path for attachment: ${attach.filename}`);
+          continue;
+        }
+
+        const contentType = attach.contentType || "application/octet-stream";
+
+        const isInline = !!attach.cid;
+
+        graphMailPayload.message.attachments.push({
+          "@odata.type": "#microsoft.graph.fileAttachment",
+
+          name: attach.filename,
+
+          contentType: contentType,
+
+          contentBytes: fileBuffer.toString("base64"),
+
+          isInline: isInline,
+
+          ...(attach.cid && {
+            contentId: attach.cid,
+          }),
+        });
+
+        console.log("Attachment added:", {
+          filename: attach.filename,
+          contentType: contentType,
+          size: fileBuffer.length,
+          isInline: isInline,
+        });
       }
     }
 
+    console.log("Total attachments:", graphMailPayload.message.attachments.length);
+
     await client.api("/users/ictasset.manager@spu.ac.za/sendMail").post(graphMailPayload);
 
-    /* await client.api("/users/kgosiyagae.motabogi@spu.ac.za/sendMail").post({
-    message: {
-      subject: mailOptions.subject,
-      body: {
-        contentType: "HTML",
-        content: "<h2>Hello From Node.js</h2>",
-      },
-      toRecipients: [
-        {
-          emailAddress: {
-            address: "ndosisetlole@gmail.com",
-          },
-        },
-      ],
-    },
-  });*/
-
-    console.log("Email sent");
+    console.log("Email Sent!!");
 
     return true;
   } catch (error) {
     console.error("Graph API Error details:", error.response?.data || error);
+
     throw error;
   }
 };

@@ -142,7 +142,23 @@ html {
 
   /*Student AOD Start*/
   .printable {
-    @apply w-full bg-white text-black text-[12px] flex flex-col pb-5 rounded-md shadow-lg print:shadow-none;
+    @apply w-full bg-white text-black text-[12px] flex flex-col justify-between  gap-10 rounded-md shadow-lg print:shadow-none;
+  }
+
+  .printable-AOD {
+    @apply w-full bg-white text-black text-[12px] flex flex-col justify-between gap-5 rounded-md shadow-lg print:shadow-none;
+  }
+
+  .printable-loan-form {
+    @apply w-full bg-white text-black text-[12px] flex flex-col justify-between gap-5 rounded-md shadow-lg print:shadow-none;
+  }
+
+  .printable-return-form {
+    @apply w-full bg-white text-black text-[12px] flex flex-col justify-between gap-5 rounded-md shadow-lg print:shadow-none;
+  }
+
+  .printable-staff-issue-form {
+    @apply w-full bg-white text-black text-[12px] flex flex-col justify-between gap-6 rounded-md shadow-lg print:shadow-none;
   }
 
   /* 1. Screen Styles: Only show one copy on the monitor */
@@ -157,7 +173,7 @@ html {
   @media print {
     @page {
       size: A4;
-      margin: 4mm;
+      margin: 0;
     }
 
     /* Hide everything else (navbars, buttons) */
@@ -191,8 +207,12 @@ html {
     @apply flex justify-between;
   }
 
+  .page-logo-AOD {
+    @apply w-[130px] h-[130px];
+  }
+
   .page-logo {
-    @apply w-[120px] h-[120px];
+    @apply w-[240px] h-[240px];
   }
 
   .page-logo-staff {
@@ -215,7 +235,7 @@ html {
   }
 
   .page-body {
-    @apply h-[780px];
+    @apply h-fit;
   }
 
   .body-title {

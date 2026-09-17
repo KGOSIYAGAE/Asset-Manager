@@ -11,8 +11,9 @@ import { FaRedo } from "react-icons/fa";
 import { getIssureApproverSignature, getUserSignature } from "../../services/api/signature/userSignatures";
 import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import PrintButton from "../buttons/printButton/PrintButton";
+import SendViaEmail from "../buttons/sendViaEmail/SendViaEmail";
 
-function StaffIssueForm({ handleOnPrint, deviceId, staff_no, deviceDetails_ }) {
+function StaffIssueForm({ handleSendEmail, handleOnPrint, deviceId, staff_no, deviceDetails_ }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -81,8 +82,8 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no, deviceDetails_ }) {
   }, []);
 
   return (
-    <div className="printable">
-      <div className="flex flex-col items-center justify-center gap-5">
+    <div className="printable-staff-issue-form">
+      <div className="flex flex-col items-center justify-center gap-4">
         <div className="w-full flex justify-center ">
           <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
         </div>
@@ -195,15 +196,21 @@ function StaffIssueForm({ handleOnPrint, deviceId, staff_no, deviceDetails_ }) {
               </div>
             </div>
           </div>
+        </div>
 
-          {/**/}
-          <div className="flex bottom-0 ">
-            <img alt="banner" src="/page_banner.png" className="w-full h-[50px]" />
-          </div>
+        {/**/}
+        <div className="border rounded-b-md print:rounded-none">
+          <img alt="banner" src="/page_banner.png" className="w-full h-[70px] rounded-b-md  print:rounded-none" />
         </div>
 
         {hasPermission("print") && (
           <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+            <SendViaEmail
+              text={"Send Using Email"}
+              onClick={() => {
+                handleSendEmail(staffData?.staff_no, "Staff-Issue", deviceDetails?.id);
+              }}
+            />
             <PrintButton
               text={"Print"}
               onClick={() => {

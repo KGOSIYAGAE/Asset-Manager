@@ -4,7 +4,7 @@ import SubmitButton from "../../buttons/SubmitButton";
 
 function ApproveIssue({ onCanel, deviceUserDetails, setShowToast, onSubmit }) {
   return (
-    <div className="bg-white">
+    <div className="bg-white p-2 rounded-md">
       <div className="flex flex-col gap-2 -z-50">
         <span className="font-semibold p-2">{deviceUserDetails.status === "Issue Approval required" ? "Approve Device Issuing" : "Approve Device Loan"}</span>
 

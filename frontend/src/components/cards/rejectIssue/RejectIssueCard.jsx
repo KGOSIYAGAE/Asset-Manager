@@ -19,7 +19,7 @@ function RejectIssueCard({ deviceUserDetails, onCanel, setShowToast, onSubmit })
 
   return (
     <div>
-      <div className="flex flex-col gap-2 -z-50">
+      <div className="flex flex-col gap-2 -z-50 bg-white p-2 rounded-md">
         <span className="font-semibold p-2">{"Reject Device Assigning"}</span>
 
         <div className="flex flex-col border-t-2 border-b-2 py-5 gap-5">

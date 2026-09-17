@@ -824,10 +824,6 @@ const loanDevice = async (req, res) => {
       return res.status(400).json({ message: "Device not updated", error: true });
     }
 
-    //await sendApprovalNotification(device.serial_no, device.make, device.model, device.category, device.device_type, userId, issued_by);
-
-    await sendApprovalEmail(device.serial_no, device.make, device.model, device.category, device.device_type, expected_return_date, userId, issued_by, res);
-
     return res.status(200).json({ message: `Device state has been changed, Approval is required`, error: false });
   } catch (error) {
     console.log(error);

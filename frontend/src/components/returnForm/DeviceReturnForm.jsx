@@ -13,8 +13,9 @@ import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverte
 import { getStudentDetails } from "../../services/api/students/Students.Api";
 import PrintButton from "../buttons/printButton/PrintButton";
 import StudentAOD from "../student AOD/StudentAOD";
+import SendViaEmail from "../buttons/sendViaEmail/SendViaEmail";
 
-function DeviceReturnForm({ handleOnPrint, deviceId, clickedTransactionData, deviceDetails_ }) {
+function DeviceReturnForm({ handleSendEmail, handleOnPrint, deviceId, clickedTransactionData, deviceDetails_ }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -85,8 +86,8 @@ function DeviceReturnForm({ handleOnPrint, deviceId, clickedTransactionData, dev
   }, []);
 
   return (
-    <div className="printable">
-      <div className="flex flex-col items-center justify-between gap-20">
+    <div className="printable-return-form">
+      <div className="flex flex-col items-center justify-between gap-14">
         <div className="w-full flex justify-center ">
           <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
         </div>
@@ -189,11 +190,10 @@ function DeviceReturnForm({ handleOnPrint, deviceId, clickedTransactionData, dev
               </div>
             </div>
           </div>
-
-          {/**/}
-          <div className="flex bottom-0 ">
-            <img alt="banner" src="/page_banner.png" className="w-full h-[50px]" />
-          </div>
+        </div>
+        {/**/}
+        <div className="border rounded-b-md print:rounded-none">
+          <img alt="banner" src="/page_banner.png" className="w-full h-[70px] rounded-b-md  print:rounded-none" />
         </div>
       </div>
 
@@ -207,6 +207,12 @@ function DeviceReturnForm({ handleOnPrint, deviceId, clickedTransactionData, dev
 
       {hasPermission("print") && (
         <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+          <SendViaEmail
+            text={"Send Using Email"}
+            onClick={() => {
+              handleSendEmail(userData?.staff_no || userData?.student_number, "Return-form", deviceDetails?.id);
+            }}
+          />
           <PrintButton
             text={"Print"}
             onClick={() => {

@@ -12,8 +12,9 @@ import { getIssureApproverSignature, getUserSignature } from "../../services/api
 import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
 import { getStudentDetails } from "../../services/api/students/Students.Api";
 import PrintButton from "../buttons/printButton/PrintButton";
+import SendViaEmail from "../buttons/sendViaEmail/SendViaEmail";
 
-function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
+function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, deviceDetails_ }) {
   const [year, setYear] = useState();
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
@@ -85,7 +86,7 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
 
   return (
     <div>
-      <div className="printable">
+      <div className="printable-loan-form">
         <div className="flex flex-col items-center justify-center gap-5">
           <div className="w-full flex justify-center ">
             <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo" />
@@ -198,24 +199,31 @@ function LoanIssueForm({ handleOnPrint, deviceId, user_id, deviceDetails_ }) {
                 </div>
               </div>
             </div>
-
-            {/**/}
-            <div className="flex bottom-0 ">
-              <img alt="banner" src="/page_banner.png" className="w-[800px] h-[50px]" />
-            </div>
           </div>
         </div>
-        {hasPermission("print") && (
-          <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
-            <PrintButton
-              text={"Print"}
-              onClick={() => {
-                handleOnPrint();
-              }}
-            />
-          </div>
-        )}
+        {/**/}
+        <div className="border rounded-b-md print:rounded-none">
+          <img alt="banner" src="/page_banner.png" className="w-full h-[70px] rounded-b-md  print:rounded-none" />
+        </div>
       </div>
+
+      {/** */}
+      {hasPermission("print") && (
+        <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+          <SendViaEmail
+            text={"Send Using Email"}
+            onClick={() => {
+              handleSendEmail(userData?.staff_no || userData?.student_number, "Loan-Issue", deviceDetails?.id);
+            }}
+          />
+          <PrintButton
+            text={"Print"}
+            onClick={() => {
+              handleOnPrint();
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

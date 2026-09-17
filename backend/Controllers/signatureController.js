@@ -195,4 +195,92 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
   }
 };
 
-module.exports = { getSignatures, getUserSignatures, createSignature, getIssuerAndreturnerAndApproverSignatures };
+//get Issuer & Approver signatures
+const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_number, status) => {
+  try {
+    if (!device_serial_number || !status) {
+      console.log("All details must be provided");
+    }
+
+    //Get Issuer & Approver ids
+    const getIssuerApprover = "SELECT * FROM device_transactions WHERE device_serial_number= $1 AND status = $2";
+    const device_transaction = await query(getIssuerApprover, [device_serial_number, status]);
+
+    //console.log(device_transaction.rows[0]);
+
+    if (device_transaction.rows.length === 0) {
+      console.log("Device transaction not found");
+    }
+
+    //get_Issuer
+    const getIssuer = "SELECT * FROM staff WHERE id = $1";
+    const issuer = await query(getIssuer, [device_transaction.rows[0].issued_by]);
+
+    if (issuer.rows.length === 0) {
+      console.log("Issuer not found");
+    }
+
+    //get_Approver
+    const getApprover = "SELECT * FROM staff WHERE id = $1";
+    const approver = await query(getApprover, [device_transaction.rows[0].approved_by]);
+
+    if (approver.rows.length === 0) {
+      console.log("Approver not found");
+    }
+
+    //get_IssuerSignature
+    const getIssuerSignature = "SELECT * FROM signatures WHERE user_id = $1";
+    const issuerSignature = await query(getIssuerSignature, [issuer.rows[0].staff_no]);
+
+    if (issuerSignature.rows.length === 0) {
+      console.log("Issure signature not found");
+    }
+
+    //get_ApproverSignature
+    const getApproverSignature = "SELECT * FROM signatures WHERE user_id = $1";
+    const approverSignature = await query(getApproverSignature, [approver.rows[0].staff_no]);
+
+    if (approverSignature.rows.length === 0) {
+      console.log("Approver signature not found");
+    }
+
+    //get_ReturnerSignature
+    let returner = null;
+    let ReturnerSignature = null;
+
+    if (device_transaction.rows[0].status === "Returned") {
+      //get_Returner
+      const getReturner = "SELECT * FROM staff WHERE id = $1";
+      returner = await query(getReturner, [device_transaction.rows[0].returned_by]);
+
+      if (returner.rows.length === 0) {
+        console.log("Returner not found");
+      }
+
+      const getReturnerSignature = "SELECT * FROM signatures WHERE user_id = $1";
+      ReturnerSignature = await query(getReturnerSignature, [returner.rows[0].staff_no]);
+
+      if (ReturnerSignature.rows.length === 0) {
+        console.log("Returner signature not found");
+      }
+    }
+
+    const signatures = {
+      issuerFullname: `${issuer.rows[0].name} ${issuer.rows[0].surname}`,
+      issuerSignature: issuerSignature.rows[0].image_base64,
+      issue_date: device_transaction.rows[0].issue_date,
+      approverFullname: `${approver.rows[0].name} ${approver.rows[0].surname}`,
+      approverSignature: approverSignature.rows[0].image_base64,
+      approve_date: device_transaction.rows[0].approve_date,
+      returnerFullname: returner ? `${returner?.rows[0].name} ${returner.rows[0].surname}` : null,
+      returnerSignature: ReturnerSignature ? ReturnerSignature.rows[0].image_base64 : null,
+      return_date: device_transaction.rows[0].return_date || null,
+    };
+
+    return signatures;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { getSignatures, getUserSignatures, createSignature, getIssuerAndreturnerAndApproverSignatures, getIssuerAndreturnerAndApproverSignaturesHelper };

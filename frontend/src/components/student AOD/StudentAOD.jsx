@@ -11,8 +11,9 @@ import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import { getIssureApproverSignature } from "../../services/api/signature/userSignatures";
 import PrintButton from "../buttons/printButton/PrintButton";
 import { handleTimeStampToText } from "../../utils/dateConverter";
+import SendViaEmail from "../buttons/sendViaEmail/SendViaEmail";
 
-function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
+function StudentAOD({ deviceId, handleSendEmail, handleOnPrint, student_no, deviceDetails_ }) {
   const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, user_id: null });
 
   const [ictStaffTrimmedDataURL, setIctStaffTrimmedDataURL] = useState(null);
@@ -88,9 +89,9 @@ function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
   }, []);
 
   return (
-    <div className="printable p-2 h-[1000px]">
+    <div className="printable-AOD p-2 h-[1100px] ">
       <div class="page-header ">
-        <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
+        <img src="/SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo-AOD" />
         <div class="page-address">
           <span class="address-heading">SOL PLAATJE UNIVERSITY</span>
           <span class="address-text">Private Bag X 5008, Kimberly, 8300</span>
@@ -102,7 +103,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
           </span>
         </div>
       </div>
-      <div className="body-header">
+      <div className="body-header ">
         <span class="body-title">ACKNOWLEDGEMENT OF DEBT</span>
       </div>
 
@@ -191,22 +192,22 @@ function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
             </ol>
           </div>
           <div>
-            Signed at <b>Kimberley</b> on the: <span className="font-semibold">{handleTimeStampToText(issuerApproverSignatures?.issue_date)}</span>
+            Signed at <b>Kimberley</b> on the: <span className="font-semibold">{handleTimeStampToText(deviceDetails?.issue_date)}</span>
           </div>
         </div>
         {/*<br>*/}
       </div>
-      <div class="page-footer ">
-        <div className="w-full">
-          <div className=" flex justify-between ">
+      <div class="page-footer">
+        <div className="w-full ">
+          <div className=" flex justify-between  ">
             {/**/}
             <div className="flex flex-col ">
               <div className=" flex justify-between ">
                 <div className={` col-span-1 flex  items-center`}>
                   <div>
                     <div className=" flex justify-between ">
-                      <div className="flex flex-col items-center justify-center ">
-                        <img alt="signature" src={issuerApproverSignatures?.approverSignature} className="w-[160px] " />
+                      <div className="w-full h-[50px] flex flex-col items-center justify-center ">
+                        <img alt="Approver-Signature" src={issuerApproverSignatures?.approverSignature} className="w-[160px] " />
                       </div>
                     </div>
                     <div className="flex flex-col -mt-3">
@@ -223,7 +224,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
                 <div className={` col-span-1 flex  items-center`}>
                   <div>
                     <div className=" flex justify-between ">
-                      <div className="flex flex-col items-center justify-center ">
+                      <div className="w-full h-[50px] flex flex-col items-center justify-center ">
                         <img alt="signature" src={studentData?.image_base64} className="w-[160px] " />
                       </div>
                     </div>
@@ -244,7 +245,7 @@ function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
             <div className={` col-span-1 flex  items-center`}>
               <div>
                 <div className=" flex justify-between ">
-                  <div className="flex flex-col items-center justify-center ">
+                  <div className="w-full h-[50px] flex flex-col items-center justify-center ">
                     <img alt="signature" src={issuerApproverSignatures?.issuerSignature} className="w-[160px] " />
                   </div>
                 </div>
@@ -261,6 +262,12 @@ function StudentAOD({ deviceId, handleOnPrint, student_no, deviceDetails_ }) {
 
       {hasPermission("print") && (
         <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+          <SendViaEmail
+            text={"Send Using Email"}
+            onClick={() => {
+              handleSendEmail(studentData?.student_number, "Student-Issue", deviceDetails?.id);
+            }}
+          />
           <PrintButton
             text={"Print"}
             onClick={() => {
