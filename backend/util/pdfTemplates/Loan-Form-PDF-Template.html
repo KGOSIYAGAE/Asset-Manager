@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Device Loan Issue Form</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: #000000;
+        font-family: "Poppins", Arial, sans-serif;
+        font-size: 12px;
+      }
+
+      .printable-loan-form {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 6mm;
+      }
+
+      .form-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5mm;
+      }
+
+      .logo-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .page-logo {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .form-section {
+        width: 91.6667%;
+        display: flex;
+        flex-direction: column;
+        gap: 4mm;
+      }
+
+      .section-heading {
+        width: 100%;
+        min-height: 28px;
+        padding: 4px 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #000000;
+        background-color: #cbd5e1;
+        text-align: center;
+        font-weight: 700;
+        line-height: 1.5;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .main-heading {
+        min-height: 44px;
+        font-size: 13px;
+      }
+
+      .details-table,
+      .office-table {
+        width: 100%;
+        border: 1px solid #000000;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      .details-table th,
+      .details-table td,
+      .office-table th,
+      .office-table td {
+        border: 1px solid #000000;
+        padding: 7px 8px;
+        text-align: left;
+        vertical-align: middle;
+        font-size: 12px;
+        font-weight: 400;
+        overflow-wrap: anywhere;
+      }
+
+      .details-table th {
+        width: 50%;
+        font-weight: 600;
+      }
+
+      .details-table td {
+        width: 50%;
+      }
+
+      .user-signature-row th,
+      .user-signature-row td {
+        height: 75px;
+      }
+
+      .signature-cell,
+      .office-signature-cell {
+        text-align: center !important;
+        vertical-align: middle !important;
+      }
+
+      .signature-image {
+        display: inline-block;
+        width: 180px;
+        height: 60px;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+
+      .office-table th {
+        width: 50%;
+        height: 75px;
+        font-weight: 400;
+      }
+
+      .office-table td {
+        width: 50%;
+      }
+
+      .office-label,
+      .office-name {
+        display: block;
+      }
+
+      .office-label {
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+
+      .page-footer {
+        width: 100%;
+        margin-top: auto;
+        border-radius: 0 0 5px 5px;
+        overflow: hidden;
+      }
+
+      .page-banner {
+        display: block;
+        width: 100%;
+        height: 70px;
+        object-fit: fill;
+        object-position: center;
+      }
+
+      /* A4 print / Puppeteer settings */
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      @media print {
+        html,
+        body {
+          width: 210mm;
+          min-height: 297mm;
+          margin: 0;
+          padding: 0;
+          background: #ffffff;
+        }
+
+        .printable-loan-form {
+          width: 210mm;
+          min-height: 297mm;
+          margin: 0;
+          box-shadow: none;
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+
+        .section-heading {
+          background-color: #cbd5e1 !important;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+
+        .page-footer {
+          border-radius: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="printable-loan-form">
+      <div class="form-content">
+        <div class="logo-container">
+          <img src="{{spu_logo}}" alt="SPU Logo" class="page-logo" />
+        </div>
+
+        <section class="form-section">
+          <header class="section-heading main-heading">
+            <span>DEVICE LOAN ISSUE FORM</span>
+            <span>SOL PLAATJE UNIVERSITY</span>
+          </header>
+
+          <header class="section-heading">
+            <span>DEVICE INFORMATION</span>
+          </header>
+
+          <table class="details-table">
+            <tbody>
+              <tr>
+                <th>DEVICE TYPE</th>
+                <td>{{device_type}}</td>
+              </tr>
+              <tr>
+                <th>DEVICE MAKE</th>
+                <td>{{device_make}}</td>
+              </tr>
+              <tr>
+                <th>DEVICE MODEL</th>
+                <td>{{device_model}}</td>
+              </tr>
+              <tr>
+                <th>DEVICE SERIAL NO</th>
+                <td>{{device_serial_no}}</td>
+              </tr>
+              <tr>
+                <th>ASSET TAG</th>
+                <td>{{asset_tag}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <header class="section-heading">
+            <span>USER INFORMATION</span>
+          </header>
+
+          <table class="details-table user-table">
+            <tbody>
+              <tr>
+                <th>NAME &amp; SURNAME</th>
+                <td>{{user_fullname}}</td>
+              </tr>
+              <tr>
+                <th>STAFF / STUDENT NO</th>
+                <td>{{user_number}}</td>
+              </tr>
+              <tr>
+                <th>DEPARTMENT / FACULTY</th>
+                <td>{{department_or_faculty}}</td>
+              </tr>
+              <tr>
+                <th>POSITION / COURSE</th>
+                <td>{{position_or_course}}</td>
+              </tr>
+              <tr>
+                <th>CONTACT NUMBER</th>
+                <td>{{phone_number}}</td>
+              </tr>
+              <tr>
+                <th>DATE OF LOAN</th>
+                <td>{{loan_date}}</td>
+              </tr>
+              <tr class="user-signature-row">
+                <th>STAFF SIGNATURE</th>
+                <td class="signature-cell">
+                  <img src="{{user_signature}}" alt="User Signature" class="signature-image" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <header class="section-heading">
+            <span>FOR OFFICE USE</span>
+          </header>
+
+          <table class="office-table">
+            <tbody>
+              <tr>
+                <th>
+                  <span class="office-label">LOAN ISSUED BY:</span>
+                  <span class="office-name">{{issuer_fullname}}</span>
+                </th>
+                <td class="office-signature-cell">
+                  <img src="{{issuer_signature}}" alt="Issuer Signature" class="signature-image" />
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  <span class="office-label">LOAN APPROVED BY:</span>
+                  <span class="office-name">{{approver_fullname}}</span>
+                </th>
+                <td class="office-signature-cell">
+                  <img src="{{approver_signature}}" alt="Approver Signature" class="signature-image" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <footer class="page-footer">
+        <img src="{{page_banner}}" alt="SPU Banner" class="page-banner" />
+      </footer>
+    </main>
+  </body>
+</html>

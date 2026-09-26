@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CancelButton from "../../buttons/CancelButton";
 import TextInput from "../../inputs/textInput/TextInput";
 import { IoAddCircleSharp, IoCloseCircleOutline } from "react-icons/io5";
@@ -7,11 +7,12 @@ import { getStudentDetails } from "../../../services/api/students/Students.Api";
 import { getStaffDetails } from "../../../services/api/staff/Staff.Api";
 import { sendFormWithEmail } from "../../../services/api/notification/notification.Api";
 
-function ComposeEmail({ onCanel, user_id, form_type, device_id, setShowToast }) {
+function ComposeEmail({ onCanel, onSubmit, user_id, form_type, device_id, setShowToast }) {
   const [emailReciever, setEmailReciver] = useState([]);
   const [emailInput, setEmailInput] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [userData, setUserData] = useState();
+  const inputRef = useRef(null);
 
   const handleShowAdd = (value) => {
     if (value.length <= 0) {
@@ -72,8 +73,9 @@ function ComposeEmail({ onCanel, user_id, form_type, device_id, setShowToast }) 
 
             <div className="flex items-center ">
               <input
+                ref={inputRef}
                 type={"text"}
-                className="w-[200px] outline-none  p-2"
+                className="w-[250px] outline-none  p-2"
                 maxLength={50}
                 disabled={false}
                 value={emailInput}
@@ -87,6 +89,9 @@ function ComposeEmail({ onCanel, user_id, form_type, device_id, setShowToast }) 
                 className={showAdd === true ? "" : "opacity-0"}
                 onClick={() => {
                   setEmailReciver([...emailReciever, emailInput]);
+                  setEmailInput("");
+                  handleShowAdd("");
+                  inputRef.current.focus();
                 }}
               >
                 <IoAddCircleSharp size={18} className="text-blue-500" />
@@ -109,6 +114,7 @@ function ComposeEmail({ onCanel, user_id, form_type, device_id, setShowToast }) 
               console.log(emailData);
 
               sendFormWithEmail(emailData, setShowToast);
+              onSubmit();
             }}
           />
           <CancelButton onClick={onCanel} />

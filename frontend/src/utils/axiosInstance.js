@@ -9,9 +9,9 @@ import { LoadingService } from "./loadingService";
 //NODE_ENV = 'production'
 
 //Production
-const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager" : `http://10.10.12.158:3000/api/v1/asset-manager`;
+//const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager" : `http://10.10.12.158:3000/api/v1/asset-manager`;
 
-//const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager" : `http://192.168.8.4:3000/api/v1/asset-manager`;
+const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager" : `http://192.168.8.4:3000/api/v1/asset-manager`;
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,

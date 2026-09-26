@@ -481,6 +481,10 @@ function DeviceDetails({ path }) {
               getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
+            onSubmit={() => {
+              getDeviceDetails();
+              setOpenModal({ isShown: false });
+            }}
             setShowToast={setShowToast}
           />
         ) : (

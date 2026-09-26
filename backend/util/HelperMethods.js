@@ -80,9 +80,20 @@ const getDeviceIssued = async (deviceId, res) => {
   }
 };
 
+const handleTimeStampToText = (timestamp) => {
+  if (timestamp) {
+    const localDate = new Date(timestamp).toLocaleDateString("en-ZA", {
+      timeZone: "Africa/Johannesburg",
+    });
+
+    return localDate;
+  }
+};
+
 module.exports = {
   getApprovers,
   getIssuer,
   getReceiver,
   getDeviceIssued,
+  handleTimeStampToText,
 };

@@ -199,8 +199,10 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
 const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_number, status) => {
   try {
     if (!device_serial_number || !status) {
-      console.log("All details must be provided");
+      return console.log("All details must be provided");
     }
+
+    console.log(device_serial_number, status);
 
     //Get Issuer & Approver ids
     const getIssuerApprover = "SELECT * FROM device_transactions WHERE device_serial_number= $1 AND status = $2";
@@ -209,7 +211,7 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
     //console.log(device_transaction.rows[0]);
 
     if (device_transaction.rows.length === 0) {
-      console.log("Device transaction not found");
+      return console.log("Device transaction not found");
     }
 
     //get_Issuer
@@ -217,7 +219,7 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
     const issuer = await query(getIssuer, [device_transaction.rows[0].issued_by]);
 
     if (issuer.rows.length === 0) {
-      console.log("Issuer not found");
+      return console.log("Issuer not found");
     }
 
     //get_Approver
@@ -225,7 +227,7 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
     const approver = await query(getApprover, [device_transaction.rows[0].approved_by]);
 
     if (approver.rows.length === 0) {
-      console.log("Approver not found");
+      return console.log("Approver not found");
     }
 
     //get_IssuerSignature
@@ -233,7 +235,7 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
     const issuerSignature = await query(getIssuerSignature, [issuer.rows[0].staff_no]);
 
     if (issuerSignature.rows.length === 0) {
-      console.log("Issure signature not found");
+      return console.log("Issure signature not found");
     }
 
     //get_ApproverSignature
@@ -241,7 +243,7 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
     const approverSignature = await query(getApproverSignature, [approver.rows[0].staff_no]);
 
     if (approverSignature.rows.length === 0) {
-      console.log("Approver signature not found");
+      return console.log("Approver signature not found");
     }
 
     //get_ReturnerSignature
@@ -254,14 +256,14 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
       returner = await query(getReturner, [device_transaction.rows[0].returned_by]);
 
       if (returner.rows.length === 0) {
-        console.log("Returner not found");
+        return console.log("Returner not found");
       }
 
       const getReturnerSignature = "SELECT * FROM signatures WHERE user_id = $1";
       ReturnerSignature = await query(getReturnerSignature, [returner.rows[0].staff_no]);
 
       if (ReturnerSignature.rows.length === 0) {
-        console.log("Returner signature not found");
+        return console.log("Returner signature not found");
       }
     }
 

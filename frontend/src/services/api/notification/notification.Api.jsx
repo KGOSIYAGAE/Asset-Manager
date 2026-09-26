@@ -22,7 +22,7 @@ export const sendFormWithEmail = async (emailData, setShowToast) => {
   try {
     const response = await axiosInstance.post("/notification/form-email", emailData, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return setShowToast({ isShow: true, type: "success", message: response.data.message });
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {

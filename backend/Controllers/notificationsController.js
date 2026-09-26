@@ -6,6 +6,7 @@ const { transporter } = require("../util/gmailTranspoter");
 const { sendEmail } = require("../util/azureGraphConnection");
 const puppeteer = require("puppeteer");
 const { getIssuerAndreturnerAndApproverSignatures, getIssuerAndreturnerAndApproverSignaturesHelper } = require("./signatureController");
+const { handleTimeStampToText } = require("../util/HelperMethods");
 
 //Send Email for approval request
 const sendApprovalEmail = async (req, res) => {
@@ -409,7 +410,12 @@ const sendFormViaEmail = async (req, res) => {
     }
 
     //Get Issuer & Approver
-    const segnatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, deviceDetails.rows[0].status);
+    let signatureResponses;
+    if (deviceDetails.rows[0].status !== "Assigned" || deviceDetails.rows[0].status !== "Loaned") {
+      signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, "Returned");
+    } else {
+      signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, deviceDetails.rows[0].status);
+    }
 
     /*return res.status(200).json({
       success: true,
@@ -427,10 +433,10 @@ const sendFormViaEmail = async (req, res) => {
 
       htmlContent = htmlContent
         .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
-        .replace(/{{form_type}}/g, "issued")
+        .replace(/{{form_type}}/g, "issued to you")
         .replace(/{{title}}/g, `Asset Issue Form`);
 
-      templatePdf = path.join(__dirname, "..", "util", "emailTemplates", "Student_AOD_PDF_Template.html");
+      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Student_AOD_PDF_Template.html");
       pdfContent = fs.readFileSync(templatePdf, "utf8");
 
       const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
@@ -444,7 +450,54 @@ const sendFormViaEmail = async (req, res) => {
 
       const spuLogo = `data:image/jpeg;base64,${logoBase64}`;
 
-      pdfContent = pdfContent
+      const replacements = {
+        spu_logo: spuLogo || "",
+        student_name: userDetails.rows[0].name || "",
+        student_surname: userDetails.rows[0].surname || "",
+        course_code: userDetails.rows[0].course_code || "",
+        course_name: userDetails.rows[0].course_name || "",
+        student_number: userDetails.rows[0].student_number || "",
+        phone_number: userDetails.rows[0].phone_number || "",
+        id_number: userDetails.rows[0].id_number || "",
+        purchase_price: deviceDetails.rows[0].purchase_price || "",
+        device_make: deviceDetails.rows[0].make || "",
+        device_model: deviceDetails.rows[0].model || "",
+        serial_number: deviceDetails.rows[0].serial_no || "",
+        issue_date: handleTimeStampToText(deviceDetails.rows[0].issue_date) || "",
+        approver_signature: signatureResponses.approverSignature || "",
+        student_signature: userDetails.rows[0].image_base64 || "",
+        issuer_signature: signatureResponses.issuerSignature || "",
+      };
+
+      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
+
+      pdfBuffer = await generatePdf(pdfContent);
+
+      subject = `Asset Issue Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
+    } else if (formType === "Staff-Issue") {
+      templatePath = path.join(__dirname, "..", "util", "emailTemplates", "sendFormEmailTemplate.html");
+      htmlContent = fs.readFileSync(templatePath, "utf8");
+
+      htmlContent = htmlContent
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{form_type}}/g, "issued to you")
+        .replace(/{{title}}/g, `Asset Issue Form`);
+
+      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Staff-Issue-Form-PDF-Template.html");
+      pdfContent = fs.readFileSync(templatePdf, "utf8");
+
+      const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
+      const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
+
+      if (!logoPath) {
+        return res.status(400).json({ message: `SPU Logo not found`, error: true });
+      }
+
+      const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+
+      const spuLogo = `data:image/jpeg;base64,${logoBase64}`;
+
+      /* pdfContent = pdfContent
         .replace(/{{spu_logo}}/g, spuLogo)
         .replace(/{{student_name}}/g, userDetails.rows[0].name)
         .replace(/{{student_surname}}/g, userDetails.rows[0].surname)
@@ -458,14 +511,158 @@ const sendFormViaEmail = async (req, res) => {
         .replace(/{{device_model}}/g, deviceDetails.rows[0].model)
         .replace(/{{serial_number}}/g, deviceDetails.rows[0].serial_no)
         .replace(/{{issue_date}}/g, deviceDetails.rows[0].issue_date)
-        .replace(/{{approver_signature}}/g, segnatureResponses.approverSignature)
+        .replace(/{{approver_signature}}/g, signatureResponses.approverSignature)
         .replace(/{{student_signature}}/g, userDetails.rows[0].image_base64)
-        .replace(/{{issuer_signature}}/g, segnatureResponses.issuerSignature);
+        .replace(/{{issuer_signature}}/g, signatureResponses.issuerSignature);*/
+
+      const bannerPath = path.join(process.cwd(), "public", "page_banner.png");
+
+      const pageBanner = `data:image/png;base64,${fs.readFileSync(bannerPath).toString("base64")}`;
+
+      const replacements = {
+        spu_logo: spuLogo,
+        page_banner: pageBanner,
+
+        device_type: deviceDetails.rows[0].category || "",
+        device_make: deviceDetails.rows[0].make || "",
+        device_model: deviceDetails.rows[0].model || "",
+        device_serial_no: deviceDetails.rows[0].serial_no || "",
+        asset_tag: deviceDetails.rows[0].asset_tag || "",
+
+        staff_fullname: `${userDetails.rows[0].name || ""} ${userDetails.rows[0].surname || ""}`.trim(),
+        staff_no: userDetails.rows[0].staff_no || "",
+        department_name: userDetails.rows[0].department_name || "",
+        position_name: userDetails.rows[0].position_name || "",
+        phone_number: userDetails.rows[0].phone_number || "",
+        issue_date: handleTimeStampToText(deviceDetails.rows[0].issue_date) || "",
+
+        staff_signature: userDetails.rows[0].image_base64 || "",
+        issuer_fullname: signatureResponses.issuerFullname || "",
+        issuer_signature: signatureResponses.issuerSignature || "",
+        approver_fullname: signatureResponses.approverFullname || "",
+        approver_signature: signatureResponses.approverSignature || "",
+      };
+
+      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
 
       pdfBuffer = await generatePdf(pdfContent);
 
       subject = `Asset Issue Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
-    } else {
+    } else if (formType === "Return-form") {
+      templatePath = path.join(__dirname, "..", "util", "emailTemplates", "sendFormEmailTemplate.html");
+      htmlContent = fs.readFileSync(templatePath, "utf8");
+
+      htmlContent = htmlContent
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{form_type}}/g, "returned by you")
+        .replace(/{{title}}/g, `Asset Return Form`);
+
+      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Return-Form-PDF-Template.html");
+      pdfContent = fs.readFileSync(templatePdf, "utf8");
+
+      const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
+      const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
+
+      if (!logoPath) {
+        return res.status(400).json({ message: `SPU Logo not found`, error: true });
+      }
+
+      const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+
+      const spuLogo = `data:image/jpeg;base64,${logoBase64}`;
+
+      const bannerPath = path.join(process.cwd(), "public", "page_banner.png");
+
+      const pageBanner = `data:image/png;base64,${fs.readFileSync(bannerPath).toString("base64")}`;
+
+      const replacements = {
+        spu_logo: spuLogo,
+        page_banner: pageBanner,
+
+        device_type: deviceDetails.rows[0].category || "",
+        device_make: deviceDetails.rows[0].make || "",
+        device_model: deviceDetails.rows[0].model || "",
+        device_serial_no: deviceDetails.rows[0].serial_no || "",
+        asset_tag: deviceDetails.rows[0].asset_tag || "",
+
+        user_fullname: `${userDetails.rows[0].name || ""} ${userDetails.rows[0].surname || ""}`.trim(),
+
+        user_number: userDetails.rows[0].staff_no || userDetails.rows[0].student_number || "",
+
+        department_or_faculty: userDetails.rows[0].department_name || userDetails.rows[0].faculty_name || "",
+
+        position_or_course: userDetails.rows[0].position_name || userDetails.rows[0].course_name || "",
+
+        phone_number: userDetails.rows[0].phone_number || "",
+
+        return_date: handleTimeStampToText(signatureResponses?.return_date) || "",
+
+        user_signature: userDetails.rows[0].image_base64 || "",
+        returner_fullname: signatureResponses?.returnerFullname || "",
+        returner_signature: signatureResponses?.returnerSignature || "",
+      };
+
+      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
+
+      pdfBuffer = await generatePdf(pdfContent);
+
+      subject = `Asset Return Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
+    } else if (formType === "Loan-Issue") {
+      templatePath = path.join(__dirname, "..", "util", "emailTemplates", "sendFormEmailTemplate.html");
+      htmlContent = fs.readFileSync(templatePath, "utf8");
+
+      htmlContent = htmlContent
+        .replace(/{{recipient_name}}/g, `${userDetails.rows[0].name} ${userDetails.rows[0].surname}`)
+        .replace(/{{form_type}}/g, "loaned to you")
+        .replace(/{{title}}/g, `Asset Loan Form`);
+
+      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Loan-Form-PDF-Template.html");
+      pdfContent = fs.readFileSync(templatePdf, "utf8");
+
+      const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
+      const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
+
+      if (!logoPath) {
+        return res.status(400).json({ message: `SPU Logo not found`, error: true });
+      }
+
+      const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+
+      const spuLogo = `data:image/jpeg;base64,${logoBase64}`;
+
+      const bannerPath = path.join(process.cwd(), "public", "page_banner.png");
+
+      const pageBanner = `data:image/png;base64,${fs.readFileSync(bannerPath).toString("base64")}`;
+
+      const replacements = {
+        spu_logo: spuLogo,
+        page_banner: pageBanner,
+
+        device_type: deviceDetails.rows[0].category || "",
+        device_make: deviceDetails.rows[0].make || "",
+        device_model: deviceDetails.rows[0].model || "",
+        device_serial_no: deviceDetails.rows[0].serial_no || "",
+        asset_tag: deviceDetails.rows[0].asset_tag || "",
+
+        user_fullname: `${userDetails.rows[0].name || ""} ${userDetails.rows[0].surname || ""}`.trim(),
+        user_number: userDetails.rows[0].staff_no || userDetails.rows[0].student_number || "",
+        department_or_faculty: userDetails.rows[0].department_name || userDetails.rows[0].faculty_name || "",
+        position_or_course: userDetails.rows[0].position_name || userDetails.rows[0].course_name || "",
+        phone_number: userDetails.rows[0].phone_number || "",
+        loan_date: handleTimeStampToText(deviceDetails.rows[0].issue_date) || "",
+
+        user_signature: userDetails.rows[0].image_base64 || "",
+        issuer_fullname: signatureResponses.issuerFullname || "",
+        issuer_signature: signatureResponses.issuerSignature || "",
+        approver_fullname: signatureResponses.approverFullname || "",
+        approver_signature: signatureResponses.approverSignature || "",
+      };
+
+      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
+
+      pdfBuffer = await generatePdf(pdfContent);
+
+      subject = `Asset Loan Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     }
 
     if (!htmlContent) {
@@ -490,7 +687,7 @@ const sendFormViaEmail = async (req, res) => {
           cid: "ict_banner_image", // Matches the 'src="cid:ict_banner_image"' value in your HTML
         },
         {
-          filename: `test.pdf`,
+          filename: `${userDetails.rows[0].name} ${userDetails.rows[0].surname}.pdf`,
           content: pdfBuffer,
           contentType: "application/pdf",
         },
@@ -499,7 +696,7 @@ const sendFormViaEmail = async (req, res) => {
 
     await sendEmail(mailOptions);
 
-    return res.status(200).json({ message: `Email Sent`, error: false });
+    return res.status(200).json({ message: `Form successfully sent to email.`, error: false });
   } catch (error) {
     console.log(error);
     throw error;
