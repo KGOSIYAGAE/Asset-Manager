@@ -6,6 +6,8 @@ import AddButton from "../../buttons/AddButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import PrintButton from "../../buttons/printButton/PrintButton";
 import { hasPermission } from "../../../utils/getLoggedInUser";
+import SendViaEmail from "../../buttons/sendViaEmail/SendViaEmail";
+import { handleSendApprovalEmail } from "../../../utils/handleNotificationEmails";
 
 function DeviceTransactionMoreDetailsCard({ deviceDetails }) {
   useEffect(() => {
@@ -103,11 +105,22 @@ function DeviceTransactionMoreDetailsCard({ deviceDetails }) {
           </div>
         </div>
       </div>
-      {hasPermission("print") && (
-        <div className="flex items-center justify-end gap-2">
-          <PrintButton text={"Print Form"} onClick={() => {}} />
+      {/*hasPermission("print") && (
+        <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+          <SendViaEmail
+            text={"Send Using Email"}
+            onClick={() => {
+              //handleSendApprovalEmail(studentData?.student_number, "Student-Issue", deviceDetails?.id);
+            }}
+          />
+          <PrintButton
+            text={"Print"}
+            onClick={() => {
+              //handleOnPrint();
+            }}
+          />
         </div>
-      )}
+      )*/}
     </div>
   );
 }

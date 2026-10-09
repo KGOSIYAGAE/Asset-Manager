@@ -28,6 +28,7 @@ import DeviceReturnForm from "../../components/returnForm/DeviceReturnForm";
 import QrCodeCard from "../../components/cards/qrCodeCard/QrCodeCard";
 import { socket } from "../../utils/socket";
 import ComposeEmail from "../../components/cards/composeEmail/ComposeEmail";
+import RejectionDetails from "../../components/cards/rejectionDetails/RejectionDetails";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -487,6 +488,8 @@ function DeviceDetails({ path }) {
             }}
             setShowToast={setShowToast}
           />
+        ) : openModal.type === "view-rejection-details" ? (
+          <RejectionDetails transaction={openModal.data} />
         ) : (
           <div>
             <span>Add another Template here!!!!!</span>

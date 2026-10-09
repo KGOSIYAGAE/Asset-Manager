@@ -92,7 +92,21 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
 
                     {hasPermission("print") && (
                       <td>
-                        {transaction?.status !== "Rejected" && (
+                        {transaction?.status === "Rejected" ? (
+                          <div
+                            className="flex items-center gap-2 text-slate-500 hover:text-slate-600 cursor-pointer"
+                            onClick={() => {
+                              //handleOpenForm(transaction, setOpenModal, setShowToast);
+                              setOpenModal({ isShown: true, type: "view-rejection-details", data: transaction });
+                            }}
+                          >
+                            <MdFileOpen size={20} />
+
+                            <span>View Rejection</span>
+                          </div>
+                        ) : transaction?.status === "Issue Approval required" || transaction?.status === "Loan Approval required" ? (
+                          ""
+                        ) : (
                           <div
                             className="flex items-center gap-2 text-slate-500 hover:text-slate-600 cursor-pointer"
                             onClick={() => {
@@ -102,7 +116,7 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
                           >
                             <MdFileOpen size={20} />
 
-                            <span>Open</span>
+                            <span>Open Form</span>
                           </div>
                         )}
                       </td>

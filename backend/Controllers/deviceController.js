@@ -905,8 +905,8 @@ const rejectDeviceIssueLoan = async (req, res) => {
     const device = rows[0];
 
     //Update  transations table status, returned_by, return_date
-    const updateDeviceCurrentState = "UPDATE device_transactions SET status=$1 WHERE device_serial_number=$2 AND user_id = $3";
-    const deviceState = await query(updateDeviceCurrentState, [status, device.serial_no, device.current_user_id]);
+    const updateDeviceCurrentState = "UPDATE device_transactions SET status=$1, rejection_reason=$2, rejected_by=$3, rejection_date=NOW() WHERE device_serial_number=$4 AND user_id = $5";
+    const deviceState = await query(updateDeviceCurrentState, [status, rejectReason, rejected_by, device.serial_no, device.current_user_id]);
 
     if (deviceState.rowCount === 0) {
       return res.status(400).json({ message: "Device transaction not updated", error: true });
@@ -925,7 +925,7 @@ const rejectDeviceIssueLoan = async (req, res) => {
     //Send Rejection Email Email
     const emailSent = await sendRejectionEmail(rejected_by, deviceTransactionId, device, rejectReason, res);
 
-    return res.status(200).json({ rowCount, message: `Device successfully released.`, error: false });
+    return res.status(200).json({ rowCount, message: `Device rejection email successfully sent.`, error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });

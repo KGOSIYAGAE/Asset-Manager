@@ -21,7 +21,7 @@ const createNewLog = async (action, created_by, item_id, description) => {
 
 const getAllLogs = async (req, res) => {
   try {
-    const getAllLogs = `SELECT * FROM "deviceLogDetails" ORDER BY id DESC LIMIT 10`;
+    const getAllLogs = `SELECT * FROM "deviceLogDetails" ORDER BY issued_by DESC LIMIT 10`;
 
     const { rowCount, rows } = await query(getAllLogs);
 
@@ -37,7 +37,7 @@ const getAllLogs = async (req, res) => {
 
 const getAllLatestDevicesTransactions = async (req, res) => {
   try {
-    const getAllLogs = `SELECT * FROM device_transactions WHERE ORDER BY created_at DESC`;
+    const getAllLogs = `SELECT * FROM device_transactions WHERE ORDER BY issued_by DESC`;
 
     const { rowCount, rows } = await query(getAllLogs);
 
@@ -73,13 +73,17 @@ const getAllTransactionsForDevice = async (req, res) => {
     device_transactions.expected_return_date,
     device_transactions.action_type,
     device_transactions.issue_date,
-    concat(COALESCE(students.name, staff.name), ' ', COALESCE(students.surname, staff.surname)) AS user_full_name
+    device_transactions.rejection_date,
+    device_transactions.rejection_reason,
+    concat(COALESCE(students.name, staff.name), ' ', COALESCE(students.surname, staff.surname)) AS user_full_name,
+    CONCAT(st_rejector.name,' ',st_rejector.surname) AS rejected_by
 
     FROM device_transactions
     LEFT JOIN devices ON device_transactions.device_serial_number = devices.serial_no
     LEFT JOIN students ON device_transactions.user_id = students.student_number
     LEFT JOIN staff ON device_transactions.user_id = staff.staff_no
-    WHERE device_transactions.device_serial_number = $1 ORDER BY return_date DESC;`;
+    LEFT JOIN staff st_rejector ON device_transactions.rejected_by = st_rejector.id
+    WHERE device_transactions.device_serial_number = $1 ORDER BY device_transactions.issue_date DESC;`;
 
     const { rowCount, rows } = await query(getAllTransactions, [serial_no]);
 
