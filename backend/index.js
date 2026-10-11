@@ -60,6 +60,10 @@ app.use("/api/v1/asset-manager/notification", notificationRouter);
 const repairRouter = require("./Routes/deviceRepairRoutes");
 app.use("/api/v1/asset-manager/repairs", repairRouter);
 
+//Repairs
+const jobDetailsRouter = require("./Routes/jobDetailsRoutes");
+app.use("/api/v1/asset-manager/job-details", jobDetailsRouter);
+
 //Test Routes
 const testRouter = require("./Routes/testRoutes");
 //const console = require("console");

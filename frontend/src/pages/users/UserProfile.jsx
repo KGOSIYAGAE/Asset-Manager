@@ -310,7 +310,7 @@ function UserProfile({ path }) {
             </div>
             <div className="col-span-2">
               <div className="text-input">
-                <span className="w-fit text-zinc-500 -mt-5 bg-white">Current Password</span>
+                <span className="w-fit text-zinc-500 -mt-5 bg-white">New Password</span>
                 <input
                   type={"password"}
                   className="outline-none"
@@ -324,7 +324,7 @@ function UserProfile({ path }) {
             </div>
             <div className="col-span-2">
               <div className={`text-input ${newPassword === confirmPassword ? "" : "border-2 border-red-400"}`}>
-                <span className={`w-fit -mt-5 bg-white ${newPassword === confirmPassword ? "text-zinc-500" : "text-red-400"}`}>Current Password</span>
+                <span className={`w-fit -mt-5 bg-white ${newPassword === confirmPassword ? "text-zinc-500" : "text-red-400"}`}>Confirm New Password</span>
                 <input
                   type={"password"}
                   className="outline-none"

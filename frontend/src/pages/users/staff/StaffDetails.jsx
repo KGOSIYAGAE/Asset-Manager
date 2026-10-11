@@ -192,7 +192,7 @@ function StaffDetails({ path }) {
           </div>
           <div className="flex justify-between bg-zinc-50 p-2 gap-3 item-hover">
             <span className="text-sm">Position</span>
-            <span className=" text-sm ">{staffDetails?.position_name}</span>
+            <span className=" text-sm ">{staffDetails?.post_name}</span>
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Contract Type</span>

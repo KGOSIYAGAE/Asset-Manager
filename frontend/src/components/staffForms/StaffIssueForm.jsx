@@ -147,7 +147,7 @@ function StaffIssueForm({ handleSendEmail, handleOnPrint, deviceId, staff_no, de
             </div>
             <div className="flex col-span-2 black-b-border ">
               <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">POSITION</div>
-              <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.position_name}</div>
+              <div className="w-1/2 text-sm col-span-1 p-2">{staffData?.post_name}</div>
             </div>
             <div className="flex col-span-2 black-b-border ">
               <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">CONTACT NUMBER</div>

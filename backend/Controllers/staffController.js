@@ -115,8 +115,7 @@ const getStaffDetails = async (req, res) => {
 //Create staff
 const createStaff = async (req, res) => {
   try {
-    console.log(req.body);
-    const { name, surname, phone_number, email, staff_no, faculty_name, position_name, department_name, contract_type, isActive, start_date, endDate } = req.body;
+    const { name, surname, staff_no, phone_number, email, position_id, contract_type, isActive, start_date, endDate } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name required", error: true });
@@ -133,15 +132,11 @@ const createStaff = async (req, res) => {
     if (!staff_no) {
       return res.status(400).json({ message: "Staff number is required", error: true });
     }
-    if (!faculty_name) {
-      return res.status(400).json({ message: "Faculty is required", error: true });
-    }
-    if (!position_name) {
+
+    if (!position_id) {
       return res.status(400).json({ message: "Position is required", error: true });
     }
-    if (!department_name) {
-      return res.status(400).json({ message: "Department is required", error: true });
-    }
+
     if (!contract_type) {
       return res.status(400).json({ message: "Contract type is required", error: true });
     }
@@ -153,8 +148,8 @@ const createStaff = async (req, res) => {
     }
 
     const create_staff_query =
-      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, faculty_name, position_name, department_name, start_date, end_date,created_at, updated_at, is_deleted) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,  $12, NOW(), NOW(),'FALSE')";
-    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, faculty_name, position_name, department_name, start_date, endDate];
+      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, position_id, start_date, end_date,created_at, updated_at, is_deleted) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW(),'FALSE')";
+    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, position_id, start_date, endDate];
 
     //Check if user exist
     checkStaffExist(staff_no, res);
@@ -224,7 +219,7 @@ const updateStaff = async (req, res) => {
       return res.status(400).json({ message: "User Id required", error: true });
     }
 
-    const { name, surname, phone_number, email, staff_no, faculty_name, position_name, department_name, contract_type, isActive, start_date, endDate } = req.body;
+    const { name, surname, staff_no, phone_number, email, position_id, contract_type, isActive, start_date, endDate } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name required", error: true });
@@ -242,15 +237,10 @@ const updateStaff = async (req, res) => {
       return res.status(400).json({ message: "Staff number is required", error: true });
     }
 
-    if (!faculty_name) {
-      return res.status(400).json({ message: "Faculty is required", error: true });
-    }
-    if (!position_name) {
+    if (!position_id) {
       return res.status(400).json({ message: "Position is required", error: true });
     }
-    if (!department_name) {
-      return res.status(400).json({ message: "Department is required", error: true });
-    }
+
     if (!contract_type) {
       return res.status(400).json({ message: "Contract type is required", error: true });
     }
@@ -262,8 +252,8 @@ const updateStaff = async (req, res) => {
     }
 
     const update_staff_query =
-      "UPDATE staff SET name=$1, surname=$2, phone_number=$3, email=$4, staff_no=$5, contract_type=$6, acc_status=$7, faculty_name=$8, position_name=$9, department_name=$10, start_date=$11, end_date=$12, updated_at=NOW() WHERE id = $13";
-    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, faculty_name, position_name, department_name, start_date, endDate];
+      "UPDATE staff SET name=$1, surname=$2, phone_number=$3, email=$4, staff_no=$5, contract_type=$6, acc_status=$7, position_id=$8, start_date=$9, end_date=$10, updated_at=NOW() WHERE id = $11";
+    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, position_id, start_date, endDate];
 
     const { rowCount } = await query(update_staff_query, [...VALUES, id]);
 

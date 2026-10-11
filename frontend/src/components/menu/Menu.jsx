@@ -13,6 +13,7 @@ import { IoMdClose } from "react-icons/io";
 
 function Menu({ isMinimized, onCloseMenu }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
+  const [showStaffOption, setShowStaffOptions] = useState(false);
   const [showSupportOption, setShowSupportOptions] = useState(false);
   const [showUserManagementOption, setShowUserManagementOptions] = useState(false);
   const [showReportOption, setShowReportOptions] = useState(false);
@@ -38,6 +39,7 @@ function Menu({ isMinimized, onCloseMenu }) {
         )}
         {isMinimized ? "" : <span className=" font-bold">Menu</span>}
         <div className={`flex flex-col gap-5 ${isMinimized ? " py-10" : ""}`}>
+          {/*Dashboard */}
           <Link to={"/home"}>
             <div className="menu-items ">
               <div className="menu-icon">
@@ -47,7 +49,7 @@ function Menu({ isMinimized, onCloseMenu }) {
             </div>
           </Link>
 
-          {/**/}
+          {/*Devices*/}
           <div className="flex flex-col gap-2 ">
             <Link to={"/devices"}>
               <div
@@ -120,14 +122,80 @@ function Menu({ isMinimized, onCloseMenu }) {
           </div>
           {/**/}
 
-          <Link to={"/users/staff/"}>
+          {/*<Link to={"/users/staff/"}>
             <div className="menu-items">
               <div className="menu-icon">
                 <FaPeopleGroup size={18} className="" />
               </div>
               {isMinimized ? <span className="lg:hidden">Staff</span> : <span className="">Staff</span>}
             </div>
-          </Link>
+          </Link>*/}
+
+          {/*Staff Menu Option*/}
+          <div className="flex flex-col gap-2 ">
+            <Link to={"/users/staff/"}>
+              <div
+                className="menu-items  justify-between "
+                onClick={() => {
+                  showStaffOption ? setShowStaffOptions(false) : setShowStaffOptions(true);
+                }}
+              >
+                <div className="flex items-center gap-3 ">
+                  <div className="menu-icon">
+                    <FaPeopleGroup size={18} className="" />
+                  </div>
+                  {isMinimized ? <span className="lg:hidden">Staff</span> : <span className="">Staff</span>}
+                </div>
+                {isMinimized ? (
+                  <div className=" flex lg:hidden">{showStaffOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                ) : (
+                  <div className=" flex ">{showStaffOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                )}
+              </div>
+            </Link>
+            {/**/}
+
+            <div className={`${showStaffOption ? "flex" : "hidden"} flex-col gap-3 pl-10`}>
+              <Link to={"/users/staff/"}>
+                <div className="menu-items">
+                  <div className="menu-icon"></div>
+                  <span className="text-sm">All Staff</span>
+                </div>
+              </Link>
+              {/*<Link to={"/devices/loaned-device"}>
+                <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
+                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
+                  <span className="text-sm">Assign Device</span>
+                </div>
+              </Link>*/}
+              {hasPermission("loan") && (
+                <Link to={"/users/staff/faculties"}>
+                  <div className="menu-items" onClick={() => {}}>
+                    <div className="menu-icon"></div>
+                    <span className="text-sm">Faculties</span>
+                  </div>
+                </Link>
+              )}
+              {hasPermission("view-upgrades") && (
+                <Link to={"/users/staff/departments"}>
+                  <div className="menu-items">
+                    <div className="menu-icon"></div>
+                    <span className="text-sm">Departments</span>
+                  </div>
+                </Link>
+              )}
+              {hasPermission("view-due-return") && (
+                <Link to={"/users/staff/positions"}>
+                  <div className="menu-items">
+                    <div className="menu-icon"></div>
+                    <span className="text-sm">Positions</span>
+                  </div>
+                </Link>
+              )}
+            </div>
+          </div>
+          {/**/}
+
           {/**/}
           <Link to={"/users/students"}>
             <div className="menu-items">

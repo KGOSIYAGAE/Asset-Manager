@@ -42,6 +42,9 @@ import Approval from "./pages/emailTemplates/Approval";
 import TabletView from "./pages/tabletView/TabletView";
 import SuccessPage from "./pages/succesPage/SuccessPage";
 import RepairDetails from "./pages/repairs/RepairDetails";
+import Faculties from "./pages/users/staff/Faculties";
+import Departments from "./pages/users/staff/Departments";
+import Positions from "./pages/users/staff/Positions";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -278,6 +281,18 @@ function App() {
           element: <AddEditStaff path={"edit-staff"} />,
         },
         { path: "/users/staff/staff-details/:staff_no", element: <StaffDetails path={"staff-details/"} />, errorElement: <Home /> },
+        {
+          path: "/users/staff/faculties",
+          element: <Faculties path={"faculties"} />,
+        },
+        {
+          path: "/users/staff/departments",
+          element: <Departments path={"departments"} />,
+        },
+        {
+          path: "/users/staff/positions",
+          element: <Positions path={"positions"} />,
+        },
 
         //Students
         {

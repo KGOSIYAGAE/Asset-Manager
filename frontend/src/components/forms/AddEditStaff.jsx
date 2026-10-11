@@ -26,6 +26,7 @@ import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
 
 import Modal from "react-modal";
 import { socket } from "../../utils/socket";
+import { getDepartments, getFaculties, getPositions } from "../../services/api/jobDetails/jobDetails";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -38,9 +39,15 @@ function AddEditStaff({ path }) {
   const [staff_no, setStaff_no] = useState();
   const [phone_number, setPhone_Number] = useState();
   const [email, setEmail] = useState();
-  const [faculty_name, setFaculty_name] = useState();
-  const [department_name, setDepartment_name] = useState();
+
+  const [faculty_id, setFaculty_id] = useState();
+
+  const [department_id, setDepartment_id] = useState();
+
   const [position_name, setPosition_name] = useState();
+  const [positions, setPositions] = useState();
+  const [position_id, setPosition_id] = useState();
+
   const [contract_type, setContract_Type] = useState();
   const [isActive, setIsActive] = useState();
   const [start_date, setStart_date] = useState();
@@ -76,14 +83,29 @@ function AddEditStaff({ path }) {
     setStaff_no(userDetails.staff_no);
     setPhone_Number(userDetails.phone_number);
     setEmail(userDetails.email);
-    setFaculty_name(userDetails.faculty_name);
-    setPosition_name(userDetails.position_name);
-    setDepartment_name(userDetails.department_name);
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
     setStart_date(handleTimeStamp(userDetails.start_date));
     setEndDate(handleTimeStamp(userDetails.end_date));
+
+    setFaculty_id(userDetails.faculty_id);
+    setDepartment_id(userDetails.department_id);
+    setPosition_id(userDetails.position_id);
+  };
+
+  //Form Clear
+  const hanldeFormClear = () => {
+    setName();
+    setSurname();
+    setStaff_no();
+    setPhone_Number();
+    setEmail();
+    setContract_Type();
+    setIsActive();
+    setLaptopDetails();
+    setStart_date();
+    setEndDate();
   };
 
   //Handle Submit / Update
@@ -108,35 +130,31 @@ function AddEditStaff({ path }) {
       return setShowToast({ isShown: true, type: "error", message: "Email must be provided" });
     }
 
-    if (!isActive) {
-      return setShowToast({ isShown: true, type: "error", message: "User status must be provided" });
-    }
-
-    if (!faculty_name) {
+    if (!faculty_id) {
       return setShowToast({ isShown: true, type: "error", message: "Faculty must be selected" });
     }
 
-    if (!department_name) {
+    if (!department_id) {
       return setShowToast({ isShown: true, type: "error", message: "Department must be selected" });
     }
 
-    if (!position_name) {
+    if (!position_id) {
       return setShowToast({ isShown: true, type: "error", message: "Position must be selected" });
+    }
+
+    if (!contract_type) {
+      return setShowToast({ isShown: true, type: "error", message: "Employment type must be provided" });
     }
 
     if (!start_date) {
       return setShowToast({ isShown: true, type: "error", message: "Start date must be provided" });
     }
 
+    if (!isActive) {
+      return setShowToast({ isShown: true, type: "error", message: "User status must be provided" });
+    }
+
     setError(null);
-
-    /*let end_date;
-
-    if (contract_type !== "Permanent") {
-      end_date = endDate;
-    } else {
-      end_date = null;
-    }*/
 
     const userData = {
       name,
@@ -144,9 +162,7 @@ function AddEditStaff({ path }) {
       staff_no,
       phone_number,
       email,
-      faculty_name,
-      department_name,
-      position_name,
+      position_id,
       contract_type,
       isActive,
       start_date,
@@ -162,23 +178,6 @@ function AddEditStaff({ path }) {
         updateStaff(id, userData, setShowToast);
       }
     }
-  };
-
-  //Form Clear
-  const hanldeFormClear = () => {
-    setName();
-    setSurname();
-    setStaff_no();
-    setPhone_Number();
-    setEmail();
-    setFaculty_name();
-    setPosition_name();
-    setDepartment_name();
-    setContract_Type();
-    setIsActive();
-    setLaptopDetails();
-    setStart_date();
-    setEndDate();
   };
 
   //Choose user status
@@ -271,29 +270,15 @@ function AddEditStaff({ path }) {
           </div>
 
           <div className="col-span-3 lg:col-span-2">
-            <FacultySelectInput
-              label={"Faculty"}
-              value={faculty_name}
-              departmentEntitiesList={departmentEntitiesList}
-              isDisabled={isDisabled}
-              setOnChange={setFaculty_name}
-              setDepartmentList={setDepartmentList}
-            />
+            <FacultySelectInput label={"Faculty"} faculty_id={faculty_id} isDisabled={isDisabled} setFaculty_id={setFaculty_id} />
           </div>
 
           <div className="col-span-3 lg:col-span-2">
-            <DepartmentSelectInput
-              label={"Department"}
-              value={department_name}
-              departmentList={departmentList}
-              isDisabled={isDisabled}
-              setOnChange={setDepartment_name}
-              setPositionList={setPositionList}
-            />
+            <DepartmentSelectInput label={"Department"} department_id={department_id} faculty_id={faculty_id} isDisabled={isDisabled} setDepartment_id={setDepartment_id} />
           </div>
 
           <div className="col-span-4 lg:col-span-2">
-            <PositionSelectInput label={"Position"} value={position_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
+            <PositionSelectInput label={"Position"} position_id={position_id} department_id={department_id} isDisabled={isDisabled} setPosition_id={setPosition_id} />
           </div>
 
           <div className="col-span-2 lg:col-span-2">
