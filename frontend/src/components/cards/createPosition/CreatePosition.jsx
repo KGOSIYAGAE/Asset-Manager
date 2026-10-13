@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CancelButton from "../../buttons/CancelButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import TextInput from "../../inputs/textInput/TextInput";
-import { createDepartment, createPosition, updateDepartment, updatePosition } from "../../../services/api/jobDetails/jobDetails";
+import { createDepartment, createPosition, updateDepartment, updatePosition } from "../../../services/api/organization/Organization";
 import FacultySelectInput from "../../inputs/selectInputs/facultySelectInput/FacultySelectInput";
 import DepartmentSelectInput from "../../inputs/selectInputs/departmentSelectInput/DepartmentSelectInput";
 import SelectInput from "../../inputs/selectInputs/selectInput/SelectInput";

@@ -10,19 +10,20 @@ import { CgInsights } from "react-icons/cg";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import { IoMdClose } from "react-icons/io";
+import { GiOrganigram } from "react-icons/gi";
 
-function Menu({ isMinimized, onCloseMenu }) {
+function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
-  const [showStaffOption, setShowStaffOptions] = useState(false);
+  const [showOrganizationOption, setShowOrganizationOptions] = useState(false);
   const [showSupportOption, setShowSupportOptions] = useState(false);
   const [showUserManagementOption, setShowUserManagementOptions] = useState(false);
   const [showReportOption, setShowReportOptions] = useState(false);
 
   return (
-    <div className="h-svh flex flex-col justify-between bg-red-600 text-white">
-      <div className={`h-svh flex flex-col ${isMinimized ? "items-center" : ""} p-3`}>
+    <div className="  h-svh flex flex-col justify-between  text-white">
+      <div className={`h-svh flex flex-col bg-red-600 ${isMinimized ? "items-center lg:w-[60px] " : ""} p-3 w-[250px]`}>
         {isMinimized ? (
-          <div className="w-full flex lg:flex-col items-center justify-end">
+          <div className="w-full flex lg:flex-col items-center justify-end ">
             <div
               onClick={() => {
                 onCloseMenu();
@@ -51,33 +52,36 @@ function Menu({ isMinimized, onCloseMenu }) {
 
           {/*Devices*/}
           <div className="flex flex-col gap-2 ">
-            <Link to={"/devices"}>
-              <div
-                className="menu-items  justify-between "
-                onClick={() => {
-                  showDeviceOption ? setShowDeviceOptions(false) : setShowDeviceOptions(true);
-                }}
-              >
-                <div className="flex items-center gap-3 ">
-                  <div className="menu-icon">
-                    <MdDevices size={18} className="" />
-                  </div>
-                  {isMinimized ? <span className="lg:hidden">Devices</span> : <span className="">Devices</span>}
+            <div
+              className="menu-items  justify-between "
+              onClick={() => {
+                showDeviceOption ? setShowDeviceOptions(false) : setShowDeviceOptions(true);
+              }}
+            >
+              <div className="flex items-center gap-3 ">
+                <div className="menu-icon">
+                  <MdDevices size={18} className="" />
                 </div>
-                {isMinimized ? (
-                  <div className=" flex lg:hidden">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                ) : (
-                  <div className=" flex ">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                )}
+                {isMinimized ? <span className="lg:hidden">Devices</span> : <span className="">Devices</span>}
               </div>
-            </Link>
+              {isMinimized ? (
+                <div className=" flex lg:hidden">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              ) : (
+                <div className=" flex ">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              )}
+            </div>
+
             {/**/}
 
-            <div className={`${showDeviceOption ? "flex" : "hidden"} flex-col gap-3 pl-10`}>
+            <div className={`${showDeviceOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
               <Link to={"/devices"}>
-                <div className="menu-items">
-                  <div className="menu-icon"></div>
-                  <span className="text-sm">All Devices</span>
+                <div
+                  className="menu-items"
+                  onClick={() => {
+                    console.log(isMinimized);
+                  }}
+                >
+                  <span className="text-sm p-1">All Devices</span>
                 </div>
               </Link>
               {/*<Link to={"/devices/loaned-device"}>
@@ -89,32 +93,28 @@ function Menu({ isMinimized, onCloseMenu }) {
               {hasPermission("loan") && (
                 <Link to={"/devices/loaned-device"}>
                   <div className="menu-items" onClick={() => {}}>
-                    <div className="menu-icon"></div>
-                    <span className="text-sm">Loaned Devices</span>
+                    <span className="text-sm p-1">Loaned Devices</span>
                   </div>
                 </Link>
               )}
               {hasPermission("view-upgrades") && (
                 <Link to={"/devices/device-due-upgrade"}>
                   <div className="menu-items">
-                    <div className="menu-icon"></div>
-                    <span className="text-sm">Upgrade Due</span>
+                    <span className="text-sm p-1">Upgrade Due</span>
                   </div>
                 </Link>
               )}
               {hasPermission("view-due-return") && (
                 <Link to={"/devices/device-due-return"}>
                   <div className="menu-items">
-                    <div className="menu-icon"></div>
-                    <span className="text-sm">Return Due By Intern/ Contractors</span>
+                    <span className="text-sm p-1">Return Due By Intern/ Contractors</span>
                   </div>
                 </Link>
               )}
               {hasPermission("approve") && (
                 <Link to={"/devices/device-approval"}>
                   <div className="menu-items">
-                    <div className="menu-icon"></div>
-                    <span className="text-sm">Device Approval</span>
+                    <span className="text-sm p-1">Device Approval</span>
                   </div>
                 </Link>
               )}
@@ -137,7 +137,7 @@ function Menu({ isMinimized, onCloseMenu }) {
               <div
                 className="menu-items  justify-between "
                 onClick={() => {
-                  showStaffOption ? setShowStaffOptions(false) : setShowStaffOptions(true);
+                  showOrganizationOption ? setShowOrganizationOptions(false) : setShowOrganizationOptions(true);
                 }}
               >
                 <div className="flex items-center gap-3 ">
@@ -146,53 +146,9 @@ function Menu({ isMinimized, onCloseMenu }) {
                   </div>
                   {isMinimized ? <span className="lg:hidden">Staff</span> : <span className="">Staff</span>}
                 </div>
-                {isMinimized ? (
-                  <div className=" flex lg:hidden">{showStaffOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                ) : (
-                  <div className=" flex ">{showStaffOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                )}
               </div>
             </Link>
             {/**/}
-
-            <div className={`${showStaffOption ? "flex" : "hidden"} flex-col gap-3 pl-10`}>
-              <Link to={"/users/staff/"}>
-                <div className="menu-items">
-                  <div className="menu-icon"></div>
-                  <span className="text-sm">All Staff</span>
-                </div>
-              </Link>
-              {/*<Link to={"/devices/loaned-device"}>
-                <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
-                  <div className="flex bg-zinc-100 rounded-md p-2 gap-2"></div>
-                  <span className="text-sm">Assign Device</span>
-                </div>
-              </Link>*/}
-              {hasPermission("loan") && (
-                <Link to={"/users/staff/faculties"}>
-                  <div className="menu-items" onClick={() => {}}>
-                    <div className="menu-icon"></div>
-                    <span className="text-sm">Faculties</span>
-                  </div>
-                </Link>
-              )}
-              {hasPermission("view-upgrades") && (
-                <Link to={"/users/staff/departments"}>
-                  <div className="menu-items">
-                    <div className="menu-icon"></div>
-                    <span className="text-sm">Departments</span>
-                  </div>
-                </Link>
-              )}
-              {hasPermission("view-due-return") && (
-                <Link to={"/users/staff/positions"}>
-                  <div className="menu-items">
-                    <div className="menu-icon"></div>
-                    <span className="text-sm">Positions</span>
-                  </div>
-                </Link>
-              )}
-            </div>
           </div>
           {/**/}
 
@@ -205,6 +161,55 @@ function Menu({ isMinimized, onCloseMenu }) {
               {isMinimized ? <span className="lg:hidden">Students</span> : <span className="">Students</span>}
             </div>
           </Link>
+
+          {/*Staff Menu Option*/}
+          <div className="flex flex-col gap-2 ">
+            <div
+              className="menu-items  justify-between "
+              onClick={() => {
+                showOrganizationOption ? setShowOrganizationOptions(false) : setShowOrganizationOptions(true);
+              }}
+            >
+              <div className="flex items-center gap-3 ">
+                <div className="menu-icon">
+                  <GiOrganigram size={18} className="" />
+                </div>
+                {isMinimized ? <span className="lg:hidden">Organization</span> : <span className="">Organization</span>}
+              </div>
+              {isMinimized ? (
+                <div className=" flex lg:hidden">{showOrganizationOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              ) : (
+                <div className=" flex ">{showOrganizationOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              )}
+            </div>
+
+            {/**/}
+
+            <div className={`${showOrganizationOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
+              {hasPermission("loan") && (
+                <Link to={"/organization/faculties"}>
+                  <div className="menu-items" onClick={() => {}}>
+                    <span className="text-sm p-1">Faculties</span>
+                  </div>
+                </Link>
+              )}
+              {hasPermission("view-upgrades") && (
+                <Link to={"/organization/departments"}>
+                  <div className="menu-items">
+                    <span className="text-sm p-1">Departments</span>
+                  </div>
+                </Link>
+              )}
+              {hasPermission("view-due-return") && (
+                <Link to={"/organization/positions"}>
+                  <div className="menu-items">
+                    <span className="text-sm p-1">Positions</span>
+                  </div>
+                </Link>
+              )}
+            </div>
+          </div>
+          {/**/}
 
           {/*Asset & Support Management*/}
           {hasPermission("view-repairs") && (
@@ -260,16 +265,14 @@ function Menu({ isMinimized, onCloseMenu }) {
                 )}
               </div>
               {/**/}
-              <div className={`${showUserManagementOption ? "flex" : "hidden"} flex-col  gap-3 pl-10`}>
+              <div className={`${showUserManagementOption ? "flex " : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
                 <Link to={"/users/roles-and-permissions"}>
-                  <div className="flex items-center gap-2 menu-items">
-                    <div className="menu-icon"></div>
+                  <div className="flex items-center gap-2 menu-items p-1">
                     <span className="text-sm">Role & Permissions</span>
                   </div>
                 </Link>
                 <Link to={"/devices/loaned-device"}>
-                  <div className="flex items-center gap-2 menu-items" onClick={() => {}}>
-                    <div className="menu-icon"></div>
+                  <div className="flex items-center gap-2 menu-items p-1" onClick={() => {}}>
                     <span className="text-sm">User Logs</span>
                   </div>
                 </Link>

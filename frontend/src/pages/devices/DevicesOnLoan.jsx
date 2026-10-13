@@ -62,7 +62,7 @@ function DevicesOnLoan({ path }) {
           <div className="flex gap-2 ">
             {hasPermission("loan") && (
               <AddButton
-                name={"Create New Loan"}
+                name={"Create Loan"}
                 handleAdd={() => {
                   setOpenModal({ isShown: true, type: "new-loan", data: "hello" });
                 }}

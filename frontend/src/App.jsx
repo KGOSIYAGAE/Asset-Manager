@@ -42,9 +42,9 @@ import Approval from "./pages/emailTemplates/Approval";
 import TabletView from "./pages/tabletView/TabletView";
 import SuccessPage from "./pages/succesPage/SuccessPage";
 import RepairDetails from "./pages/repairs/RepairDetails";
-import Faculties from "./pages/users/staff/Faculties";
-import Departments from "./pages/users/staff/Departments";
-import Positions from "./pages/users/staff/Positions";
+import Faculties from "./pages/organization/Faculties";
+import Departments from "./pages/organization/Departments";
+import Positions from "./pages/organization/Positions";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -71,8 +71,12 @@ function App() {
   //App UI Layout
   const Layout = () => {
     return (
-      <div className="w-screen lg:flex lg:flex-row">
-        <div className={`${isMinimize ? "w-[250px] lg:w-[60px] absolute lg:translate-x-0 lg:relative z-30" : "absolute -translate-x-60  lg:translate-x-0 lg:relative lg:w-2/12 z-50"}`}>
+      <div className="w-screen lg:flex lg:flex-row ">
+        <div
+          className={` ${
+            isMinimize ? "w-screen bg-black bg-opacity-15 lg:w-[60px] absolute lg:translate-x-0 lg:relative z-30 " : "absolute -translate-x-72  lg:translate-x-0 lg:relative lg:w-2/12 z-50 "
+          }`}
+        >
           <Menu isMinimized={isMinimize} setIsMinimize={setIsMinimize} onCloseMenu={handleMinimizeMenu} />
         </div>
         <div className={`${isMinimize ? "w-full p-2 lg:p-0" : "lg:w-10/12 p-2 lg:p-0"} flex flex-col`}>
@@ -281,18 +285,6 @@ function App() {
           element: <AddEditStaff path={"edit-staff"} />,
         },
         { path: "/users/staff/staff-details/:staff_no", element: <StaffDetails path={"staff-details/"} />, errorElement: <Home /> },
-        {
-          path: "/users/staff/faculties",
-          element: <Faculties path={"faculties"} />,
-        },
-        {
-          path: "/users/staff/departments",
-          element: <Departments path={"departments"} />,
-        },
-        {
-          path: "/users/staff/positions",
-          element: <Positions path={"positions"} />,
-        },
 
         //Students
         {
@@ -308,6 +300,20 @@ function App() {
           element: <AddEditStudent path={"edit-student"} />,
         },
         { path: "/users/students/student-details/:student_no", element: <StudentDetails path={"student-details/"} />, errorElement: <Home /> },
+
+        //Organization
+        {
+          path: "/organization/faculties",
+          element: <Faculties path={"faculties"} />,
+        },
+        {
+          path: "/organization/departments",
+          element: <Departments path={"departments"} />,
+        },
+        {
+          path: "/organization/positions",
+          element: <Positions path={"positions"} />,
+        },
 
         //Repairs
         {

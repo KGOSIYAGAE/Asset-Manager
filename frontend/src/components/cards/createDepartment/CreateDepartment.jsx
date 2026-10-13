@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CancelButton from "../../buttons/CancelButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import TextInput from "../../inputs/textInput/TextInput";
-import { createDepartment, updateDepartment } from "../../../services/api/jobDetails/jobDetails";
+import { createDepartment, updateDepartment } from "../../../services/api/organization/Organization";
 import FacultySelectInput from "../../inputs/selectInputs/facultySelectInput/FacultySelectInput";
 
 function CreateDepartment({ onCanel, onSubmit, setShowToast, modalType, modalData }) {

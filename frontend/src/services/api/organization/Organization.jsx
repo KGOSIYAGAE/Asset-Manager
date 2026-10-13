@@ -2,7 +2,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 
 export const getFaculties = async (data, setFaculties, setTotalPages) => {
   try {
-    const response = await axiosInstance.get(`/job-details/faculties/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
+    const response = await axiosInstance.get(`/organization/faculties/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (response.data && response.data.faculties) {
       setTotalPages(response.data.totalPages);
@@ -19,7 +19,7 @@ export const getFaculties = async (data, setFaculties, setTotalPages) => {
 
 export const getFacultiesList = async (setFaculties) => {
   try {
-    const response = await axiosInstance.get(`/job-details/faculties/`, { showSpinner: true });
+    const response = await axiosInstance.get(`/organization/faculties/`, { showSpinner: true });
 
     if (response.data && response.data.faculties) {
       return setFaculties(response.data.faculties);
@@ -36,7 +36,7 @@ export const getFacultiesList = async (setFaculties) => {
 //add faculty
 export const createFaculty = async (data, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/job-details/faculties/create-faculty/", data, { showSpinner: true });
+    const response = await axiosInstance.post("/organization/faculties/create-faculty/", data, { showSpinner: true });
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
     }
@@ -57,7 +57,7 @@ export const updateFaculty = async (faculty_id, data, setShowToast) => {
       return setShowToast({ isShow: true, type: "error", message: "Faculty id must be provided" });
     }
 
-    const response = await axiosInstance.put("/job-details/faculties/update-faculty/" + faculty_id, data, { showSpinner: true });
+    const response = await axiosInstance.put("/organization/faculties/update-faculty/" + faculty_id, data, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -78,7 +78,7 @@ export const deleteFaculty = async (faculty_id, setShowToast) => {
       return setShowToast({ isShow: true, type: "error", message: "Faculty id must be provided" });
     }
 
-    const response = await axiosInstance.put("/job-details/faculties/delete-faculty/" + faculty_id, { showSpinner: true });
+    const response = await axiosInstance.put("/organization/faculties/delete-faculty/" + faculty_id, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -94,7 +94,7 @@ export const deleteFaculty = async (faculty_id, setShowToast) => {
 
 export const getDepartments = async (data, setDepartment, setTotalPages) => {
   try {
-    const response = await axiosInstance.get(`/job-details/departments/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
+    const response = await axiosInstance.get(`/organization/departments/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (response.data && response.data.departments) {
       setTotalPages(response.data.totalPages);
@@ -111,7 +111,7 @@ export const getDepartments = async (data, setDepartment, setTotalPages) => {
 
 export const getDepartmentsList = async (setDepartment) => {
   try {
-    const response = await axiosInstance.get("/job-details/departments/", { showSpinner: true });
+    const response = await axiosInstance.get("/organization/departments/", { showSpinner: true });
 
     if (response.data && response.data.departments) {
       return setDepartment(response.data.departments);
@@ -127,7 +127,7 @@ export const getDepartmentsList = async (setDepartment) => {
 
 export const getDepartmentsOfFaculty = async (faculty_id, setDepartment) => {
   try {
-    const response = await axiosInstance.get("/job-details/departments-faculty/" + faculty_id, { showSpinner: true });
+    const response = await axiosInstance.get("/organization/departments-faculty/" + faculty_id, { showSpinner: true });
 
     if (response.data && response.data.departments) {
       return setDepartment(response.data.departments);
@@ -144,7 +144,7 @@ export const getDepartmentsOfFaculty = async (faculty_id, setDepartment) => {
 //add department
 export const createDepartment = async (data, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/job-details/departments/create-department/", data, { showSpinner: true });
+    const response = await axiosInstance.post("/organization/departments/create-department/", data, { showSpinner: true });
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
     }
@@ -165,7 +165,7 @@ export const updateDepartment = async (department_id, data, setShowToast) => {
       return setShowToast({ isShow: true, type: "error", message: "Department id must be provided" });
     }
 
-    const response = await axiosInstance.put("/job-details/departments/update-department/" + department_id, data, { showSpinner: true });
+    const response = await axiosInstance.put("/organization/departments/update-department/" + department_id, data, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -185,7 +185,7 @@ export const deleteDepartment = async (department_id, setShowToast) => {
       return setShowToast({ isShow: true, type: "error", message: "Department id must be provided" });
     }
 
-    const response = await axiosInstance.put("/job-details/departments/delete-department/" + department_id, { showSpinner: true });
+    const response = await axiosInstance.put("/organization/departments/delete-department/" + department_id, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -201,7 +201,7 @@ export const deleteDepartment = async (department_id, setShowToast) => {
 
 export const getPositions = async (data, setPositions, setTotalPages) => {
   try {
-    const response = await axiosInstance.get(`/job-details/positions/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
+    const response = await axiosInstance.get(`/organization/positions/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (response.data && response.data.positions) {
       setTotalPages(response.data.totalPages);
@@ -218,7 +218,7 @@ export const getPositions = async (data, setPositions, setTotalPages) => {
 
 export const getPositionsOfDepartment = async (department_id, setPositions) => {
   try {
-    const response = await axiosInstance.get("/job-details/positions-department/" + department_id, { showSpinner: true });
+    const response = await axiosInstance.get("/organization/positions-department/" + department_id, { showSpinner: true });
 
     if (response.data && response.data.positions) {
       return setPositions(response.data.positions);
@@ -234,7 +234,7 @@ export const getPositionsOfDepartment = async (department_id, setPositions) => {
 
 export const getPositionsList = async (setPositions, setTotalPages) => {
   try {
-    const response = await axiosInstance.get(`/job-details/positions/`, { showSpinner: true });
+    const response = await axiosInstance.get(`/organization/positions/`, { showSpinner: true });
 
     if (response.data && response.data.positions) {
       setTotalPages(response.data.totalPages);
@@ -252,7 +252,7 @@ export const getPositionsList = async (setPositions, setTotalPages) => {
 //add position
 export const createPosition = async (data, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/job-details/positions/create-position/", data, { showSpinner: true });
+    const response = await axiosInstance.post("/organization/positions/create-position/", data, { showSpinner: true });
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
     }
@@ -273,7 +273,7 @@ export const updatePosition = async (position_id, data, setShowToast) => {
       return setShowToast({ isShow: true, type: "error", message: "Department id must be provided" });
     }
 
-    const response = await axiosInstance.put("/job-details/positions/update-position/" + position_id, data, { showSpinner: true });
+    const response = await axiosInstance.put("/organization/positions/update-position/" + position_id, data, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
@@ -294,7 +294,7 @@ export const deletePostion = async (position_id, setShowToast) => {
       return setShowToast({ isShow: true, type: "error", message: "Position id must be provided" });
     }
 
-    const response = await axiosInstance.put("/job-details/positions/delete-position/" + position_id, { showSpinner: true });
+    const response = await axiosInstance.put("/organization/positions/delete-position/" + position_id, { showSpinner: true });
 
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });

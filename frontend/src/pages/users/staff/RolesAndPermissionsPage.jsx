@@ -31,8 +31,8 @@ function RolesAndPermissionsPage({ path }) {
   };
 
   useEffect(() => {
-    getAdmins(setUsersAndAdmins);
-  }, []);
+    getAdmins({ page: currentPage, limit: limit }, setUsersAndAdmins, setTotalPages);
+  }, [currentPage]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
@@ -40,7 +40,7 @@ function RolesAndPermissionsPage({ path }) {
         Users/ <b> {path}</b>
       </span>
       {/* */}
-      <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
+      <div className="col-span-6 h-[580px] bg-white rounded-md shadow-md ">
         <div className="flex items-center justify-between rounded-t-md p-2 sticky top-0 bg-white">
           <span className="heading-text ">{"Roles & Permissions"}</span>
           <div className="flex gap-2 ">

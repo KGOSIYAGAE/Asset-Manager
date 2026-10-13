@@ -26,7 +26,7 @@ import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
 
 import Modal from "react-modal";
 import { socket } from "../../utils/socket";
-import { getDepartments, getFaculties, getPositions } from "../../services/api/jobDetails/jobDetails";
+import { getDepartments, getFaculties, getPositions } from "../../services/api/organization/Organization";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CancelButton from "../../buttons/CancelButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import TextInput from "../../inputs/textInput/TextInput";
-import { createFaculty, updateFaculty } from "../../../services/api/jobDetails/jobDetails";
+import { createFaculty, updateFaculty } from "../../../services/api/organization/Organization";
 
 function CreateFaculty({ onCanel, onSubmit, setShowToast, modalType, modalData }) {
   const [facultyName, setFacultyName] = useState();

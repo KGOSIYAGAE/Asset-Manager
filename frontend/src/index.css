@@ -68,11 +68,11 @@ html {
   }
 
   .menu-items {
-    @apply flex  items-center  gap-1 text-white transition-all duration-200 hover:bg-slate-50 hover:bg-opacity-15 rounded-md;
+    @apply flex  items-center  gap-1 text-white transition-all duration-200 hover:bg-slate-50 hover:bg-opacity-30 rounded-md;
   }
 
   .menu-icon {
-    @apply bg-slate-50 bg-opacity-15 rounded-md p-2;
+    @apply bg-slate-50 bg-opacity-30 rounded-md p-2;
   }
 
   .top-nav-items {

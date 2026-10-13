@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getPositions, getPositionsOfDepartment } from "../../../../services/api/jobDetails/jobDetails";
+import { getPositions, getPositionsOfDepartment } from "../../../../services/api/organization/Organization";
 
 function PositionSelectInput({ label, position_id, department_id, isDisabled, setPosition_id }) {
   const [position_name, setPosition_name] = useState();

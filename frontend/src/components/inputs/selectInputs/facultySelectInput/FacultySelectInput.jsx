@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getFaculties, getFacultiesList } from "../../../../services/api/jobDetails/jobDetails";
+import { getFaculties, getFacultiesList } from "../../../../services/api/organization/Organization";
 
 function FacultySelectInput({ label, faculty_id, isDisabled, setFaculty_id }) {
   const [faculty_name, setFaculty_name] = useState();

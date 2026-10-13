@@ -15,7 +15,7 @@ const {
   createFaculty,
   updateFaculty,
   deleteFaculty,
-} = require("../Controllers/jobDetailsController");
+} = require("../Controllers/OrganizationController");
 
 //Get All positions
 router.get("/positions/", getPositions);

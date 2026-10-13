@@ -85,7 +85,7 @@ function students({ path }) {
           <span className="heading-text">Students List</span>
           <div className="flex gap-6 lg:gap-2">
             <SearchInput tableName={"students"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
-            {hasPermission("create") && <AddButton name={"Add New Student"} handleAdd={handleAdd} />}
+            {hasPermission("create") && <AddButton name={"Add Student"} handleAdd={handleAdd} />}
 
             {hasPermission("import") && <BulkAddButton onClick={ImportModal} />}
             {hasPermission("export") && <ExportExcelButton />}

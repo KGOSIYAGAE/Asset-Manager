@@ -74,11 +74,12 @@ export const updateUserRole = async (data) => {
 };
 
 //Get Admins
-export const getAdmins = async (setUsersAndAdmins) => {
+export const getAdmins = async (data, setUsersAndAdmins, setTotalPages) => {
   try {
-    const response = await loginAxiosInstance.get("/", { showSpinner: true });
+    const response = await loginAxiosInstance.get(`/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (!response.data.error) {
+      setTotalPages(response.data.totalPages);
       return setUsersAndAdmins(response.data.adminList);
     }
   } catch (error) {

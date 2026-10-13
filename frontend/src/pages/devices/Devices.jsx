@@ -85,7 +85,7 @@ function Devices({ path }) {
           <span className="heading-text">Device List</span>
           <div className="flex gap-6 lg:gap-2 ">
             <SearchInput tableName={"devices"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
-            {hasPermission("create") && <AddButton name={"Add New Device"} handleAdd={handleAdd} />}
+            {hasPermission("create") && <AddButton name={"Add Device"} handleAdd={handleAdd} />}
             {hasPermission("import") && <BulkAddButton onClick={ImportModal} />}
             {hasPermission("export") && <ExportExcelButton />}
           </div>

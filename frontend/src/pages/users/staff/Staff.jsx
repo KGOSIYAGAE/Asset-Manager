@@ -93,7 +93,7 @@ function Staff({ path }) {
           <span className="heading-text">Staff List</span>
           <div className="flex lg:flex-row gap-6 lg:gap-2">
             <SearchInput tableName={"staff"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
-            {hasPermission("create") && <AddButton name={"Add New Staff"} handleAdd={handleAdd} />}
+            {hasPermission("create") && <AddButton name={"Add Staff"} handleAdd={handleAdd} />}
             {hasPermission("import") && <BulkAddButton onClick={ImportModal} />}
             {hasPermission("export") && <ExportExcelButton />}
           </div>

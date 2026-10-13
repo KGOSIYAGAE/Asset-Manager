@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import AddButton from "../../../components/buttons/AddButton";
-import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
+import AddButton from "../../components/buttons/AddButton";
+import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 import Modal from "react-modal";
-import ToastMessage from "../../../components/toastMessage/ToastMessage";
-import { hasPermission } from "../../../utils/getLoggedInUser";
-import { getAllLoanedDevices } from "../../../services/api/devices/Device.Api";
-import { deleteFaculty, getFaculties } from "../../../services/api/jobDetails/jobDetails";
-import FacultiesTable from "../../../components/tables/FacultiesTable";
-import CreateFaculty from "../../../components/cards/createFaculty/CreateFaculty";
-import DeleteConfirmation from "../../../components/cards/deleteConfirmation/DeleteConfirmation";
+import ToastMessage from "../../components/toastMessage/ToastMessage";
+import { hasPermission } from "../../utils/getLoggedInUser";
+import { getAllLoanedDevices } from "../../services/api/devices/Device.Api";
+import { deleteFaculty, getFaculties } from "../../services/api/organization/Organization";
+import FacultiesTable from "../../components/tables/FacultiesTable";
+import CreateFaculty from "../../components/cards/createFaculty/CreateFaculty";
+import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 
 function Faculties({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
@@ -27,7 +27,7 @@ function Faculties({ path }) {
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
       <span className="text-sm ">
-        Staff/ <b> {path}</b>
+        Organization/ <b> {path}</b>
       </span>
       {/* */}
       <div className="col-span-6 h-auto  bg-white rounded-md shadow-md ">

@@ -231,15 +231,31 @@ const updateStaffRole = async (req, res) => {
 //Update staff role
 const getAdmins = async (req, res) => {
   try {
-    const getAdminsQuery = "SELECT * FROM staff WHERE userrole IS NOT NULL";
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
 
-    const { rows } = await query(getAdminsQuery);
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM staff WHERE userrole IS NOT NULL`;
+
+    //Get device count
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    const totalStaff = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalStaff / limit);
+
+    const getAdminsQuery = "SELECT * FROM staff WHERE userrole IS NOT NULL LIMIT $1 OFFSET $2 ";
+
+    const { rows } = await query(getAdminsQuery, [limit, offset]);
 
     if (!rows) {
       return res.status(400).json({ message: "No admins were found.", error: true });
     }
 
-    return res.status(200).json({ adminList: rows, message: "success", error: false });
+    return res.status(200).json({ totalPages: totalPages, adminList: rows, message: "success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
