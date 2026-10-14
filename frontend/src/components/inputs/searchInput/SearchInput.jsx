@@ -65,7 +65,7 @@ function SearchInput({ tableName, setSearchResults, setTotalPages, onCanelSearch
 
   //Clears Search Box and fetch all data
   const handleClearSearch = () => {
-    setSearchInput();
+    setSearchInput("");
     onCanelSearch();
   };
 

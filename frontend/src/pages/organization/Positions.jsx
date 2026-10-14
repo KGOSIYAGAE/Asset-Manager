@@ -8,12 +8,14 @@ import { deletePostion, getPositions } from "../../services/api/organization/Org
 import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 import PositionsTable from "../../components/tables/PositionsTable";
 import CreatePosition from "../../components/cards/createPosition/CreatePosition";
+import SearchInput from "../../components/inputs/searchInput/SearchInput";
 
 function Positions({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
 
   const [positions, setPositions] = useState();
+  const [searchResults, setSearchResults] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -22,6 +24,12 @@ function Positions({ path }) {
   useEffect(() => {
     getPositions({ page: currentPage, limit: limit }, setPositions, setTotalPages);
   }, [currentPage]);
+
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    getPositions({ page: currentPage, limit: limit }, setPositions, setTotalPages);
+  };
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
@@ -33,6 +41,7 @@ function Positions({ path }) {
         <div className="flex items-center justify-between rounded-md p-2  bg-white">
           <span className="heading-text ">{"Positions"}</span>
           <div className="flex gap-2 ">
+            <SearchInput tableName={"positions"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
             {hasPermission("loan") && (
               <AddButton
                 name={"Add Position"}
@@ -45,7 +54,14 @@ function Positions({ path }) {
           </div>
         </div>{" "}
         <div className="flex p-2">
-          <PositionsTable positions={positions} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} setOpenModal={setOpenModal} />
+          <PositionsTable
+            positions={searchResults ? searchResults : positions}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+            limit={limit}
+            setOpenModal={setOpenModal}
+          />
         </div>
       </div>
       {/* */}

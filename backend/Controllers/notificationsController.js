@@ -412,7 +412,7 @@ const sendFormViaEmail = async (req, res) => {
     //Get Issuer & Approver
     let signatureResponses;
     if (deviceDetails.rows[0].status !== "Assigned" || deviceDetails.rows[0].status !== "Loaned") {
-      signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, "Returned");
+      signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, deviceDetails.rows[0].status);
     } else {
       signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, deviceDetails.rows[0].status);
     }

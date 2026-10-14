@@ -8,12 +8,14 @@ import { deleteDepartment, deleteFaculty, getDepartments } from "../../services/
 import DepartmentsTable from "../../components/tables/DepratmentsTable";
 import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 import CreateDepartment from "../../components/cards/createDepartment/CreateDepartment";
+import SearchInput from "../../components/inputs/searchInput/SearchInput";
 
 function Departments({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
 
   const [departments, setDepartments] = useState();
+  const [searchResults, setSearchResults] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -22,6 +24,12 @@ function Departments({ path }) {
   useEffect(() => {
     getDepartments({ page: currentPage, limit: limit }, setDepartments, setTotalPages);
   }, [currentPage]);
+
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    getPositions({ page: currentPage, limit: limit }, setPositions, setTotalPages);
+  };
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
@@ -33,6 +41,8 @@ function Departments({ path }) {
         <div className="flex items-center justify-between rounded-md p-2  bg-white">
           <span className="heading-text ">{"Departments"}</span>
           <div className="flex gap-2 ">
+            <SearchInput tableName={"departments"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
+
             {hasPermission("loan") && (
               <AddButton
                 name={"Add Department"}
@@ -45,7 +55,14 @@ function Departments({ path }) {
           </div>
         </div>{" "}
         <div className="flex p-2">
-          <DepartmentsTable departments={departments} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} setOpenModal={setOpenModal} />
+          <DepartmentsTable
+            departments={searchResults ? searchResults : departments}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+            limit={limit}
+            setOpenModal={setOpenModal}
+          />
         </div>
       </div>
       {/* */}

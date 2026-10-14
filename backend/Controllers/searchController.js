@@ -38,6 +38,15 @@ const search = async (req, res) => {
     } else if (tableName === "tech-repairs") {
       dataQuery = `SELECT * FROM "repairTechDeviceDetails"
      WHERE assigned_to = ${userId} AND repair_code ILIKE '%' || $1 || '%' OR repair_type  ILIKE '%' || $1 || '%' OR description ILIKE '%' || $1 || '%' OR notes ILIKE '%' || $1 || '%' OR technican_name ILIKE '%' || $1 || '%' OR make ILIKE '%' || $1 || '%' OR model ILIKE '%' || $1 || '%' OR category ILIKE '%' || $1 || '%' OR serial_no ILIKE '%' || $1 || '%' LIMIT 5`;
+    } else if (tableName === "positions") {
+      dataQuery = `SELECT * FROM "positionDetails"
+     WHERE post_name ILIKE '%' || $1 || '%'  LIMIT 6`;
+    } else if (tableName === "faculties") {
+      dataQuery = `SELECT * FROM "facultiesDetails"
+     WHERE faculty_name ILIKE '%' || $1 || '%'  LIMIT 6`;
+    } else if (tableName === "departments") {
+      dataQuery = `SELECT * FROM "departmentDetails"
+     WHERE department_name ILIKE '%' || $1 || '%'  LIMIT 6`;
     } else {
       dataQuery = "";
     }
