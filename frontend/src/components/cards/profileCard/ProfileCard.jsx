@@ -41,7 +41,7 @@ function ProfileCard() {
   }, [getLoggedInUser]);
 
   return (
-    <div className="w-full flex flex-col items-end gap-2 p-1 z-40 ">
+    <div className="w-full flex flex-col items-end gap-2 p-1  ">
       <div
         className="flex items-center gap-2 p-2"
         onClick={() => {

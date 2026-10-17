@@ -1,7 +1,4 @@
 const { query } = require("../util/pg_dbConnection");
-const format = require("pg-format");
-const { createNewLog } = require("./deviceTransactionsController");
-const { sendApprovalEmail, sendApprovedEmail, sendRejectionEmail } = require("./notificationsController");
 require("dotenv").config();
 const { encrypt, decrypt } = require("../util/cryptoHelper");
 

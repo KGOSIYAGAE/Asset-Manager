@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CancelButton from "../../buttons/CancelButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import TextInput from "../../inputs/textInput/TextInput";
-import PasswordInput from "../../../components/inputs/textInput/PasswordInput";
+import PasswordInput from "../../inputs/textInput/PasswordInput";
 import { createAzureGraphSettings, updateAzureGraphSettings } from "../../../services/api/email/emailSettings";
 
 function AddEditEmailSettings({ onCancel, onSubmit, mailerName, msGraphSettings, setShowToast }) {

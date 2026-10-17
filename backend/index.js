@@ -68,6 +68,10 @@ app.use("/api/v1/asset-manager/organization", organizationRouter);
 const azureGraphConfigRouter = require("./Routes/azureGraphRoutes");
 app.use("/api/v1/asset-manager/azure-graph", azureGraphConfigRouter);
 
+//Documents Template
+const documentTemplateRouter = require("./Routes/documentTemplateRoutes");
+app.use("/api/v1/asset-manager/document-templates", documentTemplateRouter);
+
 //Test Routes
 const testRouter = require("./Routes/testRoutes");
 //const console = require("console");
