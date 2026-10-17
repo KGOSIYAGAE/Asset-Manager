@@ -64,6 +64,10 @@ app.use("/api/v1/asset-manager/repairs", repairRouter);
 const organizationRouter = require("./Routes/OrganizationRoutes");
 app.use("/api/v1/asset-manager/organization", organizationRouter);
 
+//Azure Graph Config
+const azureGraphConfigRouter = require("./Routes/azureGraphRoutes");
+app.use("/api/v1/asset-manager/azure-graph", azureGraphConfigRouter);
+
 //Test Routes
 const testRouter = require("./Routes/testRoutes");
 //const console = require("console");

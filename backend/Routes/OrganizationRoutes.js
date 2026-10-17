@@ -16,6 +16,10 @@ const {
   updateFaculty,
   deleteFaculty,
 } = require("../Controllers/OrganizationController");
+const requireAuth = require("../middleware/requireAuth");
+
+//
+router.use(requireAuth);
 
 //Get All positions
 router.get("/positions/", getPositions);

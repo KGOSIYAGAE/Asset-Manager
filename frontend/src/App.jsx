@@ -45,6 +45,7 @@ import RepairDetails from "./pages/repairs/RepairDetails";
 import Faculties from "./pages/organization/Faculties";
 import Departments from "./pages/organization/Departments";
 import Positions from "./pages/organization/Positions";
+import Settings from "./pages/settings/Settings";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -74,7 +75,7 @@ function App() {
       <div className="w-screen lg:flex lg:flex-row ">
         <div
           className={` ${
-            isMinimize ? "w-screen bg-black bg-opacity-15 lg:w-[60px] absolute lg:translate-x-0 lg:relative z-30 " : "absolute -translate-x-72  lg:translate-x-0 lg:relative lg:w-2/12 z-50 "
+            isMinimize ? "w-[250px] bg-black bg-opacity-15 lg:w-[60px] absolute lg:translate-x-0 lg:relative z-30 " : "absolute -translate-x-72  lg:translate-x-0 lg:relative lg:w-2/12 z-50 "
           }`}
         >
           <Menu isMinimized={isMinimize} setIsMinimize={setIsMinimize} onCloseMenu={handleMinimizeMenu} />
@@ -334,6 +335,12 @@ function App() {
         {
           path: "/email-templates",
           element: <Approval path={"Email Templates"} />,
+        },
+
+        //View Email templates
+        {
+          path: "/settings/email-settings",
+          element: <Settings name={"System Settings"} path={"System Settings/ Email Settings"} />,
         },
 
         //User Management

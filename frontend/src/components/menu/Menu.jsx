@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PiStudentFill } from "react-icons/pi";
 import { Link } from "react-router-dom";
-import { MdDevices, MdDashboard, MdMenu } from "react-icons/md";
+import { MdDevices, MdDashboard, MdMenu, MdOutlineSettings } from "react-icons/md";
 import { FaPeopleGroup } from "react-icons/fa6";
 import LogoCard from "../cards/logoCard/LogoCard";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
@@ -19,9 +19,13 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
   const [showUserManagementOption, setShowUserManagementOptions] = useState(false);
   const [showReportOption, setShowReportOptions] = useState(false);
 
+  const [showSettingstOption, setShowSettingsOptions] = useState(false);
+  const [showGeneralSettingstOption, setShowGeneralSettingsOptions] = useState(false);
+  const [showSystemSettingstOption, setShowSystemSettingsOptions] = useState(false);
+
   return (
     <div className="  h-svh flex flex-col justify-between  text-white">
-      <div className={`h-svh flex flex-col bg-red-600 ${isMinimized ? "items-center lg:w-[60px] " : ""} p-3 w-[250px]`}>
+      <div className={`h-svh flex flex-col bg-red-600 ${isMinimized ? "items-center lg:w-[60px] " : ""} p-3 `}>
         {isMinimized ? (
           <div className="w-full flex lg:flex-col items-center justify-end ">
             <div
@@ -134,12 +138,7 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
           {/*Staff Menu Option*/}
           <div className="flex flex-col gap-2 ">
             <Link to={"/users/staff/"}>
-              <div
-                className="menu-items  justify-between "
-                onClick={() => {
-                  showOrganizationOption ? setShowOrganizationOptions(false) : setShowOrganizationOptions(true);
-                }}
-              >
+              <div className="menu-items  justify-between " onClick={() => {}}>
                 <div className="flex items-center gap-3 ">
                   <div className="menu-icon">
                     <FaPeopleGroup size={18} className="" />
@@ -152,7 +151,7 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
           </div>
           {/**/}
 
-          {/**/}
+          {/*Student Menu*/}
           <Link to={"/users/students"}>
             <div className="menu-items">
               <div className="menu-icon">
@@ -162,7 +161,7 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
             </div>
           </Link>
 
-          {/*Staff Menu Option*/}
+          {/*Organization Menu Option*/}
           <div className="flex flex-col gap-2 ">
             <div
               className="menu-items  justify-between "
@@ -211,7 +210,7 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
           </div>
           {/**/}
 
-          {/*Asset & Support Management*/}
+          {/*Repairst*/}
           {hasPermission("view-repairs") && (
             <div className="flex flex-col gap-2">
               <Link to={"/repairs"}>
@@ -228,20 +227,127 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
             </div>
           )}
 
-          {/*Asset & Support Management*
-          <div className="flex flex-col gap-2">
-            <Link to={"/email-templates"}>
-              <div className="menu-items  justify-between ">
-                <div className="flex items-center gap-3">
-                  <div className="menu-icon">
-                    <HiOutlineWrenchScrewdriver size={18} className="" />
-                  </div>
-                  {isMinimized ? "" : <span className="">Email Template</span>}
+          {/*Settings Menu Option*/}
+          <div className="flex flex-col gap-2 ">
+            <div
+              className="menu-items  justify-between "
+              onClick={() => {
+                showSettingstOption ? setShowSettingsOptions(false) : setShowSettingsOptions(true);
+              }}
+            >
+              <div className="flex items-center gap-3 ">
+                <div className="menu-icon">
+                  <MdOutlineSettings size={18} className="" />
+                </div>
+                {isMinimized ? <span className="lg:hidden">Settings</span> : <span className="">Settings</span>}
+              </div>
+              {isMinimized ? (
+                <div className=" flex lg:hidden">{showSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              ) : (
+                <div className=" flex ">{showSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              )}
+            </div>
+
+            {/**/}
+
+            <div className={`${showSettingstOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
+              {/*General Settings Menu Option*/}
+              <div className="flex flex-col gap-2 ">
+                <div
+                  className="menu-items  justify-between "
+                  onClick={() => {
+                    showGeneralSettingstOption ? setShowGeneralSettingsOptions(false) : setShowGeneralSettingsOptions(true);
+                  }}
+                >
+                  <div className="flex items-center gap-3 ">{isMinimized ? <span className="lg:hidden">General Settings</span> : <span className="">General Settings</span>}</div>
+                  {isMinimized ? (
+                    <div className=" flex lg:hidden">{showGeneralSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                  ) : (
+                    <div className=" flex ">{showGeneralSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                  )}
+                </div>
+
+                {/**/}
+
+                <div className={`${showGeneralSettingstOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
+                  {hasPermission("loan") && (
+                    <Link to={"/organization/faculties"}>
+                      <div className="menu-items" onClick={() => {}}>
+                        <span className="text-sm p-1">Profile</span>
+                      </div>
+                    </Link>
+                  )}
+                  {hasPermission("view-upgrades") && (
+                    <Link to={"/organization/departments"}>
+                      <div className="menu-items">
+                        <span className="text-sm p-1">Security</span>
+                      </div>
+                    </Link>
+                  )}
+                  {hasPermission("view-due-return") && (
+                    <Link to={"/organization/positions"}>
+                      <div className="menu-items">
+                        <span className="text-sm p-1">Notifications</span>
+                      </div>
+                    </Link>
+                  )}
                 </div>
               </div>
-            </Link>
-            {/**
-          </div>*/}
+              {/**/}
+
+              {/*System Settings Menu Option*/}
+              <div className="flex flex-col gap-2 ">
+                <div
+                  className="menu-items  justify-between "
+                  onClick={() => {
+                    showSystemSettingstOption ? setShowSystemSettingsOptions(false) : setShowSystemSettingsOptions(true);
+                  }}
+                >
+                  <div className="flex items-center gap-3 ">{isMinimized ? <span className="lg:hidden">System Settings</span> : <span className="">System Settings</span>}</div>
+                  {isMinimized ? (
+                    <div className=" flex lg:hidden">{showSystemSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                  ) : (
+                    <div className=" flex ">{showSystemSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                  )}
+                </div>
+
+                {/**/}
+
+                <div className={`${showSystemSettingstOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
+                  {hasPermission("loan") && (
+                    <Link to={"/settings/email-settings"}>
+                      <div className="menu-items" onClick={() => {}}>
+                        <span className="text-sm p-1">Email Settings</span>
+                      </div>
+                    </Link>
+                  )}
+                  {hasPermission("view-upgrades") && (
+                    <Link to={"/organization/departments"}>
+                      <div className="menu-items">
+                        <span className="text-sm p-1">Email Templates</span>
+                      </div>
+                    </Link>
+                  )}
+                  {hasPermission("view-due-return") && (
+                    <Link to={"/organization/positions"}>
+                      <div className="menu-items">
+                        <span className="text-sm p-1">Form Templates</span>
+                      </div>
+                    </Link>
+                  )}
+                  {hasPermission("view-due-return") && (
+                    <Link to={"/organization/positions"}>
+                      <div className="menu-items">
+                        <span className="text-sm p-1">Disclaimer Templates</span>
+                      </div>
+                    </Link>
+                  )}
+                </div>
+              </div>
+              {/**/}
+            </div>
+          </div>
+          {/**/}
 
           {/*User Management*/}
           {hasPermission("manage-roles") && (
