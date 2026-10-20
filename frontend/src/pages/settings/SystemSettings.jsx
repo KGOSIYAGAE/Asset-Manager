@@ -7,10 +7,10 @@ import Modal from "react-modal";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { getEmailAzureGraphSettings } from "../../services/api/email/emailSettings";
 import AddEditEmailSettings from "../../components/cards/emailSettings.jsx/AddEditEmailSettings";
-import AddEditDocumentTemplate from "../../components/cards/addEditDocumentTemplate/addEditDocumentTemplate";
 import { getDocumentTemplates } from "../../services/api/documentTemplates/documentTemplates";
 import { BsMicrosoft } from "react-icons/bs";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import AddEditDocumentTemplate from "../../components/cards/addEditDocumentTemplate/addEditDocumentTemplate";
 
 function SystemSettings() {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
