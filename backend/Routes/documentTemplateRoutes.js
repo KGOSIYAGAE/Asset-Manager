@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { createDocumentTemplate, getDocumentTemplate, updateDocumentTemplate, deleteDocumentTemplate } = require("../Controllers/documentTemplateController");
 
+//router.use(requireAuth);
+
 //create config
 router.post("/create-template", createDocumentTemplate);
 

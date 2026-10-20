@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { createAzureGraphConfig, getAzureGraphConfig, updateAzureGraphConfig } = require("../Controllers/azureGraphController");
+const requireAuth = require("../middleware/requireAuth");
+
+router.use(requireAuth);
 
 //create config
 router.post("/create-config", createAzureGraphConfig);

@@ -36,9 +36,14 @@ function AddEditStudent({ path }) {
   const [idNumber, setIdNumber] = useState();
   const [phone_number, setPhone_Number] = useState();
   const [email, setEmail] = useState();
+
+  const [faculty_id, setFaculty_id] = useState();
   const [faculty_name, setFaculty_name] = useState(null);
+
+  const [course_id, setCourse_id] = useState();
   const [course_code, setCourse_Code] = useState();
   const [course, setCourse] = useState();
+
   const [isActive, setIsActive] = useState();
   const [laptopDetails, setLaptopDetails] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -62,8 +67,6 @@ function AddEditStudent({ path }) {
     setIdNumber();
     setPhone_Number();
     setEmail();
-    setFaculty_name();
-    setCourse();
     setCourse_Code();
     setIsActive();
     setRegistration_Date();
@@ -95,15 +98,21 @@ function AddEditStudent({ path }) {
       return setShowToast({ isShown: true, type: "error", message: "Email must be provided" });
     }
 
+    if (!faculty_id) {
+      return setShowToast({ isShown: true, type: "error", message: "Faculty must be selected" });
+    }
+
+    if (!course_id) {
+      return setShowToast({ isShown: true, type: "error", message: "Course must be selected" });
+    }
+
     const studentData = {
       name,
       surname,
       studentNumber,
       idNumber,
       phone_number,
-      faculty_name: faculty_name,
-      course,
-      course_code,
+      course_id,
       email,
       isActive,
       registration_date,
@@ -138,16 +147,12 @@ function AddEditStudent({ path }) {
     setStudentNumber(studentData.student_number);
     setPhone_Number(studentData.phone_number);
     setEmail(studentData.email);
-    setFaculty_name(studentData.faculty_name);
-    setCourse(studentData.course_name);
-    setCourse_Code(studentData.course_code);
     setIsActive(studentData.acc_status);
     setLaptopDetails(studentData.laptop);
-    //console.log(handleTimeStampToText(studentData.registration_date));
     setRegistration_Date(studentData.registration_date);
-    //setRegistration_Date(addOneDay(studentData.registration_date));
-    //console.log(studentData.registration_date);
-    //console.log(registration_date);
+
+    setFaculty_id(studentData.faculty_id);
+    setCourse_id(studentData.course_id);
   };
 
   //Get User API Call
@@ -256,7 +261,11 @@ function AddEditStudent({ path }) {
             <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} maxLength={50} setOnChange={setEmail} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
+            <FacultySelectInput label={"Faculty"} faculty_id={faculty_id} isDisabled={isDisabled} setFaculty_id={setFaculty_id} />
+          </div>
+
+          {/*<div className="col-span-2">
             <StudentFacultySelectInput
               label={"Faculty"}
               value={faculty_name}
@@ -265,9 +274,9 @@ function AddEditStudent({ path }) {
               setOnChange={setFaculty_name}
               setCourseList={setCourseList}
             />
-          </div>
+          </div>*/}
 
-          <CourseSelctInput label={"Course"} value={course} courseList={courseList} isDisabled={isDisabled} setOnChange={setCourse} setCourseCode={setCourse_Code} />
+          <CourseSelctInput label={"Course"} course_id={course_id} faculty_id={faculty_id} isDisabled={isDisabled} setCourse_id={setCourse_id} setCourse_Code={setCourse_Code} />
 
           <div className=" col-span-2">
             <TextInput label={"Course Code"} value={course_code} isDisabled={true} setOnChange={() => {}} />

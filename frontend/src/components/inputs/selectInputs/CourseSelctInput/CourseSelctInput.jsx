@@ -1,39 +1,60 @@
 import React, { useEffect, useState } from "react";
+import { getCoursesList, getCoursesOfFaculty } from "../../../../services/api/academics/Academics";
 
-function CourseSelctInput({ label, value, courseList, isDisabled, setOnChange, setCourseCode }) {
-  const handleSetCourseCode = (selected_course) => {
-    for (let i = 0; i < courseList?.length; i++) {
-      if (courseList[i]?.course_name === selected_course) {
-        setCourseCode(courseList[i]?.course_code);
+function CourseSelctInput({ label, course_id, faculty_id, isDisabled, setCourse_id, setCourse_Code }) {
+  const [course_name, setCourse_name] = useState();
+  const [courses, setCourses] = useState([]);
+
+  const handleSetCourseId = (selectedCourse) => {
+    for (let i = 0; i < courses?.length; i++) {
+      if (courses[i]?.course_name === selectedCourse) {
+        setCourse_id(courses[i].course_id);
+        setCourse_Code(courses[i].course_code);
       }
     }
   };
 
-  const handleSetCourse = (value) => {
-    for (let i = 0; i < courseList?.length; i++) {
-      if (courseList[i]?.course_name === value) {
+  const handleSetCourseName = (course_id) => {
+    for (let i = 0; i < courses?.length; i++) {
+      if (courses[i].course_id === course_id) {
+        setCourse_name(courses[i]?.course_name);
+        setCourse_Code(courses[i].course_code);
       }
     }
   };
 
   useEffect(() => {
-    handleSetCourse(value);
-  }, [value, courseList]);
+    getCoursesList(setCourses);
+  }, []);
+
+  useEffect(() => {
+    if (faculty_id) {
+      getCoursesOfFaculty(faculty_id, setCourses);
+    }
+  }, [faculty_id]);
+
+  useEffect(() => {
+    if (courses?.length > 0) {
+      handleSetCourseName(course_id);
+    }
+  }, [course_id, courses]);
 
   return (
     <div className="text-input col-span-2">
       <span className="w-fit text-zinc-500 -mt-5 bg-white">{label}</span>
       <select
         className="outline-none"
-        disabled={isDisabled}
-        value={value}
+        value={course_name}
+        isDisabled={isDisabled}
         onChange={(e) => {
-          setOnChange(e.target.value);
-          handleSetCourseCode(e.target.value);
+          setCourse_name(e.target.value);
+          handleSetCourseId(e.target.value);
         }}
       >
         <option></option>
-        {courseList && courseList.map((item) => <option key={item.id}>{item.course_name}</option>)}
+        {courses?.map((item) => (
+          <option key={item.course_id}>{item.course_name}</option>
+        ))}
       </select>
     </div>
   );
