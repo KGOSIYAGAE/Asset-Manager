@@ -8,5 +8,5 @@ import Modal from "react-modal";
 createRoot(document.getElementById("root")).render(
   <AuthContextProvider>
     <App />
-  </AuthContextProvider>
+  </AuthContextProvider>,
 );

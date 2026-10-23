@@ -9,7 +9,7 @@ function CourseStatBarChart({ students }) {
 
   const [xLabels, setXLables] = useState([]);
 
-  const [selectedFaculty, setSelectedFaculty] = useState("");
+  const [selectedFaculty, setSelectedFaculty] = useState();
 
   const onSelectOption = (value) => {
     let facultyNumber = 0;

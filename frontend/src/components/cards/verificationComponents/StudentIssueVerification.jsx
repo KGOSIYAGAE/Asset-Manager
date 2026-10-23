@@ -46,8 +46,9 @@ function StudentIssueVerification({ deviceId, student_no }) {
   return (
     <div>
       <div className="printable h-[1200px]">
-        <div class="page-header ">
-          <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" class="page-logo" />
+        <div class="page-header">
+          <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" className="w-[180px] h-[180px]" />
+
           <div class="page-address">
             <span class="address-heading">SOL PLAATJE UNIVERSITY</span>
             <span class="address-text">Private Bag X 5008, Kimberly, 8300</span>
@@ -150,7 +151,14 @@ function StudentIssueVerification({ deviceId, student_no }) {
             <div>
               Signed at Kimberley on the: <span className="font-semibold">{day}</span> day of <span className="font-semibold">{month}</span> <span className="font-semibold">{year}</span>
             </div>
-            <SiganturePad lablel={"Student Signature"} user_id={studentData?.student_number} userDetails={studentData} deviceDetails={deviceDetails} setShowToast={setShowToast} />
+            <SiganturePad
+              lablel={"Student Signature"}
+              user_id={studentData?.student_number}
+              userDetails={studentData}
+              deviceDetails={deviceDetails}
+              setShowToast={setShowToast}
+              formType={"student-issue"}
+            />
           </div>
         </div>
       </div>

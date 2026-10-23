@@ -15,11 +15,29 @@ const checkStaffExist = async (staff_no, res) => {
 //Get all staff
 const getAllStaff = async (req, res) => {
   try {
-    const all_staff_query = "SELECT * FROM staff";
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
 
-    const { rowCount, rows } = await query(all_staff_query);
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM staff WHERE is_deleted = FALSE`;
 
-    return res.status(200).json({ rowCount, staffData: rows, message: "Success", error: false });
+    const dataQuery = "SELECT * FROM staff WHERE is_deleted = FALSE LIMIT $1 OFFSET $2 ";
+
+    //Get device count
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+    }
+
+    const totalStaff = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalStaff / limit);
+
+    const { rows } = await query(dataQuery, [limit, offset]);
+
+    //const { rowCount, rows } = await query(all_staff_query);
+
+    return res.status(200).json({ totalPages: totalPages, staffData: rows, message: "Success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -89,7 +107,7 @@ const getStaffDetails = async (req, res) => {
 
     return res.status(200).json({ staffData: rows, message: "Success", error: false });
   } catch (error) {
-    console.log(error);
+    console.log(error.stack || error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
@@ -97,8 +115,7 @@ const getStaffDetails = async (req, res) => {
 //Create staff
 const createStaff = async (req, res) => {
   try {
-    console.log(req.body);
-    const { name, surname, phone_number, email, staff_no, faculty_name, position_name, department_name, contract_type, isActive, start_date, endDate } = req.body;
+    const { name, surname, staff_no, phone_number, email, position_id, contract_type, isActive, start_date, endDate } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name required", error: true });
@@ -115,15 +132,11 @@ const createStaff = async (req, res) => {
     if (!staff_no) {
       return res.status(400).json({ message: "Staff number is required", error: true });
     }
-    if (!faculty_name) {
-      return res.status(400).json({ message: "Faculty is required", error: true });
-    }
-    if (!position_name) {
+
+    if (!position_id) {
       return res.status(400).json({ message: "Position is required", error: true });
     }
-    if (!department_name) {
-      return res.status(400).json({ message: "Department is required", error: true });
-    }
+
     if (!contract_type) {
       return res.status(400).json({ message: "Contract type is required", error: true });
     }
@@ -135,8 +148,8 @@ const createStaff = async (req, res) => {
     }
 
     const create_staff_query =
-      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, faculty_name, position_name, department_name, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,  $12)";
-    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, faculty_name, position_name, department_name, start_date, endDate];
+      "INSERT INTO staff(name, surname, phone_number, email, staff_no, contract_type, acc_status, position_id, start_date, end_date,created_at, updated_at, is_deleted) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW(),'FALSE')";
+    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, position_id, start_date, endDate];
 
     //Check if user exist
     checkStaffExist(staff_no, res);
@@ -181,7 +194,7 @@ const bulkCreateStaff = async (req, res) => {
 
     const bulk_create_staff_query = format(
       "INSERT INTO staff (staff_no,name, surname, start_date, email, phone_number, contract_type, position_name,faculty_name, department_name, acc_status, end_date) VALUES %L",
-      VALUES
+      VALUES,
     );
 
     const { rowCount } = await query(bulk_create_staff_query);
@@ -206,7 +219,7 @@ const updateStaff = async (req, res) => {
       return res.status(400).json({ message: "User Id required", error: true });
     }
 
-    const { name, surname, phone_number, email, staff_no, faculty_name, position_name, department_name, contract_type, isActive, start_date, endDate } = req.body;
+    const { name, surname, staff_no, phone_number, email, position_id, contract_type, isActive, start_date, endDate } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name required", error: true });
@@ -224,15 +237,10 @@ const updateStaff = async (req, res) => {
       return res.status(400).json({ message: "Staff number is required", error: true });
     }
 
-    if (!faculty_name) {
-      return res.status(400).json({ message: "Faculty is required", error: true });
-    }
-    if (!position_name) {
+    if (!position_id) {
       return res.status(400).json({ message: "Position is required", error: true });
     }
-    if (!department_name) {
-      return res.status(400).json({ message: "Department is required", error: true });
-    }
+
     if (!contract_type) {
       return res.status(400).json({ message: "Contract type is required", error: true });
     }
@@ -244,8 +252,8 @@ const updateStaff = async (req, res) => {
     }
 
     const update_staff_query =
-      "UPDATE staff SET name=$1, surname=$2, phone_number=$3, email=$4, staff_no=$5, contract_type=$6, acc_status=$7, faculty_name=$8, position_name=$9, department_name=$10, start_date=$11, end_date=$12 WHERE id = $13";
-    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, faculty_name, position_name, department_name, start_date, endDate];
+      "UPDATE staff SET name=$1, surname=$2, phone_number=$3, email=$4, staff_no=$5, contract_type=$6, acc_status=$7, position_id=$8, start_date=$9, end_date=$10, updated_at=NOW() WHERE id = $11";
+    const VALUES = [name, surname, phone_number, email, staff_no, contract_type, isActive, position_id, start_date, endDate];
 
     const { rowCount } = await query(update_staff_query, [...VALUES, id]);
 
@@ -264,14 +272,32 @@ const updateStaff = async (req, res) => {
 const deleteStaff = async (req, res) => {
   try {
     const { staff_no } = req.params;
+    const { is_deleted, deleted_by, acc_status } = req.body;
 
     if (!staff_no) {
       return res.status(400).json({ message: "Staff number must be provided", error: true });
     }
 
-    const deleteStaffQuery = "DELETE FROM staff WHERE staff_no = $1";
+    //verify if exist
 
-    const { rowCount } = await query(deleteStaffQuery, [staff_no]);
+    const find_staff_query = `SELECT * FROM staff WHERE staff_no = $1`;
+    const { rows } = await query(find_staff_query, [staff_no]);
+
+    if (rows.length === 0) {
+      return res.status(400).json({ message: "Staff member matching the staff no not found", error: true });
+    }
+
+    //Verify if user has any active devices
+    const find_device_query = "SELECT * FROM devices WHERE current_user_id = $1";
+    const device_repsonse = await query(find_device_query, [staff_no]);
+
+    if (device_repsonse.rows.length > 0) {
+      return res.status(400).json({ message: "Operation failed, this user currently has a device assigned to them.", error: true });
+    }
+
+    const deleteStaffQuery = "UPDATE staff SET is_deleted=$1, deleted_at=NOW(), deleted_by=$2, acc_status=$3, updated_at=NOW() WHERE staff_no = $4";
+
+    await query(deleteStaffQuery, [is_deleted, deleted_by, acc_status, staff_no]);
 
     return res.status(200).json({ message: "Staff member deleted successfully", error: false });
   } catch (error) {
@@ -280,4 +306,22 @@ const deleteStaff = async (req, res) => {
   }
 };
 
-module.exports = { getAllStaff, getStaff, getSupportAdmins, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff };
+//Get staff stats
+const getStaffStats = async (req, res) => {
+  try {
+    const getStatsQuery = `SELECT * FROM "staffStats";`;
+
+    const { rows } = await query(getStatsQuery);
+
+    if (!rows) {
+      return res.status(400).json({ message: "Staff stats not found", error: true });
+    }
+
+    return res.status(200).json({ staffDetails: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+module.exports = { getAllStaff, getStaff, getSupportAdmins, getStaffDetails, createStaff, bulkCreateStaff, updateStaff, deleteStaff, getStaffStats };

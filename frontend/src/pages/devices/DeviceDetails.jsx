@@ -12,7 +12,6 @@ import { useStudentsContext } from "../../hooks/useStudentsContext";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import ReleaseUser from "../../components/cards/releaseUser/ReleaseUser";
 import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverter";
-import { getAllDeviceLogs } from "../../services/api/deviceLogs/DeviceLogs";
 import { MdLocalPrintshop } from "react-icons/md";
 import StudentAOD from "../../components/student AOD/StudentAOD";
 import StaffIssueForm from "../../components/staffForms/StaffIssueForm";
@@ -21,6 +20,15 @@ import { hasPermission } from "../../utils/getLoggedInUser";
 import { getUserType, handleCurrency } from "../../utils/helperMethods";
 import RejectIssueCard from "../../components/cards/rejectIssue/RejectIssueCard";
 import ApproveIssue from "../../components/cards/approveIssue/ApproveIssue";
+import LoanIssueForm from "../../components/LoanForms/LoanIssueForm";
+import PrintButton from "../../components/buttons/printButton/PrintButton";
+import { handleOpenForm } from "../../utils/handleOpenForm";
+import { getAllDeviceTransactions } from "../../services/api/deviceLogs/DeviceLogs";
+import DeviceReturnForm from "../../components/returnForm/DeviceReturnForm";
+import QrCodeCard from "../../components/cards/qrCodeCard/QrCodeCard";
+import { socket } from "../../utils/socket";
+import ComposeEmail from "../../components/cards/composeEmail/ComposeEmail";
+import RejectionDetails from "../../components/cards/rejectionDetails/RejectionDetails";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -30,25 +38,41 @@ function DeviceDetails({ path }) {
 
   const [isAssigned, setIsAssigned] = useState(false);
   const [userType, setUserType] = useState(null);
+  const [formType, setFormType] = useState(null);
   const [deviceDetails, setDeviceDetails] = useState();
   const [deviceLogs, setDeviceLogs] = useState();
   const params = useParams();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
-  const [dateCreated, setDateCreated] = useState("");
-  const [warrantyEndDate, setWarrantyEndDate] = useState("");
-  const [purchaseDate, setPurchaseDate] = useState("");
+  const [dateCreated, setDateCreated] = useState();
+  const [warrantyEndDate, setWarrantyEndDate] = useState();
+  const [purchaseDate, setPurchaseDate] = useState();
   const [print, setPrint] = useState(false);
+
+  const [deviceTransactions, setDeviceTransactions] = useState(null);
 
   const navigate = useNavigate();
   let rowNumber = 0;
 
+  //Get All Device Transactions
+  const getDeviceTransactions = (deviceSerialNo) => {
+    if (!deviceSerialNo) {
+      return console.log("Selected device id not provided");
+    }
+
+    const data = {
+      serial_no: deviceSerialNo,
+    };
+
+    getAllDeviceTransactions(data, setDeviceTransactions);
+  };
+
   //On View more information on user
-  const onViewMore = (user_id) => {
-    if (user_id.length > 5) {
-      return navigate(`/users/students/edit-student/${user_id}`);
+  const onViewMore = () => {
+    if (userType === "Student") {
+      return navigate(`/users/students/student-details/${deviceDetails?.current_user_id}`);
     } else {
-      return navigate(`/users/staff/edit-staff/${user_id}`);
+      return navigate(`/users/staff/staff-details/${deviceDetails?.current_user_id}`);
     }
   };
 
@@ -66,15 +90,6 @@ function DeviceDetails({ path }) {
     getAllDeviceDetails(id, setDetails);
   };
 
-  const getDeviceLogs = () => {
-    const { id } = params;
-
-    if (!id) {
-      return console.log("Selected device id not provided");
-    }
-    getAllDeviceLogs(id, setDeviceLogs);
-  };
-
   const handleOnPrint = () => {
     let printContents = document.getElementById("print-file").innerHTML;
     let originalContents = document.body.innerHTML;
@@ -87,19 +102,17 @@ function DeviceDetails({ path }) {
     window.location.reload();
   };
 
-  useEffect(() => {
-    getDeviceLogs();
-  }, []);
+  const handleSendEmail = (user_id, form_type, device_id) => {
+    setOpenModal({ isShown: true, type: "Send-Form", data: { user_id: user_id, form_type: form_type, device_id: device_id } });
+  };
 
   useEffect(() => {
     getDeviceDetails();
+  }, []);
 
-    //Get user type based on userID
-    getUserType(deviceDetails?.user_id, setUserType);
-
-    if (!staffState || !studentState) {
-      console.log("No data");
-    }
+  useEffect(() => {
+    getDeviceTransactions(deviceDetails?.serial_no);
+    getUserType(deviceDetails?.current_user_id, setUserType);
   }, [deviceDetails]);
 
   //handle post Message Response
@@ -107,11 +120,42 @@ function DeviceDetails({ path }) {
     const handleMessage = (event) => {
       if (event.data.type === "form_submitted") {
         setShowToast({ isShow: true, type: "success", message: event.data.payload });
+
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: event.data.payload });
+          setOpenModal({ isShown: true, type: "assign", data: "hello" });
+
+          return;
+        }
+
+        getDeviceDetails();
+        setOpenModal({ isShown: false, type: "assign", data: "hello" });
+        setShowToast({ isShow: true, type: "success", message: event.data.payload });
       }
     };
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      //setSignature(image.image);
+      getDeviceDetails();
+      socket.disconnect();
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
   }, []);
 
   return (
@@ -124,13 +168,15 @@ function DeviceDetails({ path }) {
           <div className="flex justify-end">
             <div>
               {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" ? (
-                <SubmitButton
-                  text={"Release User"}
-                  onClick={() => {
-                    setOpenModal({ isShown: true, type: "release", data: "hello" });
-                  }}
-                />
-              ) : deviceDetails?.status === "Approval required" ? (
+                hasPermission("release") && (
+                  <SubmitButton
+                    text={"Release User"}
+                    onClick={() => {
+                      setOpenModal({ isShown: true, type: "release", data: "hello" });
+                    }}
+                  />
+                )
+              ) : deviceDetails?.status === "Issue Approval required" ? (
                 hasPermission("approve") && (
                   <div className="flex gap-5">
                     <SubmitButton
@@ -140,9 +186,27 @@ function DeviceDetails({ path }) {
                       }}
                     />
                     <SubmitButton
-                      text={"Approve"}
+                      text={"Approve Issue"}
                       onClick={() => {
-                        setOpenModal({ isShown: true, type: "approve", data: "hello" });
+                        setOpenModal({ isShown: true, type: "approve-issue", data: "hello" });
+                      }}
+                    />
+                  </div>
+                )
+              ) : deviceDetails?.status === "Loan Approval required" ? (
+                hasPermission("approve") && (
+                  <div className="flex gap-5">
+                    <SubmitButton
+                      text={"Reject"}
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "reject", data: "hello" });
+                      }}
+                    />
+
+                    <SubmitButton
+                      text={"Approve Loan"}
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "approve-loan", data: "hello" });
                       }}
                     />
                   </div>
@@ -162,8 +226,8 @@ function DeviceDetails({ path }) {
         </div>
       )}
 
-      <div className="grid grid-cols-5 grid-rows-2 gap-5">
-        <div className="col-span-3 row-span-1 border p-1 rounded-md shadow-md bg-white">
+      <div className="grid grid-cols-6 lg:grid-cols-5 lg:grid-rows-2 gap-5 mb-[100px]">
+        <div className="h-fit col-span-6 lg:col-span-3 row-span-1 border p-1 rounded-md shadow-md bg-white">
           <span className="heading-text">Device Details</span>
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Make</span>
@@ -189,11 +253,13 @@ function DeviceDetails({ path }) {
           <div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Status</span>
             {deviceDetails?.status === "Available" ? (
-              <span className="text-sm bg-green-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
-            ) : deviceDetails?.status === "Approval required" ? (
-              <span className="text-sm bg-yellow-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+              <span className="text-sm bg-green-600 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+            ) : deviceDetails?.status === "Issue Approval required" ? (
+              <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+            ) : deviceDetails?.status === "Loan Approval required" ? (
+              <span className="text-sm bg-orange-600 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
             ) : (
-              <span className="text-sm bg-red-500 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
+              <span className="text-sm bg-red-600 border shadow-sm p-1 rounded-md text-white">{deviceDetails?.status}</span>
             )}
           </div>
 
@@ -253,34 +319,34 @@ function DeviceDetails({ path }) {
             <span className="text-sm">Date Issued</span>
             <span className="text-sm">
               {(() => {
-                return handleTimeStampToText(deviceDetails?.date_issued);
+                return handleTimeStampToText(deviceDetails?.issue_date);
               })() || "None"}
             </span>
           </div>
-          <div className="flex justify-between p-2 item-hover">
+          {/*<div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Return Date</span>
             <span className="text-sm">
               {(function () {
                 return handleTimeStampToText(deviceDetails?.return_date);
               })() || "None"}
             </span>
-          </div>
-          <div className="flex justify-between  p-2 item-hover">
+          </div>*/}
+          {/*<div className="flex justify-between  p-2 item-hover">
             <span className="text-sm">Upgrade Date</span>
             <span className="text-sm">
               {(function () {
                 return handleTimeStampToText(deviceDetails?.next_upgrade_date);
               })() || "None"}
             </span>
-          </div>
+          </div>*/}
         </div>
 
-        <div className="flex flex-col col-span-2 gap-5">
-          <div className="flex flex-col items-center justify-center lg:w-5/5 h-2/5 bg-white border  rounded-md shadow-md">
-            <img src={`/${deviceDetails?.model}.png`} alt="" className="h-[250px]" />
+        <div className="h-fit flex flex-col col-span-6 lg:col-span-2 gap-5">
+          <div className="flex flex-col items-center justify-center w-5/5  bg-white border  rounded-md shadow-md">
+            <img src={`/${deviceDetails?.model}.png`} alt="" className="h-[385px]" />
           </div>
           {deviceDetails?.status === "Assigned" || deviceDetails?.status === "Loaned" || deviceDetails?.status === "Approval required" ? (
-            <div className="flex flex-col h-1/4 justify-between border p-2 rounded-md shadow-md bg-white">
+            <div className="flex flex-col h-fit  justify-between border p-2 rounded-md shadow-md bg-white">
               {deviceDetails?.status === "Loaned" ? <span className="heading-text">Loaned User</span> : <span className="heading-text">Assigned User</span>}
 
               <div className="">
@@ -290,7 +356,7 @@ function DeviceDetails({ path }) {
                 </div>
                 <div className="flex justify-between  p-1">
                   <span className="text-sm">User Id</span>
-                  <span className="text-sm">{deviceDetails?.user_id}</span>
+                  <span className="text-sm">{deviceDetails?.current_user_id}</span>
                 </div>
                 {/*<div className="flex justify-between bg-zinc-50 p-2">
                   <span className="text-sm">User Type</span>
@@ -300,7 +366,7 @@ function DeviceDetails({ path }) {
               <span
                 className="text-blue-400 underline cursor-pointer"
                 onClick={() => {
-                  onViewMore(deviceDetails?.user_id);
+                  onViewMore();
                 }}
               >
                 View More
@@ -310,7 +376,8 @@ function DeviceDetails({ path }) {
             ""
           )}
         </div>
-        {hasPermission("view-logs") && <DeviceLogTable deviceLogs={deviceLogs} label={"Devices Logs"} />}
+
+        <DeviceLogTable deviceDetails={deviceDetails} label={"Devices Logs"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} setShowToast={setShowToast} />
       </div>
 
       <Modal
@@ -320,20 +387,32 @@ function DeviceDetails({ path }) {
           setOpenModal({ isShown: false });
         }}
         style={{
-          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+          overlay: { backgroundColor: "rgb(0,0,0,0.3)" },
         }}
         contentLabel=""
         className={`${
-          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
-        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+          openModal.type === "release"
+            ? "w-[60%] h-[200px] p-2 bg-white "
+            : openModal.type === "assign"
+            ? "w-[60%] h-fit p-2 "
+            : openModal.type === "approve-issue"
+            ? "w-[60%] h-fit p-2 "
+            : openModal.type === "reject"
+            ? "w-[60%] h-fit p-2"
+            : openModal.type === "approve-loan"
+            ? "w-[60%] h-fit p-2"
+            : "w-[60%] lg:w-[55%] h-fit lg:h-full "
+        }  rounded-md mx-auto mt-5 pb-28 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden outline-none`}
       >
         {openModal.type === "assign" ? (
           <IssueDevice
             onCanel={() => {
+              getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
             onSubmit={() => {
               getDeviceDetails();
+
               setOpenModal({ isShown: false });
             }}
             deviceId={deviceDetails?.id}
@@ -350,13 +429,21 @@ function DeviceDetails({ path }) {
             }}
             setShowToast={setShowToast}
           />
-        ) : openModal.type === "Student" ? (
-          <div className=" h-[1100px]  col-span-6 bg-white " id="print-file">
-            <StudentAOD handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.user_id} />
+        ) : openModal.type === "Student-Issue" ? (
+          <div className=" h-[1100px]  col-span-6" id="print-file">
+            <StudentAOD handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
           </div>
-        ) : openModal.type === "Staff" ? (
-          <div className="h-[1100px] col-span-6 bg-white " id="print-file">
-            <StaffIssueForm handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.user_id} />
+        ) : openModal.type === "Staff-Issue" ? (
+          <div className="h-[1100px] col-span-6  " id="print-file">
+            <StaffIssueForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
+          </div>
+        ) : openModal.type === "Loan-Issue" ? (
+          <div className="h-[1100px] col-span-6  " id="print-file">
+            <LoanIssueForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} user_id={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
+          </div>
+        ) : openModal.type === "Return-form" ? (
+          <div className="h-[1100px] col-span-6  " id="print-file">
+            <DeviceReturnForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} clickedTransactionData={openModal.data} deviceDetails_={deviceDetails} />
           </div>
         ) : openModal.type === "reject" ? (
           <div>
@@ -369,11 +456,10 @@ function DeviceDetails({ path }) {
                 setOpenModal({ isShown: false });
               }}
               setShowToast={setShowToast}
-              full_name={deviceDetails?.full_name}
-              laptopSerialNo={deviceDetails?.serial_no}
+              deviceUserDetails={deviceDetails}
             />
           </div>
-        ) : (
+        ) : openModal.type === "approve-issue" || openModal.type === "approve-loan" ? (
           <div>
             <ApproveIssue
               onCanel={() => {
@@ -387,6 +473,27 @@ function DeviceDetails({ path }) {
               deviceUserDetails={deviceDetails}
             />
           </div>
+        ) : openModal.type === "Send-Form" ? (
+          <ComposeEmail
+            user_id={openModal.data.user_id}
+            form_type={openModal.data.form_type}
+            device_id={openModal.data.device_id}
+            onCanel={() => {
+              getDeviceDetails();
+              setOpenModal({ isShown: false });
+            }}
+            onSubmit={() => {
+              getDeviceDetails();
+              setOpenModal({ isShown: false });
+            }}
+            setShowToast={setShowToast}
+          />
+        ) : openModal.type === "view-rejection-details" ? (
+          <RejectionDetails transaction={openModal.data} />
+        ) : (
+          <div>
+            <span>Add another Template here!!!!!</span>
+          </div>
         )}
       </Modal>
       <ToastMessage
@@ -397,199 +504,8 @@ function DeviceDetails({ path }) {
           setShowToast({ isShow: false });
         }}
       />
-      {hasPermission("print") &&
-        (deviceDetails?.status === "Assigned" ? (
-          <div className="w-full flex justify-end bg-white p-3  border fixed bottom-0 left-0 gap-3">
-            <button
-              className="flex justify-center items-center bg-emerald-400 text-white p-2 rounded-md"
-              onClick={() => {
-                setOpenModal({ isShown: true, type: userType, data: "hello" });
-              }}
-            >
-              <MdLocalPrintshop size={25} />
-            </button>
-            <button className="flex justify-center items-center bg-cyan-500 text-white p-2 rounded-md">Save PDF</button>
-          </div>
-        ) : (
-          ""
-        ))}
     </div>
   );
 }
 
 export default DeviceDetails;
-
-/*
-
- <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
-      <span className="text-sm">
-        <b>Devices /</b> {path}
-      </span>
-      <div className="flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
-        <div className="flex justify-end">
-          <div>
-            {deviceDetails?.status !== "Assigned" ? (
-              <SubmitButton
-                text={"Assign User"}
-                onClick={() => {
-                  setOpenModal({ isShown: true, type: "assign", data: "hello" });
-                }}
-              />
-            ) : (
-              <div className="flex gap-3">
-                <SubmitButton
-                  text={"Release User"}
-                  onClick={() => {
-                    setOpenModal({ isShown: true, type: "release", data: "hello" });
-                  }}
-                />
-                <SubmitButton
-                  text={"Assign User"}
-                  onClick={() => {
-                    setOpenModal({ isShown: true, type: "assign", data: "hello" });
-                  }}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex gap-5">
-          <div className="flex flex-col w-6/12 border p-1 rounded-md shadow-md">
-            <span className="heading-text">Device Details</span>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Make</span>
-              <span className="text-sm">{deviceDetails?.make}</span>
-            </div>
-            <div className="flex justify-between  p-2">
-              <span className="text-sm">Model</span>
-              <span className="text-sm">{deviceDetails?.model}</span>
-            </div>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Asset Tag</span>
-              <span className="text-sm">{deviceDetails?.assetTag}</span>
-            </div>
-            <div className="flex justify-between  p-2">
-              <span className="text-sm">Serial Number</span>
-              <span className="text-sm">{deviceDetails?.serial_no}</span>
-            </div>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Device Condition</span>
-              <span className="text-sm">{deviceDetails?.device_condition}</span>
-            </div>
-            <div className="flex justify-between  p-2">
-              <span className="text-sm">Status</span>
-              <span className="text-sm">{deviceDetails?.status}</span>
-            </div>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Warranty End date</span>
-              <span className="text-sm">{deviceDetails?.warrantyExpiration}</span>
-            </div>
-            <div className="flex justify-between p-2">
-              <span className="text-sm">Category</span>
-              <span className="text-sm">{deviceDetails?.category}</span>
-            </div>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Specification</span>
-              <span className="text-sm">{deviceDetails?.specification}</span>
-            </div>
-            <div className="flex justify-between p-2">
-              <span className="text-sm">Location</span>
-              <span className="text-sm">{deviceDetails?.location}</span>
-            </div>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Supplier</span>
-              <span className="text-sm">{deviceDetails?.supplier}</span>
-            </div>
-            <div className="flex justify-between p-2">
-              <span className="text-sm">Invoice</span>
-              <span className="text-sm">{deviceDetails?.invoice_no}</span>
-            </div>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Purchase Value</span>
-              <span className="text-sm">{`R ${deviceDetails?.purchaseValue}`}</span>
-            </div>
-            <div className="flex justify-between  p-2">
-              <span className="text-sm">Purchase Date</span>
-              <span className="text-sm">{deviceDetails?.purchaseDate}</span>
-            </div>
-            <div className="flex justify-between bg-zinc-50 p-2">
-              <span className="text-sm">Date Enrolled</span>
-              <span className="text-sm">{dateCreated}</span>
-            </div>
-          </div>
-          <div className="flex flex-col w-6/12 gap-5">
-            <div className="flex flex-col items-center justify-center w-2/5 h-2/5 border p-2 gap-4 rounded-md shadow-md">
-              <img src={`/public/${deviceDetails?.model.toLowerCase()}.png`} alt="" className="w-[200px] h-[150px]" />
-            </div>
-            {deviceDetails?.status === "Assigned" ? (
-              <div className="flex flex-col h-2/5 justify-between border p-2 rounded-md shadow-md">
-                <span className="heading-text">Assigned User</span>
-                <div>
-                  <div className="flex justify-between bg-zinc-50 p-2">
-                    <span className="text-sm">Full name</span>
-                    <span className="text-sm">{deviceDetails?.assignedTo}</span>
-                  </div>
-                  <div className="flex justify-between  p-2">
-                    <span className="text-sm">User Id</span>
-                    <span className="text-sm">{deviceDetails?.userId}</span>
-                  </div>
-                  <div className="flex justify-between bg-zinc-50 p-2">
-                    <span className="text-sm">User Type</span>
-                    <span className="text-sm">{deviceDetails?.userType}</span>
-                  </div>
-                </div>
-                <span className="text-blue-400 underline cursor-pointer">View More</span>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-        </div>
-      </div>
-      <Modal
-        isOpen={openModal.isShown}
-        onRequestClose={() => {
-          setOpenModal({ isShown: false });
-        }}
-        style={{
-          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
-        }}
-        contentLabel=""
-        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
-      >
-        {openModal.type === "assign" ? (
-          <IssueDevice
-            onCanel={() => {
-              setOpenModal({ isShown: false });
-            }}
-            onSubmit={() => {
-              getDeviceDetails();
-              setOpenModal({ isShown: false });
-            }}
-            userData={[...staffState?.staffList, ...studentState?.studentsList]}
-            setShowToast={setShowToast}
-          />
-        ) : (
-          <ReleaseUser
-            onCanel={() => {
-              setOpenModal({ isShown: false });
-            }}
-            onSubmit={() => {
-              getDeviceDetails();
-              setOpenModal({ isShown: false });
-            }}
-            data={[...staffState?.staffList, ...studentState?.studentsList]}
-            setShowToast={setShowToast}
-          />
-        )}
-      </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
-    </div>
-*/

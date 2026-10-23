@@ -1,3 +1,5 @@
 export const getPercentage = (value, total) => {
-  return (value / total) * 100;
+  const percentage = (value / total) * 100;
+
+  return Math.round(percentage * 100) / 100;
 };

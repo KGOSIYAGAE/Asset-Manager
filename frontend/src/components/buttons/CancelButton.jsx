@@ -2,7 +2,7 @@ import React from "react";
 
 function CancelButton({ onClick }) {
   return (
-    <button className="secondary-btn" onClick={() => onClick()}>
+    <button className="cancel-btn" onClick={() => onClick()}>
       Cancel
     </button>
   );

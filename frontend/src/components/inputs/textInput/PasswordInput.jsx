@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa6";
 
 function TextInput({ label, value, isDisabled, maxLength, setOnChange, type }) {
@@ -21,40 +21,40 @@ function TextInput({ label, value, isDisabled, maxLength, setOnChange, type }) {
   };
 
   return (
-    <div className="flex flex-col">
-      <span className="w-fit text-zinc-500  bg-white">{label}</span>
-      <div className="flex justify-between items-center p-1">
-        <input
-          type={textType}
-          className="w-full outline-none border-2 focus:border-red-600 rounded-md p-1"
-          maxLength={maxLength}
-          name="input-text"
-          disabled={isDisabled}
-          value={value}
-          onChange={(e) => {
-            setOnChange(e.target.value);
-          }}
-        />
-        <div className="absolute right-8">
-          {isVisible ? (
-            <FaEye
-              size={20}
-              className="text-zinc-600"
-              onClick={() => {
-                togglePassword();
-              }}
-            />
-          ) : (
-            <FaEyeSlash
-              size={20}
-              className="text-zinc-600"
-              onClick={() => {
-                togglePassword();
-              }}
-            />
-          )}
-        </div>
-      </div>
+    <div className=" text-input flex flex-row justify-between text-input group focus-within:border-red-600 ">
+      <span className="w-fit absolute  group-focus-within:text-red-600 text-zinc-500 -mt-5 bg-white">{label}</span>
+      <input
+        type={textType}
+        className="w-full outline-none "
+        maxLength={maxLength}
+        name="input-text"
+        disabled={isDisabled}
+        value={value}
+        onChange={(e) => {
+          setOnChange(e.target.value);
+        }}
+      />
+      <button>
+        {isVisible ? (
+          <FaEye
+            size={20}
+            className="text-zinc-600"
+            onClick={(e) => {
+              e.preventDefault();
+              togglePassword();
+            }}
+          />
+        ) : (
+          <FaEyeSlash
+            size={20}
+            className="text-zinc-600"
+            onClick={(e) => {
+              e.preventDefault();
+              togglePassword();
+            }}
+          />
+        )}
+      </button>
     </div>
   );
 }

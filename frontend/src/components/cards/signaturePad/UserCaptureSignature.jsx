@@ -5,9 +5,15 @@ import SubmitButton from "../../buttons/SubmitButton";
 import SignatureCanvas from "react-signature-canvas";
 import { setUserSignature } from "../../../services/api/signature/userSignatures";
 import { postMessageSiganture } from "../../../utils/VerificationPostMessage";
+import { socket } from "../../../utils/socket";
+import { navigateTo } from "../../../utils/navigate";
+import { useParams } from "react-router-dom";
 
-function UserCaptureSignature({ lablel, user_id, setShowToast }) {
+function UserCaptureSignature({ lablel, user_id }) {
   const signatureCanvasRef = useRef(null);
+
+  const params = useParams();
+  const { sessionId } = params;
 
   //Clear signature
   const clearSignature = () => {
@@ -18,13 +24,47 @@ function UserCaptureSignature({ lablel, user_id, setShowToast }) {
   const saveSignature = async () => {
     const image = signatureCanvasRef.current.toDataURL();
 
-    await setUserSignature(user_id, image, setShowToast);
+    socket.once("connect", () => {
+      console.log("🟢 1. Frontend: Socket connected! Emitting signature...");
 
-    return postMessageSiganture();
+      socket.emit("submit_signature", { sessionId, image }, (ackResponse) => {
+        // This blocks runs ONLY if the server successfully received the payload
+        if (ackResponse && ackResponse.status === "received") {
+          console.log("🟢 4. Frontend: Server confirmed receipt of signature!");
+        } else {
+          console.warn("⚠️ Frontend: Server didn't acknowledge the receipt.");
+        }
+      });
+    });
+
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    } else {
+      socket.off("connect");
+
+      console.log("Socket already connected, emitting signature");
+      socket.emit("submit_signature", { sessionId, image }, (ackResponse) => {
+        // This blocks runs ONLY if the server successfully received the payload
+        if (ackResponse && ackResponse.status === "received") {
+          console.log("🟢 4. Frontend: Server confirmed receipt of signature!");
+        } else {
+          console.warn("⚠️ Frontend: Server didn't acknowledge the receipt.");
+        }
+      });
+    }
+
+    await setUserSignature(user_id, image);
+
+    if (sessionId) {
+      return navigateTo("/Success");
+    } else {
+      return postMessageSiganture();
+    }
   };
 
   return (
-    <div className="w-full flex flex-col items-center gap-10 border">
+    <div className="w-full flex flex-col items-center gap-10 ">
       <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" className="page-logo-staff" />
       <div className="flex flex-col gap-8">
         <span className=" font-bold text-2xl">{lablel}</span>

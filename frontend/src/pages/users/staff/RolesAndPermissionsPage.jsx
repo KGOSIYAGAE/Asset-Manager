@@ -9,13 +9,20 @@ import { hasPermission } from "../../../utils/getLoggedInUser";
 import RolesAndPermissionTable from "../../../components/tables/RolesAndPermissionTable";
 import ManageRoles from "../../../components/cards/manageRoles/ManageRoles";
 import UpdateRoles from "../../../components/cards/manageRoles/UpdateRoles";
+import { getAdmins } from "../../../services/api/admin/Admin.Api";
 
 function RolesAndPermissionsPage({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
   const [viewedUser, setViewedUser] = useState(null);
 
-  const { staffState, staffDispatch } = useStaffContext();
+  //Set pagated data to the table
+
+  const [userAndAdmins, setUsersAndAdmins] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 8;
 
   const handleUpdateRole = (systemUser) => {
     setOpenModal({ isShown: true, type: "update-role", data: "hello" });
@@ -24,8 +31,8 @@ function RolesAndPermissionsPage({ path }) {
   };
 
   useEffect(() => {
-    getStaffData(staffDispatch);
-  }, []);
+    getAdmins({ page: currentPage, limit: limit }, setUsersAndAdmins, setTotalPages);
+  }, [currentPage]);
 
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
@@ -33,9 +40,9 @@ function RolesAndPermissionsPage({ path }) {
         Users/ <b> {path}</b>
       </span>
       {/* */}
-      <div className="col-span-6  bg-white rounded-md shadow-md overflow-x-scroll">
-        <div className="flex items-center justify-between border-b-2 rounded-t-md p-2 sticky top-0 bg-white">
-          <span className="heading-text ">{""}</span>
+      <div className="col-span-6 h-[580px] bg-white rounded-md shadow-md ">
+        <div className="flex items-center justify-between rounded-t-md p-2 sticky top-0 bg-white">
+          <span className="heading-text ">{"Roles & Permissions"}</span>
           <div className="flex gap-2 ">
             {hasPermission("create") && (
               <AddButton
@@ -48,7 +55,9 @@ function RolesAndPermissionsPage({ path }) {
             <ExportExcelButton />
           </div>
         </div>
-        <RolesAndPermissionTable users={staffState?.staffList} label={"Roles And Permissions"} handleUpdateRole={handleUpdateRole} />
+        <div className="flex p-2">
+          <RolesAndPermissionTable userAndAdmins={userAndAdmins} handleUpdateRole={handleUpdateRole} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} limit={limit} />
+        </div>
       </div>
       {/* */}
       <Modal
@@ -70,11 +79,11 @@ function RolesAndPermissionsPage({ path }) {
               setOpenModal({ isShown: false });
             }}
             onSubmit={(message) => {
-              getStaffData(staffDispatch);
+              getAdmins(setUsersAndAdmins);
               setOpenModal({ isShown: false });
               setShowToast({ isShow: true, type: "success", message: message });
             }}
-            userData={[...staffState?.staffList]}
+            userData={userAndAdmins}
             setShowToast={setShowToast}
           />
         ) : (
@@ -83,7 +92,7 @@ function RolesAndPermissionsPage({ path }) {
               setOpenModal({ isShown: false });
             }}
             onSubmit={(message) => {
-              getStaffData(staffDispatch);
+              getAdmins(setUsersAndAdmins);
               setOpenModal({ isShown: false });
               setShowToast({ isShow: true, type: "success", message: message });
             }}

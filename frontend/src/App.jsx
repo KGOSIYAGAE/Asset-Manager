@@ -36,6 +36,16 @@ import DeviceForApproval from "./pages/devices/DeviceForApproval";
 import RolesAndPermissionsPage from "./pages/users/staff/RolesAndPermissionsPage";
 import NoAccess from "./pages/noAcess/NoAccess";
 import { setNavigate } from "./utils/navigate";
+import { LoadingContextProvider } from "./context/LoadingContext";
+import Repairs from "./pages/repairs/Repairs";
+import Approval from "./pages/emailTemplates/Approval";
+import TabletView from "./pages/tabletView/TabletView";
+import SuccessPage from "./pages/succesPage/SuccessPage";
+import RepairDetails from "./pages/repairs/RepairDetails";
+import Faculties from "./pages/organization/Faculties";
+import Departments from "./pages/organization/Departments";
+import Positions from "./pages/organization/Positions";
+import Settings from "./pages/settings/Settings";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -62,12 +72,16 @@ function App() {
   //App UI Layout
   const Layout = () => {
     return (
-      <div className="w-screen flex ">
-        <div className={`${isMinimize ? "w-[60px] " : "w-2/12"} border`}>
-          <Menu isMinimized={isMinimize} />
+      <div className="w-screen lg:flex lg:flex-row ">
+        <div
+          className={` ${
+            isMinimize ? "w-[250px] bg-black bg-opacity-15 lg:w-[60px] absolute lg:translate-x-0 lg:relative z-30 " : "absolute -translate-x-72  lg:translate-x-0 lg:relative lg:w-2/12 z-50 "
+          }`}
+        >
+          <Menu isMinimized={isMinimize} setIsMinimize={setIsMinimize} onCloseMenu={handleMinimizeMenu} />
         </div>
-        <div className={`${isMinimize ? "w-full" : "w-10/12"} `}>
-          <div className="bottom-border">
+        <div className={`${isMinimize ? "w-full p-2 lg:p-0" : "lg:w-10/12 p-2 lg:p-0"} flex flex-col`}>
+          <div className="bottom-border ">
             <Navbar onCloseMenu={handleMinimizeMenu} />
           </div>
           <Outlet />
@@ -85,24 +99,27 @@ function App() {
       //Check if user is authorized to access private protected routes
       if (!user.role) {
         sessionStorage.clear();
-        return navigate("/No-Access", { replace: true });
+        console.log(window.location.pathname);
+        return navigate("/", { replace: true, state: { from: window.location.pathname } });
       }
 
       if (!user.token) {
         sessionStorage.clear();
-        return navigate("/", { replace: true });
+        console.log(window.location.pathname);
+        return navigate("/", { replace: true, state: { from: window.location.pathname } });
       }
 
       //Check if user token is still valid if not redirect to login
       if (isTokenExpired(user.token)) {
         sessionStorage.clear();
-        return navigate("/");
+        console.log(window.location.pathname);
+        return navigate("/", { replace: true, state: { from: window.location.pathname } });
       }
 
       setIsAuthenticated(true);
-    }, [isAuthenticated, navigate, setIsAuthenticated]);
+    }, [navigate]);
 
-    return isAuthenticated ? Element : <h1>Authenticated</h1>;
+    return isAuthenticated ? Element : <h1>Authentication Required</h1>;
   };
 
   /*const router = createBrowserRouter([
@@ -171,12 +188,42 @@ function App() {
       element: <Login />,
     },
     {
-      path: "/user-form/:userId/:deviceId",
+      path: "/user-form/:source/:userId/:deviceId",
+      element: <SecondScreenPage />,
+    },
+    {
+      path: "/user-form/:source/:userId/:deviceId/:returnDate",
       element: <SecondScreenPage />,
     },
     {
       path: "/user-form/:userId",
       element: <SecondScreenPage />,
+    },
+    {
+      path: "/user-form/:source/:deviceId",
+      element: <SecondScreenPage />,
+    },
+
+    //Send to tablet endpoint
+    {
+      path: "/sign-form/:source/:userId/:deviceId/:issuedBy/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign-form/:source/:userId/:deviceId/:issuedBy/:returnDate/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign-form/:userId/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign-form/:source/:deviceId/:sessionId/:tempToken",
+      element: <TabletView />,
+    },
+    {
+      path: "/sign/:sessionId",
+      element: <TabletView />,
     },
     {
       element: <PrivateRoutes isAuthenticated={isAuthenticated} element={<Layout />} />,
@@ -255,7 +302,47 @@ function App() {
         },
         { path: "/users/students/student-details/:student_no", element: <StudentDetails path={"student-details/"} />, errorElement: <Home /> },
 
-        ,
+        //Organization
+        {
+          path: "/organization/faculties",
+          element: <Faculties path={"faculties"} />,
+        },
+        {
+          path: "/organization/departments",
+          element: <Departments path={"departments"} />,
+        },
+        {
+          path: "/organization/positions",
+          element: <Positions path={"positions"} />,
+        },
+
+        //Repairs
+        {
+          path: "/repairs",
+          element: <Repairs path={"Repairs"} />,
+        },
+        {
+          path: "/repairs/create-repair",
+          element: <Repairs path={"Repairs"} createRepair={true} />,
+        },
+        {
+          path: "/repairs/repair-details/:id",
+          element: <RepairDetails path={"repair-details/"} />,
+          errorElement: <Repairs path={"Repairs"} />,
+        },
+
+        //View Email templates
+        {
+          path: "/email-templates",
+          element: <Approval path={"Email Templates"} />,
+        },
+
+        //View Email templates
+        {
+          path: "/settings/email-settings",
+          element: <Settings name={"System Settings"} path={"System Settings/ Email Settings"} />,
+        },
+
         //User Management
         { path: "/users/roles-and-permissions", element: <RolesAndPermissionsPage path={"roles-and-permissions/"} />, errorElement: <Home /> },
       ],
@@ -265,27 +352,33 @@ function App() {
       element: <NoAccess />,
     },
     {
+      path: "/Success",
+      element: <SuccessPage />,
+    },
+    {
       path: "*",
       element: <PageNotFound />,
     },
   ]);
 
   return (
-    <LogsContextProvider>
-      <SearchContextProvider>
-        <InvoiceContextProvider>
-          <LoanDueContextProvider>
-            <DevicesContextProvider>
-              <StudentsContextProvider>
-                <StaffContextProvider>
-                  <RouterProvider router={router} />
-                </StaffContextProvider>
-              </StudentsContextProvider>
-            </DevicesContextProvider>
-          </LoanDueContextProvider>
-        </InvoiceContextProvider>
-      </SearchContextProvider>
-    </LogsContextProvider>
+    <LoadingContextProvider>
+      <LogsContextProvider>
+        <SearchContextProvider>
+          <InvoiceContextProvider>
+            <LoanDueContextProvider>
+              <DevicesContextProvider>
+                <StudentsContextProvider>
+                  <StaffContextProvider>
+                    <RouterProvider router={router} />
+                  </StaffContextProvider>
+                </StudentsContextProvider>
+              </DevicesContextProvider>
+            </LoanDueContextProvider>
+          </InvoiceContextProvider>
+        </SearchContextProvider>
+      </LogsContextProvider>
+    </LoadingContextProvider>
   );
 }
 

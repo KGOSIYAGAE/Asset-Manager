@@ -1,0 +1,3 @@
+window.env = {
+  "IP_ADDRESS": "10.90.0.53"
+};

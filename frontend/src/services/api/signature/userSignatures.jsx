@@ -6,7 +6,7 @@ export const getUserSignature = async (user_id, setSignature) => {
   }
 
   try {
-    const response = await axiosInstance.get("/signatures/" + user_id);
+    const response = await axiosInstance.get("/signatures/" + user_id, { showSpinner: true });
 
     if (response.data && response.data.signatureList) {
       return setSignature(response.data.signatureList[0].image_base64);
@@ -20,16 +20,16 @@ export const getUserSignature = async (user_id, setSignature) => {
   }
 };
 
-export const getIssureApproverSignature = async (device_id, setIssuerApproverSignature) => {
-  if (!device_id) {
+export const getIssureApproverSignature = async (data) => {
+  if (!data.device_serial_number || !data.status) {
     return console.log("Staff number must be provided");
   }
 
   try {
-    const response = await axiosInstance.get("/signatures/issuer-approver-signature/" + device_id);
+    const response = await axiosInstance.get("/signatures/issuer-approver-signature", { params: data, showSpinner: true });
 
-    if (response.data && response.data.signatureList) {
-      return setIssuerApproverSignature(response.data.signatureList[0]);
+    if (response.data && response.data.signatures) {
+      return response.data.signatures;
     }
   } catch (error) {
     if (error.response && error.response.data.error) {
@@ -40,9 +40,8 @@ export const getIssureApproverSignature = async (device_id, setIssuerApproverSig
   }
 };
 
-export const setUserSignature = async (user_id, image_base64, setShowToast) => {
+export const setUserSignature = async (user_id, image_base64) => {
   if (!user_id) {
-    console.log(user_id);
     return console.log("User ID must be provided");
   }
 
@@ -56,7 +55,7 @@ export const setUserSignature = async (user_id, image_base64, setShowToast) => {
   };
 
   try {
-    const response = await axiosInstance.post("/signatures/create-signature", data);
+    const response = await axiosInstance.post("/signatures/create-signature", data, { showSpinner: true });
     if (response.data) {
       return console.log(response.data.message);
     }

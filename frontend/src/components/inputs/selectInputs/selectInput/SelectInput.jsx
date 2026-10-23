@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 
 function SelectInput({ label, value, options, optionName, isDisabled, setOnChange, onChoose }) {
   const fnc = (option, name) => {
-    return <option key={option.id}>{option.name || option.faculty_name || option.course_name}</option>;
+    return (
+      <option key={option.id} onMouseOver={() => {}}>
+        {option.name || option.faculty_name || option.course_name}
+      </option>
+    );
   };
-
-  const [inputValue, setInputValue] = useState("");
-
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
 
   return (
     <div className="text-input col-span-2">
@@ -17,7 +15,7 @@ function SelectInput({ label, value, options, optionName, isDisabled, setOnChang
       <select
         className="outline-none"
         disabled={isDisabled}
-        value={inputValue}
+        value={value}
         onChange={(e) => {
           setOnChange(e.target.value);
           if (onChoose) {

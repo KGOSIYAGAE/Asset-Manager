@@ -6,10 +6,16 @@ import SignatureCanvas from "react-signature-canvas";
 import { setUserSignature } from "../../../services/api/signature/userSignatures";
 import { handleAssignDeviceToStaff, handleAssignDeviceToStudent } from "../../../utils/HandleAssignDevice";
 import { getUserType } from "../../../utils/helperMethods";
+import { handleLoanDevice } from "../../../utils/HandleLoanDevice";
+import { socket } from "../../../utils/socket";
+import { useParams } from "react-router-dom";
 
-function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToast }) {
+function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate, setShowToast, formType }) {
   const signatureCanvasRef = useRef(null);
   const [userType, setUserType] = useState(null);
+
+  const params = useParams();
+  const { issuedBy, sessionId } = params;
 
   //Clear signature
   const clearSignature = () => {
@@ -17,10 +23,40 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToas
   };
 
   //Save signature
-  const saveSignature = () => {
+  const saveSignature = async () => {
     const image = signatureCanvasRef.current.toDataURL();
 
-    setUserSignature(user_id, image);
+    socket.once("connect", () => {
+      console.log("🟢 1. Frontend: Socket connected! Emitting signature...");
+
+      socket.emit("submit_signature", { sessionId, image }, (ackResponse) => {
+        // This blocks runs ONLY if the server successfully received the payload
+        if (ackResponse && ackResponse.status === "received") {
+          console.log("🟢 4. Frontend: Server confirmed receipt of signature!");
+        } else {
+          console.warn("⚠️ Frontend: Server didn't acknowledge the receipt.");
+        }
+      });
+    });
+
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    } else {
+      socket.off("connect");
+
+      console.log("Socket already connected, emitting signature");
+      socket.emit("submit_signature", { sessionId, image }, (ackResponse) => {
+        // This blocks runs ONLY if the server successfully received the payload
+        if (ackResponse && ackResponse.status === "received") {
+          console.log("🟢 4. Frontend: Server confirmed receipt of signature!");
+        } else {
+          console.warn("⚠️ Frontend: Server didn't acknowledge the receipt.");
+        }
+      });
+    }
+
+    await setUserSignature(user_id, image);
 
     return true;
   };
@@ -28,10 +64,12 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToas
   //Handle Assign suer
 
   const handleAssign = async () => {
-    if (userType === "Staff") {
-      handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
+    if (formType === "loan-issue") {
+      handleLoanDevice(userDetails, ...deviceDetails, issuedBy, returnDate, setShowToast);
+    } else if (formType === "student-issue") {
+      handleAssignDeviceToStudent(userDetails, deviceDetails, issuedBy, setShowToast);
     } else {
-      handleAssignDeviceToStudent(userDetails, deviceDetails, setShowToast);
+      handleAssignDeviceToStaff(userDetails, ...deviceDetails, issuedBy, setShowToast);
     }
 
     return saveSignature();
@@ -43,7 +81,7 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, setShowToas
 
   return (
     <div>
-      <div className="flex flex-col p-2 gap-7">
+      <div className="flex flex-col p-2 gap-7 ">
         <div className="flex justify-between cursor-pointer">
           <span className="text-xl font-semibold">{lablel}</span>
         </div>

@@ -5,7 +5,7 @@ import { getFacultyStats } from "../../utils/analyticsMethods";
 
 function ExportExcelButton() {
   return (
-    <button className="flex items-center text-blue-900 border border-blue-900 rounded-md px-2 gap-2 hover:bg-blue-900 hover:text-white hover:cursor-pointer" onClick={() => {}}>
+    <button className="secondary-btn" onClick={() => {}}>
       <PiMicrosoftExcelLogoFill size={20} />
       Export
     </button>

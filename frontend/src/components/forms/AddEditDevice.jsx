@@ -19,20 +19,20 @@ import CategorySelectInput from "../inputs/selectInputs/deviceCategorySelectInpu
 import { GetDeviceType } from "../../utils/helperMethods";
 
 function AddEditDevice({ path }) {
-  const [make, setMake] = useState("");
-  const [model, setModel] = useState("");
-  const [serial_no, setSerial_no] = useState("");
-  const [assetTag, setAssetTag] = useState("");
-  const [spec, setSpec] = useState("");
+  const [make, setMake] = useState();
+  const [model, setModel] = useState();
+  const [serial_no, setSerial_no] = useState();
+  const [assetTag, setAssetTag] = useState();
+  const [spec, setSpec] = useState();
   const [category, setCategory] = useState("Laptop"); // Laptop, desktop, all in one, Monitor
   const [device_condition, setDevice_Condition] = useState("New"); //New, Used, Faulty/ Scrap
   const [status, setStatus] = useState("Available"); //Available, Loaned, Assigned, Under Maintenance, Lost
-  const [warranty_end_date, setWarranty_End_date] = useState("");
-  const [invoice_no, setInvoice_no] = useState("");
-  const [supplier_name, setSupplier_name] = useState("");
+  const [warranty_end_date, setWarranty_End_date] = useState();
+  const [invoice_no, setInvoice_no] = useState();
+  const [supplier_name, setSupplier_name] = useState();
 
-  const [purchaseValue, setPurchaseValue] = useState("");
-  const [currentValue, setCurrentValue] = useState("");
+  const [purchaseValue, setPurchaseValue] = useState();
+  const [currentValue, setCurrentValue] = useState();
 
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [formType, setFormType] = useState("Add");
@@ -52,7 +52,7 @@ function AddEditDevice({ path }) {
     }
   };
 
-  //handle auto populate make
+  //handle auto populate model
   const handleModel = (manufatures) => {
     for (let i = 0; i < deviceMufactures.length; i++) {
       if (deviceMufactures[i].name === manufatures) {
@@ -68,6 +68,7 @@ function AddEditDevice({ path }) {
     setAssetTag(deviceDetails[0].asset_tag);
     setMake(deviceDetails[0].make);
     setModel(deviceDetails[0].model);
+
     setSpec(deviceDetails[0].specification);
     setCategory(deviceDetails[0].category);
     setDevice_Condition(deviceDetails[0].device_condition);
@@ -77,6 +78,9 @@ function AddEditDevice({ path }) {
     setInvoice_no(deviceDetails[0].invoice_number);
     setPurchaseValue(deviceDetails[0].purchase_price);
     setCurrentValue(deviceDetails[0].value_price);
+
+    handleMake(deviceDetails[0].category);
+    handleModel(deviceDetails[0].make);
   };
 
   //Handle Submit
@@ -166,57 +170,57 @@ function AddEditDevice({ path }) {
         <div className="flex justify-between">
           <span className="heading-text">Device Details</span>
         </div>
-        <div className="grid grid-cols-8 gap-8 pt-5">
-          <div className="col-span-3">
+        <div className="grid grid-cols-8 gap-8 pt-5 ">
+          <div className="col-span-5 lg:col-span-3">
             {/*<SelectInput label={"Category"} value={category} options={deviceCategory} optionName={"name"} isDisabled={false} setOnChange={setCategory} />*/}
             <CategorySelectInput label={"Category"} value={category} options={ICT_DEVICES} setOnChange={setCategory} onChoose={handleMake} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             {/*<SelectInput label={"Manufacture"} value={make} options={deviceManufacture} optionName={"name"} isDisabled={false} setOnChange={setMake} onChoose={handleModel} />*/}
             <CategorySelectInput label={"Make"} value={make} options={deviceMufactures} setOnChange={setMake} onChoose={handleModel} />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             {/*<SelectInput label={"Model"} value={model} options={modelList} optionName={"name"} opisDisabled={false} setOnChange={setModel} />*/}
             <CategorySelectInput label={"Model"} value={model} options={deviceModels} setOnChange={setModel} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-5 lg:col-span-2">
             <TextInput label={"Serial Number"} value={serial_no} isDisabled={false} maxLength={30} setOnChange={setSerial_no} />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <TextInput label={"Asset Tag"} value={assetTag} isDisabled={false} maxLength={6} setOnChange={setAssetTag} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             <SelectInput label={"Status"} value={status} options={deviceStatus} optionName={"name"} isDisabled={false} setOnChange={setStatus} onChoose={() => {}} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-4 lg:col-span-2">
             <SelectInput label={"Condition"} value={device_condition} options={deviceCondition} optionName={"name"} isDisabled={false} setOnChange={setDevice_Condition} onChoose={() => {}} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-5 lg:col-span-2">
             <DateTimePicker label={"Warranty End Date"} value={warranty_end_date} setOnChange={setWarranty_End_date} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Purchase Value"} value={purchaseValue} isDisabled={false} maxLength={10} setOnChange={setPurchaseValue} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Current Value"} value={currentValue} isDisabled={false} maxLength={10} setOnChange={setCurrentValue} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-5 lg:col-span-3">
             <TextInput label={"Supplier Name"} value={supplier_name} isDisabled={false} maxLength={50} setOnChange={setSupplier_name} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-3 lg:col-span-3">
             <TextInput label={"Invoice Number"} value={invoice_no} isDisabled={false} maxLength={50} setOnChange={setInvoice_no} />
           </div>
 
-          <div className="col-span-8">
+          <div className=" col-span-8">
             <TextArea label={"Specification"} value={spec} isDisabled={false} setOnChange={setSpec} />
           </div>
         </div>

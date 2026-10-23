@@ -12,7 +12,8 @@ function Navbar({ onCloseMenu, notifications }) {
           onCloseMenu();
         }}
       >
-        <MdMenu size={25} className="menu-items" />
+        {" "}
+        <MdMenu className="top-nav-items" />
       </div>
       <div className="flex justify-center items-center gap-3">
         {/*<NotificationCard />*/}

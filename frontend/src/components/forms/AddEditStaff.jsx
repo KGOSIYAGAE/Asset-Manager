@@ -22,6 +22,11 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { hasPermission } from "../../utils/getLoggedInUser";
 //import { positionList } from "../../utils/positionsList";
 import FacultySelectInput from "../inputs/selectInputs/facultySelectInput/FacultySelectInput";
+import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
+
+import Modal from "react-modal";
+import { socket } from "../../utils/socket";
+import { getDepartments, getFaculties, getPositions } from "../../services/api/organization/Organization";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
@@ -29,17 +34,23 @@ function AddEditStaff({ path }) {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [staff_no, setStaff_no] = useState("");
-  const [phone_number, setPhone_Number] = useState("");
-  const [email, setEmail] = useState("");
-  const [faculty_name, setFaculty_name] = useState("");
-  const [department_name, setDepartment_name] = useState("");
-  const [position_name, setPosition_name] = useState("");
-  const [contract_type, setContract_Type] = useState("");
-  const [isActive, setIsActive] = useState("");
-  const [start_date, setStart_date] = useState("");
+  const [name, setName] = useState();
+  const [surname, setSurname] = useState();
+  const [staff_no, setStaff_no] = useState();
+  const [phone_number, setPhone_Number] = useState();
+  const [email, setEmail] = useState();
+
+  const [faculty_id, setFaculty_id] = useState();
+
+  const [department_id, setDepartment_id] = useState();
+
+  const [position_name, setPosition_name] = useState();
+  const [positions, setPositions] = useState();
+  const [position_id, setPosition_id] = useState();
+
+  const [contract_type, setContract_Type] = useState();
+  const [isActive, setIsActive] = useState();
+  const [start_date, setStart_date] = useState();
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -53,7 +64,10 @@ function AddEditStaff({ path }) {
   const [positionList, setPositionList] = useState(null);
 
   const [formType, setFormType] = useState("add");
+
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+
+  const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   //Toast close code
   const handleToastClose = () => {
@@ -69,67 +83,78 @@ function AddEditStaff({ path }) {
     setStaff_no(userDetails.staff_no);
     setPhone_Number(userDetails.phone_number);
     setEmail(userDetails.email);
-    setFaculty_name(userDetails.faculty_name);
-    setPosition_name(userDetails.position_name);
-    setDepartment_name(userDetails.department_name);
     setContract_Type(userDetails.contract_type);
     setIsActive(userDetails.acc_status);
     setLaptopDetails(userDetails.laptop);
     setStart_date(handleTimeStamp(userDetails.start_date));
     setEndDate(handleTimeStamp(userDetails.end_date));
+
+    setFaculty_id(userDetails.faculty_id);
+    setDepartment_id(userDetails.department_id);
+    setPosition_id(userDetails.position_id);
+  };
+
+  //Form Clear
+  const hanldeFormClear = () => {
+    setName();
+    setSurname();
+    setStaff_no();
+    setPhone_Number();
+    setEmail();
+    setContract_Type();
+    setIsActive();
+    setLaptopDetails();
+    setStart_date();
+    setEndDate();
   };
 
   //Handle Submit / Update
   const handleSubmit = () => {
     if (!name) {
-      return setShowToast({ isShown: true, type: "", message: "First name must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "First name must be provided" });
     }
 
     if (!surname) {
-      return setShowToast({ isShown: true, type: "", message: "Last name must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Last name must be provided" });
     }
 
     if (!staff_no) {
-      return setShowToast({ isShown: true, type: "", message: "Staff number must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Staff number must be provided" });
     }
 
     if (!phone_number) {
-      return setShowToast({ isShown: true, type: "", message: "Phone number must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Phone number must be provided" });
     }
 
     if (!email) {
-      return setShowToast({ isShown: true, type: "", message: "Email must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Email must be provided" });
     }
 
-    if (!isActive) {
-      return setShowToast({ isShown: true, type: "", message: "User status must be provided" });
+    if (!faculty_id) {
+      return setShowToast({ isShown: true, type: "error", message: "Faculty must be selected" });
     }
 
-    if (!faculty_name) {
-      return setShowToast({ isShown: true, type: "", message: "Faculty must be selected" });
+    if (!department_id) {
+      return setShowToast({ isShown: true, type: "error", message: "Department must be selected" });
     }
 
-    if (!department_name) {
-      return setShowToast({ isShown: true, type: "", message: "Department must be selected" });
+    if (!position_id) {
+      return setShowToast({ isShown: true, type: "error", message: "Position must be selected" });
     }
 
-    if (!position_name) {
-      return setShowToast({ isShown: true, type: "", message: "Position must be selected" });
+    if (!contract_type) {
+      return setShowToast({ isShown: true, type: "error", message: "Employment type must be provided" });
     }
 
     if (!start_date) {
-      return setShowToast({ isShown: true, type: "", message: "Start date must be provided" });
+      return setShowToast({ isShown: true, type: "error", message: "Start date must be provided" });
+    }
+
+    if (!isActive) {
+      return setShowToast({ isShown: true, type: "error", message: "User status must be provided" });
     }
 
     setError(null);
-
-    /*let end_date;
-
-    if (contract_type !== "Permanent") {
-      end_date = endDate;
-    } else {
-      end_date = null;
-    }*/
 
     const userData = {
       name,
@@ -137,9 +162,7 @@ function AddEditStaff({ path }) {
       staff_no,
       phone_number,
       email,
-      faculty_name,
-      department_name,
-      position_name,
+      position_id,
       contract_type,
       isActive,
       start_date,
@@ -155,23 +178,6 @@ function AddEditStaff({ path }) {
         updateStaff(id, userData, setShowToast);
       }
     }
-  };
-
-  //Form Clear
-  const hanldeFormClear = () => {
-    setName("");
-    setSurname("");
-    setStaff_no("");
-    setPhone_Number("");
-    setEmail("");
-    setFaculty_name("");
-    setPosition_name("");
-    setDepartment_name("");
-    setContract_Type("");
-    setIsActive("");
-    setLaptopDetails("");
-    setStart_date("");
-    setEndDate("");
   };
 
   //Choose user status
@@ -192,6 +198,47 @@ function AddEditStaff({ path }) {
     getUserDetails();
   }, []);
 
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("not connected");
+      socket.connect();
+    }
+
+    // Debug check: Verify the laptop is physically hearing events
+    console.log("Laptop listening for signature_saved event...");
+
+    socket.on("signature_saved", (image) => {
+      //setSignature(image.image);
+
+      getUserDetails();
+      socket.disconnect();
+
+      navigate(`/users/staff/staff-details/${staff_no}`);
+    });
+
+    return () => {
+      socket.off("signature_saved");
+    };
+  }, []);
+
+  //handle post Message Response
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === "form_submitted") {
+        if (event.data.payload.error) {
+          setShowToast({ isShow: true, type: "error", message: event.data.payload.message });
+          setOpenModal({ isShown: true });
+          return;
+        }
+
+        setShowToast({ isShow: true, type: "success", message: event.data.payload.message });
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50">
       <span className="text-sm">
@@ -202,74 +249,68 @@ function AddEditStaff({ path }) {
           <span className="heading-text">Staff Details</span>
         </div>
         <div className="grid grid-cols-6 gap-8 pt-5">
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <TextInput label={"First Name"} value={name} isDisabled={isDisabled} maxLength={50} setOnChange={setName} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <TextInput label={"Last Name"} value={surname} isDisabled={isDisabled} maxLength={50} setOnChange={setSurname} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-2 lg:col-span-2">
             <TextInput label={"Staff Number"} value={staff_no} isDisabled={isDisabled} maxLength={5} setOnChange={setStaff_no} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Phone Number"} value={phone_number} isDisabled={isDisabled} maxLength={10} setOnChange={setPhone_Number} />
           </div>
 
-          <div className="col-span-3">
+          <div className="col-span-4 lg:col-span-3">
             <TextInput label={"Email Address"} value={email} isDisabled={isDisabled} maxLength={50} setOnChange={setEmail} />
           </div>
 
-          <div className="col-span-2">
-            <FacultySelectInput
-              label={"Faculty"}
-              value={faculty_name}
-              departmentEntitiesList={departmentEntitiesList}
-              isDisabled={isDisabled}
-              setOnChange={setFaculty_name}
-              setDepartmentList={setDepartmentList}
-            />
+          <div className="col-span-3 lg:col-span-2">
+            <FacultySelectInput label={"Faculty"} faculty_id={faculty_id} isDisabled={isDisabled} setFaculty_id={setFaculty_id} />
           </div>
 
-          <div className="col-span-2">
-            <DepartmentSelectInput
-              label={"Department"}
-              value={department_name}
-              departmentList={departmentList}
-              isDisabled={isDisabled}
-              setOnChange={setDepartment_name}
-              setPositionList={setPositionList}
-            />
+          <div className="col-span-3 lg:col-span-2">
+            <DepartmentSelectInput label={"Department"} department_id={department_id} faculty_id={faculty_id} isDisabled={isDisabled} setDepartment_id={setDepartment_id} />
           </div>
 
-          <div className="col-span-2">
-            <PositionSelectInput label={"Position"} value={position_name} department_name={department_name} positionsList={positionList} isDisabled={isDisabled} setOnChange={setPosition_name} />
+          <div className="col-span-4 lg:col-span-2">
+            <PositionSelectInput label={"Position"} position_id={position_id} department_id={department_id} isDisabled={isDisabled} setPosition_id={setPosition_id} />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-2 lg:col-span-2">
             <SelectInput label={"Contract Type"} value={contract_type} options={employmentTypes} optionName={"name"} isDisabled={isDisabled} setOnChange={setContract_Type} />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-3 lg:col-span-1">
             <DateTimePicker label={"Starting Date"} value={start_date} setOnChange={setStart_date} />
           </div>
 
           {contract_type !== "Permanent" ? (
-            <div className="col-span-1">
+            <div className="col-span-3 lg:col-span-1">
               <DateTimePicker label={"End Date"} value={endDate} setOnChange={setEndDate} />
             </div>
           ) : (
             ""
           )}
 
-          <div className="col-span-2">
+          <div className="col-span-3 lg:col-span-2">
             <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
 
-          <div className="col-span-5">
-            <FormLaptopDetails laptopDetails={laptopDetails} />
+          <div className="col-span-6">
+            {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
+            <span
+              className="link-text"
+              onClick={() => {
+                setOpenModal({ isShown: true });
+              }}
+            >
+              Assign Laptop
+            </span>
           </div>
         </div>
         <div className="flex justify-end">
@@ -281,7 +322,35 @@ function AddEditStaff({ path }) {
         </div>
         {error ? <span className="text-sm text-red-500">{error}</span> : ""}
       </div>
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={handleToastClose} />
+
+      <Modal
+        isOpen={openModal.isShown}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setOpenModal({ isShown: false });
+        }}
+        style={{
+          overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
+        }}
+        contentLabel=""
+        className={`${
+          openModal.type === "release" ? "w-[80%] max-h-3/4 bg-white" : openModal.type === "assign" ? "w-[80%] max-h-3/4 bg-white" : "w-[50%] max-h-full bg-white"
+        } rounded-md mx-auto mt-14 p-5 overflow-auto`}
+      >
+        <AssignDeviceToUser
+          onCanel={() => {
+            setOpenModal({ isShown: false });
+          }}
+          onSubmit={() => {
+            //getDeviceDetails();
+            setOpenModal({ isShown: false });
+          }}
+          userId={staff_no}
+          setShowToast={setShowToast}
+        />
+      </Modal>
+
+      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
   );
 }

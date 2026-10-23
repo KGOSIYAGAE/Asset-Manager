@@ -4,6 +4,9 @@ const {
   getAllDevices,
   getDeviceDueUpgrade,
   getDeviceForApproval,
+  getLoanedDevices,
+  getDevicesDueReturn,
+  getDevicesStats,
   getDevice,
   getDeviceDetails,
   getDevicesAssigned,
@@ -14,6 +17,8 @@ const {
   assignDevice,
   loanDevice,
   releaseDevice,
+  rejectDeviceIssueLoan,
+  approveDevice,
 } = require("../Controllers/deviceController");
 const requireAuth = require("../middleware/requireAuth");
 //const checkRole = require("../middleware/checkRole");
@@ -27,8 +32,17 @@ router.get("/", getAllDevices);
 //Get all device due for upgrade
 router.get("/due-upgrade", getDeviceDueUpgrade);
 
-//Get all device due for upgrade
+//Get all device's stats
+router.get("/devices-stats", getDevicesStats);
+
+//Get all device needing approval
 router.get("/requires-approval", getDeviceForApproval);
+
+//Get all device loaned
+router.get("/loaned-devices", getLoanedDevices);
+
+//Get all device due return at user termination
+router.get("/devices-due-return", getDevicesDueReturn);
 
 //Get all devices
 router.get("/:id", getDevice);
@@ -57,7 +71,13 @@ router.put("/loan-device/:id", loanDevice);
 //release device
 router.put("/release-device/:id", releaseDevice);
 
+//reject device
+router.put("/reject-device/:id", rejectDeviceIssueLoan);
+
+//approve device
+router.put("/approve-device/:id", approveDevice);
+
 //Delete device
-router.delete("/delete-device/:id", deleteDevice);
+router.put("/delete-device/:id", deleteDevice);
 
 module.exports = router;

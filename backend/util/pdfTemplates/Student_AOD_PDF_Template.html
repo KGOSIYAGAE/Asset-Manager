@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Acknowledgement of Debt</title>
+
+    <style>
+      /* ==============================
+           PAGE / PDF
+        ============================== */
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: #000000;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        font-size: 12px;
+      }
+
+      .printable-AOD {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 8mm;
+        background: #ffffff;
+        color: #000000;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        font-size: 12px;
+      }
+
+      /* ==============================
+           HEADER
+        ============================== */
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .page-logo-AOD {
+        width: 130px;
+        height: 130px;
+        object-fit: contain;
+      }
+
+      .page-address {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        font-size: 10px;
+      }
+
+      .address-heading {
+        font-weight: bold;
+        font-size: 12px;
+        padding: 2px;
+      }
+
+      .address-text {
+        padding: 2px;
+      }
+
+      .page-address a {
+        color: #000000;
+        text-decoration: none;
+      }
+
+      /* ==============================
+           TITLE
+        ============================== */
+
+      .body-header {
+        text-align: center;
+        margin-top: 5px;
+      }
+
+      .body-title {
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      /* ==============================
+           BODY
+        ============================== */
+
+      .page-body {
+        height: fit-content;
+      }
+
+      .page-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .content {
+        display: flex;
+        margin: -5px 0 5px 0;
+      }
+
+      .left,
+      .right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .boo {
+        margin-bottom: 2px;
+      }
+
+      .boo3 {
+        margin-top: 5px;
+      }
+
+      .content-data {
+        font-weight: bold;
+      }
+
+      /* ==============================
+           STUDENT DETAILS
+        ============================== */
+
+      .student-details {
+        display: flex;
+        width: 100%;
+      }
+
+      .student-details-column {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ==============================
+           AOD CLAUSES
+        ============================== */
+
+      .boo3 ol {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-left: 25px;
+      }
+
+      .boo3 > ol {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .boo3 li {
+        padding-left: 2px;
+        line-height: 1.3;
+      }
+
+      .boo3 li ol {
+        margin-top: 4px;
+        padding-left: 25px;
+      }
+
+      .boo3 li ol li {
+        margin-bottom: 3px;
+      }
+
+      /* ==============================
+           SIGNED DATE
+        ============================== */
+
+      .signed-section {
+        margin-top: 5px;
+      }
+
+      .font-semibold {
+        font-weight: 600;
+      }
+
+      /* ==============================
+           FOOTER / SIGNATURES
+        ============================== */
+
+      .page-footer {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 15px;
+      }
+
+      .signature-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .signature-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .signature-image-container {
+        width: 160px;
+        height: 50px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .signature-image {
+        width: 160px;
+        max-height: 50px;
+        object-fit: contain;
+      }
+
+      .signature-line {
+        margin-top: -3px;
+        white-space: nowrap;
+      }
+
+      .signature-label {
+        text-align: center;
+      }
+
+      .witness-container {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
+      }
+
+      /* ==============================
+           PRINT
+        ============================== */
+
+      .noprint {
+        display: none !important;
+      }
+
+      @media print {
+        body {
+          margin: 0;
+          padding: 0;
+        }
+
+        .printable-AOD {
+          width: 210mm;
+          min-height: 297mm;
+          padding: 8mm;
+          box-shadow: none;
+        }
+
+        .noprint {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="printable-AOD">
+      <!-- ==============================
+         HEADER
+    ============================== -->
+
+      <div class="page-header">
+        <img src="{{spu_logo}}" alt="SPU Logo" class="page-logo-AOD" />
+
+        <div class="page-address">
+          <span class="address-heading"> SOL PLAATJE UNIVERSITY </span>
+
+          <span class="address-text"> Private Bag X 5008, Kimberley, 8300 </span>
+
+          <span class="address-text"> Luka Jantjie House, Chapel Street, </span>
+
+          <span class="address-text"> Kimberley </span>
+
+          <span class="address-text"> Tel: 053 491 0000 </span>
+
+          <span class="address-text">
+            <a href="https://spu.ac.za"> www.spu.ac.za </a>
+          </span>
+        </div>
+      </div>
+
+      <!-- ==============================
+         TITLE
+    ============================== -->
+
+      <div class="body-header">
+        <span class="body-title"> ACKNOWLEDGEMENT OF DEBT </span>
+      </div>
+
+      <!-- ==============================
+         BODY
+    ============================== -->
+
+      <div class="page-body">
+        <div class="page-content">
+          <span> I, the undersigned, </span>
+
+          <!-- STUDENT DETAILS -->
+
+          <div class="content">
+            <div class="left">
+              <span class="boo">
+                Full Names:
+                <span class="content-data"> {{student_name}} {{student_surname}} </span>
+              </span>
+
+              <span class="boo">
+                Course Code:
+                <span class="content-data"> {{course_code}} </span>
+              </span>
+
+              <span class="boo">
+                Student Number:
+                <span class="content-data"> {{student_number}} </span>
+              </span>
+
+              <span class="boo">
+                Contact Number:
+                <span class="content-data"> {{phone_number}} </span>
+              </span>
+            </div>
+
+            <div class="right">
+              <span class="boo"> &nbsp; </span>
+
+              <span class="boo">
+                Course Name:
+                <span class="content-data"> {{course_name}} </span>
+              </span>
+
+              <span class="boo">
+                ID Number:
+                <span class="content-data"> {{id_number}} </span>
+              </span>
+            </div>
+          </div>
+
+          <!-- LAPTOP DETAILS -->
+
+          <span>
+            do hereby acknowledge myself to be truly and lawfully indebted unto and in favour of Sol Plaatje University (hereinafter referred to as ‘SPU’) in the sum of
+
+            <b>R</b>
+
+            <span class="content-data"> {{purchase_price}} </span>
+
+            being in respect of a laptop, Model:
+
+            <span class="content-data"> {{device_make}} {{device_model}} </span>
+
+            with Serial No:
+
+            <span class="content-data"> {{serial_number}} </span>
+
+            provided to me by SPU to be used as a student laptop.
+          </span>
+
+          <!-- ==============================
+                 AOD CLAUSES
+            ============================== -->
+
+          <div class="boo3">
+            <ol>
+              <li>
+                I acknowledge that on receipt of the laptop, the laptop becomes my property and I assume and bear all risk of loss associated with the laptop from the time and date that the laptop is
+                in my possession. I acknowledge that the laptop is not the property of SPU from the moment I receive it. Therefore, I am responsible for keeping the laptop safe and will be responsible
+                for all damages or out-of-warranty claims. I undertake that I will arrange comprehensive insurance in respect of my laptop and acknowledge that my laptop is not insured by SPU.
+              </li>
+
+              <li>I acknowledge that the abovementioned amount shall be debited against my student fees account with SPU, and that I am liable for payment of the said amount.</li>
+
+              <li>Should my funders not cover this amount for whatsoever reason, I undertake to repay the said sum to SPU by no later than 30 November {{year}}.</li>
+
+              <li>
+                I hereby renounce the benefits of the legal exceptions “non numeratae pecuniae”, “errore calculi”, “non causa debiti” and “revision of accounts”, the meaning and effect of which I
+                acknowledge myself to be fully acquainted.
+              </li>
+
+              <li>
+                No act of relaxation, indulgence, or grace on the part of SPU shall in any way operate or be deemed to be a waiver by SPU of any of its rights against me under this acknowledgement of
+                debt.
+              </li>
+
+              <li>
+                In the event of me not making payment on or before the due date, then the full amount owed by me to SPU shall forthwith become due and payable by me to SPU and SPU shall have the right
+                to institute legal proceedings against me for the recovery thereof without notice.
+              </li>
+
+              <li>
+                I undertake to pay all, or any costs incurred by SPU while enforcing any of its rights against me in terms hereof on the scale as between SPU and its own attorney, including collection
+                commission and notwithstanding that proceedings may not have been instituted against me by SPU out of any court.
+              </li>
+
+              <li>I hereby consent to the jurisdiction of the Magistrate’s Court.</li>
+
+              <li>
+                The parties do hereby choose domicillium et executandi as set out hereunder:
+
+                <ol>
+                  <li>
+                    <b>
+                      The Student:
+                      <span class="content-data"> {{student_name}} {{student_surname}} </span>
+                    </b>
+                  </li>
+
+                  <li>SPU: Luka Jantjie House, Chapel Street, Kimberley, 8301</li>
+                </ol>
+              </li>
+
+              <li>
+                This acknowledgement of debt constitutes the whole agreement between the parties and no representations or warranties not contained herein shall be of any force or effect unless in
+                writing and signed by both the parties hereto. No consensual termination of this agreement shall be of any force or effect unless in writing and signed by both parties hereto. The
+                parties acknowledge that they have not been induced or coerced to enter into this contract by virtue of any representations, statements or warranties made by the other of them or
+                persons acting on their behalf, which are not included herein. SPU shall not be responsible for any representations which may be made from time to time by its representatives, servants
+                or agents, save as may be contained herein.
+              </li>
+            </ol>
+          </div>
+
+          <!-- ==============================
+                 SIGNED DATE
+            ============================== -->
+
+          <div class="signed-section">
+            Signed at <b>Kimberley</b> on the:
+
+            <span class="font-semibold"> {{issue_date}} </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================
+         SIGNATURES
+    ============================== -->
+
+      <div class="page-footer">
+        <div class="signature-row">
+          <!-- OBO SPU -->
+
+          <div class="signature-container">
+            <div class="signature-image-container">
+              <img src="{{approver_signature}}" alt="Approver Signature" class="signature-image" />
+            </div>
+
+            <div class="signature-line">.............................................................</div>
+
+            <div class="signature-label">OBO SPU</div>
+          </div>
+
+          <!-- STUDENT -->
+
+          <div class="signature-container">
+            <div class="signature-image-container">
+              <img src="{{student_signature}}" alt="Student Signature" class="signature-image" />
+            </div>
+
+            <div class="signature-line">.............................................................</div>
+
+            <div class="signature-label">Student</div>
+          </div>
+        </div>
+
+        <!-- WITNESS -->
+
+        <div class="witness-container">
+          <div class="signature-container">
+            <div class="signature-image-container">
+              <img src="{{issuer_signature}}" alt="Witness Signature" class="signature-image" />
+            </div>
+
+            <div class="signature-line">.............................................................</div>
+
+            <div class="signature-label">Witness</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

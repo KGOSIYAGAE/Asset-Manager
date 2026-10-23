@@ -15,16 +15,27 @@ import IssueDevice from "../../components/cards/issueDevice/IssueDevice";
 import ImportFile from "../../components/cards/importFile/ImportFile";
 import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 import BulkAddButton from "../../components/buttons/BulkAddButton";
-import { hasPermission } from "../../utils/getLoggedInUser";
+import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
+import { handleDeleteDevice } from "../../utils/handleDeleteItem";
 
 function Devices({ path }) {
-  const { devicesState, devicesDispatch } = useDeviceContext();
-  const { searchState, searchDispatch } = useSearchContext();
   const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
+
+  //Set pagated data to the table
+  const [allDevices, setAllDevices] = useState(null);
+
+  const [pagationModel, setPagationModel] = useState({
+    page: 0,
+    pageSize: 8,
+  });
+
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchResults, setSearchResults] = useState(null);
+  /////////////////////Handle Search Results////////////
 
   //Handle dele
   const handleDelete = (cellValues) => {
@@ -50,31 +61,44 @@ function Devices({ path }) {
     setOpenImportModal({ isShown: true, type: "issue", data: null });
   };
 
+  //Handles search clear -> Sent to Search component
+  const handleCancelSearch = () => {
+    setSearchResults(null);
+    const user = getLoggedInUser();
+    getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
+  };
+
+  //Execute Gett All devices on load or status change
   useEffect(() => {
-    searchDispatch({ type: "SET_SEARCH_NULL" });
-    getAllDevices(devicesDispatch);
-  }, []);
+    const user = getLoggedInUser();
+
+    getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
+  }, [pagationModel.page, pagationModel.pageSize]);
+
   return (
     <div className="h-svh flex flex-col p-3 gap-3 bg-zinc-50  ">
       <span className="text-sm ">
         <b> {path}</b>
       </span>
       <div className=" flex flex-col bg-white p-3 gap-5 rounded-md shadow-md">
-        <div className="flex justify-between">
+        <div className="flex flex-col lg:flex-row justify-between">
           <span className="heading-text">Device List</span>
-          <div className="flex gap-2 ">
-            <SearchInput searchData={devicesState?.deviceList} dataType={"devices"} />
-            {hasPermission("create") && <AddButton name={"Add New Device"} handleAdd={handleAdd} />}
-            {hasPermission("bulk-create") && <BulkAddButton onClick={ImportModal} />}
+          <div className="flex gap-6 lg:gap-2 ">
+            <SearchInput tableName={"devices"} setSearchResults={setSearchResults} setTotalPages={setTotalPages} onCanelSearch={handleCancelSearch} />
+            {hasPermission("create") && <AddButton name={"Add Device"} handleAdd={handleAdd} />}
+            {hasPermission("import") && <BulkAddButton onClick={ImportModal} />}
             {hasPermission("export") && <ExportExcelButton />}
           </div>
         </div>
         <DataTable
-          rows={searchState.searchResults ? searchState.searchResults : devicesState.deviceList}
+          rows={searchResults ? searchResults : allDevices}
           colHeaders={devicesTableHeaders}
           handleEdit={handleEdit}
           handleViewDetails={handleViewDetails}
           handleDelete={handleDelete}
+          pagationModel={pagationModel}
+          setPagationModel={setPagationModel}
+          rowCount={totalPages}
         />
       </div>
       <Modal
@@ -84,7 +108,7 @@ function Devices({ path }) {
           overlay: { backgroundColor: "rgb(0,0,0,0.2)" },
         }}
         contentLabel=""
-        className="w-[80%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5  "
+        className="w-[60%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5  "
       >
         {openModal.isShown ? (
           <DeleteConfirmation
@@ -92,12 +116,18 @@ function Devices({ path }) {
             heading={"Delete Device"}
             laptopSerialNo={openModal.laptopSerialNo}
             onDelete={() => {
-              deleteDevice(openModal.selectedDevice, setShowToast);
+              handleDeleteDevice(openModal.selectedDevice, setShowToast);
               setOpenModal({ isShown: false });
             }}
             onCanel={() => {
               setOpenModal({ isShown: false });
+              getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
             }}
+            onSubmit={() => {
+              setOpenModal({ isShown: false });
+              getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
+            }}
+            setShowToast={setShowToast}
           />
         ) : openImportModal.isShown ? (
           <ImportFile

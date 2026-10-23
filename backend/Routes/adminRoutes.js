@@ -1,7 +1,10 @@
 const express = require("express");
 
 const router = express.Router();
-const { login, signUp, changePassword, assignStaffRole, updateStaffRole } = require("../Controllers/adminController");
+const { login, signUp, changePassword, assignStaffRole, updateStaffRole, getAdmins } = require("../Controllers/adminController");
+
+//Get Admins
+router.get("/", getAdmins);
 
 //Admin Login
 router.post("/login", login);

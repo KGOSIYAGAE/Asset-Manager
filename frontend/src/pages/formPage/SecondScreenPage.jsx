@@ -5,6 +5,8 @@ import StudentIssueVerification from "../../components/cards/verificationCompone
 import StaffIssueVirificationCard from "../../components/cards/verificationComponents/StaffIssueVirificationCard";
 import SiganturePad from "../../components/cards/signaturePad/SiganturePad";
 import UserCaptureSignature from "../../components/cards/signaturePad/UserCaptureSignature";
+import LoanIssueVirificationCard from "../../components/cards/verificationComponents/LoanIssueVirificationCard";
+import RepairVerification from "../../components/cards/verificationComponents/RepairVerification";
 
 //import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";
 //import StaffIssueVerification from "../../components/cards/verificationComponents/staffIssueVerification";
@@ -13,10 +15,10 @@ import UserCaptureSignature from "../../components/cards/signaturePad/UserCaptur
 import StudentIssueVerification from "../../components/cards/verificationComponents/StudentIssueVerification";*/
 
 function SecondScreenPage() {
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState();
   const params = useParams();
 
-  const { userId, deviceId } = params;
+  const { source, userId, deviceId, returnDate } = params;
 
   const handleOnPrint = () => {
     let printContents = document.getElementById("print-file").innerHTML;
@@ -47,10 +49,14 @@ function SecondScreenPage() {
 
   return (
     <div className="w-screen flex  p-5 border overflow-auto" id="print-file">
-      {userType && userType === "Staff" && deviceId ? (
+      {userType && userType === "Staff" && source === "issue-verification" ? (
         <StaffIssueVirificationCard deviceId={deviceId} staff_no={userId} />
-      ) : userType === "Student" && deviceId ? (
+      ) : userType === "Student" && source === "issue-verification" ? (
         <StudentIssueVerification deviceId={deviceId} student_no={userId} />
+      ) : source === "loan-verification" ? (
+        <LoanIssueVirificationCard deviceId={deviceId} userId={userId} returnDate={returnDate} />
+      ) : source === "laptop-repair" ? (
+        <RepairVerification />
       ) : (
         <UserCaptureSignature lablel={"Capture User Signature"} user_id={userId} />
       )}

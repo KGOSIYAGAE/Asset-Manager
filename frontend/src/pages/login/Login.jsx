@@ -3,7 +3,7 @@ import TextInput from "../../components/inputs/textInput/TextInput";
 import PasswordInput from "../../components/inputs/textInput/PasswordInput";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import loginAxiosInstance from "../../utils/loginAxiosInstance";
 import { checkInternetConnection } from "../../utils/systemChecks";
 import LoginEmailInput from "../../components/inputs/loginEmailInput/LoginEmailInput";
@@ -17,11 +17,14 @@ function Login() {
   const [isDiabled, setIsDisabled] = useState(true);
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   //Login Api Call
   const onLogin = async (email, password) => {
+    const redrictUrl = location.state?.from ? location.state.from : "/home";
+
     try {
       if (!email) {
         return setShowToast({ isShown: true, type: "error", message: "Username not provided" });
@@ -41,13 +44,14 @@ function Login() {
 
         authDispatch({ type: "LOGIN", payload: response.data });
 
-        navigate("/home");
-        return setShowToast({ isShown: true, type: "add", message: "Login successful" });
+        navigate(redrictUrl, { replace: true });
+
+        return setShowToast({ isShown: true, type: "success", message: "Login successful" });
       }
     } catch (error) {
-      if (!isOnline) {
+      /* if (!isOnline) {
         return checkInternetConnection(isOnline, setShowToast);
-      } else if (error.response?.data && error.response?.data?.error) {
+      } else*/ if (error.response?.data && error.response?.data?.error) {
         return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
       } else {
         return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
@@ -92,7 +96,7 @@ function Login() {
         <img src="/library_2.jpg" alt="" className="w-full" />
       </div>
       <div className="w-[150px] h-[150px] rounded-full absolute z-10 top-10 left-10 ">
-        <img src="/SPU 1.png" alt="" srcset="" />
+        <img src="/SPU 1.png" alt="" srcSet="" />
       </div>
       <div className="w-[400px] h-[350px] bg-white flex flex-col p-3 gap-10 rounded-md shadow-md absolute">
         <span className="font-bold text-md login-heading">SIGN IN</span>
@@ -110,7 +114,7 @@ function Login() {
             type="button"
             value=""
             disabled={isDiabled}
-            className={`${isDiabled ? "bg-slate-300" : "bg-primary"} text-white text-sm font-semibold rounded-md p-1`}
+            className={`${isDiabled ? "bg-slate-300" : "bg-red-600"} text-white text-sm font-semibold rounded-md p-1`}
             onClick={() => {
               onLogin(email, password);
             }}

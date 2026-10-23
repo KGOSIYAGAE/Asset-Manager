@@ -17,7 +17,7 @@ function UserDashCard({ loggedInUser, path }) {
         <span className="text-xl font-semibold">
           {hours && hours < 12 ? "Good Morning," : hours >= 18 && hours <= 23 ? "Good Evening," : "Good Afternoon,"}
 
-          <span className="text-blue-900 pl-1">{loggedInUser?.fullName}</span>
+          <span className="text-red-600 pl-1">{loggedInUser?.fullName}</span>
         </span>
         <span className="text-zinc-600">Have a great day at work</span>
       </div>
