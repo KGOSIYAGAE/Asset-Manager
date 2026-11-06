@@ -1,28 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoCloseCircle, IoInformationCircle } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 
 function ToastMessage({ isShown, type, message, onClose }) {
-  useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      onClose();
-    }, 3000);
-
-    return () => {
-      clearTimeout(timeOutId);
-    };
-  }, [onClose]);
-
   return (
     <div
-      className={` flex justify-between bg-white  rounded-md shadow-lg border border-zinc-100 absolute top-5  transition-all duration-300 ${
-        isShown ? "opacity-100 right-6" : "opacity-0 -right-96"
-      } z-50`}
+      role="alert"
+      className={` h-[60px] flex justify-between bg-white rounded-md shadow-lg border border-zinc-100 fixed top-5 transition-all duration-300 z-50 ${
+        isShown ? "opacity-100 right-6" : "opacity-0 -right-96 pointer-events-none"
+      }`}
     >
-      <div className={`${type === "success" ? "bg-green-500" : type == "error" ? "bg-red-500" : "bg-yellow-500"} p-2 rounded-tl-md rounded-bl-md`}></div>
+      <div className={`${type === "success" ? "bg-green-500" : type === "error" ? "bg-red-500" : "bg-yellow-500"} p-1 rounded-tl-md rounded-bl-md`} />
 
-      <div className={`flex items-center p-2 gap-4`}>
+      <div className="flex items-center p-2 gap-4">
         <div>
           {type === "success" ? (
             <FaCheckCircle className="text-green-500" size={30} />
@@ -37,14 +28,10 @@ function ToastMessage({ isShown, type, message, onClose }) {
           <span className="text-sm text-zinc-600">{message}</span>
         </div>
       </div>
-      <div className="">
-        <IoMdClose
-          size={20}
-          onClick={() => {
-            onClose();
-          }}
-        />
-      </div>
+
+      <button type="button" onClick={onClose} className="p-1 self-start" aria-label="Close">
+        <IoMdClose size={20} />
+      </button>
     </div>
   );
 }

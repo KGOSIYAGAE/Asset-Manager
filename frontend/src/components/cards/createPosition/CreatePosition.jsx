@@ -6,13 +6,16 @@ import { createDepartment, createPosition, updateDepartment, updatePosition } fr
 import FacultySelectInput from "../../inputs/selectInputs/facultySelectInput/FacultySelectInput";
 import DepartmentSelectInput from "../../inputs/selectInputs/departmentSelectInput/DepartmentSelectInput";
 import SelectInput from "../../inputs/selectInputs/selectInput/SelectInput";
+import { useToast } from "../../../context/ToastContext";
 
-function CreatePosition({ onCanel, onSubmit, setShowToast, modalType, modalData }) {
+function CreatePosition({ onCanel, onSubmit, modalType, modalData }) {
   const [postionName, setPositionName] = useState();
   const [position_id, setPosition_id] = useState();
   const [postType, setPostType] = useState();
   const [department_id, setDepartment_id] = useState();
   const [faculty_id, setFaculty_id] = useState();
+
+  const { showToast } = useToast();
 
   const postTypes = [
     { id: 1, name: "ACADEMIC" },
@@ -54,7 +57,7 @@ function CreatePosition({ onCanel, onSubmit, setShowToast, modalType, modalData 
               <SubmitButton
                 text={"Add Position"}
                 onClick={() => {
-                  createPosition({ post_name: postionName, post_type: postType, department_id: department_id }, setShowToast);
+                  createPosition({ post_name: postionName, post_type: postType, department_id: department_id }, showToast);
                   onSubmit();
                 }}
               />
@@ -62,7 +65,7 @@ function CreatePosition({ onCanel, onSubmit, setShowToast, modalType, modalData 
               <SubmitButton
                 text={"Update Position"}
                 onClick={() => {
-                  updatePosition(position_id, { post_name: postionName, post_type: postType, department_id: department_id }, setShowToast);
+                  updatePosition(position_id, { post_name: postionName, post_type: postType, department_id: department_id }, showToast);
                   onSubmit();
                 }}
               />

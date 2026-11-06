@@ -5,7 +5,7 @@ import TextInput from "../../inputs/textInput/TextInput";
 import PasswordInput from "../../inputs/textInput/PasswordInput";
 import { createAzureGraphSettings, updateAzureGraphSettings } from "../../../services/api/email/emailSettings";
 
-function AddEditEmailSettings({ onCancel, onSubmit, mailerName, msGraphSettings, setShowToast }) {
+function AddEditEmailSettings({ onCancel, onSubmit, mailerName, msGraphSettings }) {
   const [clientId, setClientId] = useState();
   const [tenantId, setTenantId] = useState();
   const [clientSecret, setClientSecret] = useState();
@@ -23,29 +23,29 @@ function AddEditEmailSettings({ onCancel, onSubmit, mailerName, msGraphSettings,
 
   const handleCreateUpdateAzureGraphSettings = () => {
     if (!clientId) {
-      return setShowToast({ isShown: true, type: "error", message: "Client ID must be provided." });
+      return showToast("Client ID must be provided.", "error");
     }
 
     if (!tenantId) {
-      return setShowToast({ isShown: true, type: "error", message: "Tenant ID must be provided." });
+      return showToast("Tenant ID must be provided.", "error");
     }
 
     if (!msGraphSettings && !clientSecret) {
-      return setShowToast({ isShown: true, type: "error", message: "Client Secret must be provided." });
+      return showToast("Client Secret must be provided.", "error");
     }
 
     if (!scopes) {
-      return setShowToast({ isShown: true, type: "error", message: "Scopes URL must be provided." });
+      return showToast("Scopes URL must be provided.", "error");
     }
 
     if (!senderEmail) {
-      return setShowToast({ isShown: true, type: "error", message: "Sender Email must be provided." });
+      return showToast("Sender Email must be provided.", "error");
     }
 
     if (msGraphSettings) {
-      updateAzureGraphSettings(msGraphSettings?.configId, { clientId, tenantId, clientSecret, scopes, senderEmail }, setShowToast);
+      updateAzureGraphSettings(msGraphSettings?.configId, { clientId, tenantId, clientSecret, scopes, senderEmail }, showToast);
     } else {
-      createAzureGraphSettings({ clientId, tenantId, clientSecret, scopes, senderEmail }, setShowToast);
+      createAzureGraphSettings({ clientId, tenantId, clientSecret, scopes, senderEmail }, showToast);
     }
 
     return onSubmit();

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SubmitButton from "../SubmitButton";
 
-function OpenSecondScreenButton({ btnLable, userId, deviceId, formType, returnDate, setShowToast, w = 800, h = 600 }) {
+function OpenSecondScreenButton({ btnLable, userId, deviceId, formType, returnDate, showToast, w = 800, h = 600 }) {
   const [error, setError] = useState();
 
   async function openOnSecondScreen() {
@@ -13,7 +13,7 @@ function OpenSecondScreenButton({ btnLable, userId, deviceId, formType, returnDa
         const { screens, currentScreen } = details;
 
         /*if (screens.length < 2) {
-          setShowToast({ isShow: true, type: "error", message: "Only one screen is detected, please connect second screen or Tablet." });
+          showToast("Only one screen is detected, please connect second screen or Tablet.", "error");
           throw new Error("Only one screen is detected.");
         }*/
 

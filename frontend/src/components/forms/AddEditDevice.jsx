@@ -17,6 +17,7 @@ import { handleTimeStamp } from "../../utils/dateConverter";
 import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import CategorySelectInput from "../inputs/selectInputs/deviceCategorySelectInput/CategorySelectInput";
 import { GetDeviceType } from "../../utils/helperMethods";
+import { useToast } from "../../context/ToastContext";
 
 function AddEditDevice({ path }) {
   const [make, setMake] = useState();
@@ -34,7 +35,7 @@ function AddEditDevice({ path }) {
   const [purchaseValue, setPurchaseValue] = useState();
   const [currentValue, setCurrentValue] = useState();
 
-  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  //const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [formType, setFormType] = useState("Add");
 
   const [deviceMufactures, setDeviceManufactures] = useState([]);
@@ -42,6 +43,8 @@ function AddEditDevice({ path }) {
 
   const params = useParams();
   const navigate = useNavigate();
+
+  const { showToast } = useToast();
 
   //handle auto populate make
   const handleMake = (deviceCategory) => {
@@ -86,40 +89,41 @@ function AddEditDevice({ path }) {
   //Handle Submit
   const handleSubmit = () => {
     if (!serial_no) {
-      return setShowToast({ isShown: true, type: "error", message: "Device serial number must be provided." });
+      showToast();
+      return showToast("Device serial number must be provided.", "error");
     }
     if (!assetTag) {
-      return setShowToast({ isShown: true, type: "error", message: "Device asset number must be provided." });
+      return showToast("Device asset number must be provided.", "error");
     }
     if (!status) {
-      return setShowToast({ isShown: true, type: "error", message: "Device status must be provided." });
+      return showToast("Device status must be provided.", "error");
     }
     if (!device_condition) {
-      return setShowToast({ isShown: true, type: "error", message: "Device condition must be provided." });
+      return showToast("Device condition must be provided.", "error");
     }
     if (!category) {
-      return setShowToast({ isShown: true, type: "error", message: "Device category must be selected." });
+      return showToast("Device category must be selected.", "error");
     }
     if (!make) {
-      return setShowToast({ isShown: true, type: "error", message: "Device manufacture must be provided." });
+      return showToast("Device manufacture must be provided.", "error");
     }
     if (!warranty_end_date) {
-      return setShowToast({ isShown: true, type: "error", message: "Device warranty end date must be provided." });
+      return showToast("Device warranty end date must be provided.", "error");
     }
     if (!purchaseValue) {
-      return setShowToast({ isShown: true, type: "error", message: "Device purchase value must be provided." });
+      return showToast("Device purchase value must be provided.", "error");
     }
     if (!currentValue) {
-      return setShowToast({ isShown: true, type: "error", message: "Device current value must be provided." });
+      return showToast("Device current value must be provided.", "error");
     }
     if (!supplier_name) {
-      return setShowToast({ isShown: true, type: "error", message: "Supplier name must be provided." });
+      return showToast("Supplier name must be provided.", "error");
     }
     if (!invoice_no) {
-      return setShowToast({ isShown: true, type: "error", message: "Device invoice number must be provided." });
+      return showToast("Device invoice number must be provided.", "error");
     }
     if (!spec) {
-      return setShowToast({ isShown: true, type: "error", message: "Device specification must be provided." });
+      return showToast("Device specification must be provided.", "error");
     }
 
     const deviceDetails = {
@@ -140,11 +144,11 @@ function AddEditDevice({ path }) {
     };
 
     if (formType === "Add") {
-      addDevice(deviceDetails, setShowToast);
+      addDevice(deviceDetails, showToast);
     } else {
       const { id } = params;
       if (id) {
-        updateDevice(id, deviceDetails, setShowToast);
+        updateDevice(id, deviceDetails, showToast);
       }
     }
   };
@@ -234,7 +238,6 @@ function AddEditDevice({ path }) {
           {formType === "Add" ? hasPermission("create") && <SubmitButton text={"Submit"} onClick={handleSubmit} /> : hasPermission("edit") && <SubmitButton text={"Update"} onClick={handleSubmit} />}
         </div>
       </div>
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
   );
 }

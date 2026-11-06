@@ -23,11 +23,14 @@ import QrCodeCard from "../qrCodeCard/QrCodeCard";
 import CancelButton from "../../buttons/CancelButton";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { socket } from "../../../utils/socket";
+import { useToast } from "../../../context/ToastContext";
 
-function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
+function CreateNewRepair({ onCanel, data, type, onSubmit }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
   const [selectedDevice, setSelectedDevice] = useState({ id: null, make: null, model: null, serial_no: null, asset_tag: null, device_category: null, device_status: null });
   const [startDate, setStartDate] = useState(null);
+
+  const { showToast } = useToast();
 
   const [allDevices, setAllDevices] = useState(null);
   const [allStaff, setAllStaff] = useState(null);
@@ -95,7 +98,7 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
 
   //Set form on update
   const setRepairFormOnUpdate = async () => {
-    getAdmins(setTechnician);
+    getAdmins({ page: currentPage, limit: userLimit }, setTechnician, setTotalPages);
 
     setDeviceSerialNo(data?.serial_no);
     setRepairType(data?.repair_type);
@@ -339,9 +342,9 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                   text={"Submit"}
                   onClick={() => {
                     if (type === "Add") {
-                      handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, dislaimerAccepted, onSubmit, setShowToast);
+                      handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, dislaimerAccepted, onSubmit, showToast);
                     } else {
-                      handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, setShowToast);
+                      handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, showToast);
                     }
                   }}
                 />
@@ -360,16 +363,16 @@ function CreateNewRepair({ onCanel, data, type, onSubmit, setShowToast }) {
                         setQrCodeURL={setQrCodeURL}
                         onSubmit={onSubmit}
                       />
-                      <OpenSecondScreenButton btnLable={"Send to USB Tablet "} userId={null} deviceId={selectedDevice?.id} formType={"laptop-repair"} returnDate={null} setShowToast={setShowToast} />
+                      <OpenSecondScreenButton btnLable={"Send to USB Tablet "} userId={null} deviceId={selectedDevice?.id} formType={"laptop-repair"} returnDate={null} showToast={showToast} />
                     </div>
                   ) : (
                     <SubmitButton
                       text={"Submit"}
                       onClick={() => {
                         if (type === "Add") {
-                          handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, onSubmit, setShowToast);
+                          handleCreateRepair(selectedDevice?.id, repairType, repairDescription, technicianId, repairNotes, accessories, onSubmit, showToast);
                         } else {
-                          handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, setShowToast);
+                          handleUpdateRepair(data?.id, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, showToast);
                         }
                       }}
                     />

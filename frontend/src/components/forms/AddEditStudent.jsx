@@ -26,9 +26,10 @@ import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
 import Modal from "react-modal";
 import StudentFacultySelectInput from "../inputs/selectInputs/studentFacultySelectInput/StudentFacultySelectInput";
 import { socket } from "../../utils/socket";
+import { useToast } from "../../context/ToastContext";
 
 function AddEditStudent({ path }) {
-  const { studentState } = useStudentsContext();
+  const { showToast } = useToast();
 
   const [name, setName] = useState();
   const [surname, setSurname] = useState();
@@ -48,7 +49,7 @@ function AddEditStudent({ path }) {
   const [laptopDetails, setLaptopDetails] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const [registration_date, setRegistration_Date] = useState();
-  const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
+  //const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
   const [courseList, setCourseList] = useState(null);
 
   const [formType, setFormType] = useState("add");
@@ -75,35 +76,35 @@ function AddEditStudent({ path }) {
   //Form submit
   const handleSubmit = () => {
     if (!name) {
-      return setShowToast({ isShown: true, type: "error", message: "First name must be provided" });
+      return showToast("First name must be provided", "error");
     }
 
     if (!surname) {
-      return setShowToast({ isShown: true, type: "error", message: "Last name must be provided" });
+      return showToast("Last name must be provided", "error");
     }
 
     if (!studentNumber) {
-      return setShowToast({ isShown: true, type: "error", message: "Student number must be provided" });
+      return showToast("Student number must be provided", "error");
     }
 
     if (!idNumber) {
-      return setShowToast({ isShown: true, type: "error", message: "ID number must be provided" });
+      return showToast("ID number must be provided", "error");
     }
 
     if (!phone_number) {
-      return setShowToast({ isShown: true, type: "error", message: "Phone number must be provided" });
+      return showToast("Phone number must be provided", "error");
     }
 
     if (!email) {
-      return setShowToast({ isShown: true, type: "error", message: "Email must be provided" });
+      return showToast("Email must be provided", "error");
     }
 
     if (!faculty_id) {
-      return setShowToast({ isShown: true, type: "error", message: "Faculty must be selected" });
+      return showToast("Faculty must be selected", "error");
     }
 
     if (!course_id) {
-      return setShowToast({ isShown: true, type: "error", message: "Course must be selected" });
+      return showToast("Course must be selected", "error");
     }
 
     const studentData = {
@@ -119,7 +120,7 @@ function AddEditStudent({ path }) {
     };
 
     if (formType === "add") {
-      addStudent(studentData, setShowToast);
+      addStudent(studentData, showToast);
 
       setTimeout(() => {
         navigate(`/users/students`);
@@ -129,7 +130,7 @@ function AddEditStudent({ path }) {
     } else {
       const { student_no } = params;
       if (student_no) {
-        updateStudent(student_no, studentData, setShowToast);
+        updateStudent(student_no, studentData, showToast);
 
         setTimeout(() => {
           navigate(`/users/students`);
@@ -182,12 +183,11 @@ function AddEditStudent({ path }) {
       console.log(event);
       if (event.data.type === "form_submitted") {
         if (event.data.payload.error) {
-          setShowToast({ isShow: true, type: "error", message: event.data.payload.message });
-          setOpenModal({ isShown: true });
+          showToast(event.data.payload.message, "error");
           return;
         }
 
-        setShowToast({ isShow: true, type: "success", message: event.data.payload.message });
+        showToast(event.data.payload.message, "success");
       }
     };
 
@@ -215,7 +215,7 @@ function AddEditStudent({ path }) {
     socket.on("signature_saved", (image) => {
       //setSignature(image.image);
 
-      setShowToast({ isShown: true, type: "success", message: "Device issue, has been sent for approval" });
+      showToast("Device issue, has been sent for approval", "success");
 
       //getSelectedUser();
       socket.disconnect();
@@ -336,11 +336,8 @@ function AddEditStudent({ path }) {
               setOpenModal({ isShown: false });
             }}
             userId={studentNumber}
-            setShowToast={setShowToast}
           />
         </Modal>
-
-        <ToastMessage isShown={showToast?.isShown} type={showToast?.type} message={showToast?.message} onClose={() => setShowToast({ isShown: false })} />
       </div>
     </div>
   );

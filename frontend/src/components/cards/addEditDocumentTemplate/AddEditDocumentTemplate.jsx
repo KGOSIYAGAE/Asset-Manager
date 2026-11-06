@@ -1,20 +1,20 @@
-import React, { useEffect, useState, version } from "react";
+import React, { useEffect, useState } from "react";
 import CancelButton from "../../buttons/CancelButton";
 import SubmitButton from "../../buttons/SubmitButton";
 import TextInput from "../../inputs/textInput/TextInput";
-import PasswordInput from "../../inputs/textInput/PasswordInput";
-import { createAzureGraphSettings, updateAzureGraphSettings } from "../../../services/api/email/emailSettings";
 import TextArea from "../../inputs/textArea/TextArea";
-import { IoMdClose } from "react-icons/io";
 import { MdPreview } from "react-icons/md";
 import DcoumentPreview from "../documentTemplatePreview/DcoumentPreview";
-import { createTemplate, updateTemplate } from "../../../services/api/documentTemplates/documentTemplates";
+import { createDocumentTemplate, updateDocumentTemplate } from "../../../services/api/documentTemplates/documentTemplates";
+import { useToast } from "../../../context/ToastContext";
 
-function AddEditDocumentTemplate({ onCancel, onSubmit, selectedDocument, setShowToast }) {
+function AddEditDocumentTemplate({ onCancel, onSubmit, selectedDocument }) {
   const [documentName, setDocumentName] = useState();
   const [documentVersion, setDocumentVersion] = useState();
   const [documentTemplate, setDocumentTemplate] = useState();
   const [showPreview, setShowPreview] = useState(false);
+
+  const { showToast } = useToast();
 
   const setForm = () => {
     setDocumentName(selectedDocument?.name);
@@ -24,21 +24,23 @@ function AddEditDocumentTemplate({ onCancel, onSubmit, selectedDocument, setShow
 
   const handleCreateUpdateTemplate = () => {
     if (!documentName) {
-      return setShowToast({ isShown: true, type: "error", message: "Document name must be provided." });
+      return showToast("Document name must be provided.", "error");
     }
 
     if (!documentVersion) {
-      return setShowToast({ isShown: true, type: "error", message: "Document version must be provided." });
+      return showToast("Document version must be provided.", "error");
     }
 
     if (!documentTemplate) {
-      return setShowToast({ isShown: true, type: "error", message: "Document template must be provided." });
+      return showToast("Document template must be provided.", "error");
     }
 
     if (selectedDocument) {
-      updateTemplate(selectedDocument?.document_id, { name: documentName, version: documentVersion, template_content: documentTemplate }, setShowToast);
+      updateDocumentTemplate(selectedDocument?.document_id, { name: documentName, version: documentVersion, template_content: documentTemplate }, showToast);
+      console.log("Update");
     } else {
-      createTemplate({ name: documentName, version: documentVersion, template_content: documentTemplate }, setShowToast);
+      createDocumentTemplate({ name: documentName, version: documentVersion, template_content: documentTemplate }, showToast);
+      console.log("Add");
     }
 
     return onSubmit();
@@ -57,12 +59,12 @@ function AddEditDocumentTemplate({ onCancel, onSubmit, selectedDocument, setShow
   };
 
   return (
-    <div className="flex gap-2 items-center justify-center overflow-auto">
+    <div className="flex gap-2 items-center justify-center ">
       {showPreview && showPreview ? (
         <DcoumentPreview documentTemplate={documentTemplate} showPreview={showPreview} setShowPreview={setShowPreview} />
       ) : (
         <div className="w-[900px] flex flex-col gap-3  bg-white rounded-md p-5">
-          <span className="heading-text ">Document Upate</span>
+          <span className="heading-text ">{`${selectedDocument && selectedDocument ? "Update Document" : "Add Document"}`}</span>
           <div className="flex flex-col gap-5 border-t pt-5">
             <TextInput label={"Document Name"} value={documentName} isDisabled={false} setOnChange={setDocumentName} type={"text"} />
             <TextInput label={"Document Version"} value={documentVersion} isDisabled={false} setOnChange={setDocumentVersion} type={"text"} />

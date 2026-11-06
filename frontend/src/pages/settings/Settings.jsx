@@ -13,6 +13,7 @@ function Settings({ name, path, createRepair }) {
 
   useEffect(() => {
     setActive(name);
+    setStatusFilter(name);
   }, [name]);
 
   return (

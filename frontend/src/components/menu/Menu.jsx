@@ -7,7 +7,7 @@ import LogoCard from "../cards/logoCard/LogoCard";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { FaUsersGear } from "react-icons/fa6";
 import { CgInsights } from "react-icons/cg";
-import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
+import { HiAcademicCap, HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import { IoMdClose } from "react-icons/io";
 import { GiOrganigram } from "react-icons/gi";
@@ -15,6 +15,7 @@ import { GiOrganigram } from "react-icons/gi";
 function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
   const [showOrganizationOption, setShowOrganizationOptions] = useState(false);
+  const [showAcademicOption, setShowAcademicOptions] = useState(false);
   const [showSupportOption, setShowSupportOptions] = useState(false);
   const [showUserManagementOption, setShowUserManagementOptions] = useState(false);
   const [showReportOption, setShowReportOptions] = useState(false);
@@ -210,6 +211,48 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
           </div>
           {/**/}
 
+          {/*Organization Menu Option*/}
+          <div className="flex flex-col gap-2 ">
+            <div
+              className="menu-items  justify-between "
+              onClick={() => {
+                showAcademicOption ? setShowAcademicOptions(false) : setShowAcademicOptions(true);
+              }}
+            >
+              <div className="flex items-center gap-3 ">
+                <div className="menu-icon">
+                  <HiAcademicCap size={18} className="" />
+                </div>
+                {isMinimized ? <span className="lg:hidden">Academic</span> : <span className="">Academic</span>}
+              </div>
+              {isMinimized ? (
+                <div className=" flex lg:hidden">{showAcademicOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              ) : (
+                <div className=" flex ">{showAcademicOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              )}
+            </div>
+
+            {/**/}
+
+            <div className={`${showAcademicOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
+              {hasPermission("loan") && (
+                <Link to={"/academic/faculties"}>
+                  <div className="menu-items" onClick={() => {}}>
+                    <span className="text-sm p-1">Academic Faculties</span>
+                  </div>
+                </Link>
+              )}
+              {hasPermission("view-upgrades") && (
+                <Link to={"/academic/courses"}>
+                  <div className="menu-items">
+                    <span className="text-sm p-1">Courses</span>
+                  </div>
+                </Link>
+              )}
+            </div>
+          </div>
+          {/**/}
+
           {/*Repairst*/}
           {hasPermission("view-repairs") && (
             <div className="flex flex-col gap-2">
@@ -252,98 +295,15 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
 
             <div className={`${showSettingstOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
               {/*General Settings Menu Option*/}
-              <div className="flex flex-col gap-2 ">
-                <div
-                  className="menu-items  justify-between "
-                  onClick={() => {
-                    showGeneralSettingstOption ? setShowGeneralSettingsOptions(false) : setShowGeneralSettingsOptions(true);
-                  }}
-                >
-                  <div className="flex items-center gap-3 ">{isMinimized ? <span className="lg:hidden">General Settings</span> : <span className="">General Settings</span>}</div>
-                  {isMinimized ? (
-                    <div className=" flex lg:hidden">{showGeneralSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                  ) : (
-                    <div className=" flex ">{showGeneralSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                  )}
-                </div>
-
-                {/**/}
-
-                <div className={`${showGeneralSettingstOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
-                  {hasPermission("loan") && (
-                    <Link to={"/organization/faculties"}>
-                      <div className="menu-items" onClick={() => {}}>
-                        <span className="text-sm p-1">Profile</span>
-                      </div>
-                    </Link>
-                  )}
-                  {hasPermission("view-upgrades") && (
-                    <Link to={"/organization/departments"}>
-                      <div className="menu-items">
-                        <span className="text-sm p-1">Security</span>
-                      </div>
-                    </Link>
-                  )}
-                  {hasPermission("view-due-return") && (
-                    <Link to={"/organization/positions"}>
-                      <div className="menu-items">
-                        <span className="text-sm p-1">Notifications</span>
-                      </div>
-                    </Link>
-                  )}
-                </div>
-              </div>
+              <Link to={"/settings/general-settings"}>
+                <div className="menu-items">{isMinimized ? <span className="lg:hidden">System Settings</span> : <span className="">System Settings</span>}</div>
+              </Link>
               {/**/}
 
               {/*System Settings Menu Option*/}
-              <div className="flex flex-col gap-2 ">
-                <div
-                  className="menu-items  justify-between "
-                  onClick={() => {
-                    showSystemSettingstOption ? setShowSystemSettingsOptions(false) : setShowSystemSettingsOptions(true);
-                  }}
-                >
-                  <div className="flex items-center gap-3 ">{isMinimized ? <span className="lg:hidden">System Settings</span> : <span className="">System Settings</span>}</div>
-                  {isMinimized ? (
-                    <div className=" flex lg:hidden">{showSystemSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                  ) : (
-                    <div className=" flex ">{showSystemSettingstOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
-                  )}
-                </div>
-
-                {/**/}
-
-                <div className={`${showSystemSettingstOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
-                  {hasPermission("loan") && (
-                    <Link to={"/settings/email-settings"}>
-                      <div className="menu-items" onClick={() => {}}>
-                        <span className="text-sm p-1">Email Settings</span>
-                      </div>
-                    </Link>
-                  )}
-                  {hasPermission("view-upgrades") && (
-                    <Link to={"/organization/departments"}>
-                      <div className="menu-items">
-                        <span className="text-sm p-1">Email Templates</span>
-                      </div>
-                    </Link>
-                  )}
-                  {hasPermission("view-due-return") && (
-                    <Link to={"/organization/positions"}>
-                      <div className="menu-items">
-                        <span className="text-sm p-1">Form Templates</span>
-                      </div>
-                    </Link>
-                  )}
-                  {hasPermission("view-due-return") && (
-                    <Link to={"/organization/positions"}>
-                      <div className="menu-items">
-                        <span className="text-sm p-1">Disclaimer Templates</span>
-                      </div>
-                    </Link>
-                  )}
-                </div>
-              </div>
+              <Link to={"/settings/system-settings"}>
+                <div className="menu-items">{isMinimized ? <span className="lg:hidden">System Settings</span> : <span className="">System Settings</span>}</div>
+              </Link>
               {/**/}
             </div>
           </div>

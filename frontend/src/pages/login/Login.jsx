@@ -8,16 +8,18 @@ import loginAxiosInstance from "../../utils/loginAxiosInstance";
 import { checkInternetConnection } from "../../utils/systemChecks";
 import LoginEmailInput from "../../components/inputs/loginEmailInput/LoginEmailInput";
 import { setNavigate } from "../../utils/navigate";
+import { useToast } from "../../context/ToastContext";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showToast, setShowToast] = useState({ isShown: false, type: "error", message: "" });
   const [showLoading, setLoading] = useState(false);
   const [isDiabled, setIsDisabled] = useState(true);
   const { authState, authDispatch } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { showToast } = useToast();
 
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -27,11 +29,11 @@ function Login() {
 
     try {
       if (!email) {
-        return setShowToast({ isShown: true, type: "error", message: "Username not provided" });
+        return showToast("Username not provided", "error");
       }
 
       if (!password) {
-        return setShowToast({ isShown: true, type: "error", message: "Password not provided" });
+        return showToast("Password not provided", "error");
       }
 
       const loginDetails = { email, password };
@@ -46,15 +48,15 @@ function Login() {
 
         navigate(redrictUrl, { replace: true });
 
-        return setShowToast({ isShown: true, type: "success", message: "Login successful" });
+        return showToast("Login successful", "success");
       }
     } catch (error) {
       /* if (!isOnline) {
         return checkInternetConnection(isOnline, setShowToast);
       } else*/ if (error.response?.data && error.response?.data?.error) {
-        return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+        return showToast(error.response.data.message, "error");
       } else {
-        return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
+        return showToast("An unexpected error occured, please try again.", "error");
       }
     }
   };
@@ -123,14 +125,6 @@ function Login() {
           </button>
         </div>
       </div>
-      <ToastMessage
-        isShown={showToast.isShown}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShown: false });
-        }}
-      />
     </div>
   );
 }

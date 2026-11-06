@@ -115,21 +115,21 @@ export const repairStatusList = [
   },
 ];
 
-export const handleCreateRepair = async (deviceId, repairType, repairDescription, technicianId, repairNotes, accessories, dislaimerAccepted, onSubmit, setShowToast) => {
+export const handleCreateRepair = async (deviceId, repairType, repairDescription, technicianId, repairNotes, accessories, dislaimerAccepted, onSubmit, showToast) => {
   if (!deviceId) {
-    return setShowToast({ isShown: true, type: "error", message: "Device not selected" });
+    return showToast("Device not selected", "error");
   }
 
   if (!repairType) {
-    return setShowToast({ isShown: true, type: "error", message: "Repair type not provided" });
+    return showToast("Repair type not provided", "error");
   }
 
   if (!repairDescription) {
-    return setShowToast({ isShown: true, type: "error", message: "Description not provided" });
+    return showToast("Description not provided", "error");
   }
 
   if (!technicianId) {
-    return setShowToast({ isShown: true, type: "error", message: "Technician not selected" });
+    return showToast("Technician not selected", "error");
   }
 
   const data = {
@@ -149,7 +149,7 @@ export const handleCreateRepair = async (deviceId, repairType, repairDescription
     console.log("Error");
     return;
   } else {
-    setShowToast({ isShow: true, type: "success", message: response.message });
+    showToast(response.message, "success");
     return onSubmit();
   }
 };
@@ -157,13 +157,13 @@ export const handleCreateRepair = async (deviceId, repairType, repairDescription
 {
   /** */
 }
-export const handleUpdateRepairStatus = async (repairId, selectedStatus, OnSubmit, setShowToast) => {
+export const handleUpdateRepairStatus = async (repairId, selectedStatus, OnSubmit, showToast) => {
   if (!repairId) {
-    return setShowToast({ isShown: true, type: "error", message: "Device id not providing" });
+    return showToast("Device id not providing", "error");
   }
 
   if (!selectedStatus) {
-    return setShowToast({ isShown: true, type: "error", message: "Status not selected" });
+    return showToast("Status not selected", "error");
   }
 
   const status = repairStatusList.find((status) => status.name === selectedStatus);
@@ -190,32 +190,32 @@ export const handleUpdateRepairStatus = async (repairId, selectedStatus, OnSubmi
     statusId: status.id,
   };*/
 
-  const { error, message } = await updateRepairStatus(data, setShowToast);
+  const { error, message } = await updateRepairStatus(data, showToast);
 
   if (error) {
-    //setShowToast()
-    return setShowToast({ isShown: true, type: "error", message: message });
+    //showToast()
+    return showToast(message, "error");
   }
 
   OnSubmit();
-  return setShowToast({ isShown: true, type: "success", message: message });
+  return showToast(message, "success");
 };
 
-export const handleUpdateRepair = async (repairId, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, setShowToast) => {
+export const handleUpdateRepair = async (repairId, repairType, repairDescription, technicianId, repairNotes, repairTechnicianId, onSubmit, showToast) => {
   if (!repairId) {
-    return setShowToast({ isShown: true, type: "error", message: "Device not selected" });
+    return showToast("Device not selected", "error");
   }
 
   if (!repairType) {
-    return setShowToast({ isShown: true, type: "error", message: "Repair type not provided" });
+    return showToast("Repair type not provided", "error");
   }
 
   if (!repairDescription) {
-    return setShowToast({ isShown: true, type: "error", message: "Description not provided" });
+    return showToast("Description not provided", "error");
   }
 
   if (!technicianId) {
-    return setShowToast({ isShown: true, type: "error", message: "Technician not selected" });
+    return showToast("Technician not selected", "error");
   }
 
   const data = {
@@ -236,11 +236,11 @@ export const handleUpdateRepair = async (repairId, repairType, repairDescription
   const { response } = await updateRepair(repairId, data);
 
   if (response.error) {
-    setShowToast({ isShown: true, type: "error", message: response.message });
+    showToast(response.message, "error");
     return;
   } else {
     console.log(response);
-    setShowToast({ isShown: true, type: "success", message: response.message });
+    showToast(response.message, "success");
 
     return onSubmit();
   }

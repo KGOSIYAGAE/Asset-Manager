@@ -15,13 +15,15 @@ import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
 import ImportFile from "../../../components/cards/importFile/ImportFile";
 import { hasPermission } from "../../../utils/getLoggedInUser";
 import { handleDeleteStudent } from "../../../utils/handleDeleteItem";
+import { useToast } from "../../../context/ToastContext";
 
 function students({ path }) {
-  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  //const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", selcetedUser: null, userEmail: null });
   const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   //Set pagated data to the table
   const [allStudents, setAllStudents] = useState(null);
@@ -35,10 +37,6 @@ function students({ path }) {
   const [searchResults, setSearchResults] = useState(null);
   /////////////////////Handle Search Results////////////
 
-  //Close Toast
-  const onToastClose = () => {
-    setShowToast({ isShown: false });
-  };
   //Hanlde Edit
   const handleEdit = (cellValues) => {
     navigate(`/users/students/edit-student/${cellValues.row.student_number}`);
@@ -123,7 +121,7 @@ function students({ path }) {
               getAllStudents({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStudents, setTotalPages);
             }}
             onDelete={() => {
-              handleDeleteStudent(openModal.selcetedUser, setShowToast);
+              handleDeleteStudent(openModal.selcetedUser, showToast);
               setOpenModal({ isShown: false });
             }}
             email={openModal.userEmail}
@@ -140,7 +138,6 @@ function students({ path }) {
           ""
         )}
       </Modal>
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={onToastClose} />
     </div>
   );
 }

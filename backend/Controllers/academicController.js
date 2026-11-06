@@ -62,6 +62,8 @@ const createCourse = async (req, res) => {
   try {
     const { course_name, course_code, faculty_id } = req.body;
 
+    console.log(req.body);
+
     if (!course_name) {
       return res.status(400).json({ message: "Course name is required", error: true });
     }
@@ -83,7 +85,11 @@ const createCourse = async (req, res) => {
 
     const create_faculty_query = "INSERT INTO courses(course_name,course_code, faculty_id,created_at, updated_at, is_deleted) VALUES ($1,$2,$3, NOW(), NOW(),'FALSE')";
 
+    console.log(create_faculty_query);
+
     const { rowCount } = await query(create_faculty_query, [course_name, course_code, faculty_id]);
+
+    console.log(rowCount);
 
     if (rowCount <= 0) {
       console.log("error creating");
@@ -169,17 +175,17 @@ const deleteCourse = async (req, res) => {
 
 ////////////////////////////////
 
-//get Faculties
-const getFaculties = async (req, res) => {
+//get Acdemic Faculties
+const getAcademicFaculties = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
     const offset = (page - 1) * limit;
 
     //Get total device that need approval
-    const countQuery = `SELECT COUNT(*) AS total FROM "facultiesDetails" `;
+    const countQuery = `SELECT COUNT(*) AS total FROM "academicFacultiesDetails" WHERE faculty_type = 'Academic'`;
 
-    const getDetailsQuery = `SELECT * FROM "facultiesDetails" LIMIT $1 OFFSET $2 `;
+    const getDetailsQuery = `SELECT * FROM "academicFacultiesDetails" WHERE faculty_type = 'Academic' LIMIT $1 OFFSET $2 `;
 
     //Get device count
     const countResponse = await query(countQuery);
@@ -302,7 +308,7 @@ module.exports = {
   getCoursesOfFaculty,
   createCourse,
   updateCourse,
-  getFaculties,
+  getAcademicFaculties,
   deleteCourse,
   createFaculty,
   updateFaculty,

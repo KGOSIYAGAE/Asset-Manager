@@ -31,7 +31,9 @@ function FacultiesTable({ faculties, currentPage, setCurrentPage, totalPages, li
         <thead className=" bg-slate-100 sticky top-0 h-[40px] rounded-md">
           <th>Faculty ID</th>
           <th>Faculty Name</th>
-          <th>Number of Staff</th>
+          {faculties && faculties[0].staff_count ? "" : <th>Faculty Abbreviation</th>}
+          {faculties && faculties[0].staff_count ? "" : <th>Faculty Description</th>}
+          <th>{faculties && faculties[0].staff_count ? "Number of Staff" : "Number of Students"}</th>
           <th>Status</th>
           <th>Action</th>
         </thead>
@@ -50,7 +52,9 @@ function FacultiesTable({ faculties, currentPage, setCurrentPage, totalPages, li
                   <tr className="hover:bg-slate-50" key={faculty.faculty_id}>
                     <td>{faculty.faculty_id}</td>
                     <td>{faculty.faculty_name}</td>
-                    <td>{faculty.staff_count}</td>
+                    {faculties && faculties[0].staff_count ? "" : <td>{faculty.faculty_abbreviation}</td>}
+                    {faculties && faculties[0].staff_count ? "" : <td>{faculty.description}</td>}
+                    <td>{faculty.staff_count || faculty.student_count}</td>
                     <td>{faculty.is_deleted ? <span className="rounded-md bg-red-500 p-1 text-white">In Active</span> : <span className="rounded-md bg-green-500 p-1 text-white">Active</span>}</td>
                     <td>
                       <div className="flex  gap-2 z-0">

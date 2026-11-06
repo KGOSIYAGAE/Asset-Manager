@@ -17,13 +17,15 @@ import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 import BulkAddButton from "../../components/buttons/BulkAddButton";
 import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
 import { handleDeleteDevice } from "../../utils/handleDeleteItem";
+import { useToast } from "../../context/ToastContext";
 
 function Devices({ path }) {
-  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  //const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   //Set pagated data to the table
   const [allDevices, setAllDevices] = useState(null);
@@ -116,7 +118,7 @@ function Devices({ path }) {
             heading={"Delete Device"}
             laptopSerialNo={openModal.laptopSerialNo}
             onDelete={() => {
-              handleDeleteDevice(openModal.selectedDevice, setShowToast);
+              handleDeleteDevice(openModal.selectedDevice, showToast);
               setOpenModal({ isShown: false });
             }}
             onCanel={() => {
@@ -127,7 +129,6 @@ function Devices({ path }) {
               setOpenModal({ isShown: false });
               getAllDevices({ page: pagationModel.page, limit: pagationModel.pageSize, userrole: user?.role }, setAllDevices, setTotalPages);
             }}
-            setShowToast={setShowToast}
           />
         ) : openImportModal.isShown ? (
           <ImportFile
@@ -144,7 +145,6 @@ function Devices({ path }) {
           ""
         )}
       </Modal>
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
   );
 }

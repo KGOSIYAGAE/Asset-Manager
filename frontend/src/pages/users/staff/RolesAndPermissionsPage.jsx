@@ -10,11 +10,13 @@ import RolesAndPermissionTable from "../../../components/tables/RolesAndPermissi
 import ManageRoles from "../../../components/cards/manageRoles/ManageRoles";
 import UpdateRoles from "../../../components/cards/manageRoles/UpdateRoles";
 import { getAdmins } from "../../../services/api/admin/Admin.Api";
+import { useToast } from "../../../context/ToastContext";
 
 function RolesAndPermissionsPage({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
   const [viewedUser, setViewedUser] = useState(null);
+
+  const { showToast } = useToast();
 
   //Set pagated data to the table
 
@@ -81,10 +83,9 @@ function RolesAndPermissionsPage({ path }) {
             onSubmit={(message) => {
               getAdmins(setUsersAndAdmins);
               setOpenModal({ isShown: false });
-              setShowToast({ isShow: true, type: "success", message: message });
+              showToast(message, "success");
             }}
             userData={userAndAdmins}
-            setShowToast={setShowToast}
           />
         ) : (
           <UpdateRoles
@@ -94,21 +95,12 @@ function RolesAndPermissionsPage({ path }) {
             onSubmit={(message) => {
               getAdmins(setUsersAndAdmins);
               setOpenModal({ isShown: false });
-              setShowToast({ isShow: true, type: "success", message: message });
+              showToast(message, "success");
             }}
             userData={viewedUser}
-            setShowToast={setShowToast}
           />
         )}
       </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

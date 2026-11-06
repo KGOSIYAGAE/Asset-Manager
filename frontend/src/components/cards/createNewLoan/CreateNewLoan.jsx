@@ -8,7 +8,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 //import { assignReleaseUser } from "../../../services/api/devices/Device.Api";
 import { getCurrentDate, getTodayDate } from "../../../utils/helperMethods";
-import { assignDevice, createLoanDevice, getAllDevices, releaseDevice } from "../../../services/api/devices/Device.Api";
+import { createLoanDevice, getAllDevices, releaseDevice } from "../../../services/api/devices/Device.Api";
 import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelectInput";
 import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
 import DateTimePicker from "../../inputs/dateTimePicker/DateTimePicker";
@@ -23,7 +23,7 @@ import QrCodeCard from "../qrCodeCard/QrCodeCard";
 import CancelButton from "../../buttons/CancelButton";
 import SendToTablet from "../../buttons/SendToTablet/SendToTablet";
 
-function CreateNewLoan({ onCanel, onSubmit, setShowToast }) {
+function CreateNewLoan({ onCanel, onSubmit }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
   const [selectedDevice, setSelectedDevice] = useState({ id: null, make: null, model: null, serial_no: null, asset_tag: null, device_category: null, device_status: null });
 
@@ -146,14 +146,7 @@ function CreateNewLoan({ onCanel, onSubmit, setShowToast }) {
                     returnDate={returnDate}
                   />
 
-                  <OpenSecondScreenButton
-                    btnLable={"Continue to Verifaction"}
-                    userId={selectedUser?.userId}
-                    deviceId={selectedDevice?.id}
-                    formType={"loan-verification"}
-                    returnDate={returnDate}
-                    setShowToast={setShowToast}
-                  />
+                  <OpenSecondScreenButton btnLable={"Continue to Verifaction"} userId={selectedUser?.userId} deviceId={selectedDevice?.id} formType={"loan-verification"} returnDate={returnDate} />
                 </div>
               ) : (
                 ""

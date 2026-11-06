@@ -45,6 +45,7 @@ router.put("/departments/delete-department/:department_id", deleteDepartment);
 
 //Get All faculties
 router.get("/faculties/", getFaculties);
+
 //create faculty
 router.post("/faculties/create-faculty/", createFaculty);
 //update faculty

@@ -17,16 +17,18 @@ import BulkAddButton from "../../../components/buttons/BulkAddButton";
 import { hasPermission } from "../../../utils/getLoggedInUser";
 import ExportExcelButton from "../../../components/buttons/ExportExcelButton";
 import { handleDeleteStaff } from "../../../utils/handleDeleteItem";
+import { useToast } from "../../../context/ToastContext";
 
 function Staff({ path }) {
   //Context
   const { staffState, staffDispatch } = useStaffContext();
   const { searchState, searchDispatch } = useSearchContext();
-  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  //const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
   const [openModal, setOpenModal] = useState({ isShown: false, type: "delete", data: null });
   const [openImportModal, setOpenImportModal] = useState({ isShown: false, type: null, data: null });
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   //Set pagated data to the table
   const [allStaff, setAllStaff] = useState(null);
@@ -41,9 +43,6 @@ function Staff({ path }) {
   /////////////////////Handle Search Results////////////
 
   // Toast Close
-  const handleToastClose = () => {
-    setShowToast({ isShown: false, type: "", message: null });
-  };
 
   //Handle delete
   const handleDelete = (cellValues) => {
@@ -129,7 +128,7 @@ function Staff({ path }) {
               getStaffData({ page: pagationModel.page, limit: pagationModel.pageSize }, setAllStaff, setTotalPages);
             }}
             onDelete={() => {
-              handleDeleteStaff(openModal.selectedUser, setShowToast);
+              handleDeleteStaff(openModal.selectedUser, showToast);
               setOpenModal({ isShown: false });
             }}
             email={openModal.email}
@@ -146,8 +145,6 @@ function Staff({ path }) {
           ""
         )}
       </Modal>
-
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={handleToastClose} />
     </div>
   );
 }

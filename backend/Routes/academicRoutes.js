@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getCourses, getCoursesOfFaculty, createCourse, updateCourse, getFaculties, deleteCourse, createFaculty, updateFaculty, deleteFaculty } = require("../Controllers/academicController");
+const { getCourses, getCoursesOfFaculty, createCourse, updateCourse, getAcademicFaculties, deleteCourse, createFaculty, updateFaculty, deleteFaculty } = require("../Controllers/academicController");
 const requireAuth = require("../middleware/requireAuth");
 
 //
@@ -18,7 +18,7 @@ router.put("/update-course/:course_id", updateCourse);
 router.put("/delete-course/:course_id", deleteCourse);
 
 //Get All faculties
-router.get("/faculties/", getFaculties);
+router.get("/faculties/", getAcademicFaculties);
 //create faculty
 router.post("/faculties/create-faculty/", createFaculty);
 //update faculty

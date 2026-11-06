@@ -72,6 +72,10 @@ app.use("/api/v1/asset-manager/azure-graph", azureGraphConfigRouter);
 const documentTemplateRouter = require("./Routes/documentTemplateRoutes");
 app.use("/api/v1/asset-manager/document-templates", documentTemplateRouter);
 
+//Documents Template
+const emailTemplateRouter = require("./Routes/emailTemplateRoutes");
+app.use("/api/v1/asset-manager/email-templates", emailTemplateRouter);
+
 //Acdemics
 const academicsRouter = require("./Routes/academicRoutes");
 app.use("/api/v1/asset-manager/academics", academicsRouter);

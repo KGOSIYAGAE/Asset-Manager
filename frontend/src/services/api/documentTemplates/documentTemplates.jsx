@@ -16,39 +16,39 @@ export const getDocumentTemplates = async (setDocumentTemplates) => {
 };
 
 //add new Document Template
-export const createTemplate = async (data, setShowToast) => {
+export const createDocumentTemplate = async (data, showToast) => {
   try {
     const response = await axiosInstance.post("/document-templates/create-template", data, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error.response);
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //update EmailAzureGraphSettings
-export const updateTemplate = async (document_id, data, setShowToast) => {
+export const updateDocumentTemplate = async (document_id, data, showToast) => {
   try {
     if (!document_id) {
-      return setShowToast({ isShow: true, type: "error", message: "Dcoument id must be provided" });
+      return showToast("Dcoument id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/document-templates/update-template/" + document_id, data, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };

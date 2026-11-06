@@ -15,26 +15,29 @@ import DateTimePicker from "../../inputs/dateTimePicker/DateTimePicker";
 import { ROLES, rolesList } from "../../../utils/getLoggedInUser";
 import TextInput from "../../inputs/textInput/TextInput";
 import { assignUserRole } from "../../../services/api/admin/Admin.Api";
+import { useToast } from "../../../context/ToastContext";
 
-function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
+function ManageRoles({ onCanel, onSubmit, userData }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, password: null, userType: null, location: null });
   const [selectedRole, setSelectedRole] = useState(null);
   const [tempPassword, setTempPassword] = useState(null);
   const [userAccessType, setUserAccessType] = useState(null);
   const [systemRoles, setSystemRoles] = useState();
 
+  const { showToast } = useToast();
+
   //Handle loan device
   const handleAssignRole = async () => {
     if (!selectedUser.fullName) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+      return showToast("Please select user.", "error");
     }
 
     if (!selectedRole) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select role." });
+      return showToast("Please select role.", "error");
     }
 
     if (!tempPassword) {
-      return setShowToast({ isShow: true, type: "error", message: "Please provide temporary password." });
+      return showToast("Please provide temporary password.", "error");
     }
 
     const data = {
@@ -43,7 +46,7 @@ function ManageRoles({ onCanel, onSubmit, userData, setShowToast }) {
       tempPassword: tempPassword,
     };
 
-    const message = await assignUserRole(data, setShowToast);
+    const message = await assignUserRole(data);
 
     return onSubmit(message);
   };

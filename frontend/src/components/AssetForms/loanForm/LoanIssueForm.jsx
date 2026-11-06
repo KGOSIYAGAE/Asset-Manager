@@ -3,7 +3,7 @@ import { generateUpgradeDate, getMonthName, getTodayDate, getTodayFullDate } fro
 import { getLoggedInUser } from "../../../utils/getLoggedInUser";
 import { getStaffDetails, getUser } from "../../../services/api/staff/Staff.Api";
 import { useNavigate } from "react-router-dom";
-import { assignDevice, getAllDeviceDetails } from "../../../services/api/devices/Device.Api";
+import { getAllDeviceDetails } from "../../../services/api/devices/Device.Api";
 import Modal from "react-modal";
 import SiganturePad from "../../cards/signaturePad/SiganturePad";
 import SubmitButton from "../../buttons/SubmitButton";

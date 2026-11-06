@@ -14,10 +14,12 @@ import ExportExcelButton from "../../components/buttons/ExportExcelButton";
 import { getAllStudents } from "../../services/api/students/Students.Api";
 import { getStaffData } from "../../services/api/staff/Staff.Api";
 import ToastMessageBox from "../../components/ToastMessageBox/ToastMessageBox";
+import { useToast } from "../../context/ToastContext";
 
 function DevicesOnLoan({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  //const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  const { showToast } = useToast();
 
   const [loanedDevices, setLoanedDevices] = useState();
 
@@ -41,7 +43,7 @@ function DevicesOnLoan({ path }) {
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data.type === "device_loaned") {
-        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        showToast(event.data.payload, "success");
         getAllLoanedDevices({ page: currentPage, limit: limit }, setLoanedDevices, setTotalPages);
       }
     };
@@ -96,17 +98,8 @@ function DevicesOnLoan({ path }) {
           onSubmit={() => {
             setOpenModal({ isShown: false });
           }}
-          setShowToast={setShowToast}
         />
       </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

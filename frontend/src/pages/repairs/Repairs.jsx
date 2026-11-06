@@ -20,11 +20,13 @@ import { getAllRepairs, getAllRepairsForTech, getAllRepairsStats, getAllRepairsS
 import { filterItems } from "../../utils/deviceRepairsHelper";
 import LoanIssueForm from "../../components/LoanForms/LoanIssueForm";
 import RepairForm from "../../components/repairForm/RepairForm";
+import { useToast } from "../../context/ToastContext";
 
 function Repairs({ path, createRepair }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShown: false, type: "", message: null });
   const [maintenanceDevices, setMaintenanceDevices] = useState(null);
+
+  const { showToast } = useToast();
 
   //Set avtive effect of the filter bar
 
@@ -286,7 +288,6 @@ function Repairs({ path, createRepair }) {
               setOpenModal({ isShown: false });
               handleCancelSearch();
             }}
-            setShowToast={setShowToast}
           />
         ) : (
           <div className="h-[1100px] col-span-6 bg-white " id="print-file">
@@ -294,15 +295,6 @@ function Repairs({ path, createRepair }) {
           </div>
         )}
       </Modal>
-
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

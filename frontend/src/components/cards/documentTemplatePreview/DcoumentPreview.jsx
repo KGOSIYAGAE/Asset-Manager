@@ -13,6 +13,7 @@ function DcoumentPreview({ documentTemplate, showPreview, setShowPreview }) {
     ict_banner: "/ict-banner.png",
     header_image: "/images/header.png",
     page_banner: "/page_banner.png",
+    ict_banner_image: "/page_banner.png",
   };
 
   const replacePlaceholder = (template, data) => {
@@ -20,7 +21,7 @@ function DcoumentPreview({ documentTemplate, showPreview, setShowPreview }) {
   };
 
   return (
-    <div className="w-fit h-[690px] flex flex-col gap-3  bg-white rounded-md pt-2  ">
+    <div className="w-fit h-[690px] flex flex-col gap-3  bg-white rounded-md pt-2  overflow-auto">
       <div
         onClick={() => {
           setShowPreview(false);

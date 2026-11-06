@@ -1,3 +1,4 @@
+import { useToast } from "../../../context/ToastContext";
 import axiosInstance from "../../../utils/axiosInstance";
 
 //Get All devices
@@ -159,67 +160,65 @@ export const getAllUserDevices = async (user_id, devicesDispatch) => {
 };
 
 //add device api
-export const addDevice = async (deviceData, setShowToast) => {
+export const addDevice = async (deviceData, showToast) => {
   try {
     const response = await axiosInstance.post("/devices/add-device/", deviceData, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error.response);
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //bulk add devices api
-export const bulkAddDevice = async (devicesData, setShowToast, onClose) => {
-  console.log(devicesData.devices[0].warranty_end_date);
-
+export const bulkAddDevice = async (devicesData, showToast, onClose) => {
   try {
     const response = await axiosInstance.post("/devices/bulk-add-devices/", devicesData, { showSpinner: true });
 
     if (response.data) {
       onClose();
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
       onClose();
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      console.log("An unexpected error occured, please try again", error);
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //Handle update device
-export const updateDevice = async (id, deviceDetails, setShowToast) => {
+export const updateDevice = async (id, deviceDetails, showToast) => {
   try {
     if (!id) {
-      return setShowToast({ isShown: true, type: "error", message: "Device id must be provided" });
+      return showToast("Device id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/devices/update-device/" + id, deviceDetails, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
-    if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+    if (error.response.data && error.response.data.message) {
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again." });
+      console.log(error.response);
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //Assign device API call
-export const assignDevice = async (id, data, setShowToast) => {
+export const assignDevice = async (id, data) => {
   try {
     const response = await axiosInstance.put("/devices/assign-device/" + id, data, { showSpinner: true });
 
@@ -236,7 +235,7 @@ export const assignDevice = async (id, data, setShowToast) => {
 };
 
 //Assign device API call
-export const approveDevice = async (id, data, setShowToast) => {
+export const approveDevice = async (id, data, showToast) => {
   try {
     const response = await axiosInstance.put("/devices/approve-device/" + id, data, { showSpinner: true });
 
@@ -245,15 +244,15 @@ export const approveDevice = async (id, data, setShowToast) => {
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
 
 //Loan device API call
-export const createLoanDevice = async (id, data, setShowToast) => {
+export const createLoanDevice = async (id, data) => {
   try {
     const response = await axiosInstance.put("/devices/loan-device/" + id, data);
 
@@ -272,56 +271,56 @@ export const createLoanDevice = async (id, data, setShowToast) => {
 };
 
 //Assign device API call
-export const releaseDevice = async (id, data, setShowToast) => {
+export const releaseDevice = async (id, data, showToast) => {
   try {
     const response = await axiosInstance.put("/devices/release-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
 
 //Assign device API call
-export const rejectDevice = async (id, data, setShowToast) => {
+export const rejectDevice = async (id, data, showToast) => {
   try {
     const response = await axiosInstance.put("/devices/reject-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
 
 //delete device
-export const deleteDevice = async (id, data, setShowToast) => {
+export const deleteDevice = async (id, data, showToast) => {
   try {
     if (!id) {
-      return setShowToast({ isShown: true, type: "error", message: "Device id not provided." });
+      return showToast("Device id not provided.", "error");
     }
 
     const response = await axiosInstance.put("/devices/delete-device/" + id, data, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected router occured, please try again." });
+      return showToast("An unexpected router occured, please try again.", "error");
     }
   }
 };

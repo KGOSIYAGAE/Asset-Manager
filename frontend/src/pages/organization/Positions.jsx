@@ -9,10 +9,12 @@ import DeleteConfirmation from "../../components/cards/deleteConfirmation/Delete
 import PositionsTable from "../../components/tables/PositionsTable";
 import CreatePosition from "../../components/cards/createPosition/CreatePosition";
 import SearchInput from "../../components/inputs/searchInput/SearchInput";
+import { useToast } from "../../context/ToastContext";
 
 function Positions({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+
+  const { showToast } = useToast();
 
   const [positions, setPositions] = useState();
   const [searchResults, setSearchResults] = useState(null);
@@ -88,7 +90,6 @@ function Positions({ path }) {
               setOpenModal({ isShown: false });
               getPositions({ page: currentPage, limit: limit }, setPositions, setTotalPages);
             }}
-            setShowToast={setShowToast}
             modalType={openModal?.type}
             modalData={openModal?.data || null}
           />
@@ -103,20 +104,12 @@ function Positions({ path }) {
               getPositions({ page: currentPage, limit: limit }, setPositions, setTotalPages);
             }}
             onDelete={() => {
-              deletePostion(openModal?.data?.position_id, setShowToast);
+              deletePostion(openModal?.data?.position_id, showToast);
             }}
             email={openModal?.data?.post_name}
           />
         )}
       </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

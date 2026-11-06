@@ -532,7 +532,7 @@ const sendFormViaEmail = async (req, res) => {
         staff_fullname: `${userDetails.rows[0].name || ""} ${userDetails.rows[0].surname || ""}`.trim(),
         staff_no: userDetails.rows[0].staff_no || "",
         department_name: userDetails.rows[0].department_name || "",
-        position_name: userDetails.rows[0].position_name || "",
+        position_name: userDetails.rows[0].post_name || "",
         phone_number: userDetails.rows[0].phone_number || "",
         issue_date: handleTimeStampToText(deviceDetails.rows[0].issue_date) || "",
 
@@ -591,7 +591,7 @@ const sendFormViaEmail = async (req, res) => {
 
         department_or_faculty: userDetails.rows[0].department_name || userDetails.rows[0].faculty_name || "",
 
-        position_or_course: userDetails.rows[0].position_name || userDetails.rows[0].course_name || "",
+        position_or_course: userDetails.rows[0].post_name || userDetails.rows[0].course_name || "",
 
         phone_number: userDetails.rows[0].phone_number || "",
 

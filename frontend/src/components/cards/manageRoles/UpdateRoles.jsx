@@ -9,17 +9,20 @@ import UserSelectInput from "../../inputs/selectInputs/userSelectInput/UserSelec
 import { ROLES, rolesList } from "../../../utils/getLoggedInUser";
 import TextInput from "../../inputs/textInput/TextInput";
 import { assignUserRole, updateUserRole } from "../../../services/api/admin/Admin.Api";
+import { useToast } from "../../../context/ToastContext";
 
-function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
+function UpdateRoles({ onCanel, onSubmit, userData }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
   const [selectedRole, setSelectedRole] = useState(null);
   const [userAccessType, setUserAccessType] = useState(null);
   const [systemRoles, setSystemRoles] = useState();
 
+  const { showToast } = useToast();
+
   //Handle loan device
   const handleUpdateRole = async () => {
     if (!userData.name) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+      return showToast("Please select user.", "error");
     }
 
     const data = {
@@ -27,7 +30,7 @@ function UpdateRoles({ onCanel, onSubmit, userData, setShowToast }) {
       userRole: selectedRole,
     };
 
-    const message = await updateUserRole(data, setShowToast);
+    const message = await updateUserRole(data);
 
     return onSubmit(message);
   };

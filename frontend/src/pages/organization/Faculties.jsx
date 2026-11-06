@@ -10,10 +10,12 @@ import FacultiesTable from "../../components/tables/FacultiesTable";
 import CreateFaculty from "../../components/cards/createFaculty/CreateFaculty";
 import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 import SearchInput from "../../components/inputs/searchInput/SearchInput";
+import { useToast } from "../../context/ToastContext";
 
 function Faculties({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+
+  const { showToast } = useToast();
 
   const [faculties, setFaculties] = useState();
   const [searchResults, setSearchResults] = useState(null);
@@ -29,7 +31,7 @@ function Faculties({ path }) {
   //Handles search clear -> Sent to Search component
   const handleCancelSearch = () => {
     setSearchResults(null);
-    getPositions({ page: currentPage, limit: limit }, setPositions, setTotalPages);
+    getFaculties({ page: currentPage, limit: limit }, setFaculties, setTotalPages);
   };
 
   return (
@@ -90,7 +92,6 @@ function Faculties({ path }) {
               setOpenModal({ isShown: false });
               getFaculties({ page: currentPage, limit: limit }, setFaculties, setTotalPages);
             }}
-            setShowToast={setShowToast}
             modalType={openModal?.type}
             modalData={openModal?.data || null}
           />
@@ -105,20 +106,12 @@ function Faculties({ path }) {
               getFaculties({ page: currentPage, limit: limit }, setFaculties, setTotalPages);
             }}
             onDelete={() => {
-              deleteFaculty(openModal?.data?.faculty_id, setShowToast);
+              deleteFaculty(openModal?.data?.faculty_id, showToast);
             }}
             email={openModal?.data?.faculty_name}
           />
         )}
       </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

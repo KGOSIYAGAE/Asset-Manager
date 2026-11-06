@@ -103,7 +103,11 @@ function DeviceDetails({ path }) {
   };
 
   const handleSendEmail = (user_id, form_type, device_id) => {
-    setOpenModal({ isShown: true, type: "Send-Form", data: { user_id: user_id, form_type: form_type, device_id: device_id } });
+    if (user_id && form_type && device_id) {
+      return setOpenModal({ isShown: true, type: "Send-Form", data: { user_id: user_id, form_type: form_type, device_id: device_id } });
+    }
+
+    return setShowToast({ isShow: true, type: "error", message: "Error opening email component" });
   };
 
   useEffect(() => {
@@ -377,7 +381,7 @@ function DeviceDetails({ path }) {
           )}
         </div>
 
-        <DeviceLogTable deviceDetails={deviceDetails} label={"Devices Logs"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} setShowToast={setShowToast} />
+        <DeviceLogTable deviceDetails={deviceDetails} label={"Devices History"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} setShowToast={setShowToast} />
       </div>
 
       <Modal

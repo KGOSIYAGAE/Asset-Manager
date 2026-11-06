@@ -9,10 +9,13 @@ import DepartmentsTable from "../../components/tables/DepratmentsTable";
 import DeleteConfirmation from "../../components/cards/deleteConfirmation/DeleteConfirmation";
 import CreateDepartment from "../../components/cards/createDepartment/CreateDepartment";
 import SearchInput from "../../components/inputs/searchInput/SearchInput";
+import { useToast } from "../../context/ToastContext";
 
 function Departments({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  //const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+
+  const { showToast } = useToast();
 
   const [departments, setDepartments] = useState();
   const [searchResults, setSearchResults] = useState(null);
@@ -28,7 +31,7 @@ function Departments({ path }) {
   //Handles search clear -> Sent to Search component
   const handleCancelSearch = () => {
     setSearchResults(null);
-    getPositions({ page: currentPage, limit: limit }, setPositions, setTotalPages);
+    getDepartments({ page: currentPage, limit: limit }, setDepartments, setTotalPages);
   };
 
   return (
@@ -89,7 +92,6 @@ function Departments({ path }) {
               setOpenModal({ isShown: false });
               getDepartments({ page: currentPage, limit: limit }, setDepartments, setTotalPages);
             }}
-            setShowToast={setShowToast}
             modalType={openModal?.type}
             modalData={openModal?.data || null}
           />
@@ -106,20 +108,12 @@ function Departments({ path }) {
               console.log("Update on submit");
             }}
             onDelete={() => {
-              deleteDepartment(openModal?.data?.department_id, setShowToast);
+              deleteDepartment(openModal?.data?.department_id, showToast);
             }}
             email={openModal?.data?.department_name}
           />
         )}
       </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

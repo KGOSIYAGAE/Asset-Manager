@@ -4,11 +4,14 @@ import SubmitButton from "../../buttons/SubmitButton";
 import TextInput from "../../inputs/textInput/TextInput";
 import { createDepartment, updateDepartment } from "../../../services/api/organization/Organization";
 import FacultySelectInput from "../../inputs/selectInputs/facultySelectInput/FacultySelectInput";
+import { useToast } from "../../../context/ToastContext";
 
-function CreateDepartment({ onCanel, onSubmit, setShowToast, modalType, modalData }) {
+function CreateDepartment({ onCanel, onSubmit, modalType, modalData }) {
   const [departmentName, setDepartmentName] = useState();
   const [department_id, setDepartment_id] = useState();
   const [faculty_id, setFaculty_id] = useState();
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (modalData) {
@@ -36,8 +39,7 @@ function CreateDepartment({ onCanel, onSubmit, setShowToast, modalType, modalDat
               <SubmitButton
                 text={"Add Department"}
                 onClick={() => {
-                  createDepartment({ department_name: departmentName, faculty_id: faculty_id }, setShowToast);
-                  console.log();
+                  createDepartment({ department_name: departmentName, faculty_id: faculty_id }, showToast);
                   onSubmit();
                 }}
               />
@@ -45,7 +47,7 @@ function CreateDepartment({ onCanel, onSubmit, setShowToast, modalType, modalDat
               <SubmitButton
                 text={"Update Department"}
                 onClick={() => {
-                  updateDepartment(department_id, { department_name: departmentName, faculty_id: faculty_id }, setShowToast);
+                  updateDepartment(department_id, { department_name: departmentName, faculty_id: faculty_id }, showToast);
                   onSubmit();
                 }}
               />

@@ -22,10 +22,12 @@ import CancelButton from "../../components/buttons/CancelButton";
 import { getSession } from "../../services/api/testApi/Test.Api";
 import { socket } from "../../utils/socket";
 import BlankCard from "../../components/cards/blackCard/BlankCard";
+import { useToast } from "../../context/ToastContext";
 
 function RepairDetails({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+
+  const { showToast } = useToast();
 
   const [repairDetails, setRepairDetails] = useState();
   const params = useParams();
@@ -99,7 +101,7 @@ function RepairDetails({ path }) {
           getRepairDetails(); // Refresh local repair progress layouts on screen
           setOpenModal({ isShown: false, type: null, data: null });
         },
-        setShowToast,
+        showToast,
       );
 
       // 5. Unsubscribe cleanly since the action is completed
@@ -143,7 +145,7 @@ function RepairDetails({ path }) {
                   if (repairStatus === "Collected" || repairStatus === "Ready For Collection") {
                     setOpenModal({ isShown: true, type: "capture-signature", data: repairDetails });
                   } else {
-                    handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
+                    handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, showToast);
                   }
                 }}
               />
@@ -331,7 +333,6 @@ function RepairDetails({ path }) {
               getRepairDetails();
               setOpenModal({ isShown: false });
             }}
-            setShowToast={setShowToast}
           />
         ) : openModal.type === "capture-signature" ? (
           <BlankCard
@@ -341,7 +342,7 @@ function RepairDetails({ path }) {
               setOpenModal({ isShown: false });
             }}
             onSubmit={() => {
-              handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, setShowToast);
+              handleUpdateRepairStatus(repairDetails?.id, repairStatus, OnSubmit, showToast);
               getRepairDetails();
               setOpenModal({ isShown: false });
             }}
@@ -353,7 +354,6 @@ function RepairDetails({ path }) {
           </div>
         )}
       </Modal>
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
   );
 }

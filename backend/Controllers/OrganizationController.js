@@ -365,10 +365,14 @@ const getFaculties = async (req, res) => {
 //create Faculties
 const createFaculty = async (req, res) => {
   try {
-    const { faculty_name } = req.body;
+    const { faculty_name, facultyType } = req.body;
 
     if (!faculty_name) {
       return res.status(400).json({ message: "Faculty name is required", error: true });
+    }
+
+    if (!facultyType) {
+      return res.status(400).json({ message: "Faculty type is required", error: true });
     }
 
     const checkIfExist = "SELECT * FROM faculties WHERE faculty_name = $1";
@@ -378,9 +382,9 @@ const createFaculty = async (req, res) => {
       return res.status(400).json({ message: "Faculty already exist", error: true });
     }
 
-    const create_faculty_query = "INSERT INTO faculties(faculty_name,created_at, updated_at, is_deleted) VALUES ($1, NOW(), NOW(),'FALSE')";
+    const create_faculty_query = "INSERT INTO faculties(faculty_name, faculty_type,created_at, updated_at, is_deleted) VALUES ($1,$2, NOW(), NOW(),'FALSE')";
 
-    const { rowCount } = await query(create_faculty_query, [faculty_name]);
+    const { rowCount } = await query(create_faculty_query, [faculty_name, facultyType]);
 
     if (rowCount <= 0) {
       console.log("error creating");
@@ -398,7 +402,7 @@ const createFaculty = async (req, res) => {
 const updateFaculty = async (req, res) => {
   try {
     const { faculty_id } = req.params;
-    const { faculty_name } = req.body;
+    const { faculty_name, facultyType } = req.body;
 
     if (!faculty_id) {
       return res.status(400).json({ message: "Faculty ID is required", error: true });
@@ -408,16 +412,20 @@ const updateFaculty = async (req, res) => {
       return res.status(400).json({ message: "Faculty name is required", error: true });
     }
 
-    const checkIfExist = "SELECT * FROM faculties WHERE faculty_name = $1";
+    if (!facultyType) {
+      return res.status(400).json({ message: "Faculty type is required", error: true });
+    }
+
+    /*const checkIfExist = "SELECT * FROM faculties WHERE faculty_name = $1";
     const exist = await query(checkIfExist, [faculty_name]);
 
     if (exist.rows.length > 0) {
       return res.status(400).json({ message: "Faculty already exist", error: true });
-    }
+    }*/
 
-    const update_faculty_query = "UPDATE faculties SET faculty_name=$1, updated_at=NOW() WHERE faculty_id = $2";
+    const update_faculty_query = "UPDATE faculties SET faculty_name=$1,faculty_type=$2, updated_at=NOW() WHERE faculty_id = $3";
 
-    const { rowCount } = await query(update_faculty_query, [faculty_name, faculty_id]);
+    const { rowCount } = await query(update_faculty_query, [faculty_name, facultyType, faculty_id]);
 
     if (rowCount <= 0) {
       console.log("error creating");

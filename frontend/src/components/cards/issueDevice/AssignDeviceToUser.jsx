@@ -21,13 +21,15 @@ import { socket } from "../../../utils/socket";
 import QrCodeCard from "../qrCodeCard/QrCodeCard";
 import CancelButton from "../../buttons/CancelButton";
 import SendToTablet from "../../buttons/SendToTablet/SendToTablet";
+import { useToast } from "../../../context/ToastContext";
 
-function AssignDeviceToUser({ onCanel, onSubmit, userId, setShowToast }) {
+function AssignDeviceToUser({ onCanel, onSubmit, userId }) {
   const [showUsers, setShowUsers] = useState({ isShow: false });
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null }); //Get user type based on userID
   const [selectedDevice, setSelectedDevice] = useState({ id: null, make: null, model: null, serial_no: null, asset_tag: null });
 
   const [allDevices, setAllDevices] = useState(null);
+  const { showToast } = useToast();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -107,7 +109,7 @@ function AssignDeviceToUser({ onCanel, onSubmit, userId, setShowToast }) {
                   setQrCodeURL={setQrCodeURL}
                   onSubmit={onSubmit}
                 />
-                <OpenSecondScreenButton btnLable={"Send to USB Tablet"} userId={userId} deviceId={selectedDevice?.id} formType={"issue-verification"} setShowToast={setShowToast} />
+                <OpenSecondScreenButton btnLable={"Send to USB Tablet"} userId={userId} deviceId={selectedDevice?.id} formType={"issue-verification"} showToast={showToast} />
               </div>
             ) : (
               ""

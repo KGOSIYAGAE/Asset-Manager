@@ -27,12 +27,14 @@ import AssignDeviceToUser from "../cards/issueDevice/AssignDeviceToUser";
 import Modal from "react-modal";
 import { socket } from "../../utils/socket";
 import { getDepartments, getFaculties, getPositions } from "../../services/api/organization/Organization";
+import { useToast } from "../../context/ToastContext";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
 
   const params = useParams();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [name, setName] = useState();
   const [surname, setSurname] = useState();
@@ -65,14 +67,14 @@ function AddEditStaff({ path }) {
 
   const [formType, setFormType] = useState("add");
 
-  const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
+  //const [showToast, setShowToast] = useState({ isShown: false, type: null, message: null });
 
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   //Toast close code
   const handleToastClose = () => {
     //setShowToast({ isShown: false, message: "" });
-    setShowToast({ isShown: false, type: "", message: "" });
+    showToast("", "");
   };
 
   //Set form data
@@ -111,47 +113,47 @@ function AddEditStaff({ path }) {
   //Handle Submit / Update
   const handleSubmit = () => {
     if (!name) {
-      return setShowToast({ isShown: true, type: "error", message: "First name must be provided" });
+      return showToast("First name must be provided", "error");
     }
 
     if (!surname) {
-      return setShowToast({ isShown: true, type: "error", message: "Last name must be provided" });
+      return showToast("Last name must be provided", "error");
     }
 
     if (!staff_no) {
-      return setShowToast({ isShown: true, type: "error", message: "Staff number must be provided" });
+      return showToast("Staff number must be provided", "error");
     }
 
     if (!phone_number) {
-      return setShowToast({ isShown: true, type: "error", message: "Phone number must be provided" });
+      return showToast("Phone number must be provided", "error");
     }
 
     if (!email) {
-      return setShowToast({ isShown: true, type: "error", message: "Email must be provided" });
+      return showToast("Email must be provided", "error");
     }
 
     if (!faculty_id) {
-      return setShowToast({ isShown: true, type: "error", message: "Faculty must be selected" });
+      return showToast("Faculty must be selected", "error");
     }
 
     if (!department_id) {
-      return setShowToast({ isShown: true, type: "error", message: "Department must be selected" });
+      return showToast("Department must be selected", "error");
     }
 
     if (!position_id) {
-      return setShowToast({ isShown: true, type: "error", message: "Position must be selected" });
+      return showToast("Position must be selected", "error");
     }
 
     if (!contract_type) {
-      return setShowToast({ isShown: true, type: "error", message: "Employment type must be provided" });
+      return showToast("Employment type must be provided", "error");
     }
 
     if (!start_date) {
-      return setShowToast({ isShown: true, type: "error", message: "Start date must be provided" });
+      return showToast("Start date must be provided", "error");
     }
 
     if (!isActive) {
-      return setShowToast({ isShown: true, type: "error", message: "User status must be provided" });
+      return showToast("User status must be provided", "error");
     }
 
     setError(null);
@@ -170,12 +172,12 @@ function AddEditStaff({ path }) {
     };
 
     if (formType === "add") {
-      addStaff(userData, setShowToast);
+      addStaff(userData, showToast);
       hanldeFormClear();
     } else {
       const { id } = params;
       if (id) {
-        updateStaff(id, userData, setShowToast);
+        updateStaff(id, userData, showToast);
       }
     }
   };
@@ -226,12 +228,12 @@ function AddEditStaff({ path }) {
     const handleMessage = (event) => {
       if (event.data.type === "form_submitted") {
         if (event.data.payload.error) {
-          setShowToast({ isShow: true, type: "error", message: event.data.payload.message });
+          showToast(event.data.payload.message, "error");
           setOpenModal({ isShown: true });
           return;
         }
 
-        setShowToast({ isShow: true, type: "success", message: event.data.payload.message });
+        showToast(event.data.payload.message, "success");
       }
     };
 
@@ -346,11 +348,8 @@ function AddEditStaff({ path }) {
             setOpenModal({ isShown: false });
           }}
           userId={staff_no}
-          setShowToast={setShowToast}
         />
       </Modal>
-
-      <ToastMessage isShown={showToast.isShown} type={showToast.type} message={showToast.message} onClose={() => setShowToast({ isShown: false })} />
     </div>
   );
 }

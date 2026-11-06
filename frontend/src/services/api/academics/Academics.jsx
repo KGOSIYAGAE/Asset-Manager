@@ -1,8 +1,8 @@
 import axiosInstance from "../../../utils/axiosInstance";
 
-export const getFaculties = async (data, setFaculties, setTotalPages) => {
+export const getAcademicFaculties = async (data, setFaculties, setTotalPages) => {
   try {
-    const response = await axiosInstance.get(`/organization/faculties/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
+    const response = await axiosInstance.get(`/academics/faculties/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
 
     if (response.data && response.data.faculties) {
       setTotalPages(response.data.totalPages);
@@ -17,9 +17,9 @@ export const getFaculties = async (data, setFaculties, setTotalPages) => {
   }
 };
 
-export const getFacultiesList = async (setFaculties) => {
+export const getAcademicFacultiesList = async (setFaculties) => {
   try {
-    const response = await axiosInstance.get(`/organization/faculties/`, { showSpinner: true });
+    const response = await axiosInstance.get(`/academics/faculties/`, { showSpinner: true });
 
     if (response.data && response.data.faculties) {
       return setFaculties(response.data.faculties);
@@ -92,6 +92,7 @@ export const deleteFaculty = async (faculty_id, setShowToast) => {
   }
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
 export const getCourses = async (data, setCourses, setTotalPages) => {
   try {
     const response = await axiosInstance.get(`/academics/courses/?page=${data.page}&limit=${data.limit}`, { showSpinner: true });
@@ -144,7 +145,7 @@ export const getCoursesOfFaculty = async (faculty_id, setCourses) => {
 //add Courses
 export const createCourses = async (data, setShowToast) => {
   try {
-    const response = await axiosInstance.post("/organization/Courses/create-Courses/", data, { showSpinner: true });
+    const response = await axiosInstance.post("/academics/create-course/", data, { showSpinner: true });
     if (response.data) {
       return setShowToast({ isShow: true, type: "success", message: response.data.message });
     }

@@ -20,83 +20,84 @@ export const getStaffData = async (data, setAllStaff, setTotalPages) => {
 };
 
 //Add staff API CALL
-export const addStaff = async (userData, setShowToast) => {
+export const addStaff = async (userData, showToast) => {
   try {
     const response = await axiosInstance.post("/staff/create-staff", userData, { showSpinner: true });
 
     if (!response.data.error) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data & error.response.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error);
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //update staff
-export const updateStaff = async (id, userData, setShowToast) => {
+export const updateStaff = async (id, userData, showToast) => {
   try {
     if (!id) {
-      return console.log("Staff number must be provided");
+      return showToast("Staff number must be provided", "error");
     }
 
     const response = await axiosInstance.put("/staff/update-staff/" + id, userData, { showSpinner: true });
 
     if (response.data && response.data.message) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data & error.response.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error);
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //Hanlde deleteStaff API
-export const deleteStaff = async (staff_no, data, setShowToast) => {
+export const deleteStaff = async (staff_no, data, showToast) => {
   try {
     if (!staff_no) {
-      return console.log("Staff number must be provided");
+      return showToast("Staff number must be provided", "error");
     }
     const response = await axiosInstance.put("/staff/delete-staff/" + staff_no, data, { showSpinner: true });
 
     if (response.data && !response.error) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
-    if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+    if (error.response.data & error.response.error) {
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      console.log(error);
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //Bulk Add Student
-export const bulkAddStaff = async (staffData, setShowToast, onClose) => {
+export const bulkAddStaff = async (staffData, showToast, onClose) => {
   try {
     if (!staffData) {
-      return setShowToast({ isShown: true, type: "add", message: "Staff data must be provided" });
+      return showToast("Staff data must be provided", "error");
     }
 
     const response = await axiosInstance.post("/staff/bulk-create-staff", staffData, { showSpinner: true });
 
     if (response.data) {
       onClose();
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, Please try again." });
+      return showToast("An unexpected error occured, Please try again.", "error");
     }
   }
 };

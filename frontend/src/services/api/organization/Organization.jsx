@@ -34,60 +34,60 @@ export const getFacultiesList = async (setFaculties) => {
 };
 
 //add faculty
-export const createFaculty = async (data, setShowToast) => {
+export const createFaculty = async (data, showToast) => {
   try {
     const response = await axiosInstance.post("/organization/faculties/create-faculty/", data, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error.response);
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //update faculty
-export const updateFaculty = async (faculty_id, data, setShowToast) => {
+export const updateFaculty = async (faculty_id, data, showToast) => {
   try {
     if (!faculty_id) {
-      return setShowToast({ isShow: true, type: "error", message: "Faculty id must be provided" });
+      return showToast("Faculty id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/organization/faculties/update-faculty/" + faculty_id, data, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
 
 //delete faculty
-export const deleteFaculty = async (faculty_id, setShowToast) => {
+export const deleteFaculty = async (faculty_id, showToast) => {
   try {
     if (!faculty_id) {
-      return setShowToast({ isShow: true, type: "error", message: "Faculty id must be provided" });
+      return showToast("Faculty id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/organization/faculties/delete-faculty/" + faculty_id, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
@@ -142,59 +142,59 @@ export const getDepartmentsOfFaculty = async (faculty_id, setDepartment) => {
 };
 
 //add department
-export const createDepartment = async (data, setShowToast) => {
+export const createDepartment = async (data, showToast) => {
   try {
     const response = await axiosInstance.post("/organization/departments/create-department/", data, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error.response);
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //update department
-export const updateDepartment = async (department_id, data, setShowToast) => {
+export const updateDepartment = async (department_id, data, showToast) => {
   try {
     if (!department_id) {
-      return setShowToast({ isShow: true, type: "error", message: "Department id must be provided" });
+      return showToast("Department id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/organization/departments/update-department/" + department_id, data, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
 //delete faculty
-export const deleteDepartment = async (department_id, setShowToast) => {
+export const deleteDepartment = async (department_id, showToast) => {
   try {
     if (!department_id) {
-      return setShowToast({ isShow: true, type: "error", message: "Department id must be provided" });
+      return showToast("Department id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/organization/departments/delete-department/" + department_id, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
@@ -250,60 +250,60 @@ export const getPositionsList = async (setPositions, setTotalPages) => {
 };
 
 //add position
-export const createPosition = async (data, setShowToast) => {
+export const createPosition = async (data, showToast) => {
   try {
     const response = await axiosInstance.post("/organization/positions/create-position/", data, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error.response);
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };
 
 //update position
-export const updatePosition = async (position_id, data, setShowToast) => {
+export const updatePosition = async (position_id, data, showToast) => {
   try {
     if (!position_id) {
-      return setShowToast({ isShow: true, type: "error", message: "Department id must be provided" });
+      return showToast("Department id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/organization/positions/update-position/" + position_id, data, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };
 
 //delete position
-export const deletePostion = async (position_id, setShowToast) => {
+export const deletePostion = async (position_id, showToast) => {
   try {
     if (!position_id) {
-      return setShowToast({ isShow: true, type: "error", message: "Position id must be provided" });
+      return showToast("Position id must be provided", "error");
     }
 
     const response = await axiosInstance.put("/organization/positions/delete-position/" + position_id, { showSpinner: true });
 
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {
-      return setShowToast({ isShow: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
-      return setShowToast({ isShow: true, type: "error", message: "An unexpected error occured, please try again." });
+      return showToast("An unexpected error occured, please try again.", "error");
     }
   }
 };

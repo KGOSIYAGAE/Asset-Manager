@@ -80,6 +80,7 @@ export const getAdmins = async (data, setUsersAndAdmins, setTotalPages) => {
 
     if (!response.data.error) {
       setTotalPages(response.data.totalPages);
+
       return setUsersAndAdmins(response.data.adminList);
     }
   } catch (error) {

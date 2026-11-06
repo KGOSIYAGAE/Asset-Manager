@@ -29,7 +29,6 @@ import UserProfile from "./pages/users/UserProfile";
 import DevicesOnLoan from "./pages/devices/DevicesOnLoan";
 import DevicesDueUpgrade from "./pages/devices/DevicesDueUpgrade";
 
-import { ToastProvider } from "./context/ToastContext";
 import DevicesDueReturnPage from "./pages/devices/DevicesDueReturnPage";
 import SecondScreenPage from "./pages/formPage/SecondScreenPage";
 import DeviceForApproval from "./pages/devices/DeviceForApproval";
@@ -37,6 +36,7 @@ import RolesAndPermissionsPage from "./pages/users/staff/RolesAndPermissionsPage
 import NoAccess from "./pages/noAcess/NoAccess";
 import { setNavigate } from "./utils/navigate";
 import { LoadingContextProvider } from "./context/LoadingContext";
+import { ToastProvider } from "./context/ToastContext";
 import Repairs from "./pages/repairs/Repairs";
 import Approval from "./pages/emailTemplates/Approval";
 import TabletView from "./pages/tabletView/TabletView";
@@ -46,6 +46,8 @@ import Faculties from "./pages/organization/Faculties";
 import Departments from "./pages/organization/Departments";
 import Positions from "./pages/organization/Positions";
 import Settings from "./pages/settings/Settings";
+import AcademicFaculties from "./pages/academic/AcademicFaculties";
+import Courses from "./pages/academic/Courses";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -316,6 +318,16 @@ function App() {
           element: <Positions path={"positions"} />,
         },
 
+        //academic
+        {
+          path: "/academic/faculties",
+          element: <AcademicFaculties path={"academic-faculties"} />,
+        },
+        {
+          path: "/academic/courses",
+          element: <Courses path={"courses"} />,
+        },
+
         //Repairs
         {
           path: "/repairs",
@@ -337,10 +349,16 @@ function App() {
           element: <Approval path={"Email Templates"} />,
         },
 
-        //View Email templates
+        //General Settings
         {
-          path: "/settings/email-settings",
-          element: <Settings name={"System Settings"} path={"System Settings/ Email Settings"} />,
+          path: "/settings/general-settings",
+          element: <Settings name={"General Settings"} path={"General Settings/"} />,
+        },
+
+        //System Settings
+        {
+          path: "/settings/system-settings",
+          element: <Settings name={"System Settings"} path={"System Settings/"} />,
         },
 
         //User Management
@@ -363,21 +381,23 @@ function App() {
 
   return (
     <LoadingContextProvider>
-      <LogsContextProvider>
-        <SearchContextProvider>
-          <InvoiceContextProvider>
-            <LoanDueContextProvider>
-              <DevicesContextProvider>
-                <StudentsContextProvider>
-                  <StaffContextProvider>
-                    <RouterProvider router={router} />
-                  </StaffContextProvider>
-                </StudentsContextProvider>
-              </DevicesContextProvider>
-            </LoanDueContextProvider>
-          </InvoiceContextProvider>
-        </SearchContextProvider>
-      </LogsContextProvider>
+      <ToastProvider>
+        <LogsContextProvider>
+          <SearchContextProvider>
+            <InvoiceContextProvider>
+              <LoanDueContextProvider>
+                <DevicesContextProvider>
+                  <StudentsContextProvider>
+                    <StaffContextProvider>
+                      <RouterProvider router={router} />
+                    </StaffContextProvider>
+                  </StudentsContextProvider>
+                </DevicesContextProvider>
+              </LoanDueContextProvider>
+            </InvoiceContextProvider>
+          </SearchContextProvider>
+        </LogsContextProvider>
+      </ToastProvider>
     </LoadingContextProvider>
   );
 }
