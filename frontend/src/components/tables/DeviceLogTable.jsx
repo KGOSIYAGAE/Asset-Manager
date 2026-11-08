@@ -6,9 +6,12 @@ import { BsEyeFill } from "react-icons/bs";
 import { handleOpenForm } from "../../utils/handleOpenForm";
 import { MdFileOpen } from "react-icons/md";
 import { hasPermission } from "../../utils/getLoggedInUser";
+import { useToast } from "../../context/ToastContext";
 
-function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal, setShowToast }) {
+function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal }) {
   const [columnCount, setColumnCount] = useState(6);
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     //console.log(deviceTransactions);
@@ -110,7 +113,7 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
                           <div
                             className="flex items-center gap-2 text-slate-500 hover:text-slate-600 cursor-pointer"
                             onClick={() => {
-                              handleOpenForm(transaction, setOpenModal, setShowToast);
+                              handleOpenForm(transaction, setOpenModal, showToast);
                               //setOpenModal({ isShown: true, type: "view-more-details", data: device });
                             }}
                           >

@@ -15,10 +15,12 @@ import { getAllStudents } from "../../services/api/students/Students.Api";
 import { getStaffData } from "../../services/api/staff/Staff.Api";
 import ToastMessageBox from "../../components/ToastMessageBox/ToastMessageBox";
 import { useToast } from "../../context/ToastContext";
+import { useToastBox } from "../../context/ToastBoxContext";
 
 function DevicesOnLoan({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  //const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  //const [showToastBox, setShowToastBox] = useState({ isShow: true, type: "", message: null });
+  const { showToastBox } = useToastBox();
   const { showToast } = useToast();
 
   const [loanedDevices, setLoanedDevices] = useState();
@@ -33,17 +35,16 @@ function DevicesOnLoan({ path }) {
     getAllLoanedDevices({ page: currentPage, limit: limit }, setLoanedDevices, setTotalPages);
   }, [currentPage]);
 
-  /*useEffect(() => {
-    getAllStudents(studentDispatch);
-    getStaffData(staffDispatch);
-    getAllDevices(devicesDispatch);
-  }, []);*/
+  useEffect(() => {
+    getAllLoanedDevices({ page: currentPage, limit: limit }, setLoanedDevices, setTotalPages);
+  }, []);
 
   //handle post Message Response
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data.type === "device_loaned") {
-        showToast(event.data.payload, "success");
+        //showToast(event.data.payload, "success");
+        showToastBox("Loan request has been submitted, please go to admin for approval.", "success");
         getAllLoanedDevices({ page: currentPage, limit: limit }, setLoanedDevices, setTotalPages);
       }
     };
@@ -96,6 +97,9 @@ function DevicesOnLoan({ path }) {
             setOpenModal({ isShown: false });
           }}
           onSubmit={() => {
+            //showToast("Loan Approval required", "info");
+            showToastBox("Loan request has been submitted, please go to admin for approval.", "success");
+
             setOpenModal({ isShown: false });
           }}
         />

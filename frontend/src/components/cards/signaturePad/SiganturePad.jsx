@@ -9,10 +9,13 @@ import { getUserType } from "../../../utils/helperMethods";
 import { handleLoanDevice } from "../../../utils/HandleLoanDevice";
 import { socket } from "../../../utils/socket";
 import { useParams } from "react-router-dom";
+import { useToast } from "../../../context/ToastContext";
 
-function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate, setShowToast, formType }) {
+function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate, formType }) {
   const signatureCanvasRef = useRef(null);
   const [userType, setUserType] = useState(null);
+
+  const { showToast } = useToast();
 
   const params = useParams();
   const { issuedBy, sessionId } = params;
@@ -64,15 +67,23 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate,
   //Handle Assign suer
 
   const handleAssign = async () => {
+    let response;
+
     if (formType === "loan-issue") {
-      handleLoanDevice(userDetails, ...deviceDetails, issuedBy, returnDate, setShowToast);
+      response = await handleLoanDevice(userDetails, ...deviceDetails, issuedBy, returnDate, showToast);
     } else if (formType === "student-issue") {
-      handleAssignDeviceToStudent(userDetails, deviceDetails, issuedBy, setShowToast);
+      response = await handleAssignDeviceToStudent(userDetails, deviceDetails, issuedBy, showToast);
     } else {
-      handleAssignDeviceToStaff(userDetails, ...deviceDetails, issuedBy, setShowToast);
+      response = await handleAssignDeviceToStaff(userDetails, ...deviceDetails, issuedBy, showToast);
     }
 
-    return saveSignature();
+    if (response) {
+      console.log(response);
+      console.log("Hellow Test");
+      return saveSignature();
+    }
+
+    return;
   };
 
   useEffect(() => {
@@ -102,8 +113,6 @@ function SiganturePad({ lablel, user_id, userDetails, deviceDetails, returnDate,
             <SubmitButton
               text={"Save"}
               onClick={() => {
-                //handleAssignDeviceToStaff(userDetails, ...deviceDetails, setShowToast);
-
                 handleAssign();
               }}
             />

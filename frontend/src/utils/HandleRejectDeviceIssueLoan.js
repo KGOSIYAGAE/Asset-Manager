@@ -2,18 +2,18 @@ import { rejectDevice, releaseDevice } from "../services/api/devices/Device.Api"
 import { getLoggedInUser } from "./getLoggedInUser";
 
 //Handle release device
-export const handleRejectDeviceIssueLoan = async (deviceUserDetails, rejectReason, params, onSubmit, setShowToast) => {
+export const handleRejectDeviceIssueLoan = async (deviceUserDetails, rejectReason, params, onSubmit, showToast) => {
   if (!deviceUserDetails?.full_name) {
-    return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+    return showToast("Please select user.", "error");
   }
 
   const { id } = params;
   if (!id) {
-    return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
+    return showToast("Device Id not provided", "error");
   }
 
   if (!rejectReason) {
-    return setShowToast({ isShow: true, type: "error", message: "Please provide rejection reason." });
+    return showToast("Please provide rejection reason.", "error");
   }
 
   const loggedInUser = getLoggedInUser();
@@ -25,7 +25,7 @@ export const handleRejectDeviceIssueLoan = async (deviceUserDetails, rejectReaso
     deviceTransactionId: deviceUserDetails?.device_transaction_id,
   };
 
-  await rejectDevice(id, data, setShowToast);
+  await rejectDevice(id, data, showToast);
 
   //Rejection is Sent from the backend 🤐
   return onSubmit();

@@ -29,6 +29,7 @@ import QrCodeCard from "../../components/cards/qrCodeCard/QrCodeCard";
 import { socket } from "../../utils/socket";
 import ComposeEmail from "../../components/cards/composeEmail/ComposeEmail";
 import RejectionDetails from "../../components/cards/rejectionDetails/RejectionDetails";
+import { useToast } from "../../context/ToastContext";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -43,13 +44,14 @@ function DeviceDetails({ path }) {
   const [deviceLogs, setDeviceLogs] = useState();
   const params = useParams();
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
-  const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
   const [dateCreated, setDateCreated] = useState();
   const [warrantyEndDate, setWarrantyEndDate] = useState();
   const [purchaseDate, setPurchaseDate] = useState();
   const [print, setPrint] = useState(false);
 
   const [deviceTransactions, setDeviceTransactions] = useState(null);
+
+  const { showToast } = useToast();
 
   const navigate = useNavigate();
   let rowNumber = 0;
@@ -107,7 +109,7 @@ function DeviceDetails({ path }) {
       return setOpenModal({ isShown: true, type: "Send-Form", data: { user_id: user_id, form_type: form_type, device_id: device_id } });
     }
 
-    return setShowToast({ isShow: true, type: "error", message: "Error opening email component" });
+    return showToast("Error opening email component", "error");
   };
 
   useEffect(() => {
@@ -123,43 +125,22 @@ function DeviceDetails({ path }) {
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data.type === "form_submitted") {
-        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        showToast(event.data.payload, "success");
 
         if (event.data.payload.error) {
-          setShowToast({ isShow: true, type: "error", message: event.data.payload });
+          showToast(event.data.payload, "error");
           setOpenModal({ isShown: true, type: "assign", data: "hello" });
-
           return;
         }
 
         getDeviceDetails();
         setOpenModal({ isShown: false, type: "assign", data: "hello" });
-        setShowToast({ isShow: true, type: "success", message: event.data.payload });
+        showToast(event.data.payload, "success");
       }
     };
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, []);
-
-  useEffect(() => {
-    if (!socket.connected) {
-      console.log("not connected");
-      socket.connect();
-    }
-
-    // Debug check: Verify the laptop is physically hearing events
-    console.log("Laptop listening for signature_saved event...");
-
-    socket.on("signature_saved", (image) => {
-      //setSignature(image.image);
-      getDeviceDetails();
-      socket.disconnect();
-    });
-
-    return () => {
-      socket.off("signature_saved");
-    };
   }, []);
 
   return (
@@ -381,7 +362,7 @@ function DeviceDetails({ path }) {
           )}
         </div>
 
-        <DeviceLogTable deviceDetails={deviceDetails} label={"Devices History"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} setShowToast={setShowToast} />
+        <DeviceLogTable deviceDetails={deviceDetails} label={"Devices History"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} />
       </div>
 
       <Modal
@@ -416,11 +397,11 @@ function DeviceDetails({ path }) {
             }}
             onSubmit={() => {
               getDeviceDetails();
-
               setOpenModal({ isShown: false });
+              showToast("Issue Approval required", "info");
             }}
             deviceId={deviceDetails?.id}
-            setShowToast={setShowToast}
+            showToast={showToast}
           />
         ) : openModal.type === "release" ? (
           <ReleaseUser
@@ -431,7 +412,7 @@ function DeviceDetails({ path }) {
               getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
-            setShowToast={setShowToast}
+            showToast={showToast}
           />
         ) : openModal.type === "Student-Issue" ? (
           <div className=" h-[1100px]  col-span-6" id="print-file">
@@ -459,7 +440,7 @@ function DeviceDetails({ path }) {
                 getDeviceDetails();
                 setOpenModal({ isShown: false });
               }}
-              setShowToast={setShowToast}
+              showToast={showToast}
               deviceUserDetails={deviceDetails}
             />
           </div>
@@ -473,7 +454,7 @@ function DeviceDetails({ path }) {
                 getDeviceDetails();
                 setOpenModal({ isShown: false });
               }}
-              setShowToast={setShowToast}
+              showToast={showToast}
               deviceUserDetails={deviceDetails}
             />
           </div>
@@ -490,7 +471,7 @@ function DeviceDetails({ path }) {
               getDeviceDetails();
               setOpenModal({ isShown: false });
             }}
-            setShowToast={setShowToast}
+            showToast={showToast}
           />
         ) : openModal.type === "view-rejection-details" ? (
           <RejectionDetails transaction={openModal.data} />
@@ -500,14 +481,6 @@ function DeviceDetails({ path }) {
           </div>
         )}
       </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

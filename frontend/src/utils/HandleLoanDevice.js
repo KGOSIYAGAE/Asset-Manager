@@ -5,7 +5,7 @@ import { generateUpgradeDate, getTodayDate } from "./helperMethods";
 import { navigateTo } from "./navigate";
 import { postMessageDeviceLoan } from "./VerificationPostMessage";
 
-export const handleLoanDevice = async (selectedUser, selectedDevice, issuedBy, returnDate, setShowToast) => {
+export const handleLoanDevice = async (selectedUser, selectedDevice, issuedBy, returnDate, showToast) => {
   /*if (!selectedUser?.staff_no || !selectedUser?.student_number) {
     return setShowToast({ isShow: true, type: "error", message: "Please select user." });
   }*/
@@ -32,11 +32,11 @@ export const handleLoanDevice = async (selectedUser, selectedDevice, issuedBy, r
     }
 
     if (!selectedDevice?.id) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select device." });
+      return showToast("Please select device.", "error");
     }
 
     if (!returnDate) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select return date." });
+      return showToast("Please select return date.", "error");
     }
 
     const loggedInUser = getLoggedInUser();
@@ -50,19 +50,19 @@ export const handleLoanDevice = async (selectedUser, selectedDevice, issuedBy, r
       user_type: userType,
     };
 
-    const { error, message } = await createLoanDevice(selectedDevice.id, data, setShowToast);
+    const { error, message } = await createLoanDevice(selectedDevice.id, data);
 
     if (error) {
+      console.log(message);
       return postMessage(message);
-    }
-
-    await handleSendApprovalEmail(selectedUser, selectedDevice, issuedBy, setShowToast, "Loan", returnDate);
-
-    if (issuedBy) {
-      return navigateTo("/Success");
     } else {
+      const response = await handleSendApprovalEmail(selectedUser, selectedDevice, issuedBy, showToast, "Loan", returnDate);
+      navigateTo("/Success");
+
+      return true;
+    } /*else {
       return postMessageDeviceLoan(message);
-    }
+    }*/
   } catch (error) {
     return console.log(error);
   }

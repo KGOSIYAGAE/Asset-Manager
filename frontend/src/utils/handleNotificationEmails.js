@@ -3,7 +3,7 @@ import { getLoggedInUser } from "./getLoggedInUser";
 import { getCurrentDate } from "./helperMethods";
 
 //Handle Approve loan and issue notification
-export const handleSendApprovalEmail = async (userDetails, deviceDetails, issuedBy, setShowToast, issuanceType, returnDate) => {
+export const handleSendApprovalEmail = async (userDetails, deviceDetails, issuedBy, issuanceType, returnDate) => {
   const loggedInUser = getLoggedInUser();
 
   const emailData = {
@@ -17,9 +17,7 @@ export const handleSendApprovalEmail = async (userDetails, deviceDetails, issued
     expected_return_date: returnDate,
   };
 
-  console.log(emailData);
+  const response = await sendApprovalEmail(emailData);
 
-  await sendApprovalEmail(emailData, setShowToast);
-
-  return;
+  return response;
 };

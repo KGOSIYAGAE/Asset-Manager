@@ -11,35 +11,10 @@ import { generateUpgradeDate, getTodayDate } from "../../../utils/helperMethods"
 import { assignDevice, releaseDevice } from "../../../services/api/devices/Device.Api";
 import { handleReleaseDevice } from "../../../utils/HandleReleaseDevice";
 
-function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
+function ReleaseUser({ onCanel, onSubmit, showToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
 
   const params = useParams();
-
-  //Handle release device
-  /*const handleReleaseDevice = (selectedUser, params, onSubmit, setShowToast) => {
-    if (!selectedUser.fullName) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
-    }
-
-    const { id } = params;
-    if (!id) {
-      return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
-    }
-
-    //Release user
-    const data = {
-      fullName: selectedUser.fullName,
-      status: "Available",
-      userId: selectedUser.userId,
-      return_date: null,
-      upgradeDate: null,
-      date_issued: null,
-    };
-
-    releaseDevice(id, data, setShowToast);
-    return onSubmit();
-  };*/
 
   useEffect(() => {
     setSelectedUser({
@@ -65,7 +40,7 @@ function ReleaseUser({ onCanel, onSubmit, setShowToast }) {
           <button className="flex  rounded-sm p-3" onClick={onCanel}>
             Cancel
           </button>
-          <SubmitButton text={"Release"} onClick={() => handleReleaseDevice(selectedUser, params, onSubmit, setShowToast)} />
+          <SubmitButton text={"Release"} onClick={() => handleReleaseDevice(selectedUser, params, onSubmit, showToast)} />
         </div>
       </div>
     </div>

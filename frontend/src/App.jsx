@@ -48,6 +48,7 @@ import Positions from "./pages/organization/Positions";
 import Settings from "./pages/settings/Settings";
 import AcademicFaculties from "./pages/academic/AcademicFaculties";
 import Courses from "./pages/academic/Courses";
+import { ToastBoxProvider } from "./context/ToastBoxContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -255,7 +256,11 @@ function App() {
         },
         {
           path: "/devices/loaned-device",
-          element: <DevicesOnLoan path={"loaned-devices"} />,
+          element: (
+            <ToastBoxProvider>
+              <DevicesOnLoan path={"loaned-devices"} />
+            </ToastBoxProvider>
+          ),
         },
         {
           path: "/devices/device-due-upgrade",

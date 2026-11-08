@@ -1,5 +1,5 @@
 //Handle Open  form
-export const handleOpenForm = (transaction, setOpenModal, setShowToast) => {
+export const handleOpenForm = (transaction, setOpenModal, showToast) => {
   //let user_Id = deviceDetails?.current_user_id.toString();
   let userType;
   let formType;
@@ -42,7 +42,7 @@ export const handleOpenForm = (transaction, setOpenModal, setShowToast) => {
       formType = "Return-form";
       formData = transaction;
     } else {
-      return setShowToast({ isShow: true, type: null, message: "The device needs to be approved first." });
+      return showToast("The device needs to be approved first.", "info");
     }
 
     return setOpenModal({ isShown: true, type: formType, data: formData });

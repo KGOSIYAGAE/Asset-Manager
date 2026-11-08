@@ -2,14 +2,14 @@ import { releaseDevice } from "../services/api/devices/Device.Api";
 import { getLoggedInUser } from "./getLoggedInUser";
 
 //Handle release device
-export const handleReleaseDevice = async (selectedUser, params, onSubmit, setShowToast) => {
+export const handleReleaseDevice = async (selectedUser, params, onSubmit, showToast) => {
   if (!selectedUser.fullName) {
-    return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+    return showToast("Please select user.", "error");
   }
 
   const { id } = params;
   if (!id) {
-    return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
+    return showToast("Device Id not provided", "error");
   }
 
   const loggedInUser = getLoggedInUser();
@@ -19,6 +19,6 @@ export const handleReleaseDevice = async (selectedUser, params, onSubmit, setSho
     status: "Returned",
   };
 
-  await releaseDevice(id, data, setShowToast);
+  await releaseDevice(id, data, showToast);
   return onSubmit();
 };

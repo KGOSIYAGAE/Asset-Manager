@@ -240,7 +240,7 @@ export const approveDevice = async (id, data, showToast) => {
     const response = await axiosInstance.put("/devices/approve-device/" + id, data, { showSpinner: true });
 
     if (!response.data.error) {
-      return { isShow: true, type: "success", message: response.data.message };
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.error) {

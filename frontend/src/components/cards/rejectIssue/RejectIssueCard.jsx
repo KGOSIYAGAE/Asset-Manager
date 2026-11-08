@@ -4,7 +4,7 @@ import SubmitButton from "../../buttons/SubmitButton";
 import TextArea from "../../inputs/textArea/TextArea";
 import { handleRejectDeviceIssueLoan } from "../../../utils/HandleRejectDeviceIssueLoan";
 
-function RejectIssueCard({ deviceUserDetails, onCanel, setShowToast, onSubmit }) {
+function RejectIssueCard({ deviceUserDetails, onCanel, showToast, onSubmit }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null });
 
   const params = useParams();
@@ -36,7 +36,7 @@ function RejectIssueCard({ deviceUserDetails, onCanel, setShowToast, onSubmit })
           <SubmitButton
             text={"Reject"}
             onClick={() => {
-              handleRejectDeviceIssueLoan(deviceUserDetails, rejectReason, params, onSubmit, setShowToast);
+              handleRejectDeviceIssueLoan(deviceUserDetails, rejectReason, params, onSubmit, showToast);
             }}
           />
         </div>

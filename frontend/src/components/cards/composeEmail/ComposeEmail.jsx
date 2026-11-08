@@ -6,8 +6,9 @@ import SubmitButton from "../../buttons/SubmitButton";
 import { getStudentDetails } from "../../../services/api/students/Students.Api";
 import { getStaffDetails } from "../../../services/api/staff/Staff.Api";
 import { sendFormWithEmail } from "../../../services/api/notification/notification.Api";
+import { useToast } from "../../../context/ToastContext";
 
-function ComposeEmail({ onCanel, onSubmit, user_id, form_type, device_id, setShowToast }) {
+function ComposeEmail({ onCanel, onSubmit, user_id, form_type, device_id, showToast }) {
   const [emailReciever, setEmailReciver] = useState([]);
   const [emailInput, setEmailInput] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
@@ -113,7 +114,7 @@ function ComposeEmail({ onCanel, onSubmit, user_id, form_type, device_id, setSho
 
               console.log(emailData);
 
-              sendFormWithEmail(emailData, setShowToast);
+              sendFormWithEmail(emailData, showToast);
               onSubmit();
             }}
           />

@@ -8,8 +8,6 @@ function StaffIssueVirificationCard({ deviceId, staff_no }) {
   const [staffData, setStaffData] = useState();
   const [deviceDetails, setDeviceDetails] = useState([]);
 
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
-
   //Get Staff data
   const getStaffData = () => {
     if (staff_no) {
@@ -81,7 +79,7 @@ function StaffIssueVirificationCard({ deviceId, staff_no }) {
         <div className=" flex flex-col gap-2 ">
           3. Acknowledgement and Sign-off By signing below, I certify that I have read, understood, and accept all the terms and conditions outlined above.
           <span className="font-bold">Collection Date: {getTodayDate()}</span>
-          <SiganturePad lablel={"Staff Signature"} user_id={staff_no} userDetails={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast} formType={"staff-issue"} />
+          <SiganturePad lablel={"Staff Signature"} user_id={staff_no} userDetails={staffData} deviceDetails={deviceDetails} formType={"staff-issue"} />
         </div>
       </div>
     </div>

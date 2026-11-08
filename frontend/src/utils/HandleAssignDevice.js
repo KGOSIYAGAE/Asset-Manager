@@ -1,3 +1,4 @@
+import { useToast } from "../context/ToastContext";
 import { approveDevice, assignDevice } from "../services/api/devices/Device.Api";
 import { getLoggedInUser } from "./getLoggedInUser";
 import { handleSendApprovalEmail } from "./handleNotificationEmails";
@@ -5,10 +6,10 @@ import { generateUpgradeDate, getTodayDate } from "./helperMethods";
 import { navigateTo } from "./navigate";
 import { postMessage } from "./VerificationPostMessage";
 
-export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issuedBy, setShowToast) => {
+export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issuedBy, showToast) => {
   try {
     if (!staffData?.name) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+      return showToast("Please select user.", "error");
     }
 
     let userEndDate;
@@ -27,19 +28,16 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issued
       user_type: "Staff",
     };
 
-    const { error, message } = await assignDevice(deviceDetails?.id, data, setShowToast);
+    const { error, message } = await assignDevice(deviceDetails?.id, data);
 
     if (error) {
+      console.log(message);
       return postMessage(message);
-    }
-
-    //handleSendApprovalEmail(staffData, deviceDetails, issuedBy, setShowToast, "Issue");
-    await handleSendApprovalEmail(staffData, deviceDetails, issuedBy, setShowToast, "Issue");
-
-    if (issuedBy) {
-      return navigateTo("/Success");
     } else {
-      return postMessage(message);
+      //handleSendApprovalEmail(staffData, deviceDetails, issuedBy, setShowToast, "Issue");
+      const response = await handleSendApprovalEmail(staffData, deviceDetails, issuedBy, showToast, "Issue");
+      navigateTo("/Success");
+      return true;
     }
   } catch (error) {
     return console.log(error);
@@ -48,10 +46,10 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issued
 //////////////////////////////////////////////////////
 
 //Handle assign device to staff
-export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails, issuedBy, setShowToast) => {
+export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails, issuedBy, showToast) => {
   try {
     if (!studentDetails?.name) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
+      return showToast("Please select user.", "error");
     }
 
     const loggedInUser = getLoggedInUser();
@@ -63,18 +61,17 @@ export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails,
       user_type: "Student",
     };
 
-    const { error, message } = await assignDevice(deviceDetails?.id, data, setShowToast);
+    const { error, message } = await assignDevice(deviceDetails?.id, data);
+
+    //handleSendApprovalEmail(studentDetails, deviceDetails, issuedBy, showToast, "Issue");
 
     if (error) {
+      console.log(message);
       return postMessage(message);
-    }
-
-    handleSendApprovalEmail(studentDetails, deviceDetails, issuedBy, setShowToast, "Issue");
-
-    if (issuedBy) {
-      return navigateTo("/Success");
     } else {
-      return postMessage(message);
+      const response = await handleSendApprovalEmail(studentDetails, deviceDetails, issuedBy, showToast, "Issue");
+      navigateTo("/Success");
+      return true;
     }
   } catch (error) {
     return console.log(error);
@@ -83,7 +80,7 @@ export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails,
 //////////////////////////////////////////////////////
 
 //Handle assign device to user
-export const handleIssueApproveDevice = async (deviceUserDetails, onSubmit, setShowToast) => {
+export const handleIssueApproveDevice = async (deviceUserDetails, onSubmit, showToast) => {
   const loggedInUser = getLoggedInUser();
 
   const data = {
@@ -92,14 +89,14 @@ export const handleIssueApproveDevice = async (deviceUserDetails, onSubmit, setS
     deviceTransactionId: deviceUserDetails?.device_transaction_id,
   };
 
-  await approveDevice(deviceUserDetails?.id, data, setShowToast);
+  await approveDevice(deviceUserDetails?.id, data, showToast);
 
   return onSubmit();
 };
 //////////////////////////////////////////////////////
 
 //Handle loan device
-export const handleLoanApproveDevice = async (deviceUserDetails, onSubmit, setShowToast) => {
+export const handleLoanApproveDevice = async (deviceUserDetails, onSubmit, showToast) => {
   const loggedInUser = getLoggedInUser();
 
   const data = {
@@ -108,7 +105,7 @@ export const handleLoanApproveDevice = async (deviceUserDetails, onSubmit, setSh
     deviceTransactionId: deviceUserDetails?.device_transaction_id,
   };
 
-  await approveDevice(deviceUserDetails?.id, data, setShowToast);
+  await approveDevice(deviceUserDetails?.id, data, showToast);
 
   return onSubmit();
 };

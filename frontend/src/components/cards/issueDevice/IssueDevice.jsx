@@ -20,8 +20,9 @@ import SendToTablet from "../../buttons/SendToTablet/SendToTablet";
 import QrCodeCard from "../qrCodeCard/QrCodeCard";
 import CancelButton from "../../buttons/CancelButton";
 import { socket } from "../../../utils/socket";
+import DeviceSelectInput from "../../inputs/selectInputs/deviceSelectInput/DeviceSelectInput";
 
-function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
+function IssueDevice({ onCanel, onSubmit, deviceId, showToast }) {
   const [selectedUser, setSelectedUser] = useState({ id: null, fullName: null, userId: null, userType: null, location: null }); //Get user type based on userID
   const [userType, setUserType] = useState(null);
 
@@ -67,6 +68,9 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
       //setSignature(image.image);
       setIsSigned(true);
       onSubmit();
+
+      console.log("Signature saved");
+
       socket.disconnect();
     });
 
@@ -87,38 +91,32 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 -z-50">
-          <span className="font-semibold p-2">Assign User</span>
-          <UserSelectInput studentData={allStudents} staffData={allStaff} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+        <div>
+          <div className="flex flex-col gap-2 -z-50">
+            <span className="font-semibold p-2">Assign User</span>
+            <UserSelectInput studentData={allStudents} staffData={allStaff} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
 
-          {/**/}
+            {/**/}
 
-          <div className="flex justify-end p-3 gap-8">
-            <CancelButton onClick={onCanel} />
+            <div className="flex justify-end p-3 gap-8">
+              <CancelButton onClick={onCanel} />
 
-            {selectedUser?.fullName ? (
-              <div className="flex gap-5">
-                <SendToTablet
-                  btnLable={"Send to Tablet (Wireless)"}
-                  userId={selectedUser?.userId}
-                  deviceId={deviceId}
-                  formType={"issue-verification"}
-                  setShowQrCode={setShowQrCode}
-                  setQrCodeURL={setQrCodeURL}
-                  onSubmit={onSubmit}
-                />
-                <OpenSecondScreenButton
-                  btnLable={"Send to USB Tablet"}
-                  userId={selectedUser?.userId}
-                  deviceId={deviceId}
-                  formType={"issue-verification"}
-                  setShowToast={setShowToast}
-                  onSubmit={onSubmit}
-                />
-              </div>
-            ) : (
-              ""
-            )}
+              {selectedUser?.fullName ? (
+                <div className="flex gap-5">
+                  <SendToTablet
+                    btnLable={"Send to Tablet (Wireless)"}
+                    userId={selectedUser?.userId}
+                    deviceId={deviceId}
+                    formType={"issue-verification"}
+                    setShowQrCode={setShowQrCode}
+                    setQrCodeURL={setQrCodeURL}
+                  />
+                  <OpenSecondScreenButton btnLable={"Send to USB Tablet"} userId={selectedUser?.userId} deviceId={deviceId} formType={"issue-verification"} showToast={showToast} onSubmit={onSubmit} />
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -127,33 +125,3 @@ function IssueDevice({ onCanel, onSubmit, deviceId, setShowToast }) {
 }
 
 export default IssueDevice;
-
-/*Handle assign device
-  const handleAssignDevice = () => {
-    if (!selectedUser.fullName) {
-      return setShowToast({ isShow: true, type: "error", message: "Please select user." });
-    }
-
-    const { id } = params;
-    if (!id) {
-      return setShowToast({ isShown: true, type: "error", message: "Device Id not provided" });
-    }
-
-    const data = {
-      fullName: selectedUser.fullName,
-      status: "Assigned",
-      date_issued: getTodayDate(),
-      userId: selectedUser.userId,
-      upgradeDate: (() => {
-        if (selectedUser.userId.toString().length <= 5) {
-          return generateUpgradeDate(getTodayDate());
-        }
-        return null;
-      })(),
-    };
-
-    //console.log(data);
-    assignDevice(id, data, setShowToast);
-
-    return onSubmit();
-  };*/

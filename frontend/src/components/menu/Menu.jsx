@@ -325,9 +325,9 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
                   {isMinimized ? <span className="lg:hidden">User Management</span> : <span className="">User Management</span>}
                 </div>
                 {isMinimized ? (
-                  <div className=" flex lg:hidden">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                  <div className=" flex lg:hidden">{showUserManagementOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
                 ) : (
-                  <div className=" flex ">{showDeviceOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+                  <div className=" flex ">{showUserManagementOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
                 )}
               </div>
               {/**/}

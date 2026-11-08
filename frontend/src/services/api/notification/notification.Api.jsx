@@ -1,35 +1,35 @@
 import axiosInstance from "../../../utils/axiosInstance";
 
 //send Approval Email notification
-export const sendApprovalEmail = async (emailData, setShowToast) => {
+export const sendApprovalEmail = async (emailData) => {
   try {
     const response = await axiosInstance.post("/notification/approval-email", emailData, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShown: true, type: "success", message: response.data.message });
+      return response.data;
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return error.response.data.message;
     } else {
       console.log(error.response);
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      return "An unexpected error occured, please try again", "error";
     }
   }
 };
 
 //send Form via Email
-export const sendFormWithEmail = async (emailData, setShowToast) => {
+export const sendFormWithEmail = async (emailData, showToast) => {
   try {
     const response = await axiosInstance.post("/notification/form-email", emailData, { showSpinner: true });
     if (response.data) {
-      return setShowToast({ isShow: true, type: "success", message: response.data.message });
+      return showToast(response.data.message, "success");
     }
   } catch (error) {
     if (error.response.data && error.response.data.message) {
-      return setShowToast({ isShown: true, type: "error", message: error.response.data.message });
+      return showToast(error.response.data.message, "error");
     } else {
       console.log(error.response);
-      return setShowToast({ isShown: true, type: "error", message: "An unexpected error occured, please try again" });
+      return showToast("An unexpected error occured, please try again", "error");
     }
   }
 };

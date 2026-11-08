@@ -76,6 +76,9 @@ function CreateNewLoan({ onCanel, onSubmit }) {
       //setSignature(image.image);
       setIsSigned(true);
       onSubmit();
+
+      console.log("Signature saved");
+
       socket.disconnect();
     });
 
@@ -83,13 +86,6 @@ function CreateNewLoan({ onCanel, onSubmit }) {
       socket.off("signature_saved");
     };
   }, []);
-
-  /* useEffect(() => {
-    if (selectedDevice.device_status !== "Available") {
-      setShowToast({ isShow: true, type: "error", message: "Device status issue" });
-      setSelectedDevice({ id: null, make: null, model: null, serial_no: null, asset_tag: null, device_category: null, device_status: null });
-    }
-  }, [selectedDevice?.device_status]);*/
 
   useEffect(() => {}, [allDevices]);
 

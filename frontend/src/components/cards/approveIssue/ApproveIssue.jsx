@@ -2,7 +2,7 @@ import { handleIssueApproveDevice, handleLoanApproveDevice } from "../../../util
 import { handleSendApprovalEmail } from "../../../utils/handleNotificationEmails";
 import SubmitButton from "../../buttons/SubmitButton";
 
-function ApproveIssue({ onCanel, deviceUserDetails, setShowToast, onSubmit }) {
+function ApproveIssue({ onCanel, deviceUserDetails, showToast, onSubmit }) {
   return (
     <div className="bg-white p-2 rounded-md">
       <div className="flex flex-col gap-2 -z-50">
@@ -23,13 +23,13 @@ function ApproveIssue({ onCanel, deviceUserDetails, setShowToast, onSubmit }) {
             text={"Approve"}
             onClick={() => {
               if (deviceUserDetails.status === "Issue Approval required") {
-                handleIssueApproveDevice(deviceUserDetails, onSubmit, setShowToast);
+                handleIssueApproveDevice(deviceUserDetails, onSubmit, showToast);
 
                 return onCanel();
               }
 
               if (deviceUserDetails.status === "Loan Approval required") {
-                handleLoanApproveDevice(deviceUserDetails, onSubmit, setShowToast);
+                handleLoanApproveDevice(deviceUserDetails, onSubmit, showToast);
 
                 return onCanel();
               }

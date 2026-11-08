@@ -730,8 +730,6 @@ const assignDevice = async (req, res) => {
     const { id } = req.params;
     const { issued_by, status, userId, userEndDate, user_type } = req.body;
 
-    console.log(issued_by);
-
     //const previousStatus = await checkDeviceStatus(id);
 
     if (!id) {
@@ -755,10 +753,10 @@ const assignDevice = async (req, res) => {
     //Verify if device is not assigned
     const device = rows[0];
 
-    if (device.status !== "Available") {
+    /*if (device.status !== "Available") {
       console.log(`Device cannot be issued. Current status is: ${device.status}`);
       return res.status(400).json({ message: `Device cannot be issued. Current status is: ${device.status}`, error: true });
-    }
+    }*/
 
     //Create entry on the device transations table
     const createDeviceTransaction =
