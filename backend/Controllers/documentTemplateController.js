@@ -34,8 +34,8 @@ const createDocumentTemplate = async (req, res) => {
   }
 };
 
-//get
-const getDocumentTemplate = async (req, res) => {
+//get all documents
+const getDocumentTemplates = async (req, res) => {
   try {
     const get_Query = `SELECT * FROM document_templates WHERE is_deleted = 'False'`;
 
@@ -49,6 +49,52 @@ const getDocumentTemplate = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//get a document
+const getDocumentTemplate = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({ message: "name not provided", error: true });
+    }
+
+    const get_Query = `SELECT * FROM document_templates WHERE name ILIKE '%' || $1 || '%'`;
+
+    const { rows } = await query(get_Query, [name]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching  Document template", error: true });
+    }
+
+    return res.status(200).json({ documents: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//get a document
+const getDocumentTemplateHelper = async (name) => {
+  try {
+    if (!name) {
+      return console.log({ message: "name not provided", error: true });
+    }
+
+    const get_Query = `SELECT * FROM document_templates WHERE name ILIKE '%' || $1 || '%'`;
+
+    const { rows } = await query(get_Query, [name]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching  Document template", error: true });
+    }
+
+    return { documents: rows, message: "Success", error: false };
+  } catch (error) {
+    console.log(error);
+    return console.log({ message: `Internal server error: ${error}`, error: true });
   }
 };
 
@@ -113,4 +159,4 @@ const deleteDocumentTemplate = async (req, res) => {
   }
 };
 
-module.exports = { createDocumentTemplate, getDocumentTemplate, updateDocumentTemplate, deleteDocumentTemplate };
+module.exports = { getDocumentTemplates, getDocumentTemplateHelper, createDocumentTemplate, getDocumentTemplate, updateDocumentTemplate, deleteDocumentTemplate };

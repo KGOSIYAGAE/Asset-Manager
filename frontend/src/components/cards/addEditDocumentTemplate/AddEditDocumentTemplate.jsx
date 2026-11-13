@@ -5,7 +5,7 @@ import TextInput from "../../inputs/textInput/TextInput";
 import TextArea from "../../inputs/textArea/TextArea";
 import { MdPreview } from "react-icons/md";
 import DcoumentPreview from "../documentTemplatePreview/DcoumentPreview";
-import { createDocumentTemplate, updateDocumentTemplate } from "../../../services/api/documentTemplates/documentTemplates";
+import { createDocumentTemplate, updateDocumentTemplate } from "../../../services/api/documentTemplates/documentTemplates.Api";
 import { useToast } from "../../../context/ToastContext";
 
 function AddEditDocumentTemplate({ onCancel, onSubmit, selectedDocument }) {

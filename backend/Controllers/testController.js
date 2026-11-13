@@ -15,7 +15,7 @@ const createSession = (req, res) => {
     const sessionId = Math.random().toString(36).substring(2, 9);
 
     //Token method
-    const tempToken = jwt.sign({ email }, process.env.SECRET, { expiresIn: "10m" });
+    const tempToken = jwt.sign({ email }, process.env.SECRET, { expiresIn: "20m" });
 
     return res.status(200).json({ sessionId, tempToken, signUrl: `http://192.168.8.4:5173/sign/${sessionId}`, message: "success", error: false });
   } catch (error) {

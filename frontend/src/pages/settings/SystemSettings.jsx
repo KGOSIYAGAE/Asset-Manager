@@ -7,13 +7,15 @@ import Modal from "react-modal";
 import ToastMessage from "../../components/toastMessage/ToastMessage";
 import { getEmailAzureGraphSettings } from "../../services/api/email/emailSettings";
 import AddEditEmailSettings from "../../components/cards/emailSettings.jsx/AddEditEmailSettings";
-import { getDocumentTemplates } from "../../services/api/documentTemplates/documentTemplates";
+import { getDocumentTemplates } from "../../services/api/documentTemplates/documentTemplates.Api";
 import { BsMicrosoft } from "react-icons/bs";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import AddEditDocumentTemplate from "../../components/cards/addEditDocumentTemplate/AddEditDocumentTemplate";
 import AddEditEmailTemplate from "../../components/cards/addEditEmailTemplate/AddEditEmailTemplate";
 import { getEmailTemplates } from "../../services/api/emailTemplates/emailTemplates";
 import { useToast } from "../../context/ToastContext";
+import AddEditDisclaimerTemplate from "../../components/cards/addEditDisclaimerTemplate/AddEditDisclaimerTemplate";
+import { getDisclaimerTemplates } from "../../services/api/desclaimerTemplates/desclaimerTemplates.Api";
 
 function SystemSettings() {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
@@ -28,6 +30,7 @@ function SystemSettings() {
   const dummyDisclaimerTemplates = ["Staff Issue Disclaimer", "Student AOD Disclaimer", "Device Repair Disclaimer"];
 
   const [documentsTemplate, setDocumentTemplates] = useState();
+  const [disclaimerTemplate, setDisclaimerTemplates] = useState();
   const [emailTemplate, setEmailTemplates] = useState();
   const [msGraphSettings, setMsGraphSettings] = useState("");
 
@@ -44,6 +47,8 @@ function SystemSettings() {
     } else if (selectedItem === "Form Templates") {
       getDocumentTemplates(setDocumentTemplates);
     } else if (selectedItem === "Disclaimer Templates") {
+      getDisclaimerTemplates(setDisclaimerTemplates);
+
       //getEmailAzureGraphSettings(setMsGraphSettings);
     }
   }, [selectedItem]);
@@ -174,15 +179,25 @@ function SystemSettings() {
         <div className="flex flex-col col-span-12 lg:col-span-8 bg-white rounded-md shadow-md p-2 text-sm text-slate-500 gap-3">
           <div className="flex  justify-between border-b border-gray-200  p-1 ">
             <span className="heading-text ">{selectedItem}</span>
-            <AddButton name={"Add Template"} />
+            <AddButton
+              name={"Add Template"}
+              handleAdd={() => {
+                setOpenModal({ isShown: true, type: "disclaimer-template", data: null });
+              }}
+            />
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {dummyDisclaimerTemplates &&
-              dummyDisclaimerTemplates.map((template, index) => (
+            {disclaimerTemplate &&
+              disclaimerTemplate.map((template, index) => (
                 <div key={index} className="flex items-center justify-between border border-gray-200 rounded-md p-3 gap-3">
-                  <span className="font-bold text-black">{template}</span>
+                  <span className="font-bold text-black">{template.name}</span>
                   <div className="flex gap-2">
-                    <div className="hover:bg-red-600 hover:text-white p-1 rounded-md">
+                    <div
+                      className="hover:bg-red-600 hover:text-white p-1 rounded-md"
+                      onClick={() => {
+                        setOpenModal({ isShown: true, type: "disclaimer-template", data: template });
+                      }}
+                    >
                       <MdEditDocument size={15} />
                     </div>
                     <div className="hover:bg-red-600 hover:text-white p-1 rounded-md">
@@ -191,9 +206,6 @@ function SystemSettings() {
                   </div>
                 </div>
               ))}
-          </div>
-          <div className="flex justify-end border-t border-gray-200  pt-3 gap-3">
-            <CancelButton onClick={() => {}} /> <SubmitButton text={"Save"} onClick={() => {}} />
           </div>
         </div>
       ) : (
@@ -248,6 +260,18 @@ function SystemSettings() {
             onSubmit={() => {
               setOpenModal({ isShown: false });
               getEmailTemplates(setEmailTemplates);
+            }}
+            selectedDocument={openModal?.data}
+          />
+        ) : openModal.type === "disclaimer-template" ? (
+          <AddEditDisclaimerTemplate
+            onCancel={() => {
+              setOpenModal({ isShown: false });
+              getDisclaimerTemplates(setDisclaimerTemplates);
+            }}
+            onSubmit={() => {
+              setOpenModal({ isShown: false });
+              getDisclaimerTemplates(setDisclaimerTemplates);
             }}
             selectedDocument={openModal?.data}
           />

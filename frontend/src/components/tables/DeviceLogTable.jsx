@@ -68,30 +68,12 @@ function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal
                       </div>
                     </td>
                     <td>{transaction.user_full_name}</td>
-                    <td>
-                      {(() => {
-                        return handleTimeStampToText(transaction.issue_date);
-                      })()}
-                    </td>
+                    <td>{transaction.issue_date}</td>
 
-                    <td>
-                      {(() => {
-                        return handleTimeStampToText(transaction.approve_date);
-                      })()}
-                    </td>
-                    <td>
-                      {transaction.expected_return_date
-                        ? (() => {
-                            return handleTimeStampToText(transaction.expected_return_date);
-                          })()
-                        : "N/A"}
-                    </td>
+                    <td>{transaction.approve_date}</td>
+                    <td>{transaction.expected_return_date ? transaction.expected_return_date : "N/A"}</td>
 
-                    <td>
-                      {(() => {
-                        return handleTimeStampToText(transaction.return_date);
-                      })()}
-                    </td>
+                    <td>{transaction.return_date}</td>
 
                     {hasPermission("print") && (
                       <td>

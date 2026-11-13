@@ -15,6 +15,21 @@ export const getDocumentTemplates = async (setDocumentTemplates) => {
   }
 };
 
+export const getDocumentTemplate = async (data, setDocumentTemplates) => {
+  try {
+    const response = await axiosInstance.get("/document-templates/document/", { params: data, showSpinner: true });
+
+    if (response.data && response.data.documents) {
+      return setDocumentTemplates(response.data.documents);
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      console.log(error.response.data.message);
+    }
+    console.log("An unexpected error occured, please try again.");
+  }
+};
+
 //add new Document Template
 export const createDocumentTemplate = async (data, showToast) => {
   try {

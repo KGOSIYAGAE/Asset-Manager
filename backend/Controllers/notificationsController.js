@@ -7,13 +7,14 @@ const { sendEmail } = require("../util/azureGraphConnection");
 const puppeteer = require("puppeteer");
 const { getIssuerAndreturnerAndApproverSignatures, getIssuerAndreturnerAndApproverSignaturesHelper } = require("./signatureController");
 const { handleTimeStampToText } = require("../util/HelperMethods");
+const { getDocumentTemplateHelper } = require("./documentTemplateController");
 
 //Send Email for approval request
 const sendApprovalEmail = async (req, res) => {
   try {
-    // const {to, device_reciever, device_reciever_userId, device_issuer, device_issuer_userId, request_date, model_name, device_serial_no } = req.body;
+    // const {to, device_reciever, device_reciever_userId, device_issuer, device_issuer_userId, request_date, model_name, serial_no } = req.body;
 
-    const { deviceId, device_issuer_userId, device_reciever_userId, request_date, model_name, device_serial_no, issuanceType, expected_return_date } = req.body;
+    const { deviceId, device_issuer_userId, device_reciever_userId, request_date, model_name, serial_no, issuanceType, expected_return_date } = req.body;
 
     //get Approver list
     const getApproverQuery = "SELECT * FROM staff WHERE userrole = 'support_admin'";
@@ -66,7 +67,7 @@ const sendApprovalEmail = async (req, res) => {
         .replace(/{{request_date}}/g, request_date)
         .replace(/{{expected_return_date}}/g, expected_return_date)
         .replace(/{{model_name}}/g, model_name)
-        .replace(/{{device_serial_no}}/g, device_serial_no)
+        .replace(/{{serial_no}}/g, serial_no)
         .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${deviceId}`);
     } else {
       templatePath = path.join(__dirname, "..", "util", "emailTemplates", "IssueApprovalEmailTemplate.html");
@@ -82,7 +83,7 @@ const sendApprovalEmail = async (req, res) => {
         .replace(/{{issuer_staff_no}}/g, issuerDetails.rows[0].staff_no)
         .replace(/{{request_date}}/g, request_date)
         .replace(/{{model_name}}/g, model_name)
-        .replace(/{{device_serial_no}}/g, device_serial_no)
+        .replace(/{{serial_no}}/g, serial_no)
         .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${deviceId}`);
     }
 
@@ -178,7 +179,7 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
         .replace(/{{expected_return_date}}/g, new Date(transactionDetails.rows[0].expected_return_date).toLocaleDateString())
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
-        .replace(/{{device_serial_no}}/g, device.serial_no)
+        .replace(/{{serial_no}}/g, device.serial_no)
         .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${device.id}`);
 
       subject = `Loan Approved: Device Loan for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
@@ -194,7 +195,7 @@ const sendApprovedEmail = async (approved_by, deviceTransactionId, device, res) 
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
-        .replace(/{{device_serial_no}}/g, device.serial_no)
+        .replace(/{{serial_no}}/g, device.serial_no)
         .replace(/{{url_link}}/g, `http://10.10.4.186/devices/device-details/${device.id}`);
 
       subject = `Issue Approved: Device Issue for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
@@ -292,7 +293,7 @@ const sendRejectionEmail = async (rejected_by, deviceTransactionId, device, reje
         .replace(/{{expected_return_date}}/g, new Date(transactionDetails.rows[0].expected_return_date).toLocaleDateString())
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
-        .replace(/{{device_serial_no}}/g, device.serial_no)
+        .replace(/{{serial_no}}/g, device.serial_no)
         .replace(/{{rejection_reason}}/g, rejectReason);
 
       subject = `Loan Rejected: Device Loan for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
@@ -308,7 +309,7 @@ const sendRejectionEmail = async (rejected_by, deviceTransactionId, device, reje
         .replace(/{{issuer_name}}/g, `${issuerDetails.rows[0].name} ${issuerDetails.rows[0].surname}`)
         .replace(/{{approver_name}}/g, `${approverDetails.rows[0].name} ${approverDetails.rows[0].surname}`)
         .replace(/{{model_name}}/g, `${device.make} ${device.model}`)
-        .replace(/{{device_serial_no}}/g, device.serial_no)
+        .replace(/{{serial_no}}/g, device.serial_no)
         .replace(/{{rejection_reason}}/g, rejectReason);
 
       subject = `Issue Rejected: Device Issue for ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
@@ -389,6 +390,10 @@ const sendFormViaEmail = async (req, res) => {
     return res.status(400).json({ message: `All Details must be provided`, error: true });
   }
 
+  const f = await getDocumentTemplateHelper(formType);
+
+  let documentTemplate = f.documents[0].template_content;
+
   try {
     //Get Device Details
     const getDeviceDetailsQuery = `SELECT * FROM "deviceUserDetails" WHERE id = $1;`;
@@ -411,10 +416,10 @@ const sendFormViaEmail = async (req, res) => {
 
     //Get Issuer & Approver
     let signatureResponses;
-    if (deviceDetails.rows[0].status !== "Assigned" || deviceDetails.rows[0].status !== "Loaned") {
+    if (deviceDetails.rows[0].status === "Assigned" || deviceDetails.rows[0].status === "Loaned") {
       signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, deviceDetails.rows[0].status);
     } else {
-      signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, deviceDetails.rows[0].status);
+      signatureResponses = await getIssuerAndreturnerAndApproverSignaturesHelper(deviceDetails.rows[0].serial_no, "Returned");
     }
 
     /*return res.status(200).json({
@@ -436,8 +441,8 @@ const sendFormViaEmail = async (req, res) => {
         .replace(/{{form_type}}/g, "issued to you")
         .replace(/{{title}}/g, `Asset Issue Form`);
 
-      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Student_AOD_PDF_Template.html");
-      pdfContent = fs.readFileSync(templatePdf, "utf8");
+      /* templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Student_AOD_PDF_Template.html");
+      pdfContent = fs.readFileSync(templatePdf, "utf8");*/
 
       const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
       const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
@@ -452,26 +457,32 @@ const sendFormViaEmail = async (req, res) => {
 
       const replacements = {
         spu_logo: spuLogo || "",
-        student_name: userDetails.rows[0].name || "",
-        student_surname: userDetails.rows[0].surname || "",
+        name: userDetails.rows[0].name || "",
+        surname: userDetails.rows[0].surname || "",
         course_code: userDetails.rows[0].course_code || "",
         course_name: userDetails.rows[0].course_name || "",
         student_number: userDetails.rows[0].student_number || "",
         phone_number: userDetails.rows[0].phone_number || "",
         id_number: userDetails.rows[0].id_number || "",
         purchase_price: deviceDetails.rows[0].purchase_price || "",
-        device_make: deviceDetails.rows[0].make || "",
-        device_model: deviceDetails.rows[0].model || "",
+
+        make: deviceDetails.rows[0].make || "",
+        model: deviceDetails.rows[0].model || "",
         serial_number: deviceDetails.rows[0].serial_no || "",
-        issue_date: handleTimeStampToText(deviceDetails.rows[0].issue_date) || "",
-        approver_signature: signatureResponses.approverSignature || "",
-        student_signature: userDetails.rows[0].image_base64 || "",
-        issuer_signature: signatureResponses.issuerSignature || "",
+
+        issue_date: deviceDetails.rows[0].issue_date || "",
+        year: new Date().getFullYear(),
+
+        student_signature: userDetails.rows[0].student_signature || "",
+        issuerfullname: signatureResponses[0].issuerfullname || "",
+        issuersignature: signatureResponses[0].issuersignature || "",
+        approverfullname: signatureResponses[0].approverfullname || "",
+        approversignature: signatureResponses[0].approversignature || "",
       };
 
-      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
+      documentTemplate = documentTemplate.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
 
-      pdfBuffer = await generatePdf(pdfContent);
+      pdfBuffer = await generatePdf(documentTemplate);
 
       subject = `Asset Issue Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     } else if (formType === "Staff-Issue") {
@@ -483,8 +494,8 @@ const sendFormViaEmail = async (req, res) => {
         .replace(/{{form_type}}/g, "issued to you")
         .replace(/{{title}}/g, `Asset Issue Form`);
 
-      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Staff-Issue-Form-PDF-Template.html");
-      pdfContent = fs.readFileSync(templatePdf, "utf8");
+      //templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Staff-Issue-Form-PDF-Template.html");
+      //pdfContent = fs.readFileSync(templatePdf, "utf8");
 
       const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
       const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
@@ -507,8 +518,8 @@ const sendFormViaEmail = async (req, res) => {
         .replace(/{{phone_number}}/g, userDetails.rows[0].phone_number)
         .replace(/{{id_number}}/g, userDetails.rows[0].id_number)
         .replace(/{{purchase_price}}/g, deviceDetails.rows[0].purchase_price)
-        .replace(/{{device_make}}/g, deviceDetails.rows[0].make)
-        .replace(/{{device_model}}/g, deviceDetails.rows[0].model)
+        .replace(/{{make}}/g, deviceDetails.rows[0].make)
+        .replace(/{{model}}/g, deviceDetails.rows[0].model)
         .replace(/{{serial_number}}/g, deviceDetails.rows[0].serial_no)
         .replace(/{{issue_date}}/g, deviceDetails.rows[0].issue_date)
         .replace(/{{approver_signature}}/g, signatureResponses.approverSignature)
@@ -523,29 +534,31 @@ const sendFormViaEmail = async (req, res) => {
         spu_logo: spuLogo,
         page_banner: pageBanner,
 
-        device_type: deviceDetails.rows[0].category || "",
-        device_make: deviceDetails.rows[0].make || "",
-        device_model: deviceDetails.rows[0].model || "",
-        device_serial_no: deviceDetails.rows[0].serial_no || "",
+        category: deviceDetails.rows[0].category || "",
+        make: deviceDetails.rows[0].make || "",
+        model: deviceDetails.rows[0].model || "",
+        serial_no: deviceDetails.rows[0].serial_no || "",
         asset_tag: deviceDetails.rows[0].asset_tag || "",
 
-        staff_fullname: `${userDetails.rows[0].name || ""} ${userDetails.rows[0].surname || ""}`.trim(),
+        name: userDetails.rows[0].name || "",
+        surname: userDetails.rows[0].surname || "",
         staff_no: userDetails.rows[0].staff_no || "",
+        faculty_name: userDetails.rows[0].faculty_name || "",
         department_name: userDetails.rows[0].department_name || "",
-        position_name: userDetails.rows[0].post_name || "",
+        post_name: userDetails.rows[0].post_name || "",
         phone_number: userDetails.rows[0].phone_number || "",
-        issue_date: handleTimeStampToText(deviceDetails.rows[0].issue_date) || "",
+        issue_date: deviceDetails.rows[0].issue_date || "",
 
-        staff_signature: userDetails.rows[0].image_base64 || "",
-        issuer_fullname: signatureResponses.issuerFullname || "",
-        issuer_signature: signatureResponses.issuerSignature || "",
-        approver_fullname: signatureResponses.approverFullname || "",
-        approver_signature: signatureResponses.approverSignature || "",
+        staff_signature: userDetails.rows[0].staff_signature || "",
+        issuerfullname: signatureResponses[0].issuerfullname || "",
+        issuersignature: signatureResponses[0].issuersignature || "",
+        approverfullname: signatureResponses[0].approverfullname || "",
+        approversignature: signatureResponses[0].approversignature || "",
       };
 
-      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
+      documentTemplate = documentTemplate.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
 
-      pdfBuffer = await generatePdf(pdfContent);
+      pdfBuffer = await generatePdf(documentTemplate);
 
       subject = `Asset Issue Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     } else if (formType === "Return-form") {
@@ -557,8 +570,8 @@ const sendFormViaEmail = async (req, res) => {
         .replace(/{{form_type}}/g, "returned by you")
         .replace(/{{title}}/g, `Asset Return Form`);
 
-      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Return-Form-PDF-Template.html");
-      pdfContent = fs.readFileSync(templatePdf, "utf8");
+      /*templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Return-Form-PDF-Template.html");
+      pdfContent = fs.readFileSync(templatePdf, "utf8");*/
 
       const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
       const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
@@ -579,32 +592,32 @@ const sendFormViaEmail = async (req, res) => {
         spu_logo: spuLogo,
         page_banner: pageBanner,
 
-        device_type: deviceDetails.rows[0].category || "",
-        device_make: deviceDetails.rows[0].make || "",
-        device_model: deviceDetails.rows[0].model || "",
-        device_serial_no: deviceDetails.rows[0].serial_no || "",
+        category: deviceDetails.rows[0].category || "",
+        make: deviceDetails.rows[0].make || "",
+        model: deviceDetails.rows[0].model || "",
+        serial_no: deviceDetails.rows[0].serial_no || "",
         asset_tag: deviceDetails.rows[0].asset_tag || "",
 
-        user_fullname: `${userDetails.rows[0].name || ""} ${userDetails.rows[0].surname || ""}`.trim(),
-
-        user_number: userDetails.rows[0].staff_no || userDetails.rows[0].student_number || "",
-
-        department_or_faculty: userDetails.rows[0].department_name || userDetails.rows[0].faculty_name || "",
-
-        position_or_course: userDetails.rows[0].post_name || userDetails.rows[0].course_name || "",
-
+        name: userDetails.rows[0].name || "",
+        surname: userDetails.rows[0].surname || "",
+        staff_no: userDetails.rows[0].staff_no || "",
+        student_number: userDetails.rows[0].student_number || "",
+        department_name: userDetails.rows[0].department_name || "",
+        faculty_name: userDetails.rows[0].faculty_name || "",
+        post_name: userDetails.rows[0].post_name || "",
+        course_name: userDetails.rows[0].course_name || "",
         phone_number: userDetails.rows[0].phone_number || "",
+        return_date: signatureResponses[0].return_date || "",
 
-        return_date: handleTimeStampToText(signatureResponses?.return_date) || "",
-
-        user_signature: userDetails.rows[0].image_base64 || "",
-        returner_fullname: signatureResponses?.returnerFullname || "",
-        returner_signature: signatureResponses?.returnerSignature || "",
+        staff_signature: userDetails.rows[0].staff_signature || "",
+        student_signature: userDetails.rows[0].student_signature || "",
+        returnerfullname: signatureResponses[0].returnerfullname || "",
+        returnersignature: signatureResponses[0].returnersignature || "",
       };
 
-      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
+      documentTemplate = documentTemplate.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
 
-      pdfBuffer = await generatePdf(pdfContent);
+      pdfBuffer = await generatePdf(documentTemplate);
 
       subject = `Asset Return Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     } else if (formType === "Loan-Issue") {
@@ -616,8 +629,8 @@ const sendFormViaEmail = async (req, res) => {
         .replace(/{{form_type}}/g, "loaned to you")
         .replace(/{{title}}/g, `Asset Loan Form`);
 
-      templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Loan-Form-PDF-Template.html");
-      pdfContent = fs.readFileSync(templatePdf, "utf8");
+      /* templatePdf = path.join(__dirname, "..", "util", "pdfTemplates", "Loan-Form-PDF-Template.html");
+      pdfContent = fs.readFileSync(templatePdf, "utf8");*/
 
       const logoPath = path.join(process.cwd(), "public", "SPU_logo.png");
       const bannerImagePath = path.join(process.cwd(), "public", "ict_banner.png");
@@ -638,29 +651,34 @@ const sendFormViaEmail = async (req, res) => {
         spu_logo: spuLogo,
         page_banner: pageBanner,
 
-        device_type: deviceDetails.rows[0].category || "",
-        device_make: deviceDetails.rows[0].make || "",
-        device_model: deviceDetails.rows[0].model || "",
-        device_serial_no: deviceDetails.rows[0].serial_no || "",
+        category: deviceDetails.rows[0].category || "",
+        make: deviceDetails.rows[0].make || "",
+        model: deviceDetails.rows[0].model || "",
+        serial_no: deviceDetails.rows[0].serial_no || "",
         asset_tag: deviceDetails.rows[0].asset_tag || "",
 
-        user_fullname: `${userDetails.rows[0].name || ""} ${userDetails.rows[0].surname || ""}`.trim(),
-        user_number: userDetails.rows[0].staff_no || userDetails.rows[0].student_number || "",
-        department_or_faculty: userDetails.rows[0].department_name || userDetails.rows[0].faculty_name || "",
-        position_or_course: userDetails.rows[0].position_name || userDetails.rows[0].course_name || "",
+        name: userDetails.rows[0].name || "",
+        surname: userDetails.rows[0].surname || "",
+        staff_no: userDetails.rows[0].staff_no || "",
+        student_number: userDetails.rows[0].student_number || "",
+        department_name: userDetails.rows[0].department_name || "",
+        faculty_name: userDetails.rows[0].faculty_name || "",
+        post_name: userDetails.rows[0].post_name || "",
+        course_name: userDetails.rows[0].course_name || "",
         phone_number: userDetails.rows[0].phone_number || "",
-        loan_date: handleTimeStampToText(deviceDetails.rows[0].issue_date) || "",
+        issue_date: deviceDetails.rows[0].issue_date || "",
 
-        user_signature: userDetails.rows[0].image_base64 || "",
-        issuer_fullname: signatureResponses.issuerFullname || "",
-        issuer_signature: signatureResponses.issuerSignature || "",
-        approver_fullname: signatureResponses.approverFullname || "",
-        approver_signature: signatureResponses.approverSignature || "",
+        staff_signature: userDetails.rows[0].staff_signature || "",
+        student_signature: userDetails.rows[0].student_signature || "",
+        issuerfullname: signatureResponses[0].issuerfullname || "",
+        issuersignature: signatureResponses[0].issuersignature || "",
+        approverfullname: signatureResponses[0].approverfullname || "",
+        approversignature: signatureResponses[0].approversignature || "",
       };
 
-      pdfContent = pdfContent.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
+      documentTemplate = documentTemplate.replace(/{{(\w+)}}/g, (match, key) => replacements[key] ?? "");
 
-      pdfBuffer = await generatePdf(pdfContent);
+      pdfBuffer = await generatePdf(documentTemplate);
 
       subject = `Asset Loan Form - ${userDetails.rows[0].name} ${userDetails.rows[0].surname}`;
     }

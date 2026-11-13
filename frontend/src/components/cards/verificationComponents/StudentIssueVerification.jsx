@@ -3,16 +3,15 @@ import SiganturePad from "../signaturePad/SiganturePad";
 import { getStudentDetails } from "../../../services/api/students/Students.Api";
 import { getAllDeviceDetails } from "../../../services/api/devices/Device.Api";
 import { getMonthName, getTodayFullDate, handleCurrency } from "../../../utils/helperMethods";
+import { getDisclaimerTemplate } from "../../../services/api/desclaimerTemplates/desclaimerTemplates.Api";
+import { HandleSetDocumentTemplate } from "../../../utils/HandleSetDocumentTemplate";
 
 function StudentIssueVerification({ deviceId, student_no }) {
   const [studentData, setStudentData] = useState();
   const [deviceDetails, setDeviceDetails] = useState();
 
-  const [year, setYear] = useState();
-  const [month, setMonth] = useState();
-  const [day, setDay] = useState();
-
-  const [showToast, setShowToast] = useState({ isShow: false, type: "", message: null });
+  const [disclaimerTemplate, setDisclaimerTemplates] = useState();
+  const [htmlContent, setHtmlContent] = useState();
 
   //Get Student data
   const getStudentData = () => {
@@ -33,18 +32,40 @@ function StudentIssueVerification({ deviceId, student_no }) {
   };
 
   useEffect(() => {
-    //Date
-    const { year, month, day } = getTodayFullDate();
-    setYear(year);
-    setDay(day);
-    setMonth(getMonthName(month));
-
     getStudentData();
     getDeviceDetails();
+
+    const data = { name: "student-disclaimer" };
+    getDisclaimerTemplate(data, setDisclaimerTemplates);
   }, [student_no]);
 
+  useEffect(() => {
+    const data = null;
+    HandleSetDocumentTemplate(disclaimerTemplate, studentData, deviceDetails, data, setHtmlContent);
+  }, [disclaimerTemplate, studentData, deviceDetails]);
+
   return (
-    <div>
+    <div className="flex flex-col ">
+      <div className="">
+        <div
+          dangerouslySetInnerHTML={{
+            __html: htmlContent && htmlContent,
+          }}
+        />
+      </div>
+      <div className="flex items-center  justify-center ">
+        <SiganturePad lablel={"Student Signature"} user_id={studentData?.student_number} userDetails={studentData} deviceDetails={deviceDetails} formType={"student-issue"} />
+      </div>
+    </div>
+  );
+}
+
+export default StudentIssueVerification;
+
+/*user_id={staff_no} staffData={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast}*/
+
+/*
+ <div>
       <div className="printable h-[1200px]">
         <div class="page-header">
           <img src="\SPU-logo-1024x1024.jpg" alt="spu logo" className="w-[180px] h-[180px]" />
@@ -163,9 +184,4 @@ function StudentIssueVerification({ deviceId, student_no }) {
         </div>
       </div>
     </div>
-  );
-}
-
-export default StudentIssueVerification;
-
-/*user_id={staff_no} staffData={staffData} deviceDetails={deviceDetails} setShowToast={setShowToast}*/
+*/

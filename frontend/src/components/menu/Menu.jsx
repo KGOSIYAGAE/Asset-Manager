@@ -11,11 +11,13 @@ import { HiAcademicCap, HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import { IoMdClose } from "react-icons/io";
 import { GiOrganigram } from "react-icons/gi";
+import { TbDevicesCog } from "react-icons/tb";
 
 function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
   const [showDeviceOption, setShowDeviceOptions] = useState(false);
   const [showOrganizationOption, setShowOrganizationOptions] = useState(false);
   const [showAcademicOption, setShowAcademicOptions] = useState(false);
+  const [showDeviceCatalogOption, setShowDeviceCatalogOptions] = useState(false);
   const [showSupportOption, setShowSupportOptions] = useState(false);
   const [showUserManagementOption, setShowUserManagementOptions] = useState(false);
   const [showReportOption, setShowReportOptions] = useState(false);
@@ -211,7 +213,7 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
           </div>
           {/**/}
 
-          {/*Organization Menu Option*/}
+          {/*Academic Menu Option*/}
           <div className="flex flex-col gap-2 ">
             <div
               className="menu-items  justify-between "
@@ -246,6 +248,55 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
                 <Link to={"/academic/courses"}>
                   <div className="menu-items">
                     <span className="text-sm p-1">Courses</span>
+                  </div>
+                </Link>
+              )}
+            </div>
+          </div>
+          {/**/}
+
+          {/*Device Catalog  Menu Option*/}
+          <div className="flex flex-col gap-2 ">
+            <div
+              className="menu-items  justify-between "
+              onClick={() => {
+                showDeviceCatalogOption ? setShowDeviceCatalogOptions(false) : setShowDeviceCatalogOptions(true);
+              }}
+            >
+              <div className="flex items-center gap-3 ">
+                <div className="menu-icon">
+                  <TbDevicesCog size={18} className="" />
+                </div>
+                {isMinimized ? <span className="lg:hidden">Device Catalog</span> : <span className="">Device Catalog</span>}
+              </div>
+              {isMinimized ? (
+                <div className=" flex lg:hidden">{showDeviceCatalogOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              ) : (
+                <div className=" flex ">{showDeviceCatalogOption ? <IoChevronUp size={15} className="" /> : <IoChevronDown size={15} className=" " />}</div>
+              )}
+            </div>
+
+            {/**/}
+
+            <div className={`${showDeviceCatalogOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
+              {hasPermission("loan") && (
+                <Link to={"/academic/faculties"}>
+                  <div className="menu-items" onClick={() => {}}>
+                    <span className="text-sm p-1">Device Categories</span>
+                  </div>
+                </Link>
+              )}
+              {hasPermission("view-upgrades") && (
+                <Link to={"/academic/courses"}>
+                  <div className="menu-items">
+                    <span className="text-sm p-1">Manufacturers</span>
+                  </div>
+                </Link>
+              )}
+              {hasPermission("view-upgrades") && (
+                <Link to={"/academic/courses"}>
+                  <div className="menu-items">
+                    <span className="text-sm p-1">Device Models</span>
                   </div>
                 </Link>
               )}

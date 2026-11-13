@@ -105,23 +105,60 @@ const createSignature = async (req, res) => {
 //get Issuer & Approver signatures
 const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
   try {
-    const { device_serial_number, status } = req.query;
+    const { device_serial_number, status, user_id } = req.query;
 
-    if (!device_serial_number || !status) {
+    if (!device_serial_number || !status || !user_id) {
       return res.status(400).json({ message: "All details must be provided", error: true });
     }
 
     //Get Issuer & Approver ids
-    const getIssuerApprover = "SELECT * FROM device_transactions WHERE device_serial_number= $1 AND status = $2";
-    const device_transaction = await query(getIssuerApprover, [device_serial_number, status]);
+    const getIssuerApprover = `SELECT
 
-    //console.log(device_transaction.rows[0]);
+    -- Issued by
+	to_char(dt.issue_date::timestamp with time zone, 'DD Month YYYY'::text) AS issue_date,
+    CONCAT_WS(' ', issuer.name, issuer.surname) AS issuerFullname,
+    issuer_sig.image_base64 AS issuerSignature,
 
-    if (device_transaction.rows.length === 0) {
+    -- Approved by
+	to_char(dt.approve_date::timestamp with time zone, 'DD Month YYYY'::text) AS approve_date,
+    CONCAT_WS(' ', approver.name, approver.surname) AS approverFullname,
+    approver_sig.image_base64 AS approverSignature,
+
+    -- Returned by
+	to_char(dt.return_date::timestamp with time zone, 'DD Month YYYY'::text) AS return_date,
+    CONCAT_WS(' ', returner.name, returner.surname) AS returnerFullname,
+    returner_sig.image_base64 AS returnerSignature
+
+FROM public.device_transactions dt
+
+-- Issuing staff
+LEFT JOIN public.staff issuer ON dt.issued_by = issuer.id
+
+LEFT JOIN public.signatures issuer_sig ON issuer.staff_no = issuer_sig.user_id
+
+-- Approving staff
+LEFT JOIN public.staff approver ON dt.approved_by = approver.id
+
+LEFT JOIN public.signatures approver_sig ON approver.staff_no = approver_sig.user_id
+
+-- Returning staff
+LEFT JOIN public.staff returner ON dt.returned_by = returner.id
+
+LEFT JOIN public.signatures returner_sig ON returner.staff_no = returner_sig.user_id 
+ WHERE dt.device_serial_number = $1
+    AND dt.status = $2
+    AND dt.user_id = $3 
+    ORDER BY
+    dt.issue_date DESC NULLS LAST,
+    dt.id DESC
+LIMIT 1`;
+    const { rows } = await query(getIssuerApprover, [device_serial_number, status, user_id]);
+
+    if (rows.length === 0) {
       return res.status(400).json({ message: "Device transaction not found", error: true });
     }
 
-    //get_Issuer
+    /*get_Issuer
     const getIssuer = "SELECT * FROM staff WHERE id = $1";
     const issuer = await query(getIssuer, [device_transaction.rows[0].issued_by]);
 
@@ -131,7 +168,7 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
       return res.status(400).json({ message: "Issuer not found", error: true });
     }
 
-    //get_Approver
+    /get_Approver
     const getApprover = "SELECT * FROM staff WHERE id = $1";
     const approver = await query(getApprover, [device_transaction.rows[0].approved_by]);
 
@@ -139,7 +176,7 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
       return res.status(400).json({ message: "Approver not found", error: true });
     }
 
-    //get_IssuerSignature
+    /get_IssuerSignature
     const getIssuerSignature = "SELECT * FROM signatures WHERE user_id = $1";
     const issuerSignature = await query(getIssuerSignature, [issuer.rows[0].staff_no]);
 
@@ -147,7 +184,7 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
       return res.status(400).json({ message: "Issure signature not found", error: true });
     }
 
-    //get_ApproverSignature
+    /get_ApproverSignature
     const getApproverSignature = "SELECT * FROM signatures WHERE user_id = $1";
     const approverSignature = await query(getApproverSignature, [approver.rows[0].staff_no]);
 
@@ -155,12 +192,12 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
       return res.status(400).json({ message: "Approver signature not found", error: true });
     }
 
-    //get_ReturnerSignature
+    /get_ReturnerSignature
     let returner = null;
     let ReturnerSignature = null;
 
     if (device_transaction.rows[0].status === "Returned") {
-      //get_Returner
+      /get_Returner
       const getReturner = "SELECT * FROM staff WHERE id = $1";
       returner = await query(getReturner, [device_transaction.rows[0].returned_by]);
 
@@ -174,9 +211,9 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
       if (ReturnerSignature.rows.length === 0) {
         return res.status(400).json({ message: "Returner signature not found", error: true });
       }
-    }
+    }*/
 
-    const signatures = {
+    /* const signatures = {
       issuerFullname: `${issuer.rows[0].name} ${issuer.rows[0].surname}`,
       issuerSignature: issuerSignature.rows[0].image_base64,
       issue_date: device_transaction.rows[0].issue_date,
@@ -186,9 +223,9 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
       returnerFullname: returner ? `${returner?.rows[0].name} ${returner.rows[0].surname}` : null,
       returnerSignature: ReturnerSignature ? ReturnerSignature.rows[0].image_base64 : null,
       return_date: device_transaction.rows[0].return_date || null,
-    };
+    };*/
 
-    return res.status(200).json({ signatures, message: "Success", error: false });
+    return res.status(200).json({ signatures: rows, message: "Success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -196,25 +233,61 @@ const getIssuerAndreturnerAndApproverSignatures = async (req, res) => {
 };
 
 //get Issuer & Approver signatures
-const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_number, status) => {
+const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_number, status, user_id) => {
   try {
     if (!device_serial_number || !status) {
       return console.log("All details must be provided");
     }
 
-    console.log(device_serial_number, status);
-
     //Get Issuer & Approver ids
-    const getIssuerApprover = "SELECT * FROM device_transactions WHERE device_serial_number= $1 AND status = $2";
-    const device_transaction = await query(getIssuerApprover, [device_serial_number, status]);
+    const getIssuerApprover = `SELECT
+
+    -- Issued by
+	to_char(dt.issue_date::timestamp with time zone, 'DD Month YYYY'::text) AS issue_date,
+    CONCAT_WS(' ', issuer.name, issuer.surname) AS issuerFullname,
+    issuer_sig.image_base64 AS issuerSignature,
+
+    -- Approved by
+	to_char(dt.approve_date::timestamp with time zone, 'DD Month YYYY'::text) AS approve_date,
+    CONCAT_WS(' ', approver.name, approver.surname) AS approverFullname,
+    approver_sig.image_base64 AS approverSignature,
+
+    -- Returned by
+	to_char(dt.return_date::timestamp with time zone, 'DD Month YYYY'::text) AS return_date,
+    CONCAT_WS(' ', returner.name, returner.surname) AS returnerFullname,
+    returner_sig.image_base64 AS returnerSignature
+
+FROM public.device_transactions dt
+
+-- Issuing staff
+LEFT JOIN public.staff issuer ON dt.issued_by = issuer.id
+
+LEFT JOIN public.signatures issuer_sig ON issuer.staff_no = issuer_sig.user_id
+
+-- Approving staff
+LEFT JOIN public.staff approver ON dt.approved_by = approver.id
+
+LEFT JOIN public.signatures approver_sig ON approver.staff_no = approver_sig.user_id
+
+-- Returning staff
+LEFT JOIN public.staff returner ON dt.returned_by = returner.id
+
+LEFT JOIN public.signatures returner_sig ON returner.staff_no = returner_sig.user_id 
+ WHERE dt.device_serial_number = $1
+    AND dt.status = $2
+    ORDER BY
+    dt.issue_date DESC NULLS LAST,
+    dt.id DESC
+LIMIT 1`;
+    const { rows } = await query(getIssuerApprover, [device_serial_number, status]);
 
     //console.log(device_transaction.rows[0]);
 
-    if (device_transaction.rows.length === 0) {
+    if (rows.length === 0) {
       return console.log("Device transaction not found");
     }
 
-    //get_Issuer
+    /*get_Issuer
     const getIssuer = "SELECT * FROM staff WHERE id = $1";
     const issuer = await query(getIssuer, [device_transaction.rows[0].issued_by]);
 
@@ -265,9 +338,9 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
       if (ReturnerSignature.rows.length === 0) {
         return console.log("Returner signature not found");
       }
-    }
+    }*/
 
-    const signatures = {
+    /*const signatures = {
       issuerFullname: `${issuer.rows[0].name} ${issuer.rows[0].surname}`,
       issuerSignature: issuerSignature.rows[0].image_base64,
       issue_date: device_transaction.rows[0].issue_date,
@@ -277,9 +350,9 @@ const getIssuerAndreturnerAndApproverSignaturesHelper = async (device_serial_num
       returnerFullname: returner ? `${returner?.rows[0].name} ${returner.rows[0].surname}` : null,
       returnerSignature: ReturnerSignature ? ReturnerSignature.rows[0].image_base64 : null,
       return_date: device_transaction.rows[0].return_date || null,
-    };
+    };*/
 
-    return signatures;
+    return rows;
   } catch (error) {
     console.log(error);
   }

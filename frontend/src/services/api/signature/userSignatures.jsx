@@ -21,7 +21,7 @@ export const getUserSignature = async (user_id, setSignature) => {
 };
 
 export const getIssureApproverSignature = async (data) => {
-  if (!data.device_serial_number || !data.status) {
+  if (!data.device_serial_number || !data.status || !data.user_id) {
     return console.log("Staff number must be provided");
   }
 

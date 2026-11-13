@@ -2,7 +2,7 @@ import axios from "axios";
 
 //const BASE_URL = "http://localhost:3000/api/v1/asset-manager/admin";
 //Production
-//const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager/admin" : `http://10.10.12.158:3000/api/v1/asset-manager/admin`;
+//const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager/admin" : `http://10.10.12.17:3000/api/v1/asset-manager/admin`;
 
 const BASE_URL = process.env.NODE_ENV === "production" ? "/api/v1/asset-manager/admin" : `http://192.168.8.188:3000/api/v1/asset-manager/admin`;
 

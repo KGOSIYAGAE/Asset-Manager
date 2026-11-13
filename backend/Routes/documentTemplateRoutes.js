@@ -1,19 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const { createDocumentTemplate, getDocumentTemplate, updateDocumentTemplate, deleteDocumentTemplate } = require("../Controllers/documentTemplateController");
+const { getDocumentTemplates, createDocumentTemplate, getDocumentTemplate, updateDocumentTemplate, deleteDocumentTemplate } = require("../Controllers/documentTemplateController");
 
 //router.use(requireAuth);
 
-//create config
+//create document
 router.post("/create-template", createDocumentTemplate);
 
-//get config
-router.get("/", getDocumentTemplate);
+//get all document
+router.get("/", getDocumentTemplates);
 
-//update config
+//get a document
+router.get("/document/", getDocumentTemplate);
+
+//update a document
 router.put("/update-template/:document_id", updateDocumentTemplate);
 
-//update config
+//soft delete a document
 router.put("/delete-template/:document_id", deleteDocumentTemplate);
 
 module.exports = router;

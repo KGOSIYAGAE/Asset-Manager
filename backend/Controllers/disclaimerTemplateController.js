@@ -1,0 +1,162 @@
+const { query } = require("../util/pg_dbConnection");
+
+//Create
+const createDisclaimerTemplate = async (req, res) => {
+  try {
+    const { name, template_content, version } = req.body;
+
+    //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
+
+    if (!name) {
+      return res.status(400).json({ message: "Disclaimer Name is required!" });
+    }
+
+    if (!template_content) {
+      return res.status(400).json({ message: "Disclaimer content is required!" });
+    }
+    if (!version) {
+      return res.status(400).json({ message: "Disclaimer version is required!" });
+    }
+
+    const create_query = "INSERT INTO disclaimer_templates(name, template_content, version, date_created, date_updated, is_deleted) VALUES ($1,$2,$3, NOW(),NOW(), 'False');";
+    const VALUES = [name, template_content, version];
+
+    const { rowCount } = await query(create_query, [...VALUES]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when creating Disclaimer template", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Successfully created", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}` });
+  }
+};
+
+//get all documents
+const getDisclaimerTemplates = async (req, res) => {
+  try {
+    const get_Query = `SELECT * FROM disclaimer_templates WHERE is_deleted = 'False'`;
+
+    const { rows } = await query(get_Query);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching  Disclaimer template", error: true });
+    }
+
+    return res.status(200).json({ disclaimers: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//get a document
+const getDisclaimerTemplate = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({ message: "name not provided", error: true });
+    }
+
+    const get_Query = `SELECT * FROM disclaimer_templates WHERE name ILIKE '%' || $1 || '%'`;
+
+    const { rows } = await query(get_Query, [name]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching  disclaimer template", error: true });
+    }
+
+    return res.status(200).json({ disclaimers: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//get a document
+const getDocumentTemplateHelper = async (name) => {
+  try {
+    if (!name) {
+      return console.log({ message: "name not provided", error: true });
+    }
+
+    const get_Query = `SELECT * FROM document_templates WHERE name ILIKE '%' || $1 || '%'`;
+
+    const { rows } = await query(get_Query, [name]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching  Document template", error: true });
+    }
+
+    return { documents: rows, message: "Success", error: false };
+  } catch (error) {
+    console.log(error);
+    return console.log({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+//update
+const updateDisclaimerTemplate = async (req, res) => {
+  try {
+    const { disclaimer_id } = req.params;
+    const { name, template_content, version } = req.body;
+
+    //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
+
+    if (!name) {
+      return res.status(400).json({ message: "Disclaimer Name is required!" });
+    }
+
+    if (!template_content) {
+      return res.status(400).json({ message: "Disclaimer content is required!" });
+    }
+    if (!version) {
+      return res.status(400).json({ message: "Disclaimer version is required!" });
+    }
+
+    const update_query = "UPDATE disclaimer_templates SET name=$1, template_content=$2, version=$3, date_updated=NOW() WHERE template_id = $4";
+    const VALUES = [name, template_content, version];
+
+    const { rowCount } = await query(update_query, [...VALUES, disclaimer_id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when updating Disclaimer template", error: true });
+    }
+    return res.status(200).json({ rowCount, message: "Successfully updated", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}` });
+  }
+};
+
+//update
+const deleteDocumentTemplate = async (req, res) => {
+  try {
+    const { document_id } = req.params;
+
+    const get_Query = `SELECT * FROM document_templates WHERE document_id = $1`;
+
+    const { rows } = await query(get_Query, [document_id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: " Document template not found", error: true });
+    }
+
+    const update_query = "UPDATE document_templates SET is_deleted ='True', date_updated=NOW() WHERE document_id = $1";
+
+    const { rowCount } = await query(update_query, [document_id]);
+
+    if (rowCount <= 0) {
+      return res.status(400).json({ message: "An error occured when deleting Document template", error: true });
+    }
+    return res.status(200).json({ rowCount, message: "Successfully deleted", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}` });
+  }
+};
+
+module.exports = { createDisclaimerTemplate, getDisclaimerTemplates, updateDisclaimerTemplate, getDisclaimerTemplate };

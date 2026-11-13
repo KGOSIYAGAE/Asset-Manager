@@ -66,14 +66,18 @@ const getAllTransactionsForDevice = async (req, res) => {
     SELECT 
     device_transactions.id,
     device_transactions.user_id,
-    device_transactions.issue_date,
-    device_transactions.return_date,
+
+    to_char(device_transactions.return_date::timestamp with time zone, 'DD Month YYYY'::text) AS return_date,
+
     device_transactions.status,
-    device_transactions.approve_date,
-    device_transactions.expected_return_date,
+    to_char(device_transactions.approve_date::timestamp with time zone, 'DD Month YYYY'::text) AS approve_date,
+    to_char(device_transactions.expected_return_date::timestamp with time zone, 'DD Month YYYY'::text) AS expected_return_date,
+
     device_transactions.action_type,
-    device_transactions.issue_date,
-    device_transactions.rejection_date,
+   
+     to_char(device_transactions.issue_date::timestamp with time zone, 'DD Month YYYY'::text) AS issue_date,
+     to_char(device_transactions.rejection_date::timestamp with time zone, 'DD Month YYYY'::text) AS rejection_date,
+
     device_transactions.rejection_reason,
     concat(COALESCE(students.name, staff.name), ' ', COALESCE(students.surname, staff.surname)) AS user_full_name,
     CONCAT(st_rejector.name,' ',st_rejector.surname) AS rejected_by

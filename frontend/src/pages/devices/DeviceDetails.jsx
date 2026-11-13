@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import AddButton from "../../components/buttons/AddButton";
 import { useParams } from "react-router-dom";
 import { getAllDeviceDetails, getDevice } from "../../services/api/devices/Device.Api";
@@ -53,6 +53,8 @@ function DeviceDetails({ path }) {
 
   const { showToast } = useToast();
 
+  const iframeRef = useRef(null);
+
   const navigate = useNavigate();
   let rowNumber = 0;
 
@@ -93,7 +95,7 @@ function DeviceDetails({ path }) {
   };
 
   const handleOnPrint = () => {
-    let printContents = document.getElementById("print-file").innerHTML;
+    /*let printContents = document.getElementById("print-file").innerHTML;
     let originalContents = document.body.innerHTML;
 
     document.body.innerHTML = printContents;
@@ -101,7 +103,15 @@ function DeviceDetails({ path }) {
     window.print();
 
     document.body.innerHTML = originalContents;
-    window.location.reload();
+    window.location.reload();*/
+
+    // Inside StudentAOD:
+
+    const iframeWindow = iframeRef.current?.contentWindow;
+    if (!iframeWindow) return;
+
+    iframeWindow.focus();
+    iframeWindow.print();
   };
 
   const handleSendEmail = (user_id, form_type, device_id) => {
@@ -250,11 +260,7 @@ function DeviceDetails({ path }) {
 
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Warranty End date</span>
-            <span className="text-sm">
-              {(() => {
-                return handleTimeStampToText(deviceDetails?.warranty_end_date);
-              })()}
-            </span>
+            <span className="text-sm">{deviceDetails?.warranty_end_date}</span>
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Category</span>
@@ -294,19 +300,11 @@ function DeviceDetails({ path }) {
 
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Date Created</span>
-            <span className="text-sm">
-              {(() => {
-                return handleTimeStampToText(deviceDetails?.created_at);
-              })()}
-            </span>
+            <span className="text-sm">{deviceDetails?.created_at}</span>
           </div>
           <div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Date Issued</span>
-            <span className="text-sm">
-              {(() => {
-                return handleTimeStampToText(deviceDetails?.issue_date);
-              })() || "None"}
-            </span>
+            <span className="text-sm">{deviceDetails?.issue_date}</span>
           </div>
           {/*<div className="flex justify-between p-2 item-hover">
             <span className="text-sm">Return Date</span>
@@ -386,7 +384,7 @@ function DeviceDetails({ path }) {
             ? "w-[60%] h-fit p-2"
             : openModal.type === "approve-loan"
             ? "w-[60%] h-fit p-2"
-            : "w-[60%] lg:w-[55%] h-fit lg:h-full "
+            : "w-[60%] lg:w-[53%] h-fit lg:h-full "
         }  rounded-md mx-auto mt-5 pb-28 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden outline-none`}
       >
         {openModal.type === "assign" ? (
@@ -415,21 +413,41 @@ function DeviceDetails({ path }) {
             showToast={showToast}
           />
         ) : openModal.type === "Student-Issue" ? (
-          <div className=" h-[1100px]  col-span-6" id="print-file">
-            <StudentAOD handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} student_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
-          </div>
+          <StudentAOD
+            handleSendEmail={handleSendEmail}
+            handleOnPrint={handleOnPrint}
+            iframeRef={iframeRef}
+            deviceId={deviceDetails?.id}
+            student_no={deviceDetails?.current_user_id}
+            deviceDetails_={deviceDetails}
+          />
         ) : openModal.type === "Staff-Issue" ? (
-          <div className="h-[1100px] col-span-6  " id="print-file">
-            <StaffIssueForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} staff_no={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
-          </div>
+          <StaffIssueForm
+            handleSendEmail={handleSendEmail}
+            handleOnPrint={handleOnPrint}
+            iframeRef={iframeRef}
+            deviceId={deviceDetails?.id}
+            staff_no={deviceDetails?.current_user_id}
+            deviceDetails_={deviceDetails}
+          />
         ) : openModal.type === "Loan-Issue" ? (
-          <div className="h-[1100px] col-span-6  " id="print-file">
-            <LoanIssueForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} user_id={deviceDetails?.current_user_id} deviceDetails_={deviceDetails} />
-          </div>
+          <LoanIssueForm
+            handleSendEmail={handleSendEmail}
+            handleOnPrint={handleOnPrint}
+            iframeRef={iframeRef}
+            deviceId={deviceDetails?.id}
+            user_id={deviceDetails?.current_user_id}
+            deviceDetails_={deviceDetails}
+          />
         ) : openModal.type === "Return-form" ? (
-          <div className="h-[1100px] col-span-6  " id="print-file">
-            <DeviceReturnForm handleSendEmail={handleSendEmail} handleOnPrint={handleOnPrint} deviceId={deviceDetails?.id} clickedTransactionData={openModal.data} deviceDetails_={deviceDetails} />
-          </div>
+          <DeviceReturnForm
+            handleSendEmail={handleSendEmail}
+            handleOnPrint={handleOnPrint}
+            iframeRef={iframeRef}
+            deviceId={deviceDetails?.id}
+            clickedTransactionData={openModal.data}
+            deviceDetails_={deviceDetails}
+          />
         ) : openModal.type === "reject" ? (
           <div>
             <RejectIssueCard

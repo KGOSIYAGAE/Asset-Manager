@@ -13,22 +13,15 @@ import { handleTimeStamp, handleTimeStampToText } from "../../utils/dateConverte
 import { getStudentDetails } from "../../services/api/students/Students.Api";
 import PrintButton from "../buttons/printButton/PrintButton";
 import SendViaEmail from "../buttons/sendViaEmail/SendViaEmail";
+import { getDocumentTemplate } from "../../services/api/documentTemplates/documentTemplates.Api";
+import { HandleSetDocumentTemplate } from "../../utils/HandleSetDocumentTemplate";
 
-function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, deviceDetails_ }) {
-  const [year, setYear] = useState();
-  const [month, setMonth] = useState();
-  const [day, setDay] = useState();
-
+function LoanIssueForm({ handleSendEmail, handleOnPrint, iframeRef, deviceId, user_id, deviceDetails_ }) {
   const [userData, setUserData] = useState();
   const [deviceDetails, setDeviceDetails] = useState();
-  const [openModal, setOpenModal] = useState({ isShown: false, trimmedDataURL: null, setTrimmedDataURL: null, user_id: null });
-
-  const [ictStaffTrimmedDataURL, setIctStaffTrimmedDataURL] = useState(null);
-  const [staffTrimmedDataURL, setStaffTrimmedDataURL] = useState(null);
-
   const [issuerReturnerApproverSignatures, setIssuerReturnerApproverSignature] = useState(null);
-
-  const navigate = useNavigate();
+  const [documentTemplate, setDocumentTemplates] = useState();
+  const [htmlContent, setHtmlContent] = useState();
 
   //Get Staff data
   const getUserData = () => {
@@ -63,29 +56,52 @@ function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, devi
     const data = {
       device_serial_number: deviceDetails?.serial_no,
       status: deviceDetails?.status,
+      user_id: deviceDetails?.current_user_id,
     };
 
-    return setIssuerReturnerApproverSignature(await getIssureApproverSignature(data));
+    return setIssuerReturnerApproverSignature(...(await getIssureApproverSignature(data)));
   };
 
   useEffect(() => {
-    const { year, month, day } = getTodayFullDate();
-    setYear(year);
-    setDay(day);
-    setMonth(getMonthName(month));
-
     getUserData();
     getDeviceDetails();
+    handleSetIssuerApproverSignature(deviceDetails_);
 
-    //handleOnPrint();
+    const data = { name: "Loan-Issue" };
+    getDocumentTemplate(data, setDocumentTemplates);
   }, []);
 
   useEffect(() => {
-    handleSetIssuerApproverSignature(deviceDetails_);
-  }, []);
+    HandleSetDocumentTemplate(documentTemplate, userData, deviceDetails, issuerReturnerApproverSignatures, setHtmlContent);
+  }, [documentTemplate, userData, deviceDetails, issuerReturnerApproverSignatures]);
 
   return (
-    <div>
+    <div className=" flex flex-col h-[1123px] ">
+      <iframe ref={iframeRef} srcDoc={htmlContent} title="Return Document" className="w-full flex-1 border-0 rounded-md" />
+      {hasPermission("print") && (
+        <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
+          <SendViaEmail
+            text={"Send Using Email"}
+            onClick={() => {
+              handleSendEmail(userData?.staff_no || userData?.student_number, "Loan-Issue", deviceDetails?.id);
+            }}
+          />
+          <PrintButton
+            text={"Print"}
+            onClick={() => {
+              handleOnPrint();
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default LoanIssueForm;
+
+/*
+ <div>
       <div className="printable-loan-form">
         <div className="flex flex-col items-center justify-center gap-5">
           <div className="w-full flex justify-center ">
@@ -96,17 +112,17 @@ function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, devi
         <div className=" flex col-span-2  ">
           <div className="w-1/5 text-sm font-semibold col-span-1 border  border-black p-1">TICKET NO</div>
           <div className="w-1/5 text-sm col-span-1 p-1  border  border-black black-t-border">{""}</div>
-        </div>*/}
+        </div>*
             <div className="w-full bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
               <span className="text-base font-bold">DEVICE LOAN ISSUE FORM</span>
               <span className="font-bold">SOL PLAATJE UNIVERSITY</span>
             </div>
 
-            {/**/}
+            {/**
             <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
               <span className="text-base font-bold">DEVICE INFORMATION</span>
             </div>
-            {/**/}
+            {/**
             <div className="grid grid-cols-2 grid-rows-5 border border-black">
               <div className="flex col-span-2 black-b-border ">
                 <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">DEVICE TYPE</div>
@@ -129,13 +145,13 @@ function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, devi
                 <div className="w-1/2  text-sm col-span-1 p-2">{deviceDetails?.asset_tag}</div>
               </div>
             </div>
-            {/**/}
-            {/**/}
+            {/**
+            {/**
             <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
               <span className="text-base font-bold">USER INFORMATION</span>
             </div>
-            {/**/}
-            {/**/}
+            {/**
+            {/**
             <div className="w-full grid grid-cols-2 grid-rows-5 border border-black">
               <div className="flex col-span-2 black-b-border ">
                 <div className="w-1/2 text-sm font-semibold col-span-1  black-r-border p-2">NAME & SURNAME</div>
@@ -172,12 +188,12 @@ function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, devi
                 </div>
               </div>
             </div>
-            {/**/}
-            {/**/}
+            {/**
+            {/**
             <div className="bg-slate-300 flex flex-col justify-center items-center border border-black bg-on-print">
               <span className="text-base font-bold">FOR OFFICE USE</span>
             </div>
-            {/**/}
+            {/**
 
             <div>
               <div className="flex col-span-2 border border-black">
@@ -201,13 +217,13 @@ function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, devi
             </div>
           </div>
         </div>
-        {/**/}
+        {/**
         <div className="border rounded-b-md print:rounded-none">
           <img alt="banner" src="/page_banner.png" className="w-full h-[70px] rounded-b-md  print:rounded-none" />
         </div>
       </div>
 
-      {/** */}
+      {/** *
       {hasPermission("print") && (
         <div className="w-full bg-white flex justify-end  p-3  border fixed bottom-0 left-0 gap-3 z-10 noprint">
           <SendViaEmail
@@ -225,7 +241,4 @@ function LoanIssueForm({ handleSendEmail, handleOnPrint, deviceId, user_id, devi
         </div>
       )}
     </div>
-  );
-}
-
-export default LoanIssueForm;
+*/

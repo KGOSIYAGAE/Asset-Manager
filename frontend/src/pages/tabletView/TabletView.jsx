@@ -107,7 +107,7 @@ function TabletView() {
         <div>Session Id: {isRoomJoined ? sessionId : "Waiting..."}</div>
       </div>
 
-      <div className=" flex bg-white overflow-y-auto  ">
+      <div className="flex bg-white overflow-y-auto">
         {userType && userType === "Staff" && source === "issue-verification" ? (
           <StaffIssueVirificationCard deviceId={deviceId} staff_no={userId} />
         ) : userType === "Student" && source === "issue-verification" ? (
@@ -125,6 +125,22 @@ function TabletView() {
 }
 
 export default TabletView;
+
+{
+  /*
+  {userType && userType === "Staff" && source === "issue-verification" ? (
+          <StaffIssueVirificationCard deviceId={deviceId} staff_no={userId} />
+        ) : userType === "Student" && source === "issue-verification" ? (
+          <StudentIssueVerification deviceId={deviceId} student_no={userId} />
+        ) : source === "loan-verification" ? (
+          <LoanIssueVirificationCard deviceId={deviceId} userId={userId} returnDate={returnDate} userType={userType} />
+        ) : source === "laptop-repair" ? (
+          <RepairVerification />
+        ) : (
+          <UserCaptureSignature lablel={"Capture User Signature"} user_id={userId} />
+        )}
+  */
+}
 
 {
   /*<div className="flex flex-col p-2 gap-7">
