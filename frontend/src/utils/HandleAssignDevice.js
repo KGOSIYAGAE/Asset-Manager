@@ -35,7 +35,7 @@ export const handleAssignDeviceToStaff = async (staffData, deviceDetails, issued
       return postMessage(message);
     } else {
       //handleSendApprovalEmail(staffData, deviceDetails, issuedBy, setShowToast, "Issue");
-      const response = await handleSendApprovalEmail(staffData, deviceDetails, issuedBy, showToast, "Issue");
+      //const response = await handleSendApprovalEmail(staffData, deviceDetails, issuedBy, showToast, "Issue");
       navigateTo("/Success");
       return true;
     }
@@ -69,7 +69,7 @@ export const handleAssignDeviceToStudent = async (studentDetails, deviceDetails,
       console.log(message);
       return postMessage(message);
     } else {
-      const response = await handleSendApprovalEmail(studentDetails, deviceDetails, issuedBy, showToast, "Issue");
+      //const response = await handleSendApprovalEmail(studentDetails, deviceDetails, issuedBy, showToast, "Issue");
       navigateTo("/Success");
       return true;
     }

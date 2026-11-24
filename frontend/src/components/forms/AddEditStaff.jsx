@@ -28,9 +28,12 @@ import Modal from "react-modal";
 import { socket } from "../../utils/socket";
 import { getDepartments, getFaculties, getPositions } from "../../services/api/organization/Organization";
 import { useToast } from "../../context/ToastContext";
+import { useToastBox } from "../../context/ToastBoxContext";
 
 function AddEditStaff({ path }) {
   const { staffState } = useStaffContext();
+
+  const { showToastBox } = useToastBox();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -215,7 +218,7 @@ function AddEditStaff({ path }) {
       getUserDetails();
       socket.disconnect();
 
-      navigate(`/users/staff/staff-details/${staff_no}`);
+      //navigate(`/users/staff/staff-details/${staff_no}`);
     });
 
     return () => {
@@ -303,17 +306,22 @@ function AddEditStaff({ path }) {
             <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
 
-          <div className="col-span-6">
-            {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
-            <span
-              className="link-text"
-              onClick={() => {
-                setOpenModal({ isShown: true });
-              }}
-            >
-              Assign Laptop
-            </span>
-          </div>
+          {isActive && isActive === "Active" ? (
+            <div className="col-span-6">
+              {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
+
+              <span
+                className="link-text"
+                onClick={() => {
+                  setOpenModal({ isShown: true });
+                }}
+              >
+                Assign Laptop
+              </span>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
@@ -346,6 +354,7 @@ function AddEditStaff({ path }) {
           onSubmit={() => {
             //getDeviceDetails();
             setOpenModal({ isShown: false });
+            showToastBox("Loan Approval required, Email was sent to approver.", "info");
           }}
           userId={staff_no}
         />

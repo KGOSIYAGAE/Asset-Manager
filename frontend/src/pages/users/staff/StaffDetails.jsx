@@ -24,6 +24,7 @@ import SendToTablet from "../../../components/buttons/SendToTablet/SendToTablet"
 import QrCodeCard from "../../../components/cards/qrCodeCard/QrCodeCard";
 import CancelButton from "../../../components/buttons/CancelButton";
 import BlankCard from "../../../components/cards/blackCard/BlankCard";
+import { useToastBox } from "../../../context/ToastBoxContext";
 
 function StaffDetails({ path }) {
   const [staffDetails, setStaffDetails] = useState();
@@ -34,6 +35,8 @@ function StaffDetails({ path }) {
 
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
   const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
+
+  const { showToastBox } = useToastBox();
 
   //Handle Edit
   const handleEdit = (id) => {
@@ -298,20 +301,13 @@ function StaffDetails({ path }) {
             onSubmit={() => {
               getDetails();
               setOpenModal({ isShown: false });
+              showToastBox("Loan Approval required, Email was sent to approver.", "info");
             }}
             userId={staffDetails?.staff_no}
             setShowToast={setShowToast}
           />
         )}
       </Modal>
-      <ToastMessage
-        isShown={showToast.isShow}
-        type={showToast.type}
-        message={showToast.message}
-        onClose={() => {
-          setShowToast({ isShow: false });
-        }}
-      />
     </div>
   );
 }

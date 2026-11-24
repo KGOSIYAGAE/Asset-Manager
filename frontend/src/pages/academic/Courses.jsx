@@ -10,7 +10,7 @@ import DeleteConfirmation from "../../components/cards/deleteConfirmation/Delete
 import SearchInput from "../../components/inputs/searchInput/SearchInput";
 import CoursesTable from "../../components/tables/CoursesTable";
 import { getCourses } from "../../services/api/academics/Academics";
-import CreateCourse from "../../components/cards/createDepartment copy/CreateCourse";
+
 import { useToast } from "../../context/ToastContext";
 
 function Courses({ path }) {

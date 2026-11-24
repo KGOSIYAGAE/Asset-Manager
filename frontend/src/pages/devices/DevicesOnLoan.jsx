@@ -98,8 +98,7 @@ function DevicesOnLoan({ path }) {
           }}
           onSubmit={() => {
             //showToast("Loan Approval required", "info");
-            showToastBox("Loan request has been submitted, please go to admin for approval.", "success");
-
+            showToastBox("Loan Approval required, Email was sent to approver.", "info");
             setOpenModal({ isShown: false });
           }}
         />

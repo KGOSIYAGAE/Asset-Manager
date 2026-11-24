@@ -9,8 +9,7 @@ const getDeviceCategory = async (req, res) => {
 
     //Get total device that need approval
     const countQuery = `SELECT COUNT(*) AS total FROM "device_categories" `;
-
-    const getDetailsQuery = `SELECT * FROM "device_categories" LIMIT $1 OFFSET $2 `;
+    const getDetailsQuery = `SELECT * FROM "deviceCategoriesDetails" LIMIT $1 OFFSET $2 `;
 
     //Get device count
     const countResponse = await query(countQuery);
@@ -20,7 +19,6 @@ const getDeviceCategory = async (req, res) => {
 
     const totalCategories = countResponse.rows[0].total;
     const totalPages = Math.ceil(totalCategories / limit);
-
     const { rows } = await query(getDetailsQuery, [limit, offset]);
 
     if (!rows) {
@@ -33,270 +31,519 @@ const getDeviceCategory = async (req, res) => {
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-
-//get Courses of faculty
-const getManufacturesOfCategory = async (req, res) => {
-  const { facultyId } = req.params;
-
-  if (!facultyId) {
-    return res.status(400).json({ message: "Faculty Id must be provided", error: true });
-  }
+//create category
+const createDeviceCategory = async (req, res) => {
   try {
-    const getDetailsQuery = `SELECT * FROM courses WHERE faculty_id = $1`;
+    const { category_name, device_type } = req.body;
 
-    const { rows } = await query(getDetailsQuery, [facultyId]);
-
-    if (!rows) {
-      return res.status(400).json({ message: "An error occured fetching courses", error: true });
+    if (!category_name) {
+      return res.status(400).json({ message: "Category name is required", error: true });
     }
 
-    return res.status(200).json({ courses: rows, message: "Success", error: false });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
-  }
-};
-
-//create Course
-const createCourse = async (req, res) => {
-  try {
-    const { course_name, course_code, faculty_id } = req.body;
-
-    console.log(req.body);
-
-    if (!course_name) {
-      return res.status(400).json({ message: "Course name is required", error: true });
+    if (!device_type) {
+      return res.status(400).json({ message: "Category type is required", error: true });
     }
 
-    if (!course_code) {
-      return res.status(400).json({ message: "Course code is required", error: true });
-    }
-
-    if (!faculty_id) {
-      return res.status(400).json({ message: "Faculty Id is required", error: true });
-    }
-
-    const checkIfExist = "SELECT * FROM courses WHERE course_name = $1";
-    const exist = await query(checkIfExist, [course_name]);
+    const checkIfExist = "SELECT * FROM device_categories WHERE category_name = $1";
+    const exist = await query(checkIfExist, [category_name]);
 
     if (exist.rows.length > 0) {
-      return res.status(400).json({ message: "Course already exist", error: true });
+      return res.status(400).json({ message: "Category already exist", error: true });
     }
 
-    const create_faculty_query = "INSERT INTO courses(course_name,course_code, faculty_id,created_at, updated_at, is_deleted) VALUES ($1,$2,$3, NOW(), NOW(),'FALSE')";
+    const create_query = "INSERT INTO device_categories(category_name,device_type,created_at, updated_at, is_deleted) VALUES ($1,$2, NOW(), NOW(),'FALSE')";
 
-    console.log(create_faculty_query);
-
-    const { rowCount } = await query(create_faculty_query, [course_name, course_code, faculty_id]);
-
-    console.log(rowCount);
+    const { rowCount } = await query(create_query, [category_name, device_type]);
 
     if (rowCount <= 0) {
       console.log("error creating");
-      return res.status(400).json({ message: "An error occured creating course.", error: true });
+      return res.status(400).json({ message: "An error occured creating category.", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: "Course successfully created", error: false });
+    return res.status(200).json({ rowCount, message: "Category successfully created", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-
-//update department
-const updateCourse = async (req, res) => {
+//update category
+const updateDeviceCategory = async (req, res) => {
   try {
-    const { course_id } = req.params;
-    const { course_name, course_code, faculty_id } = req.body;
+    const { category_id } = req.params;
+    const { category_name, device_type } = req.body;
 
-    if (!course_id) {
-      return res.status(400).json({ message: "Course Id is required", error: true });
+    if (!category_id) {
+      return res.status(400).json({ message: "Category id is required", error: true });
     }
 
-    if (!course_name) {
-      return res.status(400).json({ message: "Course name is required", error: true });
+    if (!category_name) {
+      return res.status(400).json({ message: "Category name is required", error: true });
     }
 
-    if (!course_code) {
-      return res.status(400).json({ message: "Course code is required", error: true });
+    if (!device_type) {
+      return res.status(400).json({ message: "Category type is required", error: true });
     }
 
-    if (!faculty_id) {
-      return res.status(400).json({ message: "Faculty Id is required", error: true });
-    }
-
-    const checkIfExist = "SELECT * FROM courses WHERE course_name = $1";
-    const exist = await query(checkIfExist, [course_name]);
+    const checkIfExist = "SELECT * FROM device_categories WHERE category_name = $1";
+    const exist = await query(checkIfExist, [category_name]);
 
     if (exist.rows.length > 0) {
-      return res.status(400).json({ message: "Course already exist", error: true });
+      return res.status(400).json({ message: "Category already exist", error: true });
     }
 
-    const update_query = "UPDATE courses SET course_name=$1, course_code=$2, faculty_id=$3, updated_at=NOW() WHERE course_id = $4";
+    const update_query = "UPDATE device_categories SET category_name=$1, device_type=$2, updated_at=NOW() WHERE category_id = $3";
 
-    const { rowCount } = await query(update_query, [course_name, course_code, faculty_id, course_id]);
+    const { rowCount } = await query(update_query, [category_name, device_type, category_id]);
 
     if (rowCount <= 0) {
       console.log("error creating");
-      return res.status(400).json({ message: "An error occured updating course.", error: true });
+      return res.status(400).json({ message: "An error occured updating category.", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: "Course successfully updated", error: false });
+    return res.status(200).json({ rowCount, message: "Category successfully updated", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-
-//delete Faculties
-const deleteCourse = async (req, res) => {
+//delete category
+const deleteDeviceCategory = async (req, res) => {
   try {
-    const { course_id } = req.params;
+    const { category_id } = req.params;
 
-    if (!course_id) {
-      return res.status(400).json({ message: "Course Id is required", error: true });
+    if (!category_id) {
+      return res.status(400).json({ message: "Category id is required", error: true });
     }
 
-    const update_query = "UPDATE course SET is_deleted=true, updated_at=NOW() WHERE course_id = $1";
+    const update_query = "UPDATE device_categories SET is_deleted=true, updated_at=NOW() WHERE category_id = $1";
 
-    const { rowCount } = await query(update_query, [course_id]);
+    const { rowCount } = await query(update_query, [category_id]);
 
     if (rowCount <= 0) {
       console.log("error deleting");
-      return res.status(400).json({ message: "An error occured deleting course.", error: true });
+      return res.status(400).json({ message: "An error occured deleting Category.", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: "Course successfully deleted", error: false });
+    return res.status(200).json({ rowCount, message: "Category successfully deleted", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
+//////////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////
+//get All Device Make of category
+const getDeviceCategoryManufacture = async (req, res) => {
+  try {
+    const { category_id } = req.params;
 
-//get Acdemic Faculties
-const getAcademicFaculties = async (req, res) => {
+    if (!category_id) {
+      return res.status(400).json({ message: "Category id is required", error: true });
+    }
+
+    /*const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "manufacturers" WHERE category_id = $1`;
+*/
+    const getDetailsQuery = `SELECT * FROM "manufacturers" WHERE category_id = $1`;
+
+    /*Get device count
+    const countResponse = await query(countQuery, [category_id]);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching manufactures", error: true });
+    }
+
+    const totalManufactures = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalManufactures / limit);
+*/
+    const { rows } = await query(getDetailsQuery, [category_id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching manufactures", error: true });
+    }
+
+    return res.status(200).json({ manufactures: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+//get All Device Manufacturers
+const getAllDeviceManufactures = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
     const offset = (page - 1) * limit;
 
     //Get total device that need approval
-    const countQuery = `SELECT COUNT(*) AS total FROM "academicFacultiesDetails" WHERE faculty_type = 'Academic'`;
+    const countQuery = `SELECT COUNT(*) AS total FROM "deviceManufacturerDetails" `;
 
-    const getDetailsQuery = `SELECT * FROM "academicFacultiesDetails" WHERE faculty_type = 'Academic' LIMIT $1 OFFSET $2 `;
+    const getDetailsQuery = `SELECT * FROM "deviceManufacturerDetails" LIMIT $1 OFFSET $2 `;
 
     //Get device count
     const countResponse = await query(countQuery);
     if (!countResponse.rows) {
-      return res.status(400).json({ message: "An error occured fetching devices", error: true });
+      return res.status(400).json({ message: "An error occured fetching manufactures", error: true });
     }
 
-    const totalFaulties = countResponse.rows[0].total;
-    const totalPages = Math.ceil(totalFaulties / limit);
+    const totalManufactures = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalManufactures / limit);
+    const { rows } = await query(getDetailsQuery, [limit, offset]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching manufactures", error: true });
+    }
+
+    return res.status(200).json({ totalPages: totalPages, manufactures: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+//get All Device Make
+const getAllDeviceManufactureList = async (req, res) => {
+  try {
+    /*const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "manufacturers" `;
+*/
+    const getDetailsQuery = `SELECT * FROM "manufacturers"`;
+
+    /*Get device count
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching manufactures", error: true });
+    }
+
+    const totalManufactures = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalManufactures / limit);
+*/
+    const { rows } = await query(getDetailsQuery);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching manufactures", error: true });
+    }
+
+    return res.status(200).json({ manufactures: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+//update Manufacturers
+const updateDeviceManufacture = async (req, res) => {
+  try {
+    const { manufacturer_id } = req.params;
+    const { manufacturer_name, description, category_id } = req.body;
+
+    if (!manufacturer_id) {
+      return res.status(400).json({ message: "Manufacturer id is required", error: true });
+    }
+
+    if (!manufacturer_name) {
+      return res.status(400).json({ message: "Manufacturer name is required", error: true });
+    }
+
+    if (!description) {
+      return res.status(400).json({ message: "Manufacturer description is required", error: true });
+    }
+
+    if (!category_id) {
+      return res.status(400).json({ message: "Category id is required", error: true });
+    }
+
+    /*const checkIfExist = "SELECT * FROM manufacturers WHERE manufacturer_name = $1";
+    const exist = await query(checkIfExist, [manufacturer_name]);
+
+    if (exist.rows.length > 0) {
+      return res.status(400).json({ message: "Manufacturer already exist", error: true });
+    }*/
+
+    const update_query = "UPDATE manufacturers SET manufacturer_name=$1, description=$2, category_id=$3, updated_at=NOW() WHERE manufacturer_id = $4";
+
+    const { rowCount } = await query(update_query, [manufacturer_name, description, category_id, manufacturer_id]);
+
+    if (rowCount <= 0) {
+      console.log("error creating");
+      return res.status(400).json({ message: "An error occured updating Manufacturer.", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Manufacturer successfully updated", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+//update Manufacturers
+const createDeviceManufacture = async (req, res) => {
+  try {
+    const { manufacturer_name, description, category_id } = req.body;
+
+    if (!manufacturer_name) {
+      return res.status(400).json({ message: "Manufacturer name is required", error: true });
+    }
+
+    if (!description) {
+      return res.status(400).json({ message: "Manufacturer description is required", error: true });
+    }
+
+    if (!category_id) {
+      return res.status(400).json({ message: "Category id is required", error: true });
+    }
+
+    const checkIfExist = "SELECT * FROM manufacturers WHERE manufacturer_name = $1 AND category_id = $2";
+    const exist = await query(checkIfExist, [manufacturer_name, category_id]);
+
+    if (exist.rows.length > 0) {
+      return res.status(400).json({ message: "Manufacturer already exist", error: true });
+    }
+
+    const create_query = "INSERT INTO manufacturers(manufacturer_name,description,category_id,created_at, updated_at, is_deleted) VALUES ($1,$2,$3, NOW(), NOW(),'FALSE')";
+
+    const { rowCount } = await query(create_query, [manufacturer_name, description, category_id]);
+
+    if (rowCount <= 0) {
+      console.log("error creating");
+      return res.status(400).json({ message: "An error occured creating manufacturer.", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Manufacturer successfully created", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+//delete Manufacturer
+const deleteDeviceManufacturer = async (req, res) => {
+  try {
+    const { manufacturer_id } = req.params;
+
+    if (!manufacturer_id) {
+      return res.status(400).json({ message: "Manufacturer id is required", error: true });
+    }
+
+    const update_query = "UPDATE manufacturers SET is_deleted=true, updated_at=NOW() WHERE manufacturer_id = $1";
+
+    const { rowCount } = await query(update_query, [manufacturer_id]);
+
+    if (rowCount <= 0) {
+      console.log("error deleting");
+      return res.status(400).json({ message: "An error occured deleting Manufacturer.", error: true });
+    }
+
+    return res.status(200).json({ rowCount, message: "Manufacturer successfully deleted", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+////////////////////////////////////////////////////////////
+
+//get All Device Make of category
+const getDeviceManufacture = async (req, res) => {
+  try {
+    const { manufacture_id } = req.params;
+
+    if (!manufacture_id) {
+      return res.status(400).json({ message: "Manufacture id is required", error: true });
+    }
+
+    const getDetailsQuery = `SELECT * FROM "manufacturers" WHERE manufacture_id = $1  `;
+
+    const { rows } = await query(getDetailsQuery, [manufacture_id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching manufactures", error: true });
+    }
+
+    return res.status(200).json({ totalPages: totalPages, manufactures: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
+/////////////////////////////////////////////////////////////////////////
+//get All Device models of manufacture
+const getDeviceManufactureModelsList = async (req, res) => {
+  try {
+    const { manufacture_id } = req.params;
+
+    if (!manufacture_id) {
+      return res.status(400).json({ message: "Manufacture id is required", error: true });
+    }
+
+    /* const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;*/
+
+    //Get total device that need approval
+    //const countQuery = `SELECT COUNT(*) AS total FROM "device_models" WHERE manufacture_id = $1 `;
+
+    const getDetailsQuery = `SELECT * FROM "device_models" WHERE manufacture_id = $1`;
+
+    /*Get device count
+    const countResponse = await query(countQuery, [manufacture_id]);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching models", error: true });
+    }
+
+    const totalModels = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalModels / limit);*/
+
+    const { rows } = await query(getDetailsQuery, [manufacture_id]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching models", error: true });
+    }
+
+    return res.status(200).json({ models: rows, message: "Success", error: false });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+//get All Device models of manufacture paged
+const getDeviceManufactureModels = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    //Get total device that need approval
+    const countQuery = `SELECT COUNT(*) AS total FROM "deviceModelDetails"`;
+
+    const getDetailsQuery = `SELECT * FROM "deviceModelDetails" LIMIT $1 OFFSET $2 `;
+
+    //Get device count
+    const countResponse = await query(countQuery);
+    if (!countResponse.rows) {
+      return res.status(400).json({ message: "An error occured fetching models", error: true });
+    }
+
+    const totalModels = countResponse.rows[0].total;
+    const totalPages = Math.ceil(totalModels / limit);
 
     const { rows } = await query(getDetailsQuery, [limit, offset]);
 
     if (!rows) {
-      return res.status(400).json({ message: "An error occured fetching faculties", error: true });
+      return res.status(400).json({ message: "An error occured fetching models", error: true });
     }
 
-    return res.status(200).json({ totalPages: totalPages, faculties: rows, message: "Success", error: false });
+    return res.status(200).json({ totalPages: totalPages, models: rows, message: "Success", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-
-//create Faculties
-const createFaculty = async (req, res) => {
+//update model
+const updateDeviceModel = async (req, res) => {
   try {
-    const { faculty_name } = req.body;
+    const { model_id } = req.params;
+    const { model_name, specification, manufacturer_id } = req.body;
 
-    if (!faculty_name) {
-      return res.status(400).json({ message: "Faculty name is required", error: true });
+    if (!model_id) {
+      return res.status(400).json({ message: "Model id is required", error: true });
     }
 
-    const checkIfExist = "SELECT * FROM faculties WHERE faculty_name = $1";
-    const exist = await query(checkIfExist, [faculty_name]);
+    if (!model_name) {
+      return res.status(400).json({ message: "Model name is required", error: true });
+    }
+
+    if (!specification) {
+      return res.status(400).json({ message: "Model specification is required", error: true });
+    }
+
+    if (!manufacturer_id) {
+      return res.status(400).json({ message: "Manufacturer id is required", error: true });
+    }
+
+    /*const checkIfExist = "SELECT * FROM manufacturers WHERE manufacturer_name = $1";
+    const exist = await query(checkIfExist, [manufacturer_name]);
 
     if (exist.rows.length > 0) {
-      return res.status(400).json({ message: "Faculty already exist", error: true });
-    }
+      return res.status(400).json({ message: "Manufacturer already exist", error: true });
+    }*/
 
-    const create_faculty_query = "INSERT INTO faculties(faculty_name,created_at, updated_at, is_deleted) VALUES ($1, NOW(), NOW(),'FALSE')";
+    const update_query = "UPDATE device_models SET model_name=$1, specification=$2, manufacture_id=$3, updated_at=NOW() WHERE model_id = $4";
 
-    const { rowCount } = await query(create_faculty_query, [faculty_name]);
+    const { rowCount } = await query(update_query, [model_name, specification, manufacturer_id, model_id]);
 
     if (rowCount <= 0) {
       console.log("error creating");
-      return res.status(400).json({ message: "An error occured creating faculty.", error: true });
+      return res.status(400).json({ message: "An error occured updating Model.", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: "Faculty successfully created", error: false });
+    return res.status(200).json({ rowCount, message: "Model successfully updated", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-
-//update Faculties
-const updateFaculty = async (req, res) => {
+//update model
+const createDeviceModel = async (req, res) => {
   try {
-    const { faculty_id } = req.params;
-    const { faculty_name } = req.body;
+    const { model_name, specification, manufacturer_id } = req.body;
 
-    if (!faculty_id) {
-      return res.status(400).json({ message: "Faculty ID is required", error: true });
+    if (!model_name) {
+      return res.status(400).json({ message: "Model name is required", error: true });
     }
 
-    if (!faculty_name) {
-      return res.status(400).json({ message: "Faculty name is required", error: true });
+    if (!specification) {
+      return res.status(400).json({ message: "Model specification is required", error: true });
     }
 
-    const checkIfExist = "SELECT * FROM faculties WHERE faculty_name = $1";
-    const exist = await query(checkIfExist, [faculty_name]);
+    if (!manufacturer_id) {
+      return res.status(400).json({ message: "Manufacturer id is required", error: true });
+    }
+
+    const checkIfExist = "SELECT * FROM device_models WHERE model_name = $1 AND manufacture_id = $2";
+    const exist = await query(checkIfExist, [model_name, manufacturer_id]);
 
     if (exist.rows.length > 0) {
-      return res.status(400).json({ message: "Faculty already exist", error: true });
+      return res.status(400).json({ message: "Model already exist", error: true });
     }
 
-    const update_faculty_query = "UPDATE faculties SET faculty_name=$1, updated_at=NOW() WHERE faculty_id = $2";
+    const create_query = "INSERT INTO device_models(model_name,specification,manufacture_id,created_at, updated_at, is_deleted) VALUES ($1,$2,$3, NOW(), NOW(),'FALSE')";
 
-    const { rowCount } = await query(update_faculty_query, [faculty_name, faculty_id]);
+    const { rowCount } = await query(create_query, [model_name, specification, manufacturer_id]);
 
     if (rowCount <= 0) {
       console.log("error creating");
-      return res.status(400).json({ message: "An error occured updating faculty.", error: true });
+      return res.status(400).json({ message: "An error occured creating Model.", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: "Faculty successfully updated", error: false });
+    return res.status(200).json({ rowCount, message: "Model successfully created", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
   }
 };
-
-//delete Faculties
-const deleteFaculty = async (req, res) => {
+//delete model
+const deleteDeviceModel = async (req, res) => {
   try {
-    const { faculty_id } = req.params;
+    const { model_id } = req.params;
 
-    if (!faculty_id) {
-      return res.status(400).json({ message: "Faculty ID is required", error: true });
+    if (!model_id) {
+      return res.status(400).json({ message: "Model id is required", error: true });
     }
 
-    const update_faculty_query = "UPDATE faculties SET is_deleted=true, updated_at=NOW() WHERE faculty_id = $1";
+    const update_query = "UPDATE device_models SET is_deleted=true, updated_at=NOW() WHERE model_id = $1";
 
-    const { rowCount } = await query(update_faculty_query, [faculty_id]);
+    const { rowCount } = await query(update_query, [model_id]);
 
     if (rowCount <= 0) {
       console.log("error deleting");
-      return res.status(400).json({ message: "An error occured deleting faculty.", error: true });
+      return res.status(400).json({ message: "An error occured deleting Model.", error: true });
     }
 
-    return res.status(200).json({ rowCount, message: "Faculty successfully deleted", error: false });
+    return res.status(200).json({ rowCount, message: "Model successfully deleted", error: false });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -305,4 +552,18 @@ const deleteFaculty = async (req, res) => {
 
 module.exports = {
   getDeviceCategory,
+  createDeviceCategory,
+  updateDeviceCategory,
+  deleteDeviceCategory,
+  getAllDeviceManufactures,
+  getAllDeviceManufactureList,
+  updateDeviceManufacture,
+  createDeviceManufacture,
+  deleteDeviceManufacturer,
+  getDeviceCategoryManufacture,
+  getDeviceManufactureModelsList,
+  getDeviceManufactureModels,
+  updateDeviceModel,
+  createDeviceModel,
+  deleteDeviceModel,
 };

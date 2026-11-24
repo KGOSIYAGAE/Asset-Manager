@@ -18,6 +18,7 @@ import { hasPermission } from "../../../utils/getLoggedInUser";
 import { socket } from "../../../utils/socket";
 import SubmitButton from "../../../components/buttons/SubmitButton";
 import BlankCard from "../../../components/cards/blackCard/BlankCard";
+import { useToastBox } from "../../../context/ToastBoxContext";
 
 function StudentDetails({ path }) {
   const [studentDetails, setStudentDetails] = useState();
@@ -27,6 +28,8 @@ function StudentDetails({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });
 
   const [showToast, setShowToast] = useState({ isShow: false, type: null, message: null });
+
+  const { showToastBox } = useToastBox();
 
   const navigate = useNavigate();
 
@@ -288,6 +291,7 @@ function StudentDetails({ path }) {
             }}
             onSubmit={() => {
               getDetails();
+              showToastBox("Loan Approval required, Email was sent to approver.", "info");
               setOpenModal({ isShown: false });
             }}
             userId={studentDetails?.student_number}

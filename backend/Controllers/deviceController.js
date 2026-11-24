@@ -128,17 +128,32 @@ const bulkCreateDevice = async (req, res) => {
 //Create device
 const createDevice = async (req, res) => {
   try {
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, supplier_name, invoice_no, device_type, purchaseValue, currentValue } = req.body;
+    const {
+      assetTag,
+      //deviceMake_id,
+      deviceModel_id,
+      serial_no,
+      spec,
+      //deviceCategory_id,
+      device_condition,
+      status,
+      warranty_end_date,
+      supplier_name,
+      invoice_no,
+      device_type,
+      purchaseValue,
+      currentValue,
+    } = req.body;
 
     //return res.status(400).json({ assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue });
 
     if (!assetTag) {
       return res.status(400).json({ message: "Asset Tag is required!" });
     }
-    if (!make) {
+    /*if (!deviceMake_id) {
       return res.status(400).json({ message: "Make is required!" });
-    }
-    if (!model) {
+    }*/
+    if (!deviceModel_id) {
       return res.status(400).json({ message: "Model is required!" });
     }
     if (!serial_no) {
@@ -147,9 +162,9 @@ const createDevice = async (req, res) => {
     if (!spec) {
       return res.status(400).json({ message: "Specification is required!" });
     }
-    if (!category) {
+    /*if (!deviceCategory_id) {
       return res.status(400).json({ message: "Category is required!" });
-    }
+    }*/
     if (!device_condition) {
       return res.status(400).json({ message: "Device condition is required!" });
     }
@@ -176,17 +191,29 @@ const createDevice = async (req, res) => {
     }
 
     const create_device_query =
-      "INSERT INTO devices(make, model, category, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type,operational_state,created_at,is_deleted) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,'Normal', NOW(),FALSE);";
-    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, supplier_name, invoice_no, device_type];
+      "INSERT INTO devices(model_id, device_condition, status, asset_tag, serial_no, specification, warranty_end_date, purchase_price, value_price, supplier_name, invoice_number, device_type,operational_state,created_at,is_deleted) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'Normal', NOW(),FALSE);";
+    const VALUES = [
+      //deviceMake_id,
+      deviceModel_id,
+      //deviceCategory_id,
+      device_condition,
+      status,
+      assetTag,
+      serial_no,
+      spec,
+      warranty_end_date,
+      purchaseValue,
+      currentValue,
+      supplier_name,
+      invoice_no,
+      device_type,
+    ];
 
     const { rowCount } = await query(create_device_query, [...VALUES]);
 
     if (rowCount <= 0) {
       return res.status(400).json({ message: "An error occured when creating a device", error: true });
     }
-
-    //Create new log
-    //createNewLog("Create", req.user, id, `Device successfully created.`);
 
     return res.status(200).json({ rowCount, message: "Successfully created", error: false });
   } catch (error) {
@@ -207,17 +234,15 @@ const updateDevice = async (req, res) => {
       return res.status(400).json({ message: "Device Id is required!", error: true });
     }
 
-    console.log(req.body);
-
-    const { assetTag, make, model, serial_no, spec, category, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue } = req.body;
+    const { assetTag, deviceModel_id, serial_no, spec, device_condition, status, warranty_end_date, invoice_no, purchaseValue, currentValue } = req.body;
 
     if (!assetTag) {
       return res.status(400).json({ message: "Asset Tag is required!", error: true });
     }
-    if (!make) {
+    /* if (!deviceMake_id) {
       return res.status(400).json({ message: "Make is required!", error: true });
-    }
-    if (!model) {
+    }*/
+    if (!deviceModel_id) {
       return res.status(400).json({ message: "Model is required!", error: true });
     }
     if (!serial_no) {
@@ -226,9 +251,9 @@ const updateDevice = async (req, res) => {
     if (!spec) {
       return res.status(400).json({ message: "Specification is required!", error: true });
     }
-    if (!category) {
+    /*if (!deviceCategory_id) {
       return res.status(400).json({ message: "Category is required!", error: true });
-    }
+    }*/
     if (!device_condition) {
       return res.status(400).json({ message: "Device condition is required!", error: true });
     }
@@ -249,17 +274,14 @@ const updateDevice = async (req, res) => {
     }
 
     const update_device_query =
-      "UPDATE devices SET make=$1, model=$2, category=$3, device_condition=$4, status=$5, asset_tag=$6, serial_no=$7, specification=$8, warranty_end_date=$9, purchase_price=$10, value_price=$11, invoice_number=$12, updated_at=NOW() WHERE id =$13 ;";
-    const VALUES = [make, model, category, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_no];
+      "UPDATE devices SET model_id=$1, device_condition=$2, status=$3, asset_tag=$4, serial_no=$5, specification=$6, warranty_end_date=$7, purchase_price=$8, value_price=$9, invoice_number=$10, updated_at=NOW() WHERE id =$11 ;";
+    const VALUES = [deviceModel_id, device_condition, status, assetTag, serial_no, spec, warranty_end_date, purchaseValue, currentValue, invoice_no];
 
     const { rowCount } = await query(update_device_query, [...VALUES, id]);
 
     if (rowCount <= 0) {
       return res.status(400).json({ message: "An error occured when updating the device", error: true });
     }
-
-    //Create new log
-    createNewLog("Update", req.user, id, `Device successfully updated.`);
 
     return res.status(200).json({ rowCount, message: "Device successfully updated", error: false });
   } catch (error) {
@@ -608,7 +630,7 @@ const getDevice = async (req, res) => {
       return res.status(400).json({ message: "Device id not provided", error: true });
     }
 
-    const getDeviceQuery = "SELECT * FROM devices WHERE id = $1";
+    const getDeviceQuery = `SELECT * FROM "deviceDetails" WHERE id = $1`;
 
     const { rows } = await query(getDeviceQuery, [id]);
 
@@ -771,7 +793,9 @@ const assignDevice = async (req, res) => {
       return res.status(400).json({ message: "Device not updated", error: true });
     }
 
-    return res.status(200).json({ message: `Device state has been changed, Approval is required`, error: false });
+    const { message, error } = await sendApprovalEmail(issued_by, userId, device, userEndDate, "Issue", res);
+
+    return res.status(200).json({ message: message, error: error });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -822,7 +846,9 @@ const loanDevice = async (req, res) => {
       return res.status(400).json({ message: "Device not updated", error: true });
     }
 
-    return res.status(200).json({ message: `Device state has been changed, Approval is required`, error: false });
+    const { message, error } = await sendApprovalEmail(issued_by, userId, device, expected_return_date, "Loan", res);
+
+    return res.status(200).json({ message: message, error: error });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: `Internal server error: ${error}`, error: true });
@@ -921,7 +947,7 @@ const rejectDeviceIssueLoan = async (req, res) => {
     }
 
     //Send Rejection Email Email
-    const emailSent = await sendRejectionEmail(rejected_by, deviceTransactionId, device, rejectReason, res);
+    await sendRejectionEmail(rejected_by, deviceTransactionId, device, rejectReason, res);
 
     return res.status(200).json({ rowCount, message: `Device rejection email successfully sent.`, error: false });
   } catch (error) {

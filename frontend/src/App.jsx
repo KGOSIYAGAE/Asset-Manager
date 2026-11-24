@@ -49,6 +49,9 @@ import Settings from "./pages/settings/Settings";
 import AcademicFaculties from "./pages/academic/AcademicFaculties";
 import Courses from "./pages/academic/Courses";
 import { ToastBoxProvider } from "./context/ToastBoxContext";
+import DeviceCategories from "./pages/deviceCatalog/DeviceCategories";
+import DeviceModels from "./pages/deviceCatalog/DeviceModels";
+import DeviceManufacturers from "./pages/deviceCatalog/DeviceManufacturers";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -243,7 +246,11 @@ function App() {
         },
         {
           path: "/devices/device-details/:id",
-          element: <DeviceDetails path={"device-details/"} />,
+          element: (
+            <ToastBoxProvider>
+              <DeviceDetails path={"device-details/"} />
+            </ToastBoxProvider>
+          ),
           errorElement: <Home />,
         },
         {
@@ -286,13 +293,29 @@ function App() {
         },
         {
           path: "/users/staff/edit-staff/:id",
-          element: <AddEditStaff path={"edit-staff"} />,
+          element: (
+            <ToastBoxProvider>
+              <AddEditStaff path={"edit-staff"} />
+            </ToastBoxProvider>
+          ),
         },
         {
           path: "/users/staff/add-staff/",
-          element: <AddEditStaff path={"edit-staff"} />,
+          element: (
+            <ToastBoxProvider>
+              <AddEditStaff path={"add-staff"} />
+            </ToastBoxProvider>
+          ),
         },
-        { path: "/users/staff/staff-details/:staff_no", element: <StaffDetails path={"staff-details/"} />, errorElement: <Home /> },
+        {
+          path: "/users/staff/staff-details/:staff_no",
+          element: (
+            <ToastBoxProvider>
+              <StaffDetails path={"staff-details/"} />
+            </ToastBoxProvider>
+          ),
+          errorElement: <Home />,
+        },
 
         //Students
         {
@@ -301,13 +324,29 @@ function App() {
         },
         {
           path: "/users/students/edit-student/:student_no",
-          element: <AddEditStudent path={"edit-student"} />,
+          element: (
+            <ToastBoxProvider>
+              <AddEditStudent path={"edit-student"} />
+            </ToastBoxProvider>
+          ),
         },
         {
           path: "/users/students/add-student",
-          element: <AddEditStudent path={"edit-student"} />,
+          element: (
+            <ToastBoxProvider>
+              <AddEditStudent path={"edit-student"} />
+            </ToastBoxProvider>
+          ),
         },
-        { path: "/users/students/student-details/:student_no", element: <StudentDetails path={"student-details/"} />, errorElement: <Home /> },
+        {
+          path: "/users/students/student-details/:student_no",
+          element: (
+            <ToastBoxProvider>
+              <StudentDetails path={"student-details/"} />{" "}
+            </ToastBoxProvider>
+          ),
+          errorElement: <Home />,
+        },
 
         //Organization
         {
@@ -331,6 +370,20 @@ function App() {
         {
           path: "/academic/courses",
           element: <Courses path={"courses"} />,
+        },
+
+        //Device catalog
+        {
+          path: "/device-catalog/categories",
+          element: <DeviceCategories path={"categories"} />,
+        },
+        {
+          path: "/device-catalog/manufacturers",
+          element: <DeviceManufacturers path={"manufacturers"} />,
+        },
+        {
+          path: "/device-catalog/models",
+          element: <DeviceModels path={"models"} />,
         },
 
         //Repairs

@@ -27,9 +27,12 @@ import Modal from "react-modal";
 import StudentFacultySelectInput from "../inputs/selectInputs/studentFacultySelectInput/StudentFacultySelectInput";
 import { socket } from "../../utils/socket";
 import { useToast } from "../../context/ToastContext";
+import { useToastBox } from "../../context/ToastBoxContext";
 
 function AddEditStudent({ path }) {
   const { showToast } = useToast();
+
+  const { showToastBox } = useToastBox();
 
   const [name, setName] = useState();
   const [surname, setSurname] = useState();
@@ -219,7 +222,7 @@ function AddEditStudent({ path }) {
 
       //getSelectedUser();
       socket.disconnect();
-      navigate(`/users/students/student-details/${studentNumber}`);
+      //navigate(`/users/students/student-details/${studentNumber}`);
     });
 
     return () => {
@@ -290,17 +293,21 @@ function AddEditStudent({ path }) {
             <FormUserStatus isActive={isActive} isDisabled={isDisabled} handleUserstatus={handleUserstatus} />
           </div>
 
-          <div className="col-span-4">
-            {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
-            <span
-              className="link-text"
-              onClick={() => {
-                setOpenModal({ isShown: true });
-              }}
-            >
-              Assign Laptop
-            </span>
-          </div>
+          {isActive && isActive === "Active" ? (
+            <div className="col-span-4">
+              {/*<FormLaptopDetails laptopDetails={laptopDetails} />*/}
+              <span
+                className="link-text"
+                onClick={() => {
+                  setOpenModal({ isShown: true });
+                }}
+              >
+                Assign Laptop
+              </span>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div className="flex justify-end">
           <div className="flex gap-5">
@@ -333,6 +340,7 @@ function AddEditStudent({ path }) {
             }}
             onSubmit={() => {
               //getDeviceDetails();
+              showToastBox("Loan Approval required, Email was sent to approver.", "info");
               setOpenModal({ isShown: false });
             }}
             userId={studentNumber}

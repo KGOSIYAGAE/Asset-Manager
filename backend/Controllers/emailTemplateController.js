@@ -50,6 +50,28 @@ const getEmailTemplates = async (req, res) => {
   }
 };
 
+//get a document
+const getEmailTemplatesHelper = async (name) => {
+  try {
+    if (!name) {
+      return console.log({ message: "name not provided", error: true });
+    }
+
+    const get_Query = `SELECT * FROM email_templates WHERE name ILIKE '%' || $1 || '%'`;
+
+    const { rows } = await query(get_Query, [name]);
+
+    if (!rows) {
+      return res.status(400).json({ message: "An error occured fetching  Document template", error: true });
+    }
+
+    return { template: rows, message: "Success", error: false };
+  } catch (error) {
+    console.log(error);
+    return console.log({ message: `Internal server error: ${error}`, error: true });
+  }
+};
+
 //update
 const updateEmailTemplate = async (req, res) => {
   try {
@@ -113,4 +135,4 @@ const deleteEmailTemplate = async (req, res) => {
   }
 };
 
-module.exports = { createEmailTemplate, getEmailTemplates, updateEmailTemplate, deleteEmailTemplate };
+module.exports = { createEmailTemplate, getEmailTemplates, getEmailTemplatesHelper, updateEmailTemplate, deleteEmailTemplate };

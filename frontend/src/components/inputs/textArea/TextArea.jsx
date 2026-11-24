@@ -1,7 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 function TextArea({ label, value, isDisabled, maxLength, document, setOnChange }) {
-  useEffect((e) => {}, []);
+  const [specification, setSpecification] = useState();
+
+  useEffect(() => {
+    if (value) {
+      setSpecification(value);
+    }
+  }, [value]);
   return (
     <div className="text-input group focus-within:border-red-600 ">
       <span className="w-fit group-focus-within:text-red-600 text-zinc-500 -mt-5 bg-white">{label}</span>

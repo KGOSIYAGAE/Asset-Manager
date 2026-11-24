@@ -280,21 +280,21 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
 
             <div className={`${showDeviceCatalogOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
               {hasPermission("loan") && (
-                <Link to={"/academic/faculties"}>
+                <Link to={"/device-catalog/categories"}>
                   <div className="menu-items" onClick={() => {}}>
                     <span className="text-sm p-1">Device Categories</span>
                   </div>
                 </Link>
               )}
               {hasPermission("view-upgrades") && (
-                <Link to={"/academic/courses"}>
+                <Link to={"/device-catalog/manufacturers"}>
                   <div className="menu-items">
                     <span className="text-sm p-1">Manufacturers</span>
                   </div>
                 </Link>
               )}
               {hasPermission("view-upgrades") && (
-                <Link to={"/academic/courses"}>
+                <Link to={"/device-catalog/models"}>
                   <div className="menu-items">
                     <span className="text-sm p-1">Device Models</span>
                   </div>

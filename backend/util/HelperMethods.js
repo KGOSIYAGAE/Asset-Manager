@@ -90,10 +90,36 @@ const handleTimeStampToText = (timestamp) => {
   }
 };
 
+//Get todays date
+const getTodayDate = () => {
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  let finalMonth;
+  let finalDay;
+
+  if (month < 10) {
+    finalMonth = "0" + month.toString();
+  } else {
+    finalMonth = month;
+  }
+
+  if (day < 10) {
+    finalDay = "0" + day.toString();
+  } else {
+    finalDay = day;
+  }
+
+  return `${year}/${finalMonth}/${finalDay}`;
+};
+
 module.exports = {
   getApprovers,
   getIssuer,
   getReceiver,
   getDeviceIssued,
   handleTimeStampToText,
+  getTodayDate,
 };

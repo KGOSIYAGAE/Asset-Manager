@@ -15,17 +15,20 @@ import { useInvoiceContext } from "../../hooks/useInvoiceContext";
 import InvoiceSelectInput from "../inputs/selectInputs/invoiceSelectInput/InvoiceSelectInput";
 import { handleTimeStamp } from "../../utils/dateConverter";
 import { getLoggedInUser, hasPermission } from "../../utils/getLoggedInUser";
-import CategorySelectInput from "../inputs/selectInputs/deviceCategorySelectInput/CategorySelectInput";
+import CategorySelectInput from "../inputs/selectInputs/categorySelectInput/CategorySelectInput";
 import { GetDeviceType } from "../../utils/helperMethods";
 import { useToast } from "../../context/ToastContext";
+import DeviceCategorySelectInput from "../inputs/selectInputs/deviceCategorySelectInput/DeviceCategorySelectInput ";
+import DeviceManufactureSelectInput from "../inputs/selectInputs/deviceManufactureSelectInput/DeviceManufactureSelectInput ";
+import DeviceModelSelectInput from "../inputs/selectInputs/deviceModelSelectInput/DeviceModelSelectInput ";
 
 function AddEditDevice({ path }) {
-  const [make, setMake] = useState();
-  const [model, setModel] = useState();
+  //const [make, setMake] = useState();
+  //const [model, setModel] = useState();
   const [serial_no, setSerial_no] = useState();
   const [assetTag, setAssetTag] = useState();
   const [spec, setSpec] = useState();
-  const [category, setCategory] = useState("Laptop"); // Laptop, desktop, all in one, Monitor
+  //const [category, setCategory] = useState("Laptop"); // Laptop, desktop, all in one, Monitor
   const [device_condition, setDevice_Condition] = useState("New"); //New, Used, Faulty/ Scrap
   const [status, setStatus] = useState("Available"); //Available, Loaned, Assigned, Under Maintenance, Lost
   const [warranty_end_date, setWarranty_End_date] = useState();
@@ -40,6 +43,10 @@ function AddEditDevice({ path }) {
 
   const [deviceMufactures, setDeviceManufactures] = useState([]);
   const [deviceModels, setDeviceModels] = useState([]);
+
+  const [deviceCategory_id, setDeviceCategory_id] = useState();
+  const [deviceMake_id, setDeviceMake_id] = useState();
+  const [deviceModel_id, setDeviceModel_id] = useState();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -66,14 +73,13 @@ function AddEditDevice({ path }) {
 
   //handle set form data
   const setFormData = (deviceDetails) => {
+    console.log(deviceDetails);
+
     setFormType("Edit");
     setSerial_no(deviceDetails[0].serial_no);
     setAssetTag(deviceDetails[0].asset_tag);
-    setMake(deviceDetails[0].make);
-    setModel(deviceDetails[0].model);
 
     setSpec(deviceDetails[0].specification);
-    setCategory(deviceDetails[0].category);
     setDevice_Condition(deviceDetails[0].device_condition);
     setStatus(deviceDetails[0].status);
     setWarranty_End_date(handleTimeStamp(deviceDetails[0].warranty_end_date));
@@ -82,8 +88,12 @@ function AddEditDevice({ path }) {
     setPurchaseValue(deviceDetails[0].purchase_price);
     setCurrentValue(deviceDetails[0].value_price);
 
-    handleMake(deviceDetails[0].category);
-    handleModel(deviceDetails[0].make);
+    setDeviceCategory_id(deviceDetails[0].category_id);
+    setDeviceMake_id(deviceDetails[0].manufacturer_id);
+    setDeviceModel_id(deviceDetails[0].model_id);
+
+    //handleMake(deviceDetails[0].category);
+    //handleModel(deviceDetails[0].make);
   };
 
   //Handle Submit
@@ -101,11 +111,14 @@ function AddEditDevice({ path }) {
     if (!device_condition) {
       return showToast("Device condition must be provided.", "error");
     }
-    if (!category) {
+    /*if (!deviceCategory_id) {
       return showToast("Device category must be selected.", "error");
     }
-    if (!make) {
+    if (!deviceMake_id) {
       return showToast("Device manufacture must be provided.", "error");
+    }*/
+    if (!deviceModel_id) {
+      return showToast("Device model must be provided.", "error");
     }
     if (!warranty_end_date) {
       return showToast("Device warranty end date must be provided.", "error");
@@ -128,11 +141,9 @@ function AddEditDevice({ path }) {
 
     const deviceDetails = {
       assetTag,
-      make,
-      model,
+      deviceModel_id,
       serial_no,
       spec,
-      category,
       device_condition,
       status,
       warranty_end_date,
@@ -177,16 +188,16 @@ function AddEditDevice({ path }) {
         <div className="grid grid-cols-8 gap-8 pt-5 ">
           <div className="col-span-5 lg:col-span-3">
             {/*<SelectInput label={"Category"} value={category} options={deviceCategory} optionName={"name"} isDisabled={false} setOnChange={setCategory} />*/}
-            <CategorySelectInput label={"Category"} value={category} options={ICT_DEVICES} setOnChange={setCategory} onChoose={handleMake} />
+            <DeviceCategorySelectInput label={"Category"} category_id={deviceCategory_id} isDisabled={false} setCategory_id={setDeviceCategory_id} />
           </div>
 
           <div className="col-span-4 lg:col-span-2">
             {/*<SelectInput label={"Manufacture"} value={make} options={deviceManufacture} optionName={"name"} isDisabled={false} setOnChange={setMake} onChoose={handleModel} />*/}
-            <CategorySelectInput label={"Make"} value={make} options={deviceMufactures} setOnChange={setMake} onChoose={handleModel} />
+            <DeviceManufactureSelectInput label={"Make"} deviceMake_id={deviceMake_id} isDisabled={false} deviceCategory_id={deviceCategory_id} setDeviceMake_id={setDeviceMake_id} />
           </div>
           <div className="col-span-4 lg:col-span-2">
             {/*<SelectInput label={"Model"} value={model} options={modelList} optionName={"name"} opisDisabled={false} setOnChange={setModel} />*/}
-            <CategorySelectInput label={"Model"} value={model} options={deviceModels} setOnChange={setModel} />
+            <DeviceModelSelectInput label={"Model"} deviceModel_id={deviceModel_id} isDisabled={false} deviceMake_id={deviceMake_id} setDeviceModel_id={setDeviceModel_id} setSpec={setSpec} />
           </div>
 
           <div className="col-span-5 lg:col-span-2">

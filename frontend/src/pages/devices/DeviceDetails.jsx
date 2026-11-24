@@ -30,6 +30,7 @@ import { socket } from "../../utils/socket";
 import ComposeEmail from "../../components/cards/composeEmail/ComposeEmail";
 import RejectionDetails from "../../components/cards/rejectionDetails/RejectionDetails";
 import { useToast } from "../../context/ToastContext";
+import { useToastBox } from "../../context/ToastBoxContext";
 
 function DeviceDetails({ path }) {
   const { staffState } = useStaffContext();
@@ -52,6 +53,7 @@ function DeviceDetails({ path }) {
   const [deviceTransactions, setDeviceTransactions] = useState(null);
 
   const { showToast } = useToast();
+  const { showToastBox } = useToastBox();
 
   const iframeRef = useRef(null);
 
@@ -396,7 +398,8 @@ function DeviceDetails({ path }) {
             onSubmit={() => {
               getDeviceDetails();
               setOpenModal({ isShown: false });
-              showToast("Issue Approval required", "info");
+
+              showToastBox("Loan Approval required, Email was sent to approver.", "info");
             }}
             deviceId={deviceDetails?.id}
             showToast={showToast}
