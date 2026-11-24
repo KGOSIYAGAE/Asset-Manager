@@ -83,7 +83,7 @@ const getAllTransactionsForDevice = async (req, res) => {
     CONCAT(st_rejector.name,' ',st_rejector.surname) AS rejected_by
 
     FROM device_transactions
-    LEFT JOIN devices ON device_transactions.device_serial_number = devices.serial_no
+    LEFT JOIN "deviceDetails" devices ON device_transactions.device_serial_number = devices.serial_no
     LEFT JOIN students ON device_transactions.user_id = students.student_number
     LEFT JOIN staff ON device_transactions.user_id = staff.staff_no
     LEFT JOIN staff st_rejector ON device_transactions.rejected_by = st_rejector.id
@@ -115,7 +115,7 @@ const getAllTransactionsForUser = async (req, res) => {
     const { rowCount, rows } = await query(getAllTransactions, [user_id]);
 
     if (rowCount <= 0) {
-      return res.status(400).json({ message: "No logs found", error: true });
+      return res.status(204).json({ message: "No logs found", error: true });
     }
 
     let transactionSerialNumbers = rows.map((rowCount) => rowCount.device_serial_number);
@@ -143,7 +143,7 @@ const getAllTransactionsForUser = async (req, res) => {
 
 
     FROM device_transactions
-    LEFT JOIN devices ON device_transactions.device_serial_number = devices.serial_no
+    LEFT JOIN "deviceDetails" devices ON device_transactions.device_serial_number = devices.serial_no
     LEFT JOIN staff st_app ON device_transactions.approved_by = st_app.id
     LEFT JOIN staff st_issuer ON device_transactions.issued_by = st_issuer.id
     LEFT JOIN staff st_returner ON device_transactions.returned_by = st_returner.id

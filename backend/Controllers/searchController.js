@@ -47,6 +47,15 @@ const search = async (req, res) => {
     } else if (tableName === "departments") {
       dataQuery = `SELECT * FROM "departmentDetails"
      WHERE department_name ILIKE '%' || $1 || '%'  LIMIT 6`;
+    } else if (tableName === "categories") {
+      dataQuery = `SELECT * FROM "deviceCategoriesDetails"
+     WHERE category_name ILIKE '%' || $1 || '%'  LIMIT 6`;
+    } else if (tableName === "manufacturers") {
+      dataQuery = `SELECT * FROM "deviceManufacturerDetails"
+     WHERE manufacturer_name ILIKE '%' || $1 || '%'  LIMIT 6`;
+    } else if (tableName === "models") {
+      dataQuery = `SELECT * FROM "deviceModelDetails"
+     WHERE model_name ILIKE '%' || $1 || '%'  LIMIT 6`;
     } else {
       dataQuery = "";
     }

@@ -369,7 +369,11 @@ const getDevicesDueReturn = async (req, res) => {
     const countQuery = `SELECT COUNT(*) AS total FROM "deviceUserDetails" WHERE status = 'Assigned' AND expected_return_date <= CURRENT_DATE`;
 
     //Get the pagated data
-    const dataQuery = `SELECT * FROM "deviceUserDetails" WHERE status = 'Assigned' AND expected_return_date <= CURRENT_DATE LIMIT $1 OFFSET $2`;
+    const dataQuery = `SELECT * 
+FROM "deviceUserDetails" 
+WHERE status = 'Assigned' 
+  AND expected_return_date::date <= CURRENT_DATE 
+LIMIT $1 OFFSET $2;`;
 
     const countResponse = await query(countQuery);
     if (!countResponse.rows) {
@@ -403,14 +407,14 @@ const getDevicesStats = async (req, res) => {
     COUNT(DISTINCT make) AS distinct_makes,
     COUNT(DISTINCT model) AS distinct_models,
     COUNT(DISTINCT category) AS distinct_categories
-    FROM devices;`;
+    FROM "deviceDetails" devices;`;
 
     //2. Devices grouped by make and model
     const devicesByMakeModelQuery = `SELECT
     make,
     model,
     COUNT(*) AS total_units
-    FROM devices
+    FROM "deviceDetails" devices
     WHERE is_deleted = false OR is_deleted IS NULL
     GROUP BY make, model
     ORDER BY make, total_units DESC;`;
@@ -419,7 +423,7 @@ const getDevicesStats = async (req, res) => {
     const devicesByStatusQuery = `SELECT
             status,
             COUNT(*) AS total
-            FROM devices
+            FROM "deviceDetails" devices
             WHERE is_deleted = false OR is_deleted IS NULL
             GROUP BY status
             ORDER BY total DESC;`;
@@ -444,7 +448,7 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     const devicesByCategoryQuery = `SELECT
     category,
     COUNT(*) AS total
-    FROM devices
+    FROM "deviceDetails" devices
     WHERE is_deleted = false OR is_deleted IS NULL
     GROUP BY category
     ORDER BY total DESC;`;
@@ -453,7 +457,7 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     const devicesByConditionQuery = `SELECT
     device_condition,
     COUNT(*) AS total
-    FROM devices
+    FROM "deviceDetails" devices
     WHERE is_deleted = false OR is_deleted IS NULL
     GROUP BY device_condition
     ORDER BY total DESC;`;
@@ -462,7 +466,7 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     const devicesByOperationalQuery = `SELECT
     operational_state,
     COUNT(*) AS total
-    FROM devices
+    FROM "deviceDetails" devices
     WHERE is_deleted = false OR is_deleted IS NULL
     GROUP BY operational_state
     ORDER BY total DESC;`;
@@ -473,7 +477,7 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     model,
     status,
     COUNT(*) AS total
-    FROM devices
+    FROM "deviceDetails" devices
     WHERE is_deleted = false OR is_deleted IS NULL
     GROUP BY make,model, status
     ORDER BY make,model, status;`;
@@ -499,7 +503,7 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     THEN (CURRENT_DATE - warranty_end_date) || ' days ago'
     ELSE (warranty_end_date - CURRENT_DATE) || ' days remaining'
     END AS days_diff_label
-    FROM devices
+    FROM "deviceDetails" devices
     WHERE warranty_end_date BETWEEN CURRENT_DATE - INTERVAL '5 days' 
     AND CURRENT_DATE + INTERVAL '60 days'
     AND (is_deleted = false OR is_deleted IS NULL)
@@ -512,71 +516,8 @@ WHERE is_deleted = false OR is_deleted IS NULL;
     COUNT(*) FILTER (WHERE status = 'Loaned' AND length(current_user_id::text) > 6) AS loaned_to_students,
     COUNT(*) FILTER (WHERE status = 'Loaned' AND length(current_user_id::text) <= 6) AS loaned_to_staff,
     COUNT(*) FILTER (WHERE current_user_id IS NULL AND status IN ('Assigned', 'Loaned')) AS assigned_but_no_user_id
-    FROM devices
+    FROM "deviceDetails" devices
     WHERE (is_deleted = false OR is_deleted IS NULL);`;
-
-    /* const devicesOverallSummaryResponse = await query(devicesOverallSummaryQuery);
-    const devicesOverallSummary = devicesOverallSummaryResponse.rows;
-
-    if (!devicesOverallSummary) {
-      return res.status(400).json({ message: "Device Summary not found", error: true });
-    }
-
-    const devicesByMakeModelResponse = await query(devicesByMakeModelQuery);
-    const devicesByMakeModel = devicesByMakeModelResponse.rows;
-
-    if (!devicesByMakeModel) {
-      return res.status(400).json({ message: "Device grouped by Make & Model not found", error: true });
-    }
-
-    const devicesByStatusResponse = await query(devicesByStatusQuery);
-    const devicesByStatus = devicesByStatusResponse.rows;
-
-    if (!devicesByStatus) {
-      return res.status(400).json({ message: "Device grouped by status not found", error: true });
-    }
-
-    const devicesByCategorysResponse = await query(devicesByCategoryQuery);
-    const devicesByCategory = devicesByCategorysResponse.rows;
-
-    if (!devicesByCategory) {
-      return res.status(400).json({ message: "Device grouped by category not found", error: true });
-    }
-
-    const devicesByConditionResponse = await query(devicesByConditionQuery);
-    const devicesByCondition = devicesByConditionResponse.rows;
-
-    if (!devicesByCondition) {
-      return res.status(400).json({ message: "Device grouped by condition not found", error: true });
-    }
-
-    const devicesByOperationalResponse = await query(devicesByOperationalQuery);
-    const devicesByOperational = devicesByOperationalResponse.rows;
-
-    if (!devicesByOperational) {
-      return res.status(400).json({ message: "Device grouped by operational state not found", error: true });
-    }
-
-    const devicesMakeModelStatusCountResponse = await query(devicesMakeModelStatusCountQuery);
-    const devicesMakeModelStatusCount = devicesMakeModelStatusCountResponse.rows;
-
-    if (!devicesMakeModelStatusCount) {
-      return res.status(400).json({ message: "Device grouped by Make Model Status count not found", error: true });
-    }
-
-    const devicesWarrantyStatsResponse = await query(devicesWarrantyStatsQuery);
-    const devicesWarrantyStats = devicesWarrantyStatsResponse.rows;
-
-    if (!devicesWarrantyStats) {
-      return res.status(400).json({ message: "Device warranty stats not found", error: true });
-    }
-
-    const deviceAssignedLoanedByUserResponse = await query(deviceAssignedLoanedByUserQuery);
-    const deviceAssignedLoanedByUser = deviceAssignedLoanedByUserResponse.rows;
-
-    if (!deviceAssignedLoanedByUser) {
-      return res.status(400).json({ message: "Device Assigned / Loaned users stats not found", error: true });
-    }*/
 
     const [
       devicesOverallSummaryResponse,

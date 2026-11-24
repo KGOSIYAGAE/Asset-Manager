@@ -45,13 +45,13 @@ function AddEditStaff({ path }) {
   const [phone_number, setPhone_Number] = useState();
   const [email, setEmail] = useState();
 
-  const [faculty_id, setFaculty_id] = useState();
+  const [faculty_id, setFaculty_id] = useState(0);
 
-  const [department_id, setDepartment_id] = useState();
+  const [department_id, setDepartment_id] = useState(0);
 
   const [position_name, setPosition_name] = useState();
   const [positions, setPositions] = useState();
-  const [position_id, setPosition_id] = useState();
+  const [position_id, setPosition_id] = useState(0);
 
   const [contract_type, setContract_Type] = useState();
   const [isActive, setIsActive] = useState();

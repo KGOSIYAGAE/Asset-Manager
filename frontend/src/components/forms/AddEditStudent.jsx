@@ -41,10 +41,10 @@ function AddEditStudent({ path }) {
   const [phone_number, setPhone_Number] = useState();
   const [email, setEmail] = useState();
 
-  const [faculty_id, setFaculty_id] = useState();
+  const [faculty_id, setFaculty_id] = useState(0);
   const [faculty_name, setFaculty_name] = useState(null);
 
-  const [course_id, setCourse_id] = useState();
+  const [course_id, setCourse_id] = useState(0);
   const [course_code, setCourse_Code] = useState();
   const [course, setCourse] = useState();
 

@@ -82,12 +82,7 @@ function Menu({ isMinimized, setIsMinimize, onCloseMenu }) {
 
             <div className={`${showDeviceOption ? "flex" : "hidden"} flex-col  gap-1 ml-5 pl-6 border-l border-white border-opacity-50`}>
               <Link to={"/devices"}>
-                <div
-                  className="menu-items"
-                  onClick={() => {
-                    console.log(isMinimized);
-                  }}
-                >
+                <div className="menu-items" onClick={() => {}}>
                   <span className="text-sm p-1">All Devices</span>
                 </div>
               </Link>

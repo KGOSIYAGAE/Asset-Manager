@@ -50,8 +50,6 @@ function DeviceDetails({ path }) {
   const [purchaseDate, setPurchaseDate] = useState();
   const [print, setPrint] = useState(false);
 
-  const [deviceTransactions, setDeviceTransactions] = useState(null);
-
   const { showToast } = useToast();
   const { showToastBox } = useToastBox();
 
@@ -59,19 +57,6 @@ function DeviceDetails({ path }) {
 
   const navigate = useNavigate();
   let rowNumber = 0;
-
-  //Get All Device Transactions
-  const getDeviceTransactions = (deviceSerialNo) => {
-    if (!deviceSerialNo) {
-      return console.log("Selected device id not provided");
-    }
-
-    const data = {
-      serial_no: deviceSerialNo,
-    };
-
-    getAllDeviceTransactions(data, setDeviceTransactions);
-  };
 
   //On View more information on user
   const onViewMore = () => {
@@ -129,7 +114,6 @@ function DeviceDetails({ path }) {
   }, []);
 
   useEffect(() => {
-    getDeviceTransactions(deviceDetails?.serial_no);
     getUserType(deviceDetails?.current_user_id, setUserType);
   }, [deviceDetails]);
 
@@ -362,7 +346,7 @@ function DeviceDetails({ path }) {
           )}
         </div>
 
-        <DeviceLogTable deviceDetails={deviceDetails} label={"Devices History"} deviceTransactions={deviceTransactions} setOpenModal={setOpenModal} />
+        <DeviceLogTable deviceDetails={deviceDetails} label={"Devices History"} deviceSerialNo={deviceDetails?.serial_no} setOpenModal={setOpenModal} />
       </div>
 
       <Modal

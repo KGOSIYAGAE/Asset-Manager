@@ -12,6 +12,7 @@ import CoursesTable from "../../components/tables/CoursesTable";
 import { getCourses } from "../../services/api/academics/Academics";
 
 import { useToast } from "../../context/ToastContext";
+import CreateCourse from "../../components/cards/createCourse/CreateCourse";
 
 function Courses({ path }) {
   const [openModal, setOpenModal] = useState({ isShown: false, type: null, data: null });

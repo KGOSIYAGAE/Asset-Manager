@@ -8,14 +8,26 @@ import { MdFileOpen } from "react-icons/md";
 import { hasPermission } from "../../utils/getLoggedInUser";
 import { useToast } from "../../context/ToastContext";
 
-function DeviceLogTable({ deviceDetails, label, deviceTransactions, setOpenModal }) {
+function DeviceLogTable({ deviceDetails, label, deviceSerialNo, setOpenModal }) {
   const [columnCount, setColumnCount] = useState(6);
-
   const { showToast } = useToast();
 
+  const [deviceTransactions, setDeviceTransactions] = useState(null);
+
+  //Get All Device Transactions
+  const getDeviceTransactions = (deviceSerialNo) => {
+    const data = {
+      serial_no: deviceSerialNo,
+    };
+
+    getAllDeviceTransactions(data, setDeviceTransactions);
+  };
+
   useEffect(() => {
-    //console.log(deviceTransactions);
-  }, []);
+    if (deviceSerialNo) {
+      getDeviceTransactions(deviceSerialNo);
+    }
+  }, [deviceSerialNo]);
 
   return (
     <div className="h-[400px] lg:h-full col-span-6 flex flex-col border  bg-white rounded-md shadow-md">

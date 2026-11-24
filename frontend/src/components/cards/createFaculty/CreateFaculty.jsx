@@ -38,7 +38,7 @@ function CreateFaculty({ onCanel, onSubmit, modalType, modalData }) {
 
           {/** */}
           <div>
-            <SelectInput label={"Faculty Name"} value={facultyType} options={options} isDisabled={false} maxLength={255} setOnChange={setFacultyType} />
+            <SelectInput label={"Faculty Type"} value={facultyType} options={options} isDisabled={false} maxLength={255} setOnChange={setFacultyType} />
           </div>
 
           <div className="flex justify-end p-3 gap-8">

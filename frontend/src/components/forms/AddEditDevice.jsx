@@ -44,9 +44,9 @@ function AddEditDevice({ path }) {
   const [deviceMufactures, setDeviceManufactures] = useState([]);
   const [deviceModels, setDeviceModels] = useState([]);
 
-  const [deviceCategory_id, setDeviceCategory_id] = useState();
-  const [deviceMake_id, setDeviceMake_id] = useState();
-  const [deviceModel_id, setDeviceModel_id] = useState();
+  const [deviceCategory_id, setDeviceCategory_id] = useState(0);
+  const [deviceMake_id, setDeviceMake_id] = useState(0);
+  const [deviceModel_id, setDeviceModel_id] = useState(0);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -73,8 +73,6 @@ function AddEditDevice({ path }) {
 
   //handle set form data
   const setFormData = (deviceDetails) => {
-    console.log(deviceDetails);
-
     setFormType("Edit");
     setSerial_no(deviceDetails[0].serial_no);
     setAssetTag(deviceDetails[0].asset_tag);
